@@ -1,0 +1,70 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 18/01/2016, 14:56:33
+    Author     : escmig05
+*/
+
+body {
+  padding-top: 100px;
+}
+@font-face {
+  font-family: "UbuntuNormal";
+  src: url("../fonts/ubuntu/Ubuntu-R.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-variant: normal;
+  font-stretch: normal;
+}
+hr {
+  margin-bottom: 15px;
+  margin-top: 15px;    
+}
+h1.header {
+    font-family: 'UbuntuNormal', sans-serif;
+}
+.controls .delete {
+  margin-left: 5px;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+  padding-top: 2px;
+}
+.select2-container .select2-selection--single {
+  height: 34px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    top:3px;
+}
+
+#submenu {
+    top: 50px;
+    z-index: 1;
+}
+#submenu .nav.navbar-nav a {
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+#submenu.navbar {
+  min-height: 40px;
+}
+#submenu input {
+  border: 0 none;
+  color: #777;
+  padding: 10px 10px 10px 5px;
+}
+.search-bar {
+
+}
+.search-cod {
+    width: 80px !important;
+}
+.detail-view th {
+  text-align: right;
+}
+.detail-view .null {
+    color: #ffc0cb;
+}

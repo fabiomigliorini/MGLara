@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: MGLara
+        psr4_prefix: MGLara
+        src_path: app
