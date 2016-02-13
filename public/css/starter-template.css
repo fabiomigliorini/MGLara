@@ -26,6 +26,9 @@ hr {
 h1.header {
     font-family: 'UbuntuNormal', sans-serif;
 }
+.navbar-inverse .navbar-nav > li > a {
+    color: #eee;
+}
 .controls .delete {
   margin-left: 5px;
 }
@@ -36,10 +39,22 @@ h1.header {
 .select2-container .select2-selection--single {
   height: 34px;
 }
+.select2-container .select2-choice {
+    height: 34px;
+    line-height: 34px;
+}
 .select2-container--default .select2-selection--single .select2-selection__arrow {
     top:3px;
 }
-
+.select2-container, .select2-search, .select2-search {
+    box-sizing: border-box;
+    box-shadow: none;
+    padding: 0;
+    border: 0;
+}
+.select2-drop {
+    padding: 0 3px;
+}
 #submenu {
     top: 50px;
     z-index: 1;
@@ -61,6 +76,12 @@ h1.header {
 }
 .search-cod {
     width: 80px !important;
+}
+.search-pessoa {
+    width: 300px !important;
+}
+.search-filial {
+    width: 200px !important;
 }
 .detail-view th {
   text-align: right;

@@ -25,10 +25,10 @@
     {!! Form::text('usuario', null, ['class' => 'form-control', 'placeholder' => 'Usuário']) !!}
   </div>
   <div class="form-group">
-    {!! Form::text('codpessoa', null, ['class' => 'form-control', 'id' => 'codpessoa', 'placeholder' => 'Pessoa']) !!}
+    <input type="text" name="codpessoa" id="codpessoa" class="form-control search-pessoa" />
   </div>
   <div class="form-group">
-    {!! Form::text('codfilial', null, ['class' => 'form-control', 'id' => 'codfilial' , 'placeholder' => 'Filial']) !!}
+    {!! Form::select('codfilial', $filiais, ['class' => 'form-control search-filial'], ['id' => 'codfilial']) !!}
   </div>  
   <button type="submit" class="btn btn-default">Buscar</button>
 {!! Form::close() !!}
@@ -61,7 +61,10 @@
 @section('inscript')
 <script type="text/javascript">
 $(document).ready(function() {
-    
+  $('#codfilial').select2({
+      placeholder:'Filial',
+      width:'resolve'
+  });  
     
   $('#codpessoa').select2({
     'minimumInputLength':3,

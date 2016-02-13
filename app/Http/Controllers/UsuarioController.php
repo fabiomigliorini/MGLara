@@ -4,6 +4,7 @@ namespace MGLara\Http\Controllers;
 
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Usuario;
+use MGLara\Models\Filial;
 use Illuminate\Http\Request;
 #use MGLara\Repositories\UsuarioRepository;
 
@@ -27,7 +28,8 @@ class UsuarioController extends Controller
             $request->get('codpessoa'),
             $request->get('codfilial')
         );
-        return view('usuario.index', compact('model'));        
+        $filiais = Filial::lists('filial', 'codfilial');
+        return view('usuario.index', compact('model', 'filiais'));        
     }
 
     public function create() {
