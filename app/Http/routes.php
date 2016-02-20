@@ -25,7 +25,18 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('/','DashboardController');  
 
     /* Usuários */
-    Route::resource('usuario','UsuarioController');   
+    Route::resource('usuario','UsuarioController');       
+    Route::resource('usuario/{codusuario}/permissao','UsuarioController@permissao');       
+    Route::resource('usuario/attach-permissao','UsuarioController@attachPermissao');       
+    Route::resource('usuario/detach-permissao','UsuarioController@detachPermissao');       
+
+    /* Grupos de usuários */
+    Route::resource('grupousuario','GrupoUsuarioController');     
+    Route::post('grupousuario/attach-permissao','GrupoUsuarioController@attachPermissao');     
+    Route::post('grupousuario/detach-permissao','GrupoUsuarioController@detachPermissao');     
+
+    /* Permissões */
+    Route::resource('permissao','PermissaoController');   
 
     /* Pessoas */
     Route::resource('pessoa','PessoaController');
@@ -35,5 +46,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('filial','FilialController');
     Route::get('filial-ajax', 'FilialController@ajax');
     
+    
+    
+    
+    
+    /* Auxiliares */
+    Route::resource('printers','UsuarioController@printers');
     
 });
