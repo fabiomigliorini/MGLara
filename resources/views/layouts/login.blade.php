@@ -12,9 +12,6 @@
     <link href="{{ URL::asset('public/css/starter-template.css') }}" rel="stylesheet">
     <script src="{{ URL::asset('public/vendor/jquery/2.1.1/jquery.min.js') }}"></script>
     <script src="{{ URL::asset('public/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-
-    <script src="{{ URL::asset('public/js/configs.js') }}"></script>
-    <script src="{{ URL::asset('public/js/mgsis.js') }}"></script>
     @yield('inscript')
   </head>
 

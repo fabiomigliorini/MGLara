@@ -9,6 +9,7 @@
 namespace MGLara\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Description of Model
@@ -24,6 +25,16 @@ abstract class MGModel extends Model {
     protected $_regrasValidacao;
     protected $_mensagensErro;
     public $_validator;
+    
+    public function UsuarioCriacao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
+    }
+    
+    public function UsuarioAlteracao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuarioalteracao', 'codusuario');
+    }     
     
     #public function __construct() {
         
@@ -42,9 +53,18 @@ abstract class MGModel extends Model {
     {
         parent::boot();
 
+        static::creating(function($model)
+        {
+            $model->attributes['codusuariocriacao'] = Auth::user()->codusuario;
+        });
+        
+        static::updating(function($model)
+        {
+            $model->attributes['codusuarioalteracao'] = Auth::user()->codusuario;
+        });
+        
         static::saving(function($model)
         {
-            
             foreach ($model->toArray() as $fieldName => $fieldValue) {
                 if ( $fieldValue === '' ) {
                     $model->attributes[$fieldName] = null;
@@ -53,7 +73,6 @@ abstract class MGModel extends Model {
 
             return true;
         });
-
     }
     
     public function validate() {

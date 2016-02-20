@@ -12,7 +12,7 @@ class Pessoa extends MGModel
     
     public function Usuario()
     {
-        return $this->hasMany('Usuario::class', 'codpessoa', 'codpessoa');
+        return $this->hasMany(Usuario::class, 'codpessoa', 'codpessoa');
     }
      
 

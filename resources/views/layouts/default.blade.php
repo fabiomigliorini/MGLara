@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="author" content="MG Papelaria ">
     <link rel="icon" href="favicon.ico">
     <title>MG papelaria</title>
     <link href="{{ URL::asset('public/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -25,6 +25,7 @@
     <script src="{{ URL::asset('public/vendor/bootstrap-datepicker/locales/bootstrap-datepicker.pt-BR.min.js') }}"></script>
     <!--<script src="{{ URL::asset('public/vendor/select2/js/select2.min.js') }}"></script>-->
     <script src="{{ URL::asset('public/vendor/select2/select2-3.4.1min.js') }}"></script>
+    <script src="{{ URL::asset('public/vendor/select2/select2_locale_pt-BR.js') }}"></script>
     <script src="{{ URL::asset('public/vendor/autoNumeric/autoNumeric-min.js') }}"></script>
     <script src="{{ URL::asset('public/vendor/teamdf/jquery.number.min.js') }}"></script>
     <script src="{{ URL::asset('public/vendor/infinite-scroll/infinite-scroll.js') }}"></script>
@@ -38,6 +39,7 @@
         @include('includes.header')
     </header>
     <div class="container-fluid">
+      @include('errors.flash')
       @yield('content')
     </div>
 

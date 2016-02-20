@@ -6,6 +6,7 @@
             <li><a href="<?php echo url('usuario');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
             <li><a href="<?php echo url('usuario/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
             <li><a href="<?php echo url("usuario/$model->codusuario/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
+            <li><a href="<?php echo url("usuario/$model->codusuario/permissao");?>"><span class="glyphicon glyphicon-lock"></span> Permissões</a></li> 
             <li>
                 {!! Form::open(['method' => 'DELETE', 'route' => ['usuario.destroy', $model->codusuario]]) !!}
                 <span class="glyphicon glyphicon-trash"></span>
@@ -50,12 +51,16 @@
             <td>{{ $model->impressoratermica }}</td> 
           </tr>
           <tr> 
+            <th>Impressora tela negócio</th> 
+            <td>{{ $model->impressoratelanegocio }}</td> 
+          </tr>
+          <tr> 
             <th>Último acesso</th> 
             <td>{{ dateBRfull($model->ultimoacesso) }}</td> 
           </tr>           
           <tr> 
             <th>Inativo</th> 
-            <td>{{ dateBR($model->inativo) }}</td> 
+            <td><?php if(!empty($model->inativo)) echo dateBR($model->inativo);?></td> 
           </tr> 
         </tbody> 
       </table>

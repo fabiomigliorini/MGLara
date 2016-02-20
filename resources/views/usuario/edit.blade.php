@@ -6,6 +6,7 @@
             <li><a href="<?php echo url('usuario');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
             <li><a href="<?php echo url('usuario/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
             <li><a href="<?php echo url("usuario/$model->codusuario");?>"><span class="glyphicon glyphicon-eye-open"></span> Detalhes</a></li> 
+            <li><a href="<?php echo url("usuario/$model->codusuario/permissao");?>"><span class="glyphicon glyphicon-lock"></span> Permissões</a></li> 
         </ul>
     </div>
 </nav>

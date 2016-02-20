@@ -24,6 +24,19 @@ if(!function_exists('isNull')) {
     }
 }
 
+if(!function_exists('checkPermissao')) {
+    function checkPermissao($f, $g, $array) {
+        foreach ($array as $item) {
+            if (isset($item['filial']) && $item['filial'] === $f) {
+                if (isset($item['grupo']) && $item['grupo'] === $g) {
+                    return 'checked';
+                }
+            }
+        }
+        return false;
+    }
+}
+
 if(!function_exists('linkRel')) {
     function linkRel($text, $url, $id) {
         $link = url($url.'/'.$id);

@@ -3,22 +3,32 @@
 namespace MGLara\Http\Controllers;
 
 use MGLara\Http\Controllers\Controller;
-use MGLara\Models\Usuario;
-use MGLara\Models\Filial;
 use Illuminate\Http\Request;
-#use MGLara\Repositories\UsuarioRepository;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
+//use Illuminate\Hashing\BcryptHasher;
+use MGLara\Models\Usuario;
+use MGLara\Models\GrupoUsuario;
+use MGLara\Models\Ecf;
+use MGLara\Models\Filial;
+use MGLara\Models\Operacao;
+use MGLara\Models\Portador;
 
 class UsuarioController extends Controller
 {
-    #protected $usuarioRepository;
-    
-    public function __construct(/*UsuarioRepository $usuarioRepository*/)
+    public function __construct()
     {
-        #$this->usuarioRepository = $usuarioRepository;
         #$this->middleware('permissao:usuario.consulta', ['only' => ['index', 'show']]);
         #$this->middleware('permissao:usuario.inclusao', ['only' => ['create', 'store']]);
         #$this->middleware('permissao:usuario.edicao', ['only' => ['edit', 'update']]);
         #$this->middleware('permissao:usuario.exclusao', ['only' => ['delete', 'destroy']]);
+        
+        $this->filiais    = [''=>''] + Filial::lists('filial', 'codfilial')->all();
+        $this->ecfs       = [''=>''] + Ecf::lists('ecf', 'codecf')->all();
+        $this->ops        = [''=>''] + Operacao::lists('operacao', 'codoperacao')->all();
+        $this->portadores = [''=>''] + Portador::lists('portador', 'codportador')->all();
+        $this->prints     = [''=>''] + Usuario::printers();        
     }
     
     public function index(Request $request) {
@@ -33,34 +43,54 @@ class UsuarioController extends Controller
     }
 
     public function create() {
-
-        return view('usuario.create');
+        $filiais    = $this->filiais;
+        $ecfs       = $this->ecfs;
+        $ops        = $this->ops;
+        $portadores = $this->portadores;
+        $prints     = $this->prints;
+        return view('usuario.create', compact('ecfs', 'filiais', 'ecfs', 'ops', 'portadores', 'prints'));
     }
 
     public function store(Request $request) {
         $model = new Usuario($request->all());
         if (!$model->validate())
-            $this->throwValidationException($request, $model->validator);
+            $this->throwValidationException($request, $model->_validator);
+        $model->senha = bcrypt($model->senha);
         $model->save();
-        \Session::flash('flash_message', 'Registro inserido.');
+        Session::flash('flash_create', 'Registro inserido.');
         return redirect('usuario');
     }
 
     public function edit($codusuario) {
-
         $model = Usuario::findOrFail($codusuario);
-        return view('usuario.edit',  compact('model'));
+        $filiais    = $this->filiais;
+        $ecfs       = $this->ecfs;
+        $ops        = $this->ops;
+        $portadores = $this->portadores;
+        $prints     = $this->prints;
+        if(!empty(!in_array($model->impressoramatricial, $prints)))
+            $prints[$model->impressoramatricial] = $model->impressoramatricial;
+        
+        if(!empty(!in_array($model->impressoratermica, $prints)))
+            $prints[$model->impressoratermica] = $model->impressoratermica;
+        
+        if(!empty(!in_array($model->impressoratelanegocio, $prints)))
+            $prints[$model->impressoratelanegocio] = $model->impressoratelanegocio;
+                
+        return view('usuario.edit',  compact('model','ecfs', 'ops', 'filiais', 'portadores', 'prints'));
     }
 
-    public function update($codmarca, Request $request) {
-        /*$marca = Marca::findOrFail($codmarca);
-        $marca->fill($request->all());
-        if (!$marca->validate())
-            $this->throwValidationException($request, $marca->validator);
-        $marca->save();
+    public function update($codusuario, Request $request) {
+        $model = Usuario::findOrFail($codusuario);
+        $model->fill($request->all());
+        if (!$model->validate())
+            $this->throwValidationException($request, $model->_validator);
+        if (isset($model->senha))
+             $model->senha = bcrypt($model->senha);
+        $model->save();
         
-        \Session::flash('flash_message', 'Registro atualizado.');
-        return redirect('usuario');*/
+        Session::flash('flash_update', 'Registro atualizado.');
+        return redirect('usuario');
     }
     
     public function show($codusuario) {
@@ -68,30 +98,51 @@ class UsuarioController extends Controller
         return view('usuario.show', compact('model'));
     }
 
-    public function delete($codmarca) {
-//        Marca::find($codmarca)->delete();
-//        die('ddd');
-//        \Session::flash('flash_message', 'Registro deletado.');
-//        return Redirect::route('usuario');
-    }
-    
-    public function destroy($codmarca) {
+    public function destroy($codusuario) {
 
-//        Marca::find($codmarca)->delete();
-//        
-//        \Session::flash('flash_message', 'Registro deletado.');
-//        return Redirect::route('usuario.index');
-    }
-    
-
-    public function ajax(Request $request){
-        if($request->get('q')) {
-            $marcas = Marca::marca($request->get('q'))->select('codmarca as id', 'marca')->take(10)->get();
-            return response()->json(['items' => $marcas]);       
-        } elseif($request->get('id')) {
-            $marca = Marca::find($request->get('id'));
-            return response()->json($marca);
+        try{
+	        Usuario::find($codusuario)->delete();
+	        Session::flash('flash_delete', 'Registro deletado!');
+	        return Redirect::route('usuario.index');
         }
-        
-    }    
+        catch(\Exception $e){
+        	return view('errors.fk');
+        }        
+    }
+    
+    public function permissao(Request $request, $codusuario) {
+        $model = Usuario::find($codusuario);
+        $filiais = Filial::get();
+        $grupos = GrupoUsuario::filterAndPaginate(
+            $request->get('codgrupo'),
+            $request->get('grupousuario')
+        );
+        return view('usuario.permissao', compact('model', 'grupos', 'filiais'));
+    }
+
+    public function attachPermissao(Request $request) {
+        $model = Usuario::find($request->get('codusuario'));
+        $model->GrupoUsuario()->attach($request->get('codgrupousuario'), ['codfilial' => $request->get('codfilial')]);
+    }
+    
+    public function detachPermissao(Request $request) {
+        DB::table( 'tblgrupousuariousuario' )
+            ->where( 'codgrupousuario', '=', $request->codgrupousuario, 'and' )
+            ->where( 'codusuario', '=', $request->codusuario, 'and' )
+            ->where( 'codfilial', '=', $request->codfilial )
+            ->delete();        
+    }
+
+//    public function ajax(Request $request){
+//        if($request->get('q')) {
+//            $marcas = Marca::marca($request->get('q'))->select('codmarca as id', 'marca')->take(10)->get();
+//            return response()->json(['items' => $marcas]);       
+//        } elseif($request->get('id')) {
+//            $marca = Marca::find($request->get('id'));
+//            return response()->json($marca);
+//        }
+//    }
+
+
+            
 }

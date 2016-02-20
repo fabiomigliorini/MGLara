@@ -54,8 +54,17 @@ class Usuario extends MGModel implements AuthenticatableContract, /*Authorizable
     
     public function validate() {
         
+    	if ($this->codusuario)
+    		$unique_usuario = "unique:tblusuario,usuario,$this->codusuario,codusuario|required|min:5";
+    	else
+    		$unique_usuario = "unique:tblusuario,usuario|required|min:5";    	
+    	
         $this->_regrasValidacao = [
-            'usuario' => 'required|min:3', 
+            'usuario' => $unique_usuario, 
+            'senha' => 'required_if:codusuario,null|min:6', 
+            'codoperacao' => 'required', 
+            'impressoramatricial' => 'required', 
+            'impressoratermica' => 'required', 
         ];
     
         $this->_mensagensErro = [
@@ -93,21 +102,24 @@ class Usuario extends MGModel implements AuthenticatableContract, /*Authorizable
     {
         return $this->belongsTo(Portador::class, 'codportador', 'codportador');
     }
-
-    public function UsuarioCriacao()
-    {
-        return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
-    }
-    
-    public function UsuarioAlteracao()
-    {
-        return $this->belongsTo(Usuario::class, 'codusuarioalteracao', 'codusuario');
-    }    
     
     public function GrupoUsuario()
     {
         return $this->belongsToMany(GrupoUsuario::class, 'tblgrupousuariousuario', 'codusuario', 'codgrupousuario')->withPivot('codgrupousuario', 'codfilial');
     }    
+    
+    public function extractgrupos()
+    {
+        $arraygrupos = [];
+        foreach($this->GrupoUsuario as $data) 
+        {
+            $arraygrupos [] = [
+                'filial'=>$data->pivot->codfilial, 
+                'grupo'=>$data->pivot->codgrupousuario
+            ];
+        }
+        return $arraygrupos;        
+    }
     
     public function can($permission = null)
     {
@@ -122,7 +134,7 @@ class Usuario extends MGModel implements AuthenticatableContract, /*Authorizable
         }, $filiais))));
     }
 
-        protected function checkPermission($perm)
+    protected function checkPermission($perm)
     {
         $permissions = $this->getAllPermissionsFormAllRoles();      
         $permissionArray = is_array($perm) ? $perm : [$perm];
@@ -138,6 +150,24 @@ class Usuario extends MGModel implements AuthenticatableContract, /*Authorizable
         }, $permissions))));
     } 
 
+    static function printers() 
+    {
+        $o = shell_exec("lpstat -d -p");
+        $res = explode("\n", $o);
+        $printers = [];
+        foreach ($res as $r) 
+        {
+            if (strpos($r, "printer") !== FALSE) 
+            {
+                $r = str_replace("printer ", "", $r);
+                $r = explode(" ", $r);
+                $printers[$r[0]] = $r[0];
+            }
+        }
+        
+        return $printers;
+    }    
+    
     # Buscas #
     public static function filterAndPaginate($codusuario, $usuario, $codpessoa, $codfilial)
     {

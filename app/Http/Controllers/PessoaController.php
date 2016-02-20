@@ -90,9 +90,11 @@ class PessoaController extends Controller
     {
         if($request->get('q')) {
             $query = Pessoa::pessoa($request->get('q'))
-                    ->select('codpessoa as id', 'pessoa', 'fantasia')
-                    ->take(10)->get();
-            return response()->json(['items' => $query]);       
+                    ->select('codpessoa as id', 'pessoa', 'fantasia', 'cnpj', 'inativo')
+                    ->paginate(10);
+                    //->take(10)->get();
+            return response()->json($query/*['items' => $query]*/);
+            
         } elseif($request->get('id')) {
             $query = Pessoa::find($request->get('id'));
             return response()->json($query);

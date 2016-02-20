@@ -12,9 +12,10 @@ class Filial extends MGModel
     
     public function Usuario()
     {
-        return $this->hasMany('Usuario::class', 'codfilial', 'codfilial');
+        return $this->hasMany(Usuario::class, 'codfilial', 'codfilial');
     }
      
+    
 
     public function validate() {
         

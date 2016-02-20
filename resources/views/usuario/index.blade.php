@@ -15,7 +15,8 @@
   {!! Form::model(Request::all(), [
     'route' => 'usuario.index', 
     'method' => 'GET', 
-    'class' => 'form-inline', 
+    'class' => 'form-inline',
+    'id' => 'usuario-search',
     'role' => 'search'
   ])!!}
   <div class="form-group">
@@ -28,7 +29,7 @@
     <input type="text" name="codpessoa" id="codpessoa" class="form-control search-pessoa" />
   </div>
   <div class="form-group">
-    {!! Form::select('codfilial', $filiais, ['class' => 'form-control search-filial'], ['id' => 'codfilial']) !!}
+    {!! Form::select('codfilial', $filiais, ['class' => 'search-filial'], ['id' => 'codfilial']) !!}
   </div>  
   <button type="submit" class="btn btn-default">Buscar</button>
 {!! Form::close() !!}
@@ -55,18 +56,33 @@
         </div>
       </div>    
     @endforeach
+    @if (count($model) === 0)
+        <h3>Nenhum registro encontrado!</h3>
+    @endif    
   </div>
-  <?php echo $model->render();?>
+  <?php echo $model->appends(Request::all())->render();?>
 </div>
 @section('inscript')
 <script type="text/javascript">
 $(document).ready(function() {
+  $('#codfilial, #codpessoa' ).change(function() {
+    $("#usuario-search").submit();
+  });    
+  $('#codfilial' ).prepend('<option value="" selected=""></option>');
+
+
+
   $('#codfilial').select2({
-      placeholder:'Filial',
+      placeholder: 'Filial',
+      allowClear: true,
+      closeOnSelect: true,      
       width:'resolve'
   });  
     
-  $('#codpessoa').select2({
+
+    
+    
+ /* $('#codpessoa').select2({
     'minimumInputLength':3,
     'allowClear':true,
     'closeOnSelect':true,
@@ -122,7 +138,7 @@ $(document).ready(function() {
       $.ajax({
         type: "GET",
         url: baseUrl+'/pessoa-ajax',
-        data: "id=",
+        data: "codpessoa=",
         dataType: "json",
         success: function(result) {
           callback(result); 
@@ -130,9 +146,72 @@ $(document).ready(function() {
       });
     },
     'width':'resolve'
-  });    
+  });*/
     
-    
+    $('#codpessoa').select2({
+        'minimumInputLength':3,
+        'allowClear':true,
+        'closeOnSelect':true,
+        'placeholder':'Pessoa',
+        'formatResult':function(item) {
+            var css = "div-combo-pessoa";
+            if (item.inativo)
+                var css = "text-error";
+
+            var css_titulo = "";
+            var css_detalhes = "text-muted";
+            if (item.inativo){
+                css_titulo = "text-error";
+                css_detalhes = "text-error";
+            }
+
+            var nome = item.fantasia;
+
+            //if (item.inclusaoSpc != 0)
+            //	nome += "&nbsp<span class=\"label label-warning\">" + item.inclusaoSpc + "</span>";
+
+            var markup = "";
+            markup    += "<strong class='" + css_titulo + "'>" + nome + "</strong>";
+            markup    += "<small class='pull-right " + css_detalhes + "'>#" + formataCodigo(item.id) + "</small>";
+            markup    += "<br>";
+            markup    += "<small class='" + css_detalhes + "'>" + item.pessoa + "</small>";
+            markup    += "<small class='pull-right " + css_detalhes + "'>" + formataCnpjCpf(item.cnpj) + "</small>";
+            return markup;
+        },
+        'formatSelection':function(item) { 
+            return item.fantasia; 
+        },
+        'ajax':{
+            'url':baseUrl+'/pessoa-ajax',
+            'dataType':'json',
+            'quietMillis':500,
+            'data':function(term, current_page) { 
+                return {
+                    q: term, 
+                    per_page: 10, 
+                    current_page: current_page
+                }; 
+            },
+            'results':function(data,page) {
+                //var more = (current_page * 20) < data.total;
+                return {
+                    results: data.data, 
+                    //more: data.mais
+                };
+            }
+        },
+        'initSelection':function (element, callback) {
+            $.ajax({
+                type: "GET",
+                url: baseUrl+'/pessoa-ajax',
+                data: "id=<?php if(isset($_GET['codpessoa'])){echo $_GET['codpessoa'];}?>",
+                dataType: "json",
+                success: function(result) { 
+                    callback(result); 
+                }
+            });
+        },'width':'resolve'
+    });      
 });
 </script>
 @endsection
