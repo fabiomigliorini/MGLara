@@ -19,10 +19,10 @@ class UsuarioController extends Controller
 {
     public function __construct()
     {
-        #$this->middleware('permissao:usuario.consulta', ['only' => ['index', 'show']]);
-        #$this->middleware('permissao:usuario.inclusao', ['only' => ['create', 'store']]);
-        #$this->middleware('permissao:usuario.edicao', ['only' => ['edit', 'update']]);
-        #$this->middleware('permissao:usuario.exclusao', ['only' => ['delete', 'destroy']]);
+        $this->middleware('permissao:usuario.consulta', ['only' => ['index', 'show']]);
+        $this->middleware('permissao:usuario.inclusao', ['only' => ['create', 'store']]);
+        $this->middleware('permissao:usuario.edicao', ['only' => ['edit', 'update']]);
+        $this->middleware('permissao:usuario.exclusao', ['only' => ['delete', 'destroy']]);
         
         $this->filiais    = [''=>''] + Filial::lists('filial', 'codfilial')->all();
         $this->ecfs       = [''=>''] + Ecf::lists('ecf', 'codecf')->all();
