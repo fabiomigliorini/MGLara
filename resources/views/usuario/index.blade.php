@@ -42,7 +42,7 @@
       <div class="list-group-item">
         <div class="row item">
           <div class="col-md-1">
-            <a href="<?php echo url("usuario/$row->codusuario");?>">#{{$row->codusuario}}</a>
+            <a href="<?php echo url("usuario/$row->codusuario");?>">{{formataCodigo($row->codusuario)}}</a>
           </div>                            
           <div class="col-md-2">
             <a href="<?php echo url("usuario/$row->codusuario");?>">{{$row->usuario}}</a>

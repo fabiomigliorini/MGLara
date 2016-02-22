@@ -112,7 +112,7 @@ class UsuarioController extends Controller
     
     public function permissao(Request $request, $codusuario) {
         $model = Usuario::find($codusuario);
-        $filiais = Filial::get();
+        $filiais = Filial::orderBy('codfilial', 'asc')->get();
         $grupos = GrupoUsuario::filterAndPaginate(
             $request->get('codgrupo'),
             $request->get('grupousuario')

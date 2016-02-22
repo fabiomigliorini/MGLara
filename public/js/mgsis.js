@@ -48,17 +48,41 @@
 
         return numero;
     }
+    
 $(document).ready(function() {
     
-//    $('form.crud-delete').submit(function(e){
-//      e.preventDefault();
-//        url = $(this).parent().attr('action');
-//        BootstrapDialog.confirm('Deseja excluir esse registro?', function(result){
-//            if(result) {
-//                $.ajax(url);
-//            }
-//        });
-//    });
+    $('form').submit(function(e){
+        var confirm = ConfirmDialog('Confirm', 'Are you sure?');
+        if(confirm){
+            form.submit();
+        }
+    });
+            
+    function ConfirmDialog(title,message){
+
+        var confirmdialog = $('<div></div>').appendTo('body')
+        .html('<div><h6>'+message+'</h6></div>')
+        .dialog({
+            modal: true, title: title, zIndex: 10000, autoOpen: false,
+            width: 'auto', resizable: false,
+            buttons: {
+                Yes: function(){
+                    $(this).dialog("close");
+                    return true;
+                },
+                No: function(){
+                    $(this).dialog("close");
+                    return false;
+                }
+            },
+            close: function(event, ui){
+                $(this).remove();
+                return false;
+            }
+        });
+
+        return confirmdialog.dialog("open");
+    }
 
     
   $('.pagination').addClass('hide');
@@ -75,3 +99,4 @@ $(document).ready(function() {
     itemSelector : "#items div.list-group-item"
   });    
 });  
+

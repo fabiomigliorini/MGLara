@@ -18,6 +18,12 @@ if(!function_exists('dateBRfull')) {
     }
 }
 
+if(!function_exists('formataCodigo')) {
+    function formataCodigo ($value, $digitos = 8){
+        return "#" . str_pad($value, $digitos, "0", STR_PAD_LEFT);
+    }
+}
+
 if(!function_exists('isNull')) {
     function isNull($str) {
         return "<span class='null'>$str</span>";
