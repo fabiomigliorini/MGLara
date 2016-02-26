@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "MGLara",
+    "description": "Sistema Administrativo/Comercial MG Papelaria - Versão Laravel ",
+    "keywords": ["mg", "laravel"],
     "license": "MIT",
     "type": "project",
     "require": {

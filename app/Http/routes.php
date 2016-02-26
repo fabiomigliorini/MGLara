@@ -46,7 +46,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('filial','FilialController');
     Route::get('filial-ajax', 'FilialController@ajax');
     
-    
+    /* Estoque mês */
+    Route::resource('estoquemes','EstoqueMesController');       
     
     
     
