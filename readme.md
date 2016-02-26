@@ -12,9 +12,9 @@ composer install
 php artisan key:generate
 sudo a2enmod rewrite
 sudo service apache2 restart
+```
 
-
-´´´
+---
 
 ```
 vi .env:
@@ -40,7 +40,9 @@ MAIL_PASSWORD=null
 MAIL_ENCRYPTION=null
 ```
 
-´´´
+---
+
+```
 Adicionaro ao /etc/apache2/sites-available/000-default.conf:
 
 Dentro da tag </VirtualHost>
