@@ -15,23 +15,19 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">{{ $model->grupousuario }}</h1>
+<h1 class="header">Detalhes Grupo de usuário #{{ $model->codgrupousuario }}</h1>
 <hr>
 <div class="row">
   <div class="col-lg-12">
       <table class="detail-view table table-striped table-condensed"> 
         <tbody>  
           <tr> 
-            <th class="col-md-2">#</th> 
-            <td class="col-md-10">{{ formataCodigo($model->codgrupousuario) }}</td> 
+            <th class="col-md-2">Grupo de usuário</th> 
+            <td class="col-md-10">{{ $model->grupousuario }}</td> 
           </tr>
           <tr> 
-            <th>Grupo de usuário</th> 
-            <td>{{ $model->grupousuario }}</td> 
-          </tr>
-          <tr> 
-            <th>Descrição</th> 
-            <td>{{ $model->observacoes }}</td> 
+            <th class="col-md-2">Descrição</th> 
+            <td class="col-md-10">{{ $model->observacoes }}</td> 
           </tr>
         </tbody> 
       </table>

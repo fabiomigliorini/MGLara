@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="MG Papelaria ">
-    <link rel="icon" href="{{ URL::asset('favicon.ico') }}">
+    <link rel="icon" href="favicon.ico">
     <title>MG papelaria</title>
     <link href="{{ URL::asset('public/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('public/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css') }}" rel="stylesheet">

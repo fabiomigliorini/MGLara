@@ -16,19 +16,15 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">{{ $model->usuario }}</h1>
+<h1 class="header">Detalhes Usuario #{{ $model->codusuario }}</h1>
 <hr>
 <div class="row">
   <div class="col-lg-12">
       <table class="detail-view table table-striped table-condensed"> 
         <tbody>  
           <tr> 
-            <th class="col-md-2">#</th> 
-            <td class="col-md-10">{{ formataCodigo($model->codusuario) }}</td> 
-          </tr>
-          <tr> 
-            <th>Usuário</th> 
-            <td>{{ $model->usuario }}</td> 
+            <th class="col-md-2">Usuário</th> 
+            <td class="col-md-10">{{ $model->usuario }}</td> 
           </tr>
           <tr> 
             <th>ECF</th> 

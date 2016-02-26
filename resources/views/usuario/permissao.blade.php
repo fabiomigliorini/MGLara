@@ -5,8 +5,7 @@
         <ul class="nav navbar-nav">
             <li><a href="<?php echo url('usuario');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
             <li><a href="<?php echo url('usuario/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
-            <li><a href="<?php echo url("usuario/$model->codusuario/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li>
-            <li><a href="<?php echo url("usuario/$model->codusuario");?>"><span class="glyphicon glyphicon-eye-open"></span> Detalhes</a></li> 
+            <li><a href="<?php echo url("usuario/$model->codusuario/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li>
                 {!! Form::open(['method' => 'DELETE', 'route' => ['usuario.destroy', $model->codusuario]]) !!}
                 <span class="glyphicon glyphicon-trash"></span>
@@ -16,8 +15,25 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Permissões usuário: {{$model->usuario}}</h1>
-<hr>
+<h1 class="header">Permissões usuário #{{$model->codusuario}}</h1>
+<div class="search-bar">
+  {!! Form::model(Request::all(), [
+    'method' => 'GET', 
+    'class' => 'form-inline',
+    'id' => 'grupousuario-search',
+    'role' => 'search'
+  ])!!}
+  <div class="form-group">
+    {!! Form::text('codpermissao', null, ['class' => 'form-control search-cod', 'placeholder' => '#']) !!}
+  </div>
+  <div class="form-group">
+    {!! Form::text('permissao', null, ['class' => 'form-control', 'placeholder' => 'Permissão']) !!}
+  </div>
+  <button type="submit" class="btn btn-default">Buscar</button>
+{!! Form::close() !!}
+</div>
+
+<br>
 <div id="registros">
   <div class="list-group col-md-12" id="items">
       <div class="list-group-item">
@@ -30,10 +46,12 @@
           </div>
       </div>
     @foreach($grupos as $grupo)
+    
+    
       <div class="list-group-item">
         <div class="row item">
           <div class="col-md-1">
-            <a href="<?php echo url("grupousuario/$grupo->codpermissao");?>">{{formataCodigo($grupo->codgrupousuario)}}</a>
+            <a href="<?php echo url("grupousuario/$grupo->codpermissao");?>">#{{$grupo->codgrupousuario}}</a>
           </div>                            
           <div class="col-md-3">
             <a href="<?php echo url("grupousuario/$grupo->codpermissao");?>">{{$grupo->grupousuario}}</a>
@@ -47,19 +65,22 @@
                 data-grupo="{{$grupo->codgrupousuario}}"
                 <?php echo checkPermissao($filial->codfilial, $grupo->codgrupousuario, $model->extractgrupos());?>
                 type="checkbox" 
-                data-on-text="Sim" 
-                data-off-text="Não" 
+                data-on-text="sim" 
+                data-off-text="não" 
                 data-off-color ="danger"
                 class="check-permissao">               
           </div>
           @endforeach            
         </div>
-      </div>  
+      </div>
+
+    
     @endforeach
     @if (count($grupos) === 0)
-        <h3>Nenhum grupo de usuário cadastrado!</h3>
+        <h3>Nenhum registro encontrado!</h3>
     @endif    
   </div>
+  <?php echo $grupos->appends(Request::all())->render();?>
 </div>
 
 @section('inscript')
@@ -72,10 +93,13 @@
           var filial = this.dataset.filial;
           var token = '<?php echo csrf_token()?>';
           var action;
+          var acao;
           if(state === true) {
               action = 'attach-permissao';
+              acao = 'adicionada';              
           } else {
               action = 'detach-permissao';
+              acao = 'removida';
           }
           //console.log(state);
         $.post( baseUrl+"/usuario/"+action, {
@@ -85,7 +109,7 @@
             _token: token
         })
         .done(function(data) {
-            // ...
+            console.log('Permissão '+acao)
         });
       });      
   });

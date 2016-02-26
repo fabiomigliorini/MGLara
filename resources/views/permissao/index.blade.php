@@ -36,7 +36,7 @@
       <div class="list-group-item">
         <div class="row item">
           <div class="col-md-1">
-            <a href="<?php echo url("permissao/$row->codpermissao");?>">{{formataCodigo($row->codpermissao) }}</a>
+            <a href="<?php echo url("permissao/$row->codpermissao");?>">#{{$row->codpermissao}}</a>
           </div>
           <div class="col-md-5">
             <a href="<?php echo url("permissao/$row->codpermissao");?>">{{$row->observacoes}}</a>
