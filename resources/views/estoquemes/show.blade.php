@@ -8,7 +8,7 @@
     </div>
 </nav>
 
-<h1 class="header">Kardex cod: {{ $model->codestoquemes }}</h1>
+<h1 class="header">Kardex cod: {{ formataCodigo($model->codestoquemes) }}</h1>
 <hr>
 <table class="table table-striped table-bordered">
     <thead>
@@ -43,9 +43,9 @@
             <td>init</td>
             <td>init</td>
         </tr>        
-        @foreach($model->EstoqueMovimento as $row)    
+        @foreach($model->EstoqueMovimentoS as $row)    
         <tr>
-            <th>{{ formataCodigo($row->codestoquemovimento) }}</th>
+            <th>{{ $row->codestoquemovimento }}</th>
             <td>{{ dateBRfull($row->data) }}</td>
             <td></td>
             <td>{{ $row->entradaquantidade }}</td>

@@ -9,27 +9,17 @@ class EstoqueMes extends MGModel
     protected $fillable = [
       'codestoquesaldo',
       'mes',
-      'inicialquantidade',
-      'inicialvalor',
-      'entradaquantidade',
-      'entradavalor',
-      'saidaquantidade',
-      'saidavalor',
-      'saidaquantidade',
-      'saidavalor',
-      'saldoquantidade',
-      'saldovalor',
-      'saldovalorunitario',
     ];
+    protected $dates = ['mes'];
     
-    public function EstoqueMovimento()
+    public function EstoqueMovimentoS()
     {
         return $this->hasMany(EstoqueMovimento::class, 'codestoquemes', 'codestoquemes');
     }    
     
     public function EstoqueSaldo()
     {
-        return $this->hasMany(EstoqueSaldo::class, 'codestoquesaldo', 'codestoquesaldo');
+        return $this->belongsTo(EstoqueSaldo::class, 'codestoquesaldo', 'codestoquesaldo');
     }
      
 
@@ -60,5 +50,21 @@ class EstoqueMes extends MGModel
         {
             $query->where('codestoquemes', "$codestoquemes");
         }
-    }   
+    }
+    
+    public static function buscaOuCria($codproduto, $codestoquelocal, $fiscal, $data)
+    {
+        $es = EstoqueSaldo::buscaOuCria($codproduto, $codestoquelocal, $fiscal);
+        $data->day = 1;
+        $em = self::where('codestoquesaldo', $es->codestoquesaldo)->where('mes', $data)->first();
+        if ($em == false)
+        {
+            $em = new EstoqueMes;
+            $em->codestoquesaldo = $es->codestoquesaldo;
+            $em->mes = $data;
+            $em->save();
+        }
+        return $em;
+        
+    }
 }

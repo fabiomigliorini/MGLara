@@ -7,9 +7,13 @@ class EstoqueMovimento extends MGModel
     protected $table = 'tblestoquemovimento';
     protected $primaryKey = 'codestoquemovimento';
     protected $fillable = [
-      'codestoquemes',
-      'codestoquemovimentotipo',
-
+        'codestoquemes',
+        'codestoquemovimentotipo',
+        'data',
+        'entradaquantidade',
+        'entradavalor',
+        'saidaquantidade',
+        'saidavalor',
     ];
     
     public function EstoqueMes()
@@ -17,11 +21,20 @@ class EstoqueMovimento extends MGModel
         return $this->belongsTo(EstoqueMes::class, 'codestoquemes', 'codestoquemes');
     } 
     
-    public function EstoqueSaldo()
+    public function EstoqueMovimentoTipo()
     {
-        return $this->hasMany(EstoqueSaldo::class, 'codestoquesaldo', 'codestoquesaldo');
-    }
-     
+        return $this->belongsTo(EstoqueMovimentoTipo::class, 'codestoquemovimentotipo', 'codestoquemovimentotipo');
+    } 
+
+    public function NotaFiscalProdutoBarra()
+    {
+        return $this->belongsTo(NotaFiscalProdutoBarra::class, 'codnotafiscalprodutobarra', 'codnotafiscalprodutobarra');
+    } 
+
+    public function NegocioProdutoBarra()
+    {
+        return $this->belongsTo(NegocioProdutoBarra::class, 'codnegocioprodutobarra', 'codnegocioprodutobarra');
+    } 
 
     public function validate() {
         

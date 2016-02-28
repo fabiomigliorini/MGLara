@@ -4,11 +4,20 @@ namespace MGLara\Models;
 
 class Operacao extends MGModel
 {
+    
+    const ENTRADA = 1;
+    const SAIDA = 2;
+
     protected $table = 'tbloperacao';
     protected $primaryKey = 'codoperacao';
     protected $fillable = [
       'operacao',
     ];
+    
+    public function NaturezaOperacaoS()
+    {
+        return $this->hasMany(NaturezaOperacao::class, 'codoperacao', 'codoperacao');
+    }
     
     public function Usuario()
     {

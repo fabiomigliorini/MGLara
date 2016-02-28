@@ -10,11 +10,28 @@ class Filial extends MGModel
       'filial',
     ];
     
+    public function EstoqueLocalS()
+    {
+        return $this->hasMany(EstoqueLocal::class, 'codfilial', 'codfilial');
+    }       
+    
+    public function NotaFiscalS()
+    {
+        return $this->hasMany(NotaFiscal::class, 'codfilial', 'codfilial');
+    }       
+    
+    public function NegocioS()
+    {
+        return $this->hasMany(Negocio::class, 'codfilial', 'codfilial');
+    }       
+    
+    
+    
+    
     public function Usuario()
     {
         return $this->hasMany(Usuario::class, 'codfilial', 'codfilial');
     }
-     
     
 
     public function validate() {
