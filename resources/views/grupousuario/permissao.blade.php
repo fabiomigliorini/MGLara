@@ -23,7 +23,7 @@
       <div class="list-group-item">
         <div class="row item">
           <div class="col-md-2">
-            <a href="<?php echo url("permissao/$permissao->codpermissao");?>">#{{$permissao->codpermissao}}</a>
+            <a href="<?php echo url("permissao/$permissao->codpermissao");?>">{{formataCodigo($permissao->codpermissao)}}</a>
           </div>                            
           <div class="col-md-7">
             <a href="<?php echo url("permissao/$permissao->codpermissao");?>">{{$permissao->observacoes}}</a>
@@ -33,8 +33,8 @@
                 id="{{$permissao->codpermissao}}"
                 <?php if (empty($permissao->GrupoUsuario->contains($model->codgrupousuario))):?> checked <?php endif; ?>
                 type="checkbox" 
-                data-on-text="adicionar" 
-                data-off-text="remover" 
+                data-on-text="Sim" 
+                data-off-text="Não" 
                 data-off-color ="danger"
                 class="check-permissao">              
           </div>  
@@ -57,13 +57,10 @@
           var permissao = this.id;
           var token = '<?php echo csrf_token()?>';
           var action;
-          var acao;
           if(state === true) {
               action = 'detach-permissao';
-              acao = 'removida';
           } else {
               action = 'attach-permissao';
-              acao = 'adicionada';
           }
         $.post( baseUrl+"/grupousuario/"+action, {
             codgrupousuario: grupo, 
@@ -71,7 +68,7 @@
             _token: token
         })
         .done(function(data) {
-            console.log('Permissão '+acao)
+            // ...
         });
       });      
   });

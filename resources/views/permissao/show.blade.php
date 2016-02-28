@@ -15,19 +15,23 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Detalhes Permissão #{{ $model->codpermissao }}</h1>
+<h1 class="header">{{ $model->observacoes }}</h1>
 <hr>
 <div class="row">
   <div class="col-lg-12">
       <table class="detail-view table table-striped table-condensed"> 
         <tbody>  
           <tr> 
-            <th class="col-md-2">Descrição</th> 
-            <td class="col-md-10">{{ $model->observacoes }}</td> 
+            <th class="col-md-2">#</th> 
+            <td class="col-md-10">{{ formataCodigo($model->codpermissao) }}</td> 
           </tr>
           <tr> 
-            <th class="col-md-2">Permissão</th> 
-            <td class="col-md-10">{{ $model->permissao }}</td> 
+            <th>Descrição</th> 
+            <td>{{ $model->observacoes }}</td> 
+          </tr>
+          <tr> 
+            <th>Permissão</th> 
+            <td>{{ $model->permissao }}</td> 
           </tr>
         </tbody> 
       </table>
