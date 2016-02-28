@@ -14,13 +14,21 @@ if(!function_exists('dateBRfull')) {
         if(!$date instanceof \DateTime) {
             $date = new \DateTime($date);
         }
-        return $date->format('d/m/Y h:m:s');
+        return $date->format('d/m/Y H:i:s');
     }
 }
 
 if(!function_exists('formataCodigo')) {
     function formataCodigo ($value, $digitos = 8){
         return "#" . str_pad($value, $digitos, "0", STR_PAD_LEFT);
+    }
+}
+
+if(!function_exists('formataNumero')) {
+    function formataNumero ($value, $digitos = 2){
+        if ($value === null)
+            return $value;
+        return number_format($value, $digitos, ",", ".");
     }
 }
 

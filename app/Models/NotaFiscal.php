@@ -23,6 +23,11 @@ class NotaFiscal extends MGModel
         return $this->belongsTo(Filial::class, 'codfilial', 'codfilial');
     }
     
+    public function Pessoa()
+    {
+        return $this->belongsTo(Pessoa::class, 'codpessoa', 'codpessoa');
+    }
+    
     public function NotaFiscalProdutoBarraS()
     {
         return $this->hasMany(NotaFiscalProdutoBarra::class, 'codnotafiscal', 'codnotafiscal');

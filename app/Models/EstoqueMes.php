@@ -65,6 +65,25 @@ class EstoqueMes extends MGModel
             $em->save();
         }
         return $em;
-        
+    }
+    
+    public function buscaProximos($qtd = 8)
+    {
+        $ems = self::where('codestoquesaldo', $this->codestoquesaldo)
+               ->where('mes', '>', $this->mes)
+               ->orderBy('mes', 'asc')
+               ->take($qtd)
+               ->get();
+        return $ems;
+    }
+    
+    public function buscaAnteriores($qtd = 8)
+    {
+        $ems = self::where('codestoquesaldo', $this->codestoquesaldo)
+               ->where('mes', '<', $this->mes)
+               ->orderBy('mes', 'desc')
+               ->take($qtd)
+               ->get();
+        return $ems->reverse();
     }
 }
