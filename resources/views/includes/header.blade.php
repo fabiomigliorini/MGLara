@@ -49,7 +49,7 @@
             <li><a href="{{ url('estoquemes') }}">Estoque mês</a></li>
             <!-- <li role="separator" class="divider"></li> -->
             <!-- <li><a href="#">Consulta de preço</a></li> -->
-            <!-- <li><a href="<?php echo url('produto');?>">Produtos</a><li> -->
+            <li><a href="<?php echo url('produto');?>">Produtos</a><li>
             <!-- <li role="separator" class="divider"></li> -->
             <!-- <li><a href="#">Etiquetas de Produtos</a></li> -->
             <!-- <li role="separator" class="divider"></li> -->

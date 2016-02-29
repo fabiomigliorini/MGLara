@@ -11,20 +11,17 @@ and open the template in the editor.
 body {
   padding-top: 100px;
 }
-@font-face {
-  font-family: "UbuntuNormal";
-  src: url("../fonts/ubuntu/Ubuntu-R.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-variant: normal;
-  font-stretch: normal;
-}
 hr {
   margin-bottom: 15px;
   margin-top: 15px;    
 }
 h1.header {
-    font-family: 'UbuntuNormal', sans-serif;
+    font-family: sans-serif;
+    letter-spacing: -1px;
+}
+.container-fluid {
+    padding-left: 30px;
+    padding-right: 30px;
 }
 .navbar-inverse .navbar-nav > li > a {
     color: #eee;

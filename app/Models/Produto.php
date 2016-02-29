@@ -2,7 +2,6 @@
 
 namespace MGLara\Models;
 
-
 class Produto extends MGModel
 {
     protected $table = 'tblproduto';
@@ -44,6 +43,37 @@ class Produto extends MGModel
         return $this->belongsTo(UnidadeMedida::class, 'codunidademedida', 'codunidademedida');
     } 
     
+    public function Marca()
+    {
+        return $this->belongsTo(Marca::class, 'codmarca', 'codmarca');
+    }
+
+    public function SubGrupoProduto()
+    {
+        return $this->belongsTo(SubGrupoProduto::class, 'codsubgrupoproduto', 'codsubgrupoproduto');
+    }   
+    
+    public function TipoProduto()
+    {
+        return $this->belongsTo(TipoProduto::class, 'codtipoproduto', 'codtipoproduto');
+    }
+
+    public function Tributacao()
+    {
+        return $this->belongsTo(Tributacao::class, 'codtributacao', 'codtributacao');
+    }     
+    
+    public function Ncm()
+    {
+        return $this->belongsTo(Ncm::class, 'codncm', 'codncm');
+    }    
+
+    public function Cest()
+    {
+        return $this->belongsTo(Cest::class, 'codcest', 'codcest');
+    }
+
+
     public function recalculaEstoque()
     {
         foreach ($this->ProdutoBarraS as $pb)

@@ -3,10 +3,7 @@
 namespace MGLara\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use MGLara\Http\Requests;
 use MGLara\Http\Controllers\Controller;
-
 use MGLara\Models\Produto;
 
 class ProdutoController extends Controller
@@ -48,23 +45,13 @@ class ProdutoController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        //
+        $model = Produto::find($id);
+        return view('produto.show', compact('model'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
     {
         //
