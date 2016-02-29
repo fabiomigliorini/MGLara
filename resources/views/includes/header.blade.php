@@ -13,6 +13,7 @@
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
         <li><a href="<?php echo url('/');?>">Dashboard</a></li>
+        <!-- 
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Comercial <span class="caret"></span></a>
             <ul class="dropdown-menu">
@@ -21,6 +22,8 @@
                 <li><a href="#">NFe de Terceiros</a></li>
             </ul>
         </li>
+        -->
+        <!--
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Financeiro <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -39,25 +42,27 @@
             <li><a href="#">Tipo titulos</a><li>
           </ul>
         </li>
+        -->
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Estoque <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="{{ url('estoquemes') }}">Estoque mês</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Consulta de preço</a></li>
-            <li><a href="<?php echo url('produto');?>">Produtos</a><li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Etiquetas de Produtos</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Histórico de Preços</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="<?php echo url('grupoproduto');?>">Grupos de Produtos</a><li>
-            <li><a href="<?php echo url('marca');?>">Marcas</a><li>
-            <li><a href="#">NCM</a></li>
-            <li><a href="#">Tipos de produtos</a></li>
-            <li><a href="#">Unidades de medida</a></li>
+            <!-- <li role="separator" class="divider"></li> -->
+            <!-- <li><a href="#">Consulta de preço</a></li> -->
+            <!-- <li><a href="<?php echo url('produto');?>">Produtos</a><li> -->
+            <!-- <li role="separator" class="divider"></li> -->
+            <!-- <li><a href="#">Etiquetas de Produtos</a></li> -->
+            <!-- <li role="separator" class="divider"></li> -->
+            <!-- <li><a href="#">Histórico de Preços</a></li> -->
+            <!-- <li role="separator" class="divider"></li> -->
+            <!-- <li><a href="<?php echo url('grupoproduto');?>">Grupos de Produtos</a><li> -->
+            <!-- <li><a href="<?php echo url('marca');?>">Marcas</a><li> -->
+            <!-- <li><a href="#">NCM</a></li> -->
+            <!-- <li><a href="#">Tipos de produtos</a></li> -->
+            <!-- <li><a href="#">Unidades de medida</a></li> -->
           </ul>
         </li>
+        <!--
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Fiscal <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -68,7 +73,8 @@
             <li><a href="#">Países, estados, e cidades</a></li>
             <li><a href="#">Tributações</a></li>
           </ul>
-        </li>        
+        </li>
+        -->        
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
             <ul class="dropdown-menu">
