@@ -60,11 +60,11 @@
           </tr>
           <tr> 
             <th>Último acesso</th> 
-            <td>{{ dateBRfull($model->ultimoacesso) }}</td> 
+            <td>{{ formataData($model->ultimoacesso, 'L') }}</td> 
           </tr>           
           <tr> 
             <th>Inativo</th> 
-            <td><?php if(!empty($model->inativo)) echo dateBR($model->inativo);?></td> 
+            <td><?php if(!empty($model->inativo)) echo formataData($model->inativo, 'M');?></td> 
           </tr> 
         </tbody> 
       </table>

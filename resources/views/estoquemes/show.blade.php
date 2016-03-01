@@ -11,11 +11,11 @@
 <h1 class="header"><small>{{ formataCodigo($model->EstoqueSaldo->codproduto, 6) }}</small> {{ $model->EstoqueSaldo->Produto->produto }} <small>{{ $model->EstoqueSaldo->EstoqueLocal->estoquelocal }} - {{ ($model->EstoqueSaldo->fiscal)?"Fiscal":"Fisico" }}</small></h1>
 <ul class="nav nav-tabs">
     @foreach($model->buscaAnteriores() as $em)
-        <li role="presentation"><a href="<?php echo url("estoquemes/$em->codestoquemes");?>">{{ $em->mes->format('m/Y') }}</a></li>
+        <li role="presentation"><a href="<?php echo url("estoquemes/$em->codestoquemes");?>">{{ formataData($em->mes, 'm/Y') }}</a></li>
     @endforeach
-    <li role="presentation" class="active"><a href="#">{{ $model->mes->format('m/Y') }}</a></li>
+    <li role="presentation" class="active"><a href="#">{{ formataData($model->mes, 'm/Y') }}</a></li>
     @foreach($model->buscaProximos() as $em)
-        <li role="presentation"><a href="<?php echo url("estoquemes/$em->codestoquemes");?>">{{ $em->mes->format('m/Y') }}</a></li>
+        <li role="presentation"><a href="<?php echo url("estoquemes/$em->codestoquemes");?>">{{ formataData($em->mes, 'm/Y') }}</a></li>
     @endforeach
 </ul>
 <table class="table table-striped table-bordered">
@@ -59,7 +59,7 @@
                 $saldovalor += $row->entradavalor - $row->saidavalor;
                 $saldovalorunitario = ($saldoquantidade != 0)?$saldovalor/$saldoquantidade:0;
             ?>
-            <td>{{ dateBRfull($row->data) }}</td>
+            <td>{{ formataData($row->data, 'L') }}</td>
             <td>{{ $row->EstoqueMovimentoTipo->descricao }}</td>
             <td class="text-right">{{ formataNumero($row->entradaquantidade) }}</td>
             <td class="text-right">{{ formataNumero($row->entradavalor) }}</td>

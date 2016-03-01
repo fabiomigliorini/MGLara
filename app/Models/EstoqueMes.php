@@ -67,7 +67,7 @@ class EstoqueMes extends MGModel
         return $em;
     }
     
-    public function buscaProximos($qtd = 8)
+    public function buscaProximos($qtd = 7)
     {
         $ems = self::where('codestoquesaldo', $this->codestoquesaldo)
                ->where('mes', '>', $this->mes)
@@ -77,7 +77,7 @@ class EstoqueMes extends MGModel
         return $ems;
     }
     
-    public function buscaAnteriores($qtd = 8)
+    public function buscaAnteriores($qtd = 7)
     {
         $ems = self::where('codestoquesaldo', $this->codestoquesaldo)
                ->where('mes', '<', $this->mes)

@@ -1,20 +1,41 @@
 <?php
 
-if(!function_exists('dateBR')) {
-    function dateBR($date) {
-        if(!$date instanceof \DateTime) {
-            $date = new \DateTime($date);
+if(!function_exists('formataData')) {
+    function formataData($data, $formato = 'C') {
+        
+        if(!$data instanceof Carbon\Carbon) {
+            $data = new Carbon\Carbon($data);
         }
-        return $date->format('d/m/Y');
-    }
-}
+        
+        $formato = strtoupper($formato);
+        
+        switch ($formato)
+        {
+            case 'C':
+            case 'CURTO':
+                return $data->format('d/m/y');
+                break;
+            
+            case 'M':
+            case 'MEDIO':
+                return $data->format('d/m/Y');
+                break;
+            
+            case 'E':
+            case 'EXTENSO':
+                //TODO
+                return $data->format('d/m/Y') . 'DATA POR EXTENSO - IMPLEMENTAR';
+                break;
 
-if(!function_exists('dateBRfull')) {
-    function dateBRfull($date) {
-        if(!$date instanceof \DateTime) {
-            $date = new \DateTime($date);
+            case 'L':
+            case 'LONGO':
+                return $data->format('d/m/Y H:i:s');
+                break;
+            
+            default:
+                return $data->format($formato);
+                break;
         }
-        return $date->format('d/m/Y H:i:s');
     }
 }
 

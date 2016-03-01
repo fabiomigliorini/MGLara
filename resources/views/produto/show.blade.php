@@ -27,7 +27,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <p class="mz"><strong>Código</strong></p>
-                        {{ formataCodigo($model->codproduto) }}
+                        {{ formataCodigo($model->codproduto, 6) }}
                     </div>
                     <div class="col-md-4">
                         <p class="mz"><strong>Marca</strong></p>
@@ -126,7 +126,27 @@
                 </li>            
                 @endforeach        
             </ul>                
-        </div>    
+        </div>   
+        
+        <div class='panel panel-info'>
+            
+            <ul class="list-group bg-info">
+            @foreach($model->EstoqueSaldoS as $es)
+                <li class="list-group-item bg-info">
+                    <div class="row item">            
+                        <div class="col-md-5">
+                            {{ $es->EstoqueLocal->estoquelocal }}
+                        </div>            
+                        <div class="col-md-3 text-right">
+                            <a href='{{ url("estoque-saldo/$es->codestoquesaldo") }}'>
+                                {{ formataNumero($es->saldoquantidade, 3) }}
+                            </a>
+                        </div>            
+                    </div>            
+                </li>
+            @endforeach        
+            </ul>
+        </div>
         
     </div>    
 </div>

@@ -49,6 +49,8 @@ Route::group(['middleware' => 'auth'], function() {
     /* Estoque mês */
     Route::resource('estoquemes','EstoqueMesController');       
     
+    Route::resource('estoque-saldo','EstoqueSaldoController');       
+    
     /* Estoque mês */
     Route::resource('produto','ProdutoController');           
     Route::resource('produto/{id}/recalculaEstoque','ProdutoController@recalculaEstoque');
