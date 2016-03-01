@@ -17,121 +17,122 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">{{ $model->produto }}</h1>
 <hr>
 <div class="row">
-    <div class="col-md-6">
-        <table class="detail-view table table-striped table-condensed"> 
-            <tbody>  
-                <tr> 
-                    <th class="col-md-3">#</th> 
-                    <td class="col-md-9">{{ formataCodigo($model->codproduto) }}</td> 
-                </tr>
-                <tr> 
-                    <th>Marca</th> 
-                    <td>{{ $model->Marca->marca or '' }}</td> 
-                </tr>
-                <tr> 
-                    <th>Referência</th> 
-                    <td>{{ $model->referencia }}</td> 
-                </tr>
-                <tr> 
-                    <th>Grupo</th> 
-                    <td>{{ $model->SubGrupoProduto->GrupoProduto->grupoproduto or '' }}</td> 
-                </tr>
-                <tr> 
-                    <th>Sub-Grupo</th> 
-                    <td>{{ $model->SubGrupoProduto->subgrupoproduto or '' }}</td> 
-                </tr>
-                <tr> 
-                    <th>Importado</th> 
-                    <td>{{ $model->importado ? 'Sim':'Não' }}</td> 
-                </tr>
-            </tbody> 
-        </table>
+    <div class="col-md-7">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h1 class="text-danger produtos-detalhes-produto">{{ $model->produto }}</h1>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4">
+                        <p class="mz"><strong>Código</strong></p>
+                        {{ formataCodigo($model->codproduto) }}
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mz"><strong>Marca</strong></p>
+                        {{ $model->Marca->marca or '' }}
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mz"><strong>Referência</strong></p>
+                        {{ $model->referencia }}
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <div class="panel panel-info">
+            <div class="panel-body">
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                  <!-- Indicators -->
+                  <ol class="carousel-indicators">
+                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                  </ol>
+
+                  <!-- Wrapper for slides -->
+                  <div class="carousel-inner" role="listbox">
+                    <div class="item active">
+                        <img src="/MGsis/images/produto/000904/509828266b56db1b082f0200.jpeg" alt="" style="width:100%; max-height: 450px">
+                    </div>
+                    <div class="item">
+                        <img src="/MGsis/images/produto/000904/image-1.jpg" alt="" style="width:100%; max-height: 450px">
+                    </div>
+                  </div>
+
+                  <!-- Controls -->
+                  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </div>
+            </div>
+        </div>        
+
     </div>
-    <div class="col-md-6">
-        <table class="detail-view table table-striped table-condensed"> 
-            <tbody>  
-                <tr> 
-                    <th class="col-md-3">Preço</th> 
-                    <td class="col-md-9">{{ $model->preco }}</td> 
-                </tr>
-                <tr> 
-                    <th>Unidade medida</th> 
-                    <td>{{ $model->UnidadeMedida->sigla or '' }}</td> 
-                </tr>
-                <tr> 
-                    <th>Tributação</th> 
-                    <td>{{ $model->Tributacao->tributacao or ''}}</td> 
-                </tr>
-                <tr> 
-                    <th>Tipo</th> 
-                    <td>{{ $model->TipoProduto->tipoproduto or '' }}</td> 
-                </tr>
-                <tr> 
-                    <th>Disponível no site</th> 
-                    <td>{{ $model->site ? 'Sim' : 'Não'}}</td> 
-                </tr>
-                <tr> 
-                    <th>Descrição site</th> 
-                    <td>{{ $model->descricaosite }}</td> 
-                </tr>
-            </tbody> 
-        </table>
+    <div class="col-md-5">
+        <div class="panel panel-success">
+            <div class="panel-body bg-success">
+                <h2 class="produtos-detalhe-preco text-right pull-right text-success">{{ $model->preco }}</h2>
+                <span class="text-muted text-left pull-left produtos-detalhe-cifrao">R$</span>
+            </div>
+        </div> 
+        <div class="panel panel-info combinacoes">
+            <ul class="list-group bg-info">
+                <li class="list-group-item">
+                    <div class="row item">
+                        <div class="col-md-3">
+                            {{ $model->UnidadeMedida->unidademedida }}
+                        </div>                            
+                        <div class="col-md-3">
+                            R$ <strong>{{ $model->preco }}</strong>
+                        </div>
+                        <div class="col-md-6">
+                        @foreach ($model->ProdutoBarras as $pb)
+                            <?php if(!empty($pb->codprodutoembalagem))
+                                continue;
+                            ?>
+                            <div class="row-fluid">
+                                {{$pb->barras}}
+                                <div class="pull-right">{{$pb->variacao}}</div>
+                            </div>
+                        @endforeach
+                        </div>      
+                    </div>
+                </li>
+
+                @foreach($model->ProdutoEmbalagemS as $pe)
+                <li class="list-group-item bg-info">
+                    <div class="row item">            
+                        <div class="col-md-3">
+                            {{ $pe->UnidadeMedida->unidademedida }}
+                            {{ $pe->UnidadeMedida->descricao }}
+                        </div>                            
+                        <div class="col-md-3">
+                            R$ {{ $pe->preco ? $pe->preco : $pe->preco_calculado }}
+                        </div>
+                        <div class="col-md-6">
+                        @foreach ($pe->ProdutoBarras as $pb)
+                            <div class="row-fluid">
+                                {{$pb->barras}}
+                                <div class="pull-right">{{$pb->variacao}}</div>
+                            </div>
+                        @endforeach
+                        </div>      
+                    </div>    
+                </li>            
+                @endforeach        
+            </ul>                
+        </div>    
+        
     </div>    
 </div>
 <hr>
 @include('includes.autor')
 <hr>
-<div class="panel panel-default">
-    <div class="panel-heading">Combinações</div>
-    <ul class="list-group">
-        <li class="list-group-item">
-            <div class="row item">
-                <div class="col-md-3">
-                    {{ $model->UnidadeMedida->unidademedida }}
-                </div>                            
-                <div class="col-md-1">
-                    R$ {{ $model->preco }}
-                </div>
-                <div class="col-md-8">
-                @foreach ($model->ProdutoBarras as $pb)
-                    <?php if(!empty($pb->codprodutoembalagem))
-                        continue;
-                    ?>
-                    <div class="row-fluid">
-                        {{$pb->barras}}
-                        <div class="pull-right">{{$pb->variacao}}</div>
-                    </div>
-                @endforeach
-                </div>      
-            </div>
-        </li>
-
-        @foreach($model->ProdutoEmbalagemS as $pe)
-        <li class="list-group-item">
-            <div class="row item">            
-                <div class="col-md-3">
-                    {{ $pe->UnidadeMedida->unidademedida }}
-                    {{ $pe->UnidadeMedida->descricao }}
-                </div>                            
-                <div class="col-md-1">
-                    R$ {{ $pe->preco ? $pe->preco : $pe->preco_calculado }}
-                </div>
-                <div class="col-md-8">
-                @foreach ($pe->ProdutoBarras as $pb)
-                    <div class="row-fluid">
-                        {{$pb->barras}}
-                        <div class="pull-right">{{$pb->variacao}}</div>
-                    </div>
-                @endforeach
-                </div>      
-            </div>    
-        </li>            
-        @endforeach        
-    </ul>
-</div>
 <br>
 <div id="produto-detalhes">
     <ul class="nav nav-tabs" role="tablist">

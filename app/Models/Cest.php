@@ -1,7 +1,6 @@
 <?php
 
 namespace MGLara\Models;
-use Illuminate\Support\Facades\Validator;
 
 class Cest extends MGModel
 {
@@ -15,8 +14,10 @@ class Cest extends MGModel
     {
         return $this->hasMany(Produto::class, 'codcest', 'codcest');
     }  
-    
 
-    
-  
+    public function Ncm()
+    {
+        return $this->belongsTo(Ncm::class, 'codncm', 'codncm');
+    }  
+ 
 }

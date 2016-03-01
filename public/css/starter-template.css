@@ -29,6 +29,9 @@ h1.header {
 .controls .delete {
   margin-left: 5px;
 }
+.mz {
+    margin: 0;
+}
 .auth h3 {
     margin: 5px;
     text-align: center;
@@ -90,4 +93,40 @@ h1.header {
 }
 .detail-view .null {
     color: #ffc0cb;
+}
+
+
+/* Produtos */
+.produtos-detalhes-produto {
+    font-family: sans-serif;
+    letter-spacing: -1px;
+    margin: 0 0 20px;
+}
+
+.produtos-detalhe-preco {
+    font-size: 5em;
+    font-weight: bold;
+    margin: 0;
+}
+.produtos-detalhe-cifrao {
+    font-size: 3em;
+    font-weight: bold;
+    margin: 8px 0 0;
+}
+
+#produto-detalhes {
+    padding-bottom: 30px;
+}
+#produto-detalhes table th {
+    text-align: right;
+}
+.produtos-combinacoes-titulo {
+    font-size: 22px;
+}
+.bg-info .list-group-item {
+    background: none;
+}
+.carousel-control.left, 
+.carousel-control.right {
+    background: none;
 }
