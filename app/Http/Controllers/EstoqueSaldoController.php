@@ -54,7 +54,7 @@ class EstoqueSaldoController extends Controller
                ->orderBy('mes', 'DESC')
                ->take(1)
                ->get();
-        return redirect("estoquemes/{$ems[0]->codestoquemes}");
+        return redirect("estoque-mes/{$ems[0]->codestoquemes}");
     }
 
     /**

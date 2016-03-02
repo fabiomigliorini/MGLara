@@ -31,7 +31,7 @@
           <div class="col-md-2">
             <input 
                 id="{{$permissao->codpermissao}}"
-                <?php if (empty($permissao->GrupoUsuario->contains($model->codgrupousuario))):?> checked <?php endif; ?>
+                <?php if (!empty($permissao->GrupoUsuario->contains($model->codgrupousuario))):?> checked <?php endif; ?>
                 type="checkbox" 
                 data-on-text="Sim" 
                 data-off-text="Não" 
@@ -62,7 +62,7 @@
           } else {
               action = 'attach-permissao';
           }
-        $.post( baseUrl+"/grupousuario/"+action, {
+        $.post( baseUrl+"/grupo-usuario/"+action, {
             codgrupousuario: grupo, 
             codpermissao: permissao,
             _token: token

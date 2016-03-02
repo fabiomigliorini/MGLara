@@ -3,7 +3,7 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
-            <li><a href="{{ url('estoquemes') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
+            <li><a href="{{ url('estoque-mes') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
         </ul>
     </div>
 </nav>
@@ -11,11 +11,11 @@
 <h1 class="header"><small>{{ formataCodigo($model->EstoqueSaldo->codproduto, 6) }}</small> {{ $model->EstoqueSaldo->Produto->produto }} <small>{{ $model->EstoqueSaldo->EstoqueLocal->estoquelocal }} - {{ ($model->EstoqueSaldo->fiscal)?"Fiscal":"Fisico" }}</small></h1>
 <ul class="nav nav-tabs">
     @foreach($model->buscaAnteriores() as $em)
-        <li role="presentation"><a href="<?php echo url("estoquemes/$em->codestoquemes");?>">{{ formataData($em->mes, 'm/Y') }}</a></li>
+        <li role="presentation"><a href="<?php echo url("estoque-mes/$em->codestoquemes");?>">{{ formataData($em->mes, 'EC') }}</a></li>
     @endforeach
-    <li role="presentation" class="active"><a href="#">{{ formataData($model->mes, 'm/Y') }}</a></li>
+    <li role="presentation" class="active"><a href="#">{{ formataData($model->mes, 'EC') }}</a></li>
     @foreach($model->buscaProximos() as $em)
-        <li role="presentation"><a href="<?php echo url("estoquemes/$em->codestoquemes");?>">{{ formataData($em->mes, 'm/Y') }}</a></li>
+        <li role="presentation"><a href="<?php echo url("estoque-mes/$em->codestoquemes");?>">{{ formataData($em->mes, 'EC') }}</a></li>
     @endforeach
 </ul>
 <table class="table table-striped table-bordered">

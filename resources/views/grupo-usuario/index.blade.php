@@ -4,7 +4,7 @@
   <div class="container-fluid"> 
     <ul class="nav navbar-nav">
       <li>
-        <a href="<?php echo url('grupousuario/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a>
+        <a href="<?php echo url('grupo-usuario/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a>
       </li> 
     </ul>
   </div>
@@ -13,7 +13,7 @@
 <hr>
 <div class="search-bar">
   {!! Form::model(Request::all(), [
-    'route' => 'grupousuario.index', 
+    'route' => 'grupo-usuario.index', 
     'method' => 'GET', 
     'class' => 'form-inline',
     'id' => 'grupousuario-search',
@@ -36,10 +36,10 @@
       <div class="list-group-item">
         <div class="row item">
           <div class="col-md-1">
-            <a href="<?php echo url("grupousuario/$row->codgrupousuario");?>">{{formataCodigo($row->codgrupousuario)}}</a>
+            <a href="<?php echo url("grupo-usuario/$row->codgrupousuario");?>">{{formataCodigo($row->codgrupousuario)}}</a>
           </div>                            
           <div class="col-md-11">
-            <a href="<?php echo url("grupousuario/$row->codgrupousuario");?>">{{$row->grupousuario}}</a>
+            <a href="<?php echo url("grupo-usuario/$row->codgrupousuario");?>">{{$row->grupousuario}}</a>
           </div>                  
         </div>
       </div>    

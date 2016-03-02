@@ -31,9 +31,9 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('usuario/detach-permissao','UsuarioController@detachPermissao');       
 
     /* Grupos de usuários */
-    Route::resource('grupousuario','GrupoUsuarioController');     
-    Route::post('grupousuario/attach-permissao','GrupoUsuarioController@attachPermissao');     
-    Route::post('grupousuario/detach-permissao','GrupoUsuarioController@detachPermissao');     
+    Route::resource('grupo-usuario','GrupoUsuarioController');     
+    Route::post('grupo-usuario/attach-permissao','GrupoUsuarioController@attachPermissao');     
+    Route::post('grupo-usuario/detach-permissao','GrupoUsuarioController@detachPermissao');     
 
     /* Permissões */
     Route::resource('permissao','PermissaoController');   
@@ -47,7 +47,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('filial-ajax', 'FilialController@ajax');
     
     /* Estoque mês */
-    Route::resource('estoquemes','EstoqueMesController');       
+    Route::resource('estoque-mes','EstoqueMesController');       
     
     Route::resource('estoque-saldo','EstoqueSaldoController');       
     
