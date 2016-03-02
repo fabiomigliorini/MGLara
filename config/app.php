@@ -1,4 +1,6 @@
 <?php
+setlocale(LC_TIME, 'pt_BR');
+\Carbon\Carbon::setLocale('pt_BR');
 
 return [
 
@@ -39,7 +41,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/Cuiaba',
 
     /*
     |--------------------------------------------------------------------------
@@ -52,7 +54,7 @@ return [
     |
     */
 
-    'locale' => 'pt-br',
+    'locale' => 'pt_BR',
 
     /*
     |--------------------------------------------------------------------------
@@ -147,6 +149,7 @@ return [
         MGLara\Providers\AuthServiceProvider::class,
         MGLara\Providers\EventServiceProvider::class,
         MGLara\Providers\RouteServiceProvider::class,
+        MGLara\Providers\LanguageProvider::class,
 
 
     ],
