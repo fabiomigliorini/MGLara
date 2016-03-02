@@ -23,8 +23,13 @@ if(!function_exists('formataData')) {
             
             case 'E':
             case 'EXTENSO':
-                //TODO
-                return $data->format('d/m/Y') . 'DATA POR EXTENSO - IMPLEMENTAR';
+                // ('%A %d %B %Y');  // Mittwoch 21 Mai 1975
+                return $data->formatLocalized('%d %B %Y');
+                break;
+
+            case 'EC':
+            case 'EXTENSOCURTO':
+                return $data->formatLocalized('%b/%Y');
                 break;
 
             case 'L':
