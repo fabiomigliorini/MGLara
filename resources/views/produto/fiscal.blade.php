@@ -22,10 +22,10 @@
             <th scope="row">IBPT</th> 
             <td>
                 <strong>{{$ibpt->descricao}}</strong><br>
-                Federal Nacional: {{$ibpt->nacionalfederal}}%<br>
-                Federal Importado: {{$ibpt->nacionalfederal}}%<br>
-                Estadual: {{$ibpt->estadual}}%<br>
-                Municipal: {{$ibpt->municipal}}%<br>
+                Federal Nacional: {{ formataNumero($ibpt->nacionalfederal) }}%<br>
+                Federal Importado: {{ formataNumero($ibpt->nacionalfederal) }}%<br>
+                Estadual: {{ formataNumero($ibpt->estadual) }}%<br>
+                Municipal: {{ formataNumero($ibpt->municipal) }}%<br>
             </td> 
         </tr> 
         @endforeach

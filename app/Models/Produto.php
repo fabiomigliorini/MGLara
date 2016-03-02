@@ -1,6 +1,7 @@
 <?php
 
 namespace MGLara\Models;
+use Illuminate\Support\Facades\Storage;
 
 class Produto extends MGModel
 {
@@ -80,6 +81,16 @@ class Produto extends MGModel
             $pb->recalculaEstoque();
     }
     
+    public function getImagens($dir)
+    {
+//        $files = File::allFiles($dir);
+//        foreach ($files as $file)
+//        {
+//            echo (string)$file, "\n";
+//        }   
+        
+        return Storage::allFiles($dir);
+    }
     // TODO: Criar Relacionamentos
     /*
      *         'codncm',
