@@ -20,6 +20,7 @@
     <!--<script src="{{ URL::asset('public/vendor/jquery/1.11.3/jquery.min.js') }}"></script>-->
     <script src="{{ URL::asset('public/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ URL::asset('public/vendor/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
+    <script src="{{ URL::asset('public/vendor/bootbox/bootbox.min.js') }}"></script>
     <!--<script src="{{ URL::asset('public/vendor/bootstrap-switch/toggle.buttons.js') }}"></script>-->
     <script src="{{ URL::asset('public/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ URL::asset('public/vendor/bootstrap-datepicker/locales/bootstrap-datepicker.pt-BR.min.js') }}"></script>
