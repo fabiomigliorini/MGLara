@@ -20,9 +20,13 @@
 <hr>
 <div class="row">
     <div class="col-md-7">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <h1 class="text-danger produtos-detalhes-produto">{{ $model->produto }}</h1>
+        <div class="panel panel-warning">
+            <div class="panel-body bg-warning">
+                
+                <h1 class="text-danger produtos-detalhes-produto">
+                    {{ $model->produto }}
+                    <span class="pull-right text-muted">{{ $model->UnidadeMedida->unidademedida }}</span>
+                </h1>
                 <hr>
                 <div class="row">
                     <div class="col-md-4">
@@ -40,7 +44,7 @@
                 </div>
             </div>
         </div>        
-        <div class="panel panel-info">
+        <div class="panel panel-info produtos-detalhe-carousel">
             <div class="panel-body">
                 @include('produto.carousel')
             </div>
@@ -136,8 +140,9 @@
 	?>
         
         <div class='panel panel-info'>
-            <ul class="list-group bg-info">
-                <li class="list-group-item bg-info">
+            <div class="panel-heading">Estoque</div>            
+            <ul class="list-group bg-infoo">
+                <li class="list-group-item">
                     <div class="row item">
                         <div class="col-md-6"></div>
                         <div class="col-md-3 text-right">Físico</div>
@@ -145,21 +150,27 @@
                     </div>
                 </li>
             @foreach($arr_saldos as $estoquelocal => $saldo)
-                <li class="list-group-item bg-info">
+                <li class="list-group-item">
                     <div class="row item">            
                         <div class="col-md-6">
                             {{ $estoquelocal }}
                         </div>
-                        @if($saldo['fiscal'] == false)
+
                         <div class="col-md-3 text-right">
-                            {{ $saldo['saldoquantidade'] }}
+                            @if($saldo['fiscal'] == false)
+                            <a href='{{ url("estoque-saldo/$es->codestoquesaldo") }}'>
+                                {{ formataNumero($saldo['saldoquantidade'], 3) }}
+                            </a>
+                            @endif
                         </div>
-                        @endif
-                        @if($saldo['fiscal'] == true)
+                
                         <div class="col-md-3 text-right">
-                            {{ $saldo['saldoquantidade'] }}
-                        </div> 
-                        @endif
+                            @if($saldo['fiscal'] == true)
+                            <a href='{{ url("estoque-saldo/$es->codestoquesaldo") }}'>
+                                {{ formataNumero($saldo['saldoquantidade'], 3) }}
+                            </a>
+                            @endif
+                        </div>
                     </div>            
                 </li>
             @endforeach        

@@ -80,17 +80,7 @@ class Produto extends MGModel
         foreach ($this->ProdutoBarraS as $pb)
             $pb->recalculaEstoque();
     }
-    
-    public function getImagens($dir)
-    {
-//        $files = File::allFiles($dir);
-//        foreach ($files as $file)
-//        {
-//            echo (string)$file, "\n";
-//        }   
-        
-        return Storage::allFiles($dir);
-    }
+
     // TODO: Criar Relacionamentos
     /*
      *         'codncm',

@@ -4,7 +4,10 @@
             <th class="col-md-2" scope="row">NCM</th> 
             <td class="col-md-10">
                 @if($model->Ncm)
-                {{ $model->Ncm->ncm }} {{ $model->Ncm->descricao or '' }}
+                    <a href="ncm/{{ $model->Ncm->codncm }}">
+                        {{formataNcm($model->Ncm->ncm)}}
+                    </a>
+                    {{  $model->Ncm->descricao or '' }}
                 @endif
             </td> 
         </tr> 
@@ -12,7 +15,7 @@
             <th scope="row">CEST</th> 
             <td>
                 @if($model->Cest)
-                <strong>{{ $model->Cest->ncm }} / {{ $model->Cest->cest }}</strong>
+                <strong>{{ formataNcm($model->Cest->ncm) }}/{{ formataCest($model->Cest->cest) }}</strong>
                 - {{ $model->Cest->descricao }}
                 @endif
             </td> 
@@ -32,7 +35,11 @@
         <tr> 
             <th scope="row">Regulamento ICMS ST/MT</th> 
             <td>
-                ...
+                <?php $regs = $model->Ncm->regulamentoIcmsStMtsDisponiveis();?>
+                @foreach($regs as $key=>$reg)
+                    <strong>{{formataNcm($reg[$key]['ncm'])}}/{{$reg[$key]['subitem']}}</strong> - {{$reg[$key]['descricao']}}
+                    {{ $reg[$key]['ncmexceto'] ? "Exeto NCM: $reg[$key]['ncmexceto']":'' }}
+                @endforeach
             </td> 
         </tr> 
     </tbody> 
