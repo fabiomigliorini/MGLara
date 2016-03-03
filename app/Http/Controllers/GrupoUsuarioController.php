@@ -14,10 +14,10 @@ class GrupoUsuarioController extends Controller
     
     public function __construct()
     {
-        $this->middleware('permissao:grupousuario.consulta', ['only' => ['index', 'show']]);
-        $this->middleware('permissao:grupousuario.inclusao', ['only' => ['create', 'store']]);
-        $this->middleware('permissao:grupousuario.edicao', ['only' => ['edit', 'update']]);
-        $this->middleware('permissao:grupousuario.exclusao', ['only' => ['delete', 'destroy']]);
+        $this->middleware('permissao:grupo-usuario.consulta', ['only' => ['index', 'show']]);
+        $this->middleware('permissao:grupo-usuario.inclusao', ['only' => ['create', 'store']]);
+        $this->middleware('permissao:grupo-usuario.alteracao', ['only' => ['edit', 'update']]);
+        $this->middleware('permissao:grupo-usuario.exclusao', ['only' => ['delete', 'destroy']]);
     }
     
     public function index(Request $request) {
@@ -25,11 +25,11 @@ class GrupoUsuarioController extends Controller
             $request->get('codgrupousuario'),
             $request->get('grupousuario')
         );
-        return view('grupousuario.index', compact('model'));        
+        return view('grupo-usuario.index', compact('model'));        
     }
 
     public function create() {
-        return view('grupousuario.create');
+        return view('grupo-usuario.create');
     }
 
     public function store(Request $request) {
@@ -38,12 +38,12 @@ class GrupoUsuarioController extends Controller
             $this->throwValidationException($request, $model->_validator);
         $model->save();
         Session::flash('flash_create', 'Registro inserido.');
-        return redirect('grupousuario');
+        return redirect('grupo-usuario');
     }
 
     public function edit($codgrupousuario) {
         $model = GrupoUsuario::findOrFail($codgrupousuario);
-        return view('grupousuario.edit',  compact('model'));
+        return view('grupo-usuario.edit',  compact('model'));
     }
 
     public function update($codgrupousuario, Request $request) {
@@ -54,7 +54,7 @@ class GrupoUsuarioController extends Controller
         $model->save();
         
         Session::flash('flash_update', 'Registro atualizado.');
-        return redirect('grupousuario');
+        return redirect('grupo-usuario');
     }
     
     public function show($codgrupousuario, Request $request) {
@@ -63,7 +63,7 @@ class GrupoUsuarioController extends Controller
             $request->get('codpermissao'),
             $request->get('permissao')
         );        
-        return view('grupousuario.show', compact('model', 'permissoes'));
+        return view('grupo-usuario.show', compact('model', 'permissoes'));
     }
 
 //    public function delete($codgrupousuario) {
@@ -78,7 +78,7 @@ class GrupoUsuarioController extends Controller
     	try{
             GrupoUsuario::find($codgrupousuario)->delete();
             Session::flash('flash_delete', 'Registro deletado!');
-            return Redirect::route('grupousuario.index');
+            return Redirect::route('grupo-usuario.index');
     	}
     	catch(\Exception $e){
 			return view('errors.fk');

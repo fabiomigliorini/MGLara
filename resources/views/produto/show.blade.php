@@ -20,9 +20,13 @@
 <hr>
 <div class="row">
     <div class="col-md-7">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <h1 class="text-danger produtos-detalhes-produto">{{ $model->produto }}</h1>
+        <div class="panel panel-warning">
+            <div class="panel-body bg-warning">
+                
+                <h1 class="text-danger produtos-detalhes-produto">
+                    {{ $model->produto }}
+                    <span class="pull-right text-muted">{{ $model->UnidadeMedida->unidademedida }}</span>
+                </h1>
                 <hr>
                 <div class="row">
                     <div class="col-md-4">
@@ -40,108 +44,133 @@
                 </div>
             </div>
         </div>        
-        <div class="panel panel-info">
+        <div class="panel panel-info produtos-detalhe-carousel">
             <div class="panel-body">
-                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-                  <!-- Indicators -->
-                  <ol class="carousel-indicators">
-                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-                    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-                  </ol>
-
-                  <!-- Wrapper for slides -->
-                  <div class="carousel-inner" role="listbox">
-                    <div class="item active">
-                        <img src="/MGsis/images/produto/000904/509828266b56db1b082f0200.jpeg" alt="" style="width:100%; max-height: 450px">
-                    </div>
-                    <div class="item">
-                        <img src="/MGsis/images/produto/000904/image-1.jpg" alt="" style="width:100%; max-height: 450px">
-                    </div>
-                  </div>
-
-                  <!-- Controls -->
-                  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                  </a>
-                  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                  </a>
-                </div>
+                @include('produto.carousel')
             </div>
         </div>        
-
     </div>
     <div class="col-md-5">
         <div class="panel panel-success">
             <div class="panel-body bg-success">
-                <h2 class="produtos-detalhe-preco text-right pull-right text-success">{{ $model->preco }}</h2>
+                <h2 class="produtos-detalhe-preco text-right pull-right text-success">{{ formataNumero($model->preco) }}</h2>
                 <span class="text-muted text-left pull-left produtos-detalhe-cifrao">R$</span>
             </div>
         </div> 
-        <div class="panel panel-info combinacoes">
-            <ul class="list-group bg-info">
-                <li class="list-group-item">
-                    <div class="row item">
-                        <div class="col-md-3">
-                            {{ $model->UnidadeMedida->unidademedida }}
-                        </div>                            
-                        <div class="col-md-3">
-                            R$ <strong>{{ $model->preco }}</strong>
-                        </div>
-                        <div class="col-md-6">
-                        @foreach ($model->ProdutoBarras as $pb)
-                            <?php if(!empty($pb->codprodutoembalagem))
-                                continue;
-                            ?>
-                            <div class="row-fluid">
-                                {{$pb->barras}}
-                                <div class="pull-right">{{$pb->variacao}}</div>
-                            </div>
-                        @endforeach
-                        </div>      
-                    </div>
-                </li>
+        <div id="produto-detalhes">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#tab-produto-combinacoes" aria-controls="home" role="tab" data-toggle="tab">Combinações</a></li>
+                <li role="presentation"><a href="#tab-produto-fiscal" aria-controls="profile" role="tab" data-toggle="tab">Fiscal</a></li>
+                <li role="presentation"><a href="#tab-produto-notasfiscais" aria-controls="messages" role="tab" data-toggle="tab">Notas fiscais</a></li>
+                <li role="presentation"><a href="#tab-produto-negocios" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="tab-produto-combinacoes">
+                    <div class="panel panel-info combinacoes">
+                        <ul class="list-group bg-info">
+                            <li class="list-group-item">
+                                <div class="row item">
+                                    <div class="col-md-3">
+                                        {{ $model->UnidadeMedida->unidademedida }}
+                                    </div>                            
+                                    <div class="col-md-3">
+                                        R$ <strong>{{ formataNumero($model->preco) }}</strong>
+                                    </div>
+                                    <div class="col-md-6">
+                                    @foreach ($model->ProdutoBarras as $pb)
+                                        <?php if(!empty($pb->codprodutoembalagem))
+                                            continue;
+                                        ?>
+                                        <div class="row-fluid">
+                                            {{$pb->barras}}
+                                            <div class="pull-right">{{$pb->variacao}}</div>
+                                        </div>
+                                    @endforeach
+                                    </div>      
+                                </div>
+                            </li>
+                            @foreach($model->ProdutoEmbalagemS as $pe)
+                            <li class="list-group-item bg-info">
+                                <div class="row item">            
+                                    <div class="col-md-3">
+                                        {{ $pe->UnidadeMedida->unidademedida }}
+                                        {{ $pe->UnidadeMedida->descricao }}
+                                    </div>                            
+                                    <div class="col-md-3">
+                                        R$ {{ formataNumero($pe->preco ? $pe->preco : $pe->preco_calculado) }}
+                                    </div>
+                                    <div class="col-md-6">
+                                    @foreach ($pe->ProdutoBarras as $pb)
+                                        <div class="row-fluid">
+                                            {{$pb->barras}}
+                                            <div class="pull-right">{{$pb->variacao}}</div>
+                                        </div>
+                                    @endforeach
+                                    </div>      
+                                </div>    
+                            </li>            
+                            @endforeach        
+                        </ul>                
+                    </div>            
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="tab-produto-fiscal">
+                    @include('produto.fiscal')
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="tab-produto-notasfiscais">
+                    @include('produto.notasfiscais')
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="tab-produto-negocios">
+                    @include('produto.negocios')
+                </div>
+            </div>
+        </div>        
+ 
+	<?php
 
-                @foreach($model->ProdutoEmbalagemS as $pe)
-                <li class="list-group-item bg-info">
-                    <div class="row item">            
-                        <div class="col-md-3">
-                            {{ $pe->UnidadeMedida->unidademedida }}
-                            {{ $pe->UnidadeMedida->descricao }}
-                        </div>                            
-                        <div class="col-md-3">
-                            R$ {{ $pe->preco ? $pe->preco : $pe->preco_calculado }}
-                        </div>
-                        <div class="col-md-6">
-                        @foreach ($pe->ProdutoBarras as $pb)
-                            <div class="row-fluid">
-                                {{$pb->barras}}
-                                <div class="pull-right">{{$pb->variacao}}</div>
-                            </div>
-                        @endforeach
-                        </div>      
-                    </div>    
-                </li>            
-                @endforeach        
-            </ul>                
-        </div>   
+	$arr_saldos = array();
+	foreach ($model->EstoqueSaldoS as $es)
+	{
+            $arr_saldos[$es->EstoqueLocal->estoquelocal] = array(
+                "saldoquantidade" => $es->saldoquantidade,
+                "codestoquesaldo" => $es->codestoquesaldo,
+                "fiscal" => $es->fiscal
+            );
+	}
+
+	?>
         
         <div class='panel panel-info'>
-            
-            <ul class="list-group bg-info">
-            @foreach($model->EstoqueSaldoS as $es)
-                <li class="list-group-item bg-info">
+            <div class="panel-heading">Estoque</div>            
+            <ul class="list-group bg-infoo">
+                <li class="list-group-item">
+                    <div class="row item">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-3 text-right">Físico</div>
+                        <div class="col-md-3 text-right">Fiscal</div>
+                    </div>
+                </li>
+            @foreach($arr_saldos as $estoquelocal => $saldo)
+                <li class="list-group-item">
                     <div class="row item">            
-                        <div class="col-md-5">
-                            {{ $es->EstoqueLocal->estoquelocal }}
-                        </div>            
+                        <div class="col-md-6">
+                            {{ $estoquelocal }}
+                        </div>
+
                         <div class="col-md-3 text-right">
+                            @if($saldo['fiscal'] == false)
                             <a href='{{ url("estoque-saldo/$es->codestoquesaldo") }}'>
-                                {{ formataNumero($es->saldoquantidade, 3) }}
+                                {{ formataNumero($saldo['saldoquantidade'], 3) }}
                             </a>
-                        </div>            
+                            @endif
+                        </div>
+                
+                        <div class="col-md-3 text-right">
+                            @if($saldo['fiscal'] == true)
+                            <a href='{{ url("estoque-saldo/$es->codestoquesaldo") }}'>
+                                {{ formataNumero($saldo['saldoquantidade'], 3) }}
+                            </a>
+                            @endif
+                        </div>
                     </div>            
                 </li>
             @endforeach        
@@ -154,26 +183,4 @@
 @include('includes.autor')
 <hr>
 <br>
-<div id="produto-detalhes">
-    <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#tab-produto-fiscal" aria-controls="fiscal" role="tab" data-toggle="tab">Fiscal</a></li>
-        <li role="presentation"><a href="#tab-produto-imagens" aria-controls="imagens" role="tab" data-toggle="tab">Imagens</a></li>
-        <li role="presentation"><a href="#tab-produto-notasfiscais" aria-controls="notasfiscais" role="tab" data-toggle="tab">Notas Fiscais</a></li>
-        <li role="presentation"><a href="#tab-produto-negocios" aria-controls="negocios" role="tab" data-toggle="tab">Negócios</a></li>
-    </ul>
-    <div class="tab-content">
-        <div role="tabpanel" class="tab-pane fade in active" id="tab-produto-fiscal">
-            @include('produto.fiscal')
-        </div>
-        <div role="tabpanel" class="tab-pane fade" id="tab-produto-imagens">
-            @include('produto.imagens')
-        </div>
-        <div role="tabpanel" class="tab-pane fade" id="tab-produto-notasfiscais">
-            @include('produto.notasfiscais')
-        </div>
-        <div role="tabpanel" class="tab-pane fade" id="tab-produto-negocios">
-            @include('produto.negocios')
-        </div>
-    </div>
-</div>
 @stop

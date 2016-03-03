@@ -20,13 +20,13 @@
       <div class="list-group-item">
         <div class="row item">
           <div class="col-md-1">
-            <a href="<?php echo url("estoquemes/$row->codestoquemes");?>">{{formataCodigo($row->codestoquemes) }}</a>
+            <a href="<?php echo url("estoque-mes/$row->codestoquemes");?>">{{formataCodigo($row->codestoquemes) }}</a>
           </div>
           <div class="col-md-5">
-            <a href="<?php echo url("estoquemes/$row->codpermissao");?>">{{$row->mes}}</a>
+            <a href="<?php echo url("estoque-mes/$row->codpermissao");?>">{{$row->mes}}</a>
           </div>
           <div class="col-md-6">
-            <a href="<?php echo url("estoquemes/$row->codpermissao");?>">{{$row->saldovalor}}</a>
+            <a href="<?php echo url("estoque-mes/$row->codpermissao");?>">{{$row->saldovalor}}</a>
           </div>                  
         </div>
       </div>    

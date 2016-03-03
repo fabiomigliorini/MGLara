@@ -23,8 +23,13 @@ if(!function_exists('formataData')) {
             
             case 'E':
             case 'EXTENSO':
-                //TODO
-                return $data->format('d/m/Y') . 'DATA POR EXTENSO - IMPLEMENTAR';
+                // ('%A %d %B %Y');  // Mittwoch 21 Mai 1975
+                return $data->formatLocalized('%d %B %Y');
+                break;
+
+            case 'EC':
+            case 'EXTENSOCURTO':
+                return $data->formatLocalized('%b/%Y');
                 break;
 
             case 'L':
@@ -50,6 +55,42 @@ if(!function_exists('formataNumero')) {
         if ($value === null)
             return $value;
         return number_format($value, $digitos, ",", ".");
+    }
+}
+
+if(!function_exists('formataNcm')) {
+    function formataNcm ($string){
+	$string = str_pad(numeroLimpo($string), 8, "-", STR_PAD_RIGHT);
+	return formataPorMascara($string, "####.##.##", false);
+    }
+}
+
+if(!function_exists('formataCest')) {
+    function formataCest ($string){
+        $string = str_pad(numeroLimpo($string), 7, "-", STR_PAD_RIGHT);
+        return formataPorMascara($string, "##.###.##", false);
+    }
+}
+
+if(!function_exists('formataPorMascara')) {
+    function formataPorMascara ($string, $mascara, $somenteNumeros = true){
+        if ($somenteNumeros)
+            $string = numeroLimpo($string);
+        /* @var $caracteres int */
+        $caracteres = substr_count($mascara, '#');
+        $string = str_pad($string, $caracteres, "0", STR_PAD_LEFT);
+        $indice = -1;
+        for ($i=0; $i < strlen($mascara); $i++):
+            if ($mascara[$i]=='#') $mascara[$i] = $string[++$indice];
+        endfor;
+        return $mascara;
+
+    }
+}
+
+if(!function_exists('numeroLimpo')) {
+    function numeroLimpo($string) {
+        return preg_replace( '/[^0-9]/', '', $string);
     }
 }
 

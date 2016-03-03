@@ -3,11 +3,11 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
-            <li><a href="<?php echo url('grupousuario');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="<?php echo url('grupousuario/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
-            <li><a href="<?php echo url("grupousuario/$model->codgrupousuario/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
+            <li><a href="<?php echo url('grupo-usuario');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
+            <li><a href="<?php echo url('grupo-usuario/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
+            <li><a href="<?php echo url("grupo-usuario/$model->codgrupousuario/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li>
-                {!! Form::open(['method' => 'DELETE', 'route' => ['grupousuario.destroy', $model->codgrupousuario]]) !!}
+                {!! Form::open(['method' => 'DELETE', 'route' => ['grupo-usuario.destroy', $model->codgrupousuario]]) !!}
                 <span class="glyphicon glyphicon-trash"></span>
                 {!! Form::submit('Excluir') !!}
                 {!! Form::close() !!}
@@ -40,5 +40,5 @@
 <hr>
 @include('includes.autor')
 <hr>
-@include('grupousuario.permissao')
+@include('grupo-usuario.permissao')
 @stop

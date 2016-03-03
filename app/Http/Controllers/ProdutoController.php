@@ -5,6 +5,7 @@ namespace MGLara\Http\Controllers;
 use Illuminate\Http\Request;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Produto;
+use Illuminate\Support\Facades\Storage;
 
 class ProdutoController extends Controller
 {

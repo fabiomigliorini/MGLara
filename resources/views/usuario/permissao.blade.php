@@ -33,10 +33,10 @@
       <div class="list-group-item">
         <div class="row item">
           <div class="col-md-1">
-            <a href="<?php echo url("grupousuario/$grupo->codpermissao");?>">{{formataCodigo($grupo->codgrupousuario)}}</a>
+            <a href="<?php echo url("grupo-usuario/$grupo->codpermissao");?>">{{formataCodigo($grupo->codgrupousuario)}}</a>
           </div>                            
           <div class="col-md-3">
-            <a href="<?php echo url("grupousuario/$grupo->codpermissao");?>">{{$grupo->grupousuario}}</a>
+            <a href="<?php echo url("grupo-usuario/$grupo->codpermissao");?>">{{$grupo->grupousuario}}</a>
             <br>
 
           </div>

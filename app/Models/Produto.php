@@ -1,6 +1,7 @@
 <?php
 
 namespace MGLara\Models;
+use Illuminate\Support\Facades\Storage;
 
 class Produto extends MGModel
 {
@@ -92,7 +93,7 @@ class Produto extends MGModel
         $ret["mensagem"] = $mensagem;
         return $ret;
     }
-    
+
     // TODO: Criar Relacionamentos
     /*
      *         'codncm',

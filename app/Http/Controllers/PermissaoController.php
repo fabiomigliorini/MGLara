@@ -15,7 +15,7 @@ class PermissaoController extends Controller
     {
         $this->middleware('permissao:permissao.consulta', ['only' => ['index', 'show']]);
         $this->middleware('permissao:permissao.inclusao', ['only' => ['create', 'store']]);
-        $this->middleware('permissao:permissao.edicao', ['only' => ['edit', 'update']]);
+        $this->middleware('permissao:permissao.alteracao', ['only' => ['edit', 'update']]);
         $this->middleware('permissao:permissao.exclusao', ['only' => ['delete', 'destroy']]);
     }
     

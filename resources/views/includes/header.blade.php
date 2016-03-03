@@ -46,7 +46,7 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Estoque <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="{{ url('estoquemes') }}">Estoque mês</a></li>
+            <li><a href="{{ url('estoque-mes') }}">Estoque mês</a></li>
             <!-- <li role="separator" class="divider"></li> -->
             <!-- <li><a href="#">Consulta de preço</a></li> -->
             <li><a href="<?php echo url('produto');?>">Produtos</a><li>
@@ -55,7 +55,7 @@
             <!-- <li role="separator" class="divider"></li> -->
             <!-- <li><a href="#">Histórico de Preços</a></li> -->
             <!-- <li role="separator" class="divider"></li> -->
-            <!-- <li><a href="<?php echo url('grupoproduto');?>">Grupos de Produtos</a><li> -->
+            <!-- <li><a href="<?php echo url('grupo-produto');?>">Grupos de Produtos</a><li> -->
             <!-- <li><a href="<?php echo url('marca');?>">Marcas</a><li> -->
             <!-- <li><a href="#">NCM</a></li> -->
             <!-- <li><a href="#">Tipos de produtos</a></li> -->
@@ -79,7 +79,7 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
             <ul class="dropdown-menu">
                 <li><a href="<?php echo url('usuario');?>">Usuários</a></li>
-                <li><a href="<?php echo url('grupousuario');?>">Grupos</a></li>
+                <li><a href="<?php echo url('grupo-usuario');?>">Grupos</a></li>
                 <li><a href="<?php echo url('permissao');?>">Permissões</a></li>
             </ul>
         </li>

@@ -1,7 +1,6 @@
 <?php
 
 namespace MGLara\Models;
-use Illuminate\Support\Facades\Validator;
 
 class Ncm extends MGModel
 {
@@ -10,17 +9,17 @@ class Ncm extends MGModel
     protected $fillable = [
       'ncm',
     ];
-    
-    public function Cests()
-    {
-        return $this->hasMany(Cest::class, 'codncm', 'codncm');
-    }  
-    
+       
     public function ProdutoS()
     {
         return $this->hasMany(Produto::class, 'codncm', 'codncm');
     }  
-
+    
+    public function Cests()
+    {
+        return $this->hasMany(Cest::class, 'codncm', 'codncm');
+    } 
+    
     public function IbptaxsS()
     {
         return $this->hasMany(Ibptax::class, 'codncm', 'codncm');
@@ -33,7 +32,7 @@ class Ncm extends MGModel
 
     public function NcmPai()
     {
-        return $this->hasMany(Ncm::class, 'codncmpai', 'codncmpai');
+        return $this->belongsTo(Ncm::class, 'codncmpai', 'codncmpai');
     }  
     
     public function RegulamentoIcmsStMtsS()
@@ -44,39 +43,30 @@ class Ncm extends MGModel
     
     /* Fim relacionamentos */
     
-    public function getRegulamentoIcmsStMt()
-    {
-        $regs = $this->regulamentoIcmsStMtsDisponiveis();
-	$value = '';
-	foreach ($regs as $reg)
-	{
-		$value .= '<b>' . $reg->ncm . '/' . $reg->subitem . '</b> - ' . $reg->descricao . '<br>' .
-				((!empty($reg->ncmexceto))?'Exceto NCM: ' . $reg->ncmexceto . '<br>':'');
-	}
-        dd($value);
-        return $value;
-        
-    }
-
+    /**
+     * 
+     * @return Cest[]
+     */
     public function cestsDisponiveis()
     {
         $cests = array();
         if (sizeof($this->Cests) > 0)
-                $cests = array_merge ($cests, $this->Cests);
+            $cests = array_merge ($cests, $this->Cests);
         if (isset($this->NcmPai))
-                $cests = array_merge ($cests, $this->NcmPai->cestsDisponiveis());
+            $cests = array_merge ($cests, $this->NcmPai->cestsDisponiveis());
         return $cests;
-    }    
-    
+    }
+
+    /**
+     * 
+     * @return Cest[]
+     */
     public function regulamentoIcmsStMtsDisponiveis()
     {
         $regs = array();
-      
         // pega regulamentos do registro corrente
-        if (sizeof($this->RegulamentoIcmsStMtsS()) > 0)
-            dd ($this->RegulamentoIcmsStMtsS());
-            $regs = array_merge ($regs, $this->RegulamentoIcmsStMtsS());
-
+        if (sizeof($this->RegulamentoIcmsStMtsS) > 0)
+            $regs = array_merge ($regs, [$this->RegulamentoIcmsStMtsS]);
         // pega regulamentos da arvore recursivamente
         if (isset($this->NcmPai))
             $regs = array_merge ($regs, $this->NcmPai->regulamentoIcmsStMtsDisponiveis());
@@ -84,19 +74,20 @@ class Ncm extends MGModel
         // apaga os Excetos
         $i = 0;
         $apagar = array();
+
         foreach($regs as $reg)
         {
-            if (strstr($reg->ncmexceto, $this->ncm))
+            if (strstr($reg[$i]['ncmexceto'], $this->ncm))
                 $apagar[] = $i;
             $i++;
         }
 
-        foreach ($apagar as $i) {
+        foreach ($apagar as $i)
             unset($regs[$i]);
-        }
-        
+
         return $regs;
-    }    
+    }
+	   
     
     public function validate() {
         

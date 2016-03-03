@@ -14,10 +14,10 @@ class EstoqueMesController extends Controller
     
     public function __construct()
     {
-        #$this->middleware('permissao:estoquemes.consulta', ['only' => ['index', 'show']]);
-        #$this->middleware('permissao:estoquemes.inclusao', ['only' => ['create', 'store']]);
-        #$this->middleware('permissao:estoquemes.edicao', ['only' => ['edit', 'update']]);
-        #$this->middleware('permissao:estoquemes.exclusao', ['only' => ['delete', 'destroy']]);
+        #$this->middleware('permissao:estoque-mes.consulta', ['only' => ['index', 'show']]);
+        #$this->middleware('permissao:estoque-mes.inclusao', ['only' => ['create', 'store']]);
+        #$this->middleware('permissao:estoque-mes.edicao', ['only' => ['edit', 'update']]);
+        #$this->middleware('permissao:estoque-mes.exclusao', ['only' => ['delete', 'destroy']]);
     }
     
     public function index(Request $request) {
@@ -27,12 +27,12 @@ class EstoqueMesController extends Controller
             # $request->get('permissao')
         );
 
-        return view('estoquemes.index', compact('model'));        
+        return view('estoque-mes.index', compact('model'));        
     }
 
     public function show($codestoquemes) {
         $model = EstoqueMes::find($codestoquemes);
-        return view('estoquemes.show', compact('model'));
+        return view('estoque-mes.show', compact('model'));
     }
     
     public function create() {
@@ -45,12 +45,12 @@ class EstoqueMesController extends Controller
             $this->throwValidationException($request, $model->_validator);
         $model->save();
         Session::flash('flash_create', 'Registro inserido.');
-        return redirect('estoquemes');
+        return redirect('estoque-mes');
     }
 
     public function edit($codpermissao) {
         $model = Permissao::findOrFail($codpermissao);
-        return view('estoquemes.edit',  compact('model'));
+        return view('estoque-mes.edit',  compact('model'));
     }
 
     public function update($codpermissao, Request $request) {
@@ -61,7 +61,7 @@ class EstoqueMesController extends Controller
         $model->save();
         
         Session::flash('flash_update', 'Registro atualizado.');
-        return redirect('estoquemes');
+        return redirect('estoque-mes');
     }
     
 //    public function delete($codpermissao) {
@@ -76,7 +76,7 @@ class EstoqueMesController extends Controller
         try{
             Permissao::find($codpermissao)->delete();
             Session::flash('flash_delete', 'Registro deletado!');
-            return Redirect::route('estoquemes.index');
+            return Redirect::route('estoque-mes.index');
         }
         catch(\Exception $e){
             return view('errors.fk');

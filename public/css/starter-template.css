@@ -101,6 +101,7 @@ h1.header {
     font-family: sans-serif;
     letter-spacing: -1px;
     margin: 0 0 20px;
+    font-size: 28px;
 }
 
 .produtos-detalhe-preco {
@@ -123,8 +124,15 @@ h1.header {
 .produtos-combinacoes-titulo {
     font-size: 22px;
 }
+.produto-detalhes-unidade {
+    font-size: 20px;
+}
 .bg-info .list-group-item {
     background: none;
+}
+
+.produtos-detalhe-carousel {
+    min-height: 500px;
 }
 .carousel-control.left, 
 .carousel-control.right {

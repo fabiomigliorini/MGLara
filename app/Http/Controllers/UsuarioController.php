@@ -21,7 +21,7 @@ class UsuarioController extends Controller
     {
         $this->middleware('permissao:usuario.consulta', ['only' => ['index', 'show']]);
         $this->middleware('permissao:usuario.inclusao', ['only' => ['create', 'store']]);
-        $this->middleware('permissao:usuario.edicao', ['only' => ['edit', 'update']]);
+        $this->middleware('permissao:usuario.alteracao', ['only' => ['edit', 'update']]);
         $this->middleware('permissao:usuario.exclusao', ['only' => ['delete', 'destroy']]);
         
         $this->filiais    = [''=>''] + Filial::lists('filial', 'codfilial')->all();
