@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<h1 class="header">Recalcula #{{ $model->produto }}</h1>
+<h1 class="header">Listagem Estoque</h1>
 <hr>
 <hr>
 @stop

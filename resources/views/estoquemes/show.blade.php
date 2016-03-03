@@ -4,11 +4,46 @@
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="{{ url('estoquemes') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
+            <li><a href="#" id="btnRecalculaEstoque"><span class="glyphicon glyphicon-refresh"></span> Recalcular Estoque</a></li>             
         </ul>
     </div>
 </nav>
 
-<h1 class="header"><small>{{ formataCodigo($model->EstoqueSaldo->codproduto, 6) }}</small> {{ $model->EstoqueSaldo->Produto->produto }} <small>{{ $model->EstoqueSaldo->EstoqueLocal->estoquelocal }} - {{ ($model->EstoqueSaldo->fiscal)?"Fiscal":"Fisico" }}</small></h1>
+<h1 class="header">
+    <a href='{{ url("grupo-produto/{$model->EstoqueSaldo->Produto->SubGrupoProduto->codgrupoproduto}") }}'>
+        {{$model->EstoqueSaldo->Produto->SubGrupoProduto->GrupoProduto->grupoproduto}}
+    </a> 
+    >
+    <a href='{{ url("sub-grupo-produto/{$model->EstoqueSaldo->Produto->codsubgrupoproduto}") }}'>
+        {{$model->EstoqueSaldo->Produto->SubGrupoProduto->subgrupoproduto}}
+    </a>
+    >
+    <a href='{{ url("produto/{$model->EstoqueSaldo->codproduto}") }}'>
+        {{ $model->EstoqueSaldo->Produto->produto }}     
+    </a>
+</h1>
+
+<div class="row row-fluid">
+    <div class="col-sm-1">
+        {{ $model->EstoqueSaldo->EstoqueLocal->estoquelocal }}
+    </div> 
+    <div class="col-sm-1">
+        {{ ($model->EstoqueSaldo->fiscal)?"Fiscal":"Fisico" }}
+    </div> 
+    <div class="col-sm-1">
+        @if (isset($model->EstoqueSaldo->Produto->codmarca))
+            {{ $model->EstoqueSaldo->Produto->Marca->marca }}
+        @endif
+    </div> 
+    <div class="col-sm-1">
+        {{ formataCodigo($model->EstoqueSaldo->codproduto, 6) }}
+    </div> 
+    <div class="col-sm-1">
+        {{ formataNumero($model->EstoqueSaldo->Produto->preco, 2) }}
+    </div> 
+</div>
+<hr>
+
 <ul class="nav nav-tabs">
     @foreach($model->buscaAnteriores() as $em)
         <li role="presentation"><a href="<?php echo url("estoquemes/$em->codestoquemes");?>">{{ formataData($em->mes, 'm/Y') }}</a></li>
@@ -98,4 +133,23 @@
     </tbody>
 </table>
 <hr>
+@section('inscript')
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#btnRecalculaEstoque').click(function (e) {
+        e.preventDefault();
+        console.log('aqui');
+        $.getJSON("<?php echo url("produto/{$model->EstoqueSaldo->codproduto}/recalcula-estoque"); ?>")
+            .done(function(data) 
+            {
+                console.log(data);
+            })
+            .fail(function( jqxhr, textStatus, error ) 
+            {
+                console.log(error);
+            });	
+      });
+  });
+</script>
+@endsection
 @stop

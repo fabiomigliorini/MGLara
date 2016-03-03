@@ -11,9 +11,9 @@ class GrupoProduto extends MGModel
       'grupoproduto',
     ];
     
-    public function SubGrupoProduto()
+    public function SubGrupoProdutoS()
     {
-        return $this->hasMany(SubGrupoProduto::class, 'codgrupoproduto', 'codgrupoproduto');
+        return $this->hasMany(SubGrupoProduto::class, 'codgrupoproduto', 'codgrupoproduto')->orderBy('subgrupoproduto');
     }    
     
     public function validate() {

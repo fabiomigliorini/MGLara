@@ -76,8 +76,21 @@ class Produto extends MGModel
 
     public function recalculaEstoque()
     {
+        $resultado = true;
+        $mensagem = '';
         foreach ($this->ProdutoBarraS as $pb)
-            $pb->recalculaEstoque();
+        {
+            $ret["codprodutobarra"][$pb->codprodutobarra] = $pb->recalculaEstoque();
+            
+            if ($ret['codprodutobarra'][$pb->codprodutobarra]['resultado'] !== true)
+            {
+                $resultado = false;
+                $mensagem = $ret['codprodutobarra'][$pb->codprodutobarra]['mensagem'];
+            }
+        }
+        $ret["resultado"] = $resultado;
+        $ret["mensagem"] = $mensagem;
+        return $ret;
     }
     
     // TODO: Criar Relacionamentos

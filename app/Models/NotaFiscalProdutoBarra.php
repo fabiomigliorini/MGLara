@@ -34,8 +34,6 @@ class NotaFiscalProdutoBarra extends MGModel
     
     public function recalculaEstoque()
     {
-        echo $this->codnotafiscalprodutobarra;
-        echo '<hr>';
         $ems = $this->EstoqueMovimentoS;
         if (sizeof($ems) > 0)
         {
@@ -71,7 +69,7 @@ class NotaFiscalProdutoBarra extends MGModel
         $em->codestoquemes = $mes->codestoquemes;
         $em->manual = false;
         $em->data = $this->NotaFiscal->saida;
-        $em->save();
+        return $em->save();
     }
     
 }

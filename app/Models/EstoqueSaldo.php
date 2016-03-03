@@ -8,6 +8,8 @@
 
 namespace MGLara\Models;
 
+use Illuminate\Support\Facades\DB;
+
 /**
  * Description of EstoqueSaldo
  *
@@ -63,6 +65,73 @@ class EstoqueSaldo extends MGModel
             $es->save();
         }
         return $es;
+    }
+    
+    public static function saldoPorGrupoProduto()
+    {
+        
+        $res = DB::select('
+            select 
+                  tblsubgrupoproduto.codgrupoproduto
+                , tblestoquesaldo.codestoquelocal
+                , tblestoquesaldo.fiscal
+                , sum(tblestoquesaldo.saldoquantidade) as saldoquantidade
+                , sum(tblestoquesaldo.saldovalor) as saldovalor
+            from tblestoquesaldo
+            left join tblproduto on (tblproduto.codproduto = tblestoquesaldo.codproduto)
+            left join tblsubgrupoproduto on (tblsubgrupoproduto.codsubgrupoproduto = tblproduto.codsubgrupoproduto)
+            group by 
+                  tblsubgrupoproduto.codgrupoproduto
+                , tblestoquesaldo.fiscal
+                , tblestoquesaldo.codestoquelocal
+        ');
+
+        return $res;
+    }
+    
+    public static function saldoPorSubGrupoProduto($codgrupoproduto)
+    {
+        
+        $res = DB::select("
+            select 
+                  tblsubgrupoproduto.codsubgrupoproduto
+                , tblestoquesaldo.codestoquelocal
+                , tblestoquesaldo.fiscal
+                , sum(tblestoquesaldo.saldoquantidade) as saldoquantidade
+                , sum(tblestoquesaldo.saldovalor) as saldovalor
+            from tblestoquesaldo
+            left join tblproduto on (tblproduto.codproduto = tblestoquesaldo.codproduto)
+            left join tblsubgrupoproduto on (tblsubgrupoproduto.codsubgrupoproduto = tblproduto.codsubgrupoproduto)
+            where codgrupoproduto = $codgrupoproduto
+            group by 
+                  tblsubgrupoproduto.codsubgrupoproduto
+                , tblestoquesaldo.fiscal
+                , tblestoquesaldo.codestoquelocal
+        ");
+
+        return $res;
+    }
+
+    public static function saldoPorProduto($codsubgrupoproduto)
+    {
+        
+        $res = DB::select("
+            select 
+                  tblproduto.codproduto
+                , tblestoquesaldo.codestoquelocal
+                , tblestoquesaldo.fiscal
+                , sum(tblestoquesaldo.saldoquantidade) as saldoquantidade
+                , sum(tblestoquesaldo.saldovalor) as saldovalor
+            from tblestoquesaldo
+            left join tblproduto on (tblproduto.codproduto = tblestoquesaldo.codproduto)
+            where tblproduto.codsubgrupoproduto = $codsubgrupoproduto
+            group by 
+                  tblproduto.codproduto
+                , tblestoquesaldo.fiscal
+                , tblestoquesaldo.codestoquelocal
+        ");
+
+        return $res;
     }
 
 }

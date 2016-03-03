@@ -49,11 +49,21 @@ Route::group(['middleware' => 'auth'], function() {
     /* Estoque mês */
     Route::resource('estoquemes','EstoqueMesController');       
     
+    /* EstoqueSaldo */
     Route::resource('estoque-saldo','EstoqueSaldoController');       
     
-    /* Estoque mês */
+    /* GrupoProduto */
+    Route::resource('grupo-produto','GrupoProdutoController');           
+    
+    /* SubGrupoProduto */
+    Route::resource('sub-grupo-produto','SubGrupoProdutoController');           
+    
+    /* Produto */
     Route::resource('produto','ProdutoController');           
-    Route::resource('produto/{id}/recalculaEstoque','ProdutoController@recalculaEstoque');
+    Route::resource('produto/{id}/recalcula-estoque','ProdutoController@recalculaEstoque');
+
+    /* NotaFiscal */
+    Route::resource('nota-fiscal','NotaFiscalController');           
     
     /* Auxiliares */
     Route::resource('printers','UsuarioController@printers');

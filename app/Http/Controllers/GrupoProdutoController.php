@@ -3,16 +3,16 @@
 namespace MGLara\Http\Controllers;
 
 use Illuminate\Http\Request;
+
+use MGLara\Http\Requests;
 use MGLara\Http\Controllers\Controller;
-use MGLara\Models\Produto;
 
-class ProdutoController extends Controller
+use MGLara\Models\GrupoProduto;
+use MGLara\Models\EstoqueSaldo;
+use MGLara\Models\EstoqueLocal;
+
+class GrupoProdutoController extends Controller
 {
-    
-    public function __construct()
-    {
-    }    
-
     /**
      * Display a listing of the resource.
      *
@@ -20,8 +20,10 @@ class ProdutoController extends Controller
      */
     public function index()
     {
-        echo 'index';
-        die();
+        $model = GrupoProduto::orderBy('grupoproduto')->get();
+        $ess = EstoqueSaldo::saldoPorGrupoProduto();
+        $els = EstoqueLocal::orderBy('codestoquelocal')->get();
+        return view('grupo-produto.index', compact('model', 'ess', 'els'));
     }
 
     /**
@@ -45,13 +47,26 @@ class ProdutoController extends Controller
         //
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function show($id)
     {
-        $model = Produto::find($id);
-        return view('produto.show', compact('model'));
+        $model = GrupoProduto::findOrFail($id);
+        $ess = EstoqueSaldo::saldoPorSubGrupoProduto($model->codgrupoproduto);
+        $els = EstoqueLocal::orderBy('codestoquelocal')->get();
+        return view('grupo-produto.show', compact('model', 'ess', 'els'));
     }
 
-
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function edit($id)
     {
         //
@@ -78,12 +93,5 @@ class ProdutoController extends Controller
     public function destroy($id)
     {
         //
-    }
-    
-    public function recalculaEstoque($id)
-    {
-        $model = Produto::findOrFail($id);
-        $ret = $model->recalculaEstoque();
-        echo json_encode($ret);
     }
 }

@@ -37,8 +37,21 @@ class ProdutoBarra extends MGModel
 
     public function recalculaEstoque()
     {
+        $resultado = true;
+        $mensagem = '';
         foreach ($this->NotaFiscalProdutoBarraS as $nfpb)
-            $nfpb->recalculaEstoque();
+        {
+            $ret['codnotafiscalprodutobarra'][$nfpb->codnotafiscalprodutobarra] = $nfpb->recalculaEstoque();
+            
+            if ($ret['codnotafiscalprodutobarra'][$nfpb->codnotafiscalprodutobarra] !== true)
+            {
+                $resultado = false;
+                $mensagem = erro;
+            }
+        }
+        $ret["resultado"] = $resultado;
+        $ret["mensagem"] = $mensagem;
+        return $ret;
     }
     
     public function converteQuantidade($quantidade)
