@@ -132,7 +132,7 @@
     </tfoot>
     </tbody>
 </table>
-<hr>
+
 @section('inscript')
 <script type="text/javascript">
 $(document).ready(function() {
