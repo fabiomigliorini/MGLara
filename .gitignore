@@ -4,6 +4,6 @@ Homestead.yaml
 Homestead.json
 .env
 /nbproject
-public/images/produtos/
-public/images/marcas/
+public/images/produtos
+public/images/marcas
 
