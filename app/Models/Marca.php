@@ -17,7 +17,7 @@ class Marca extends MGModel
     
     public function ProdutoS()
     {
-        return $this->hasMany(Produto::class, 'codmarca', 'codmarca');
+        return $this->hasMany(Produto::class, 'codmarca', 'codmarca')->orderBy('produto');
     }      
     
     public function validate() {
@@ -39,7 +39,7 @@ class Marca extends MGModel
     public static function filterAndPaginate($marca)
     {
         return Marca::marca($marca)
-            ->orderBy('codmarca', 'DESC')
+            ->orderBy('marca', 'ASC')
             ->paginate(20);
     }
     
