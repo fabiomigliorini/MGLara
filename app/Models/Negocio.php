@@ -7,6 +7,11 @@ class Negocio extends MGModel
     protected $table = 'tblnegocio';
     protected $primaryKey = 'codnegocio';
     
+    public function Produto()
+    {
+        return $this->belongsTo(Produto::class, 'codproduto', 'codproduto');
+    }
+
     public function NaturezaOperacao()
     {
         return $this->belongsTo(NaturezaOperacao::class, 'codnaturezaoperacao', 'codnaturezaoperacao');
