@@ -3,24 +3,18 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
   <div class="container-fluid"> 
     <ul class="nav navbar-nav">
-      <!--
       <li>
-        <a href="<?php echo url('permissao/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a>
+        <a href="{{ url('marca') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a>
       </li>
-      -->
     </ul>
   </div>
 </nav>
 <h1 class="header">
-    <a href="{{ url("grupo-produto/$model->codgrupoproduto") }}">
-        {{ $model->GrupoProduto->grupoproduto }} 
-    </a>
-    › {{ $model->subgrupoproduto }}
+    {{ $model->marca }}
 </h1>
 <br>
 
 <?php
-
 foreach($model->ProdutoS as $prod)
 {
     foreach ($prod->EstoqueSaldoS as $es)
@@ -48,7 +42,7 @@ foreach($model->ProdutoS as $prod)
 <table class="table table-striped table-condensed table-hover table-bordered">
     <thead>
         <th colspan="2">
-            Grupo Produto
+            Produtos
         </th>
         @foreach ($els as $el)
         <th colspan='3' class='text-center' style='border-left-width: 2px'>
@@ -185,10 +179,6 @@ foreach($model->ProdutoS as $prod)
         </tr>
     </tfoot>
 </table>
-
-@if (count($model) === 0)
-    <h3>Nenhum registro encontrado!</h3>
-@endif    
 
 @section('inscript')
 <script type="text/javascript">

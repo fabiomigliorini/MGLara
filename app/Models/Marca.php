@@ -39,9 +39,8 @@ class Marca extends MGModel
     public static function filterAndPaginate($marca)
     {
         return Marca::marca($marca)
-            //->site($site)
             ->orderBy('codmarca', 'DESC')
-            ->paginate();
+            ->paginate(20);
     }
     
     public function scopeMarca($query, $marca)

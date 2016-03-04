@@ -130,11 +130,16 @@ h1.header {
 .bg-info .list-group-item {
     background: none;
 }
-
 .produtos-detalhe-carousel {
     min-height: 500px;
 }
 .carousel-control.left, 
 .carousel-control.right {
     background: none;
+}
+
+
+/* Marcas */
+.marcas-pagination {
+    margin: -40px 0 0;
 }
