@@ -35,15 +35,28 @@ class NotaFiscalProdutoBarra extends MGModel
     public function recalculaEstoque()
     {
         $ems = $this->EstoqueMovimentoS;
-        if (sizeof($ems) > 0)
+        
+        if ((!empty($this->NotaFiscal->nfecancelamento))
+            || (!empty($this->NotaFiscal->nfeinutilizacao)))
         {
-            $em = $ems[0];
-            unset($ems[0]);
-            foreach ($ems as $em_apagar)
-                $em_apagar->delete();
+            //Apaga movimentos gerados por notas canceladas
+            foreach ($ems as $em)
+                $em->delete();
+            
+            //retorna
+            return true;
         }
-        else
+
+        //Se houver mais re um registro para o mesmo registro da nota, apaga excedentes
+        for ($i=1; $i<sizeof($ems); $i++)
+            $ems[$i]->delete();
+        
+        //se nao existe movimento, cria novo
+        if (sizeof($ems) == 0)
             $em = new EstoqueMovimento;
+        else
+            $em = $ems[0];
+        
         $em->codestoquemovimentotipo = $this->NotaFiscal->NaturezaOperacao->codestoquemovimentotipo;
         
         $quantidade = $this->quantidadeUnitaria();

@@ -91,4 +91,12 @@ class SubGrupoProdutoController extends Controller
     {
         //
     }
+    
+    public function buscaCodProduto($id)
+    {
+        $model = SubGrupoProduto::findOrFail($id);
+        foreach ($model->ProdutoS as $prod)
+            $arr_codproduto[] = $prod->codproduto;
+        echo json_encode($arr_codproduto);        
+    }
 }

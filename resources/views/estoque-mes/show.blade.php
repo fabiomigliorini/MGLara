@@ -3,7 +3,6 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
-            <li><a href="{{ url('estoque-mes') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
             <li><a href="#" id="btnRecalculaEstoque"><span class="glyphicon glyphicon-refresh"></span> Recalcular Estoque</a></li>             
         </ul>
     </div>
@@ -44,33 +43,45 @@
 </div>
 <hr>
 
+
+<?php
+
+$proximos = $model->buscaProximos(8);
+
+$anteriores = $model->buscaAnteriores(16 - sizeof($proximos));
+
+if (sizeof($anteriores) < 8)
+    $proximos = $model->buscaProximos(16 - sizeof($anteriores));
+
+?>
+
 <ul class="nav nav-tabs">
-    @foreach($model->buscaAnteriores() as $em)
+    @foreach($anteriores as $em)
         <li role="presentation"><a href="<?php echo url("estoque-mes/$em->codestoquemes");?>">{{ formataData($em->mes, 'EC') }}</a></li>
     @endforeach
     <li role="presentation" class="active"><a href="#">{{ formataData($model->mes, 'EC') }}</a></li>
-    @foreach($model->buscaProximos() as $em)
+    @foreach($proximos as $em)
         <li role="presentation"><a href="<?php echo url("estoque-mes/$em->codestoquemes");?>">{{ formataData($em->mes, 'EC') }}</a></li>
     @endforeach
 </ul>
-<table class="table table-striped table-bordered">
+<table class="table table-striped table-bordered table-condensed small">
     <thead>
         <tr>
-            <th rowspan="2">Data</th>
-            <th rowspan="2">Tipo</th>
+            <th rowspan="2" class='col-sm-1'>Data</th>
+            <th rowspan="2" class='col-sm-1'>Tipo</th>
             <th colspan="2">Entrada</th>
             <th colspan="2">Saída</th>
             <th colspan="2">Saldo</th>
-            <th rowspan="2">Unitário</th>
-            <th rowspan="2">Documento</th>
+            <th rowspan="2" class='col-sm-1'>Unitário</th>
+            <th rowspan="2" class='col-sm-3'>Documento</th>
         </tr>
         <tr>
-            <th>Quantidade</th>
-            <th>Valor</th>
-            <th>Quantidade</th>
-            <th>Valor</th>
-            <th>Quantidade</th>
-            <th>Valor</th>            
+            <th class='col-sm-1'>Quantidade</th>
+            <th class='col-sm-1'>Valor</th>
+            <th class='col-sm-1'>Quantidade</th>
+            <th class='col-sm-1'>Valor</th>
+            <th class='col-sm-1'>Quantidade</th>
+            <th class='col-sm-1'>Valor</th>            
         </tr>
     </thead>
     <tbody>
@@ -82,7 +93,7 @@
         <tr>
             <td></td>
             <th colspan="5">Saldo Inicial</th>
-            <td class="text-right <?php echo ($saldoquantidade < 0)?"text-danger":""; ?>">{{ formataNumero($saldoquantidade) }}</td>
+            <td class="text-right <?php echo ($saldoquantidade < 0)?"text-danger":""; ?>">{{ formataNumero($saldoquantidade, 3) }}</td>
             <td class="text-right <?php echo ($saldovalor < 0)?"text-danger":""; ?>">{{ formataNumero($saldovalor) }}</td>
             <td class="text-right">{{ formataNumero($saldovalorunitario, 6) }}</td>
             <td></td>
@@ -96,11 +107,11 @@
             ?>
             <td>{{ formataData($row->data, 'L') }}</td>
             <td>{{ $row->EstoqueMovimentoTipo->descricao }}</td>
-            <td class="text-right">{{ formataNumero($row->entradaquantidade) }}</td>
+            <td class="text-right">{{ formataNumero($row->entradaquantidade, 3) }}</td>
             <td class="text-right">{{ formataNumero($row->entradavalor) }}</td>
-            <td class="text-right">{{ formataNumero($row->saidaquantidade) }}</td>
+            <td class="text-right">{{ formataNumero($row->saidaquantidade, 3) }}</td>
             <td class="text-right">{{ formataNumero($row->saidavalor) }}</td>
-            <td class="text-right <?php echo ($saldoquantidade < 0)?"text-danger":""; ?>">{{ formataNumero($saldoquantidade) }}</td>
+            <td class="text-right <?php echo ($saldoquantidade < 0)?"text-danger":""; ?>">{{ formataNumero($saldoquantidade, 3) }}</td>
             <td class="text-right <?php echo ($saldovalor < 0)?"text-danger":""; ?>"">{{ formataNumero($saldovalor) }}</td>
             <td class="text-right">{{ formataNumero($saldovalorunitario, 6) }}</td>
             <td>
@@ -120,11 +131,11 @@
         <tr>
             <th></th>
             <th>Totais</th>
-            <th class="text-right">{{ formataNumero($model->entradaquantidade) }}</th>
+            <th class="text-right">{{ formataNumero($model->entradaquantidade, 3) }}</th>
             <th class="text-right">{{ formataNumero($model->entradavalor) }}</th>
-            <th class="text-right">{{ formataNumero($model->saidaquantidade) }}</th>
+            <th class="text-right">{{ formataNumero($model->saidaquantidade, 3) }}</th>
             <th class="text-right">{{ formataNumero($model->saidavalor) }}</th>
-            <th class="text-right <?php echo ($model->saldoquantidade < 0)?"text-danger":""; ?>">{{ formataNumero($model->saldoquantidade) }}</th>
+            <th class="text-right <?php echo ($model->saldoquantidade < 0)?"text-danger":""; ?>">{{ formataNumero($model->saldoquantidade, 3) }}</th>
             <th class="text-right <?php echo ($model->saldovalor < 0)?"text-danger":""; ?>"">{{ formataNumero($model->saldovalor) }}</th>
             <th class="text-right">{{ formataNumero($model->saldovalorunitario, 6) }}</th>
             <th></th>
@@ -135,21 +146,33 @@
 
 @section('inscript')
 <script type="text/javascript">
+    
+function recalculaEstoque() {
+    $.getJSON("<?php echo url("produto/{$model->EstoqueSaldo->codproduto}/recalcula-estoque"); ?>")
+        .done(function(data) 
+        {
+            var mensagem = 'Recalculo efetuado com sucesso!'
+            if (!data.resultado)
+                mensagem = data.mensagem;
+            bootbox.alert(mensagem, function (result){
+                location.reload();                    
+            });
+        })
+        .fail(function( jqxhr, textStatus, error ) 
+        {
+            bootbox.alert(error);
+        });	
+    
+}
+
 $(document).ready(function() {
     $('#btnRecalculaEstoque').click(function (e) {
-        e.preventDefault();
-        console.log('aqui');
-        $.getJSON("<?php echo url("produto/{$model->EstoqueSaldo->codproduto}/recalcula-estoque"); ?>")
-            .done(function(data) 
-            {
-                console.log(data);
-            })
-            .fail(function( jqxhr, textStatus, error ) 
-            {
-                console.log(error);
-            });	
-      });
-  });
+        bootbox.confirm("Recalcular estoque para este produto?", function(result) {
+            if (result)
+                recalculaEstoque();
+        }); 
+    });
+});
 </script>
 @endsection
 @stop

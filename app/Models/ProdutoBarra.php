@@ -2,6 +2,9 @@
 
 namespace MGLara\Models;
 
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 class ProdutoBarra extends MGModel
 {
     protected $table = 'tblprodutobarra';
@@ -39,8 +42,26 @@ class ProdutoBarra extends MGModel
     {
         $resultado = true;
         $mensagem = '';
-        foreach ($this->NotaFiscalProdutoBarraS as $nfpb)
+        
+        set_time_limit(200);
+        
+        $sql = 
+            "select nfpb.codnotafiscalprodutobarra 
+            from tblnotafiscalprodutobarra nfpb
+            inner join tblnotafiscal nf on (nf.codnotafiscal = nfpb.codnotafiscal)
+            where nfpb.codprodutobarra = {$this->codprodutobarra}
+            and nf.saida between '2015-01-01 00:00:00.0' and '2015-12-31 23:59:59.9'
+            ";
+        
+        $nfs = DB::select($sql);
+        
+        //foreach ($this->NotaFiscalProdutoBarraS()->with('NotaFiscal')->where('saida', '>=', '2017-01-01 00:00:0.0')->get() as $nfpb)
+        //foreach ($this->NotaFiscalProdutoBarraS as $nfpb)
+        foreach ($nfs as $nf)
         {
+
+            $nfpb = NotaFiscalProdutoBarra::find($nf->codnotafiscalprodutobarra);
+                
             $ret['codnotafiscalprodutobarra'][$nfpb->codnotafiscalprodutobarra] = $nfpb->recalculaEstoque();
             
             if ($ret['codnotafiscalprodutobarra'][$nfpb->codnotafiscalprodutobarra] !== true)

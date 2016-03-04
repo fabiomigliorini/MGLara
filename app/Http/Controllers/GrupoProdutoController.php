@@ -94,4 +94,14 @@ class GrupoProdutoController extends Controller
     {
         //
     }
+
+    public function buscaCodProduto($id)
+    {
+        $model = GrupoProduto::findOrFail($id);
+        foreach ($model->SubGrupoProdutoS as $sg)
+            foreach ($sg->ProdutoS as $prod)
+                $arr_codproduto[] = $prod->codproduto;
+        echo json_encode($arr_codproduto);        
+    }
+    
 }
