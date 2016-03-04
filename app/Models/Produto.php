@@ -24,6 +24,7 @@ class Produto extends MGModel
         'codmarca',
     ];
     
+    
     public function EstoqueSaldoS()
     {
         return $this->hasMany(EstoqueSaldo::class, 'codproduto', 'codproduto');

@@ -89,6 +89,28 @@ class EstoqueSaldo extends MGModel
         return $res;
     }
     
+    public static function saldoPorMarca()
+    {
+        
+        $res = DB::select('
+            select 
+                  tblmarca.codmarca
+                , tblestoquesaldo.codestoquelocal
+                , tblestoquesaldo.fiscal
+                , sum(tblestoquesaldo.saldoquantidade) as saldoquantidade
+                , sum(tblestoquesaldo.saldovalor) as saldovalor
+            from tblestoquesaldo
+            left join tblproduto on (tblproduto.codproduto = tblestoquesaldo.codproduto)
+            left join tblmarca on (tblmarca.codmarca = tblproduto.codmarca)
+            group by 
+                  tblmarca.codmarca
+                , tblestoquesaldo.fiscal
+                , tblestoquesaldo.codestoquelocal
+        ');
+
+        return $res;
+    }
+    
     public static function saldoPorSubGrupoProduto($codgrupoproduto)
     {
         
@@ -125,6 +147,28 @@ class EstoqueSaldo extends MGModel
             from tblestoquesaldo
             left join tblproduto on (tblproduto.codproduto = tblestoquesaldo.codproduto)
             where tblproduto.codsubgrupoproduto = $codsubgrupoproduto
+            group by 
+                  tblproduto.codproduto
+                , tblestoquesaldo.fiscal
+                , tblestoquesaldo.codestoquelocal
+        ");
+
+        return $res;
+    }
+
+    public static function saldoPorProdutoMarca($codmarca)
+    {
+        
+        $res = DB::select("
+            select 
+                  tblproduto.codproduto
+                , tblestoquesaldo.codestoquelocal
+                , tblestoquesaldo.fiscal
+                , sum(tblestoquesaldo.saldoquantidade) as saldoquantidade
+                , sum(tblestoquesaldo.saldovalor) as saldovalor
+            from tblestoquesaldo
+            left join tblproduto on (tblproduto.codproduto = tblestoquesaldo.codproduto)
+            where tblproduto.codmarca = $codmarca
             group by 
                   tblproduto.codproduto
                 , tblestoquesaldo.fiscal

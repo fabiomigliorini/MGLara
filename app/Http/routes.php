@@ -55,6 +55,9 @@ Route::group(['middleware' => 'auth'], function() {
     /* GrupoProduto */
     Route::resource('grupo-produto','GrupoProdutoController');           
     Route::resource('grupo-produto/{id}/busca-codproduto','GrupoProdutoController@buscaCodproduto');           
+
+    /* Marca */
+    Route::resource('marca','MarcaController');           
     
     /* SubGrupoProduto */
     Route::resource('sub-grupo-produto','SubGrupoProdutoController');           

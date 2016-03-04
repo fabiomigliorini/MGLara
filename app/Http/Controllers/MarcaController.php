@@ -3,27 +3,28 @@
 namespace MGLara\Http\Controllers;
 
 use Illuminate\Http\Request;
+
+use MGLara\Http\Requests;
 use MGLara\Http\Controllers\Controller;
-use MGLara\Models\Produto;
-use MGLara\Models\NegocioProdutoBarra;
-use Illuminate\Support\Facades\Storage;
+use MGLara\Models\Marca;
+use MGLara\Models\EstoqueLocal;
+use MGLara\Models\EstoqueSaldo;
 
-class ProdutoController extends Controller
+class MarcaController extends Controller
 {
-    
-    public function __construct()
-    {
-    }    
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        echo 'index';
-        die();
+        $model = Marca::filterAndPaginate(
+            $request->get('codmarca')
+        ); 
+        $ess = EstoqueSaldo::saldoPorMarca();
+        $els = EstoqueLocal::orderBy('codestoquelocal')->get();
+        return view('marca.index', compact('model', 'ess', 'els'));
     }
 
     /**
@@ -47,15 +48,27 @@ class ProdutoController extends Controller
         //
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function show($id)
     {
-        $model = Produto::find($id);
-        //$teste = NegocioProdutoBarra::containt();
-        //$negocios = NegocioProdutoBarra::negocioPorProduto($id);
-        return view('produto.show', compact('model'));
+        $model = Marca::findOrFail($id);
+        $ess = EstoqueSaldo::saldoPorProdutoMarca($model->codmarca);
+        $els = EstoqueLocal::orderBy('codestoquelocal')->get();
+        return view('marca.show', compact('model', 'ess', 'els'));
     }
 
 
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function edit($id)
     {
         //
@@ -82,12 +95,5 @@ class ProdutoController extends Controller
     public function destroy($id)
     {
         //
-    }
-    
-    public function recalculaEstoque($id)
-    {
-        $model = Produto::findOrFail($id);
-        $ret = $model->recalculaEstoque();
-        echo json_encode($ret);
     }
 }

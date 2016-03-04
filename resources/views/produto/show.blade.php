@@ -17,12 +17,33 @@
         </ul>
     </div>
 </nav>
+<br>
+<div class="row">
+    <div class="col-md-5">
+        {!! Form::model(Request::all(), [
+           
+          'method' => 'POST', 
+          'class' => 'form-inline',
+          'id' => 'produto-busca-barras',
+          'role' => 'search'
+        ])!!}        
+        <div class="form-group" style="width: 100%">
+            <div class="input-group" style="width: 100%">
+                <input type="text" name="" class="form-control" id="produto-busca-barras">
+                <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+            </div>
+        </div>            
+        {!! Form::close() !!}
+    </div>
+    <div class="col-md-7">
+        select2
+    </div>
+</div>
 <hr>
 <div class="row">
     <div class="col-md-7">
         <div class="panel panel-warning">
             <div class="panel-body bg-warning">
-                
                 <h1 class="text-danger produtos-detalhes-produto">
                     {{ $model->produto }}
                     <span class="pull-right text-muted">{{ $model->UnidadeMedida->unidademedida }}</span>
@@ -183,4 +204,11 @@
 @include('includes.autor')
 <hr>
 <br>
+@section('inscript')
+<script type="text/javascript">
+  $(document).ready(function() {
+      
+  });
+</script>
+@endsection
 @stop

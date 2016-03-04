@@ -12,11 +12,11 @@
     <a href='{{ url("grupo-produto/{$model->EstoqueSaldo->Produto->SubGrupoProduto->codgrupoproduto}") }}'>
         {{$model->EstoqueSaldo->Produto->SubGrupoProduto->GrupoProduto->grupoproduto}}
     </a> 
-    >
+    ›
     <a href='{{ url("sub-grupo-produto/{$model->EstoqueSaldo->Produto->codsubgrupoproduto}") }}'>
         {{$model->EstoqueSaldo->Produto->SubGrupoProduto->subgrupoproduto}}
     </a>
-    >
+    ›
     <a href='{{ url("produto/{$model->EstoqueSaldo->codproduto}") }}'>
         {{ $model->EstoqueSaldo->Produto->produto }}     
     </a>
