@@ -7,6 +7,6 @@ foreach ($barras_array as $barr)
     
     $barras[] = $barr->codprodutobarra;
 }
-dd($barras)
+//dd($barras)
 ?>
 <h4>Negócios</h4>
