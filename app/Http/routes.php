@@ -74,5 +74,7 @@ Route::group(['middleware' => 'auth'], function() {
     
     /* Auxiliares */
     Route::resource('printers','UsuarioController@printers');
-    Route::resource('annotations','AnnotationsController');   
+    
+    /* Gerador de Codigo */
+    Route::resource('gerador-codigo/model/{tabela}','GeradorCodigoController@model');   
 });
