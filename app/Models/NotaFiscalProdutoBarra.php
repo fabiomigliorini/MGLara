@@ -172,6 +172,13 @@ class NotaFiscalProdutoBarra extends MGModel
         else
             $em = $ems[0];
         
+        $em->codnegocioprodutobarra = null;
+        $em->codnotafiscalprodutobarra = $this->codnotafiscalprodutobarra;
+        $mes = EstoqueMes::buscaOuCria($this->ProdutoBarra->codproduto, $this->NotaFiscal->codestoquelocal, true, $this->NotaFiscal->saida);
+        $em->codestoquemes = $mes->codestoquemes;
+        $em->manual = false;
+        $em->data = $this->NotaFiscal->saida;
+        
         $em->codestoquemovimentotipo = $this->NotaFiscal->NaturezaOperacao->codestoquemovimentotipo;
         
         $quantidade = $this->quantidadeUnitaria();
@@ -180,21 +187,84 @@ class NotaFiscalProdutoBarra extends MGModel
         
         switch ($em->EstoqueMovimentoTipo->preco)
         {
+                
+            case EstoqueMovimentoTipo::PRECO_MEDIO;
+                $valor = $em->EstoqueMes->saldovalorunitario;
+                break;
+            
+            case EstoqueMovimentoTipo::PRECO_ORIGEM:
+                
+                $nfechave = $this->NotaFiscal->nfechave;
+                $valor = 0;
+                
+                // Procura NF Origem baseado na chave
+                $nfsOrigem = NotaFiscal
+                    ::where('nfechave', $nfechave)
+                    ->where('codnotafiscal', '!=', $this->NotaFiscal->codnotafiscal)
+                    ->where('codnaturezaoperacao', '=', $this->NotaFiscal->NaturezaOperacao->codnaturezaoperacaodevolucao)
+                    ->get();
+                
+                // se nao achou a nota desiste
+                if (sizeof($nfsOrigem) == 0)
+                    break;
+                
+                // percorre as notas de origem
+                foreach ($nfsOrigem as $nfOrigem)
+                {
+                    
+                    // procura um item com a mesma quantidade
+                    $nfpbsOrigem = NotaFiscalProdutoBarra
+                        ::where('codnotafiscal', $nfOrigem->codnotafiscal)
+                        ->where('codprodutobarra', $this->codprodutobarra)
+                        ->where('quantidade', $this->quantidade)
+                        ->get();
+
+                    //se nao achou procura somente pelo codigo
+                    if (sizeof($nfpbsOrigem) == 0)
+                        $nfpbsOrigem = NotaFiscalProdutoBarra
+                            ::where('codnotafiscal', $nfOrigem->codnotafiscal)
+                            ->where('codprodutobarra', $this->codprodutobarra)
+                            ->get();
+
+                    //se nao achou origem desiste
+                    if (sizeof($nfpbsOrigem) == 0)
+                    {
+                        echo $this->NotaFiscal->codnotafiscal . '<hr>';
+                        echo $this->NotaFiscal->NaturezaOperacao->naturezaoperacao . '<hr>';
+                        die();
+                        break 2;
+                    }
+                    
+                    foreach ($nfpbsOrigem[0]->EstoqueMovimentoS as $emOrigem)
+                    {
+                        $em->codestoquemovimentoorigem = $emOrigem->codestoquemovimento;
+                        $valor = $emOrigem->EstoqueMes->saldovalorunitario;
+                    }   
+                    
+                }
+                break;
+                
+            
             case EstoqueMovimentoTipo::PRECO_INFORMADO:
+            default:
                 $valor = 
                     $this->valortotal + 
                     $this->icmsstvalor + 
                     $this->ipivalor;
                 
+                if ($this->NotaFiscal->valordesconto > 0)
+                    $valor -= ($this->NotaFiscal->valordesconto / $this->NotaFiscal->valorprodutos) * $this->valortotal;
+                
                 if ($this->NotaFiscal->valorfrete > 0)
                     $valor += ($this->NotaFiscal->valorfrete / $this->NotaFiscal->valorprodutos) * $this->valortotal;
-
-
-
+                
+                if ($this->NotaFiscal->valoroutras > 0)
+                    $valor += ($this->NotaFiscal->valoroutras / $this->NotaFiscal->valorprodutos) * $this->valortotal;
+                
+                if ($this->NotaFiscal->valorseguro > 0)
+                    $valor += ($this->NotaFiscal->valorseguro / $this->NotaFiscal->valorprodutos) * $this->valortotal;
                 break;
-
-            default:
-                break;
+                
         }
         
         if ($this->NotaFiscal->NaturezaOperacao->codoperacao == Operacao::ENTRADA)
@@ -211,12 +281,6 @@ class NotaFiscalProdutoBarra extends MGModel
             $em->saidaquantidade = $quantidade;
             $em->saidavalor = $valor;
         }
-        $em->codnegocioprodutobarra = null;
-        $em->codnotafiscalprodutobarra = $this->codnotafiscalprodutobarra;
-        $mes = EstoqueMes::buscaOuCria($this->ProdutoBarra->codproduto, $this->NotaFiscal->codestoquelocal, true, $this->NotaFiscal->saida);
-        $em->codestoquemes = $mes->codestoquemes;
-        $em->manual = false;
-        $em->data = $this->NotaFiscal->saida;
         return $em->save();
     }
     

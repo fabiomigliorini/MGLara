@@ -111,5 +111,28 @@ class EstoqueMovimento extends MGModel
         
         return parent::validate();
     }
+    
+    public function save(array $options = Array())
+    {
+        
+        $this->EstoqueMes->entradaquantidade += $this->entradaquantidade - $this->original['entradaquantidade'];
+        $this->EstoqueMes->entradavalor += $this->entradavalor - $this->original['entradavalor'];
+        
+        $this->EstoqueMes->saidaquantidade += $this->saidaquantidade - $this->original['saidaquantidade'];
+        $this->EstoqueMes->saidavalor += $this->saidavalor - $this->original['saidavalor'];
+        
+        $this->EstoqueMes->saldoquantidade = $this->EstoqueMes->entradaquantidade - $this->EstoqueMes->saidaquantidade;
+        $this->EstoqueMes->saldovalor = $this->EstoqueMes->entradavalor - $this->EstoqueMes->saidavalor;
+        
+        if ($this->EstoqueMes->saldoquantidade <> 0)
+            $this->EstoqueMes->saldovalorunitario = $this->EstoqueMes->saldovalor / $this->EstoqueMes->saldoquantidade;
+        
+        $ret = parent::save($options);
+
+        if ($ret)
+            $ret = $this->EstoqueMes->save();
+        
+        return $ret;
+    }
    
 }

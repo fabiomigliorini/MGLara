@@ -22,7 +22,7 @@ namespace MGLara\Models;
  * @property  EstoqueMovimento[]             $EstoqueMovimentoS
  */
 
-class EstoqueMovimentotipo extends MGModel
+class EstoqueMovimentoTipo extends MGModel
 {
     protected $table = 'tblestoquemovimentotipo';
     protected $primaryKey = 'codestoquemovimentotipo';
