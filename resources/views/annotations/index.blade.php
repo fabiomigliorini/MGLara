@@ -1,1 +1,1 @@
-{{ dd($model) }}
+{{ dd($model->getAllColumnsNames()) }}

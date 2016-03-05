@@ -10,6 +10,7 @@ namespace MGLara\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Description of Model
@@ -35,6 +36,30 @@ abstract class MGModel extends Model {
     {
         return $this->belongsTo(Usuario::class, 'codusuarioalteracao', 'codusuario');
     }     
+    
+public function getAllColumnsNames()
+{
+    DB::connection()->getConfig('driver');
+    
+    $query = "SELECT column_name FROM information_schema.columns WHERE table_name = '".$this->table."'";
+    $column_name = 'column_name';
+    $reverse = true;
+                
+    $columns = array();
+    
+    foreach(DB::select($query) as $column)
+    {
+        $columns[] = $column->$column_name;
+    }
+
+    if($reverse)
+    {
+        $columns = array_reverse($columns);
+    }
+
+    return $columns;    
+}
+    
     
     #public function __construct() {
         

@@ -17,7 +17,7 @@ class AnnotationsController extends Controller
     public function index()
     {
         $model = new \MGLara\Models\Marca();
-        
+
         return view('annotations.index', compact('model'));
     }
 
