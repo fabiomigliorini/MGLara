@@ -35,13 +35,13 @@ foreach($ess as $es)
 //dd($arr_saldos);
 ?>
 
-<table class="table table-striped table-condensed table-hover table-bordered">
+<table class="table table-striped table-condensed table-hover table-bordered small">
     <thead>
-        <th colspan="2">
+        <th colspan="2" class="col-sm-4">
             Grupo Produto
         </th>
         @foreach ($els as $el)
-        <th colspan='2' class='text-center' style='border-left-width: 2px'>
+        <th colspan='2' class='text-center col-sm-1' style='border-left-width: 2px'>
             {{ $el->estoquelocal }}
         </th>
         @endforeach

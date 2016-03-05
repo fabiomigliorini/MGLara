@@ -6,6 +6,9 @@
       <li>
         <a href="{{ url('marca') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a>
       </li>
+      <li>
+          <a href="#" id="btnBuscaCodProduto"><span class="glyphicon glyphicon-refresh"></span> Recalcular Estoque</a>
+      </li>
     </ul>
   </div>
 </nav>
@@ -39,13 +42,13 @@ foreach($model->ProdutoS as $prod)
 
 ?>
 
-<table class="table table-striped table-condensed table-hover table-bordered">
+<table class="table table-striped table-condensed table-hover table-bordered small">
     <thead>
-        <th colspan="2">
+        <th colspan="2" class="col-sm-4">
             Produtos
         </th>
         @foreach ($els as $el)
-        <th colspan='3' class='text-center' style='border-left-width: 2px'>
+        <th colspan='3' class='text-center col-sm-1' style='border-left-width: 2px'>
             {{ $el->estoquelocal }}
         </th>
         @endforeach
@@ -180,11 +183,120 @@ foreach($model->ProdutoS as $prod)
     </tfoot>
 </table>
 
+
+<div id="modalRecalculaEstoque" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    Recálculo Estoque marca:
+                    <a href="{{ url("marca/$model->codmarca") }}">
+                        {{ $model->marca }} 
+                    </a>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" id="pbRecalculaEstoque" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                    </div>
+                </div>
+                <div class='row-fluid text-center' id='labelPbRecalculaEstoque'></div>
+                <br>
+                <pre class='row-fluid hidden' id='logPbRecalculaEstoque' style='height: 400px'></pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" disabled id="btnRecalculaEstoque">Iniciar</button>
+                <button type="button" class="btn btn-default" id="btnFechaModalRecalculaEstoque" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section('inscript')
 <script type="text/javascript">
-  $(document).ready(function() {
-      
-  });
+
+var codprodutos;
+var i_codprodutos = 0;
+
+function recalculaEstoque() {
+    
+    var codproduto = codprodutos[i_codprodutos];
+    
+    var url = '{{ url('produto/{id}/recalcula-estoque' )}}';
+    url = url.replace('{id}', codproduto);
+        
+    $.getJSON(url)
+        .done(function(data) 
+        {
+            console.log(data);
+            var mensagem = 'OK';
+            
+            if (!data.resultado)
+                mensagem = 'Erro - ' + data.mensagem;
+            
+            $('#logPbRecalculaEstoque').prepend(codproduto + ': ' + mensagem + '<br>');
+            
+            i_codprodutos++;
+            atualizaPbRecalculaEstoque();
+            
+            if (i_codprodutos <= (codprodutos.length -1))
+                recalculaEstoque();
+            else
+            {
+                $('#btnRecalculaEstoque').removeAttr('disabled');
+                $('#btnFechaModalRecalculaEstoque').removeAttr('disabled');
+            }
+        })
+        .fail(function( jqxhr, textStatus, error ) 
+        {
+            bootbox.alert(error);
+        });	
+}
+
+function atualizaPbRecalculaEstoque () {
+    var perc = (i_codprodutos / codprodutos.length) * 100;
+    $('#pbRecalculaEstoque').addClass('active');
+    $('#pbRecalculaEstoque').css('width', perc + '%');
+    $('#labelPbRecalculaEstoque').text(i_codprodutos + ' de ' + codprodutos.length + ' produtos!');
+    if (i_codprodutos >= (codprodutos.length-1))
+    {
+        $('#pbRecalculaEstoque').removeClass('active');
+        $('#labelPbRecalculaEstoque').text(codprodutos.length + ' produtos Processados!');
+    }
+}
+
+function buscaCodProduto() {
+    $.getJSON("<?php echo url("marca/{$model->codmarca}/busca-codproduto"); ?>")
+        .done(function(data) 
+        {
+            codprodutos = data;
+            atualizaPbRecalculaEstoque();
+            $('#modalRecalculaEstoque').modal('show');
+            $('#btnRecalculaEstoque').removeAttr('disabled');
+        })
+        .fail(function( jqxhr, textStatus, error ) 
+        {
+            bootbox.alert(error);
+        });	
+    
+}
+
+$(document).ready(function() {
+    $('#btnBuscaCodProduto').click(function (e) {
+        buscaCodProduto();
+    });
+    
+    $('#btnRecalculaEstoque').click(function (e) {
+        
+        i_codprodutos = 0;
+        $('#logPbRecalculaEstoque').html('');
+        $('#btnRecalculaEstoque').attr('disabled', 'disabled');
+        $('#btnFechaModalRecalculaEstoque').attr('disabled', 'disabled');
+        $('#logPbRecalculaEstoque').removeClass('hidden');
+        recalculaEstoque();
+    });
+});
 </script>
 @endsection
 @stop

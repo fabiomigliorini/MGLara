@@ -58,6 +58,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     /* Marca */
     Route::resource('marca','MarcaController');           
+    Route::resource('marca/{id}/busca-codproduto','MarcaController@buscaCodproduto');           
     
     /* SubGrupoProduto */
     Route::resource('sub-grupo-produto','SubGrupoProdutoController');           
@@ -65,6 +66,7 @@ Route::group(['middleware' => 'auth'], function() {
     
     /* Produto */
     Route::resource('produto','ProdutoController');           
+            
     Route::resource('produto/{id}/recalcula-estoque','ProdutoController@recalculaEstoque');
 
     /* NotaFiscal */
@@ -72,5 +74,5 @@ Route::group(['middleware' => 'auth'], function() {
     
     /* Auxiliares */
     Route::resource('printers','UsuarioController@printers');
-    
+    Route::resource('annotations','AnnotationsController');   
 });

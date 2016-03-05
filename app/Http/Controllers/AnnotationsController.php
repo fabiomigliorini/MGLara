@@ -6,25 +6,19 @@ use Illuminate\Http\Request;
 
 use MGLara\Http\Requests;
 use MGLara\Http\Controllers\Controller;
-use MGLara\Models\Marca;
-use MGLara\Models\EstoqueLocal;
-use MGLara\Models\EstoqueSaldo;
 
-class MarcaController extends Controller
+class AnnotationsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $model = Marca::filterAndPaginate(
-            $request->get('codmarca')
-        ); 
-        $ess = EstoqueSaldo::saldoPorMarca();
-        $els = EstoqueLocal::orderBy('codestoquelocal')->get();
-        return view('marca.index', compact('model', 'ess', 'els'));
+        $model = new \MGLara\Models\Marca();
+        
+        return view('annotations.index', compact('model'));
     }
 
     /**
@@ -56,12 +50,8 @@ class MarcaController extends Controller
      */
     public function show($id)
     {
-        $model = Marca::findOrFail($id);
-        $ess = EstoqueSaldo::saldoPorProdutoMarca($model->codmarca);
-        $els = EstoqueLocal::orderBy('codestoquelocal')->get();
-        return view('marca.show', compact('model', 'ess', 'els'));
+        //
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -96,12 +86,4 @@ class MarcaController extends Controller
     {
         //
     }
-    
-    public function buscaCodproduto($id)
-    {
-        $model = Marca::findOrFail($id);
-        foreach ($model->ProdutoS as $prod)
-            $arr_codproduto[] = $prod->codproduto;
-        echo json_encode($arr_codproduto);        
-    }    
 }
