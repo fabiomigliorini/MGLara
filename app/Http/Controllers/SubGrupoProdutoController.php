@@ -54,7 +54,7 @@ class SubGrupoProdutoController extends Controller
     {
         $model = SubGrupoProduto::findOrFail($id);
         $ess = EstoqueSaldo::saldoPorProduto($model->codsubgrupoproduto);
-        $els = EstoqueLocal::orderBy('codestoquelocal')->get();
+        $els = EstoqueLocal::where('inativo', null)->orderBy('codestoquelocal')->get();
         return view('sub-grupo-produto.show', compact('model', 'ess', 'els'));
     }
 

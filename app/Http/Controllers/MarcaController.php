@@ -23,7 +23,7 @@ class MarcaController extends Controller
             $request->get('codmarca')
         ); 
         $ess = EstoqueSaldo::saldoPorMarca();
-        $els = EstoqueLocal::orderBy('codestoquelocal')->get();
+        $els = EstoqueLocal::where('inativo', null)->orderBy('codestoquelocal')->get();
         return view('marca.index', compact('model', 'ess', 'els'));
     }
 
@@ -58,7 +58,7 @@ class MarcaController extends Controller
     {
         $model = Marca::findOrFail($id);
         $ess = EstoqueSaldo::saldoPorProdutoMarca($model->codmarca);
-        $els = EstoqueLocal::orderBy('codestoquelocal')->get();
+        $els = EstoqueLocal::where('inativo', null)->orderBy('codestoquelocal')->get();
         return view('marca.show', compact('model', 'ess', 'els'));
     }
 

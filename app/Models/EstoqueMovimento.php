@@ -96,7 +96,7 @@ class EstoqueMovimento extends MGModel
     // Tabelas Filhas
     public function EstoqueMovimentoS()
     {
-        return $this->hasMany(EstoqueMovimento::class, 'codestoquemovimento', 'codestoquemovimentoorigem');
+        return $this->hasMany(EstoqueMovimento::class, 'codestoquemovimentoorigem', 'codestoquemovimento');
     }
     
     public function validate() {
@@ -115,6 +115,7 @@ class EstoqueMovimento extends MGModel
     public function save(array $options = Array())
     {
         
+        /*
         $this->EstoqueMes->entradaquantidade += $this->entradaquantidade - $this->original['entradaquantidade'];
         $this->EstoqueMes->entradavalor += $this->entradavalor - $this->original['entradavalor'];
         
@@ -126,11 +127,14 @@ class EstoqueMovimento extends MGModel
         
         if ($this->EstoqueMes->saldoquantidade <> 0)
             $this->EstoqueMes->saldovalorunitario = $this->EstoqueMes->saldovalor / $this->EstoqueMes->saldoquantidade;
+        */
         
         $ret = parent::save($options);
 
+        /*
         if ($ret)
             $ret = $this->EstoqueMes->save();
+        */
         
         return $ret;
     }

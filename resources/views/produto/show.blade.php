@@ -151,12 +151,13 @@
 	$arr_saldos = array();
 	foreach ($model->EstoqueSaldoS as $es)
 	{
-            $arr_saldos[$es->EstoqueLocal->estoquelocal] = array(
-                "saldoquantidade" => $es->saldoquantidade,
-                "codestoquesaldo" => $es->codestoquesaldo,
-                "fiscal" => $es->fiscal
-            );
+        $arr_saldos[$es->EstoqueLocal->estoquelocal][$es->fiscal] = array(
+            "saldoquantidade" => $es->saldoquantidade,
+            "codestoquesaldo" => $es->codestoquesaldo,
+        );
 	}
+    
+    //dd($arr_saldos);
 
 	?>
         
@@ -178,17 +179,17 @@
                         </div>
 
                         <div class="col-md-3 text-right">
-                            @if($saldo['fiscal'] == false)
-                            <a href='{{ url("estoque-saldo/$es->codestoquesaldo") }}'>
-                                {{ formataNumero($saldo['saldoquantidade'], 3) }}
+                            @if(isset($saldo[false]))
+                            <a href='{{ url("estoque-saldo/{$saldo[false]['codestoquesaldo']}") }}'>
+                                {{ formataNumero($saldo[false]['saldoquantidade'], 0) }}
                             </a>
                             @endif
                         </div>
                 
                         <div class="col-md-3 text-right">
-                            @if($saldo['fiscal'] == true)
-                            <a href='{{ url("estoque-saldo/$es->codestoquesaldo") }}'>
-                                {{ formataNumero($saldo['saldoquantidade'], 3) }}
+                            @if(isset($saldo[true]))
+                            <a href='{{ url("estoque-saldo/{$saldo[true]['codestoquesaldo']}") }}'>
+                                {{ formataNumero($saldo[true]['saldoquantidade'], 0) }}
                             </a>
                             @endif
                         </div>

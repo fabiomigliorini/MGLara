@@ -22,7 +22,7 @@ class GrupoProdutoController extends Controller
     {
         $model = GrupoProduto::orderBy('grupoproduto')->get();
         $ess = EstoqueSaldo::saldoPorGrupoProduto();
-        $els = EstoqueLocal::orderBy('codestoquelocal')->get();
+        $els = EstoqueLocal::where('inativo', null)->orderBy('codestoquelocal')->get();
         return view('grupo-produto.index', compact('model', 'ess', 'els'));
     }
 
@@ -57,7 +57,7 @@ class GrupoProdutoController extends Controller
     {
         $model = GrupoProduto::findOrFail($id);
         $ess = EstoqueSaldo::saldoPorSubGrupoProduto($model->codgrupoproduto);
-        $els = EstoqueLocal::orderBy('codestoquelocal')->get();
+        $els = EstoqueLocal::where('inativo', null)->orderBy('codestoquelocal')->get();
         return view('grupo-produto.show', compact('model', 'ess', 'els'));
     }
 

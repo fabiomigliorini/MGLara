@@ -90,4 +90,19 @@ class ProdutoController extends Controller
         $ret = $model->recalculaEstoque();
         echo json_encode($ret);
     }
+    
+    /**
+     * Recalcula preço médio dos estoques
+     * 
+     * @param bigint $id
+     * @return \Illuminate\Http\Response
+     * 
+     */
+    public function calculaCustoMedio($id)
+    {
+        $model = Produto::findOrFail($id);
+        $ret = $model->calculaCustoMedio();
+        echo json_encode($ret);
+    }
+    
 }

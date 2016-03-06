@@ -120,7 +120,7 @@ class Produto extends MGModel
     // Tabelas Filhas
     public function EstoqueSaldoS()
     {
-        return $this->hasMany(EstoqueSaldo::class, 'codproduto', 'codproduto');
+        return $this->hasMany(EstoqueSaldo::class, 'codproduto', 'codproduto')->orderBy('codestoquelocal');
     }
 
     public function ProdutoBarraS()
@@ -144,7 +144,7 @@ class Produto extends MGModel
         $resultado = true;
         $mensagem = '';
         
-        set_time_limit(200);
+        set_time_limit(1000);
         
         $sql = 
             "
@@ -175,8 +175,22 @@ class Produto extends MGModel
         }
         $ret["resultado"] = $resultado;
         $ret["mensagem"] = $mensagem;
+        
+        $this->calculaCustoMedio();
+        
         return $ret;
         
+    }
+    
+    public function calculaCustoMedio()
+    {
+        foreach ($this->EstoqueSaldoS as $es)
+            $ret['codestoquesaldo'][$es->codestoquesaldo] = $es->calculaCustoMedio();
+        
+        $ret["resultado"] = true;
+        $ret["mensagem"] = null;
+        
+        return $ret;
     }
 
     

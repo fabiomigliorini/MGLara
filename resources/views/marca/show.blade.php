@@ -90,7 +90,7 @@ foreach($model->ProdutoS as $prod)
                 @if (isset($arr_saldos[$row->codproduto][$el->codestoquelocal][0]))
                     <?php $codestoquesaldo = $arr_saldos[$row->codproduto][$el->codestoquelocal][0]['codestoquesaldo']; ?>
                     <a href="{{ url("estoque-saldo/$codestoquesaldo") }}">
-                        {{ formataNumero($arr_saldos[$row->codproduto][$el->codestoquelocal][0]['saldovalorunitario'], 6) }}
+                        {{ formataNumero($arr_saldos[$row->codproduto][$el->codestoquelocal][0]['saldovalorunitario'], 2) }}
                     </a>
                 @endif
             </td>
@@ -121,7 +121,7 @@ foreach($model->ProdutoS as $prod)
                 @if (isset($arr_saldos[$row->codproduto][$el->codestoquelocal][1]))
                     <?php $codestoquesaldo = $arr_saldos[$row->codproduto][$el->codestoquelocal][1]['codestoquesaldo']; ?>
                     <a href="{{ url("estoque-saldo/$codestoquesaldo") }}">
-                        {{ formataNumero($arr_saldos[$row->codproduto][$el->codestoquelocal][1]['saldovalorunitario'], 6) }}
+                        {{ formataNumero($arr_saldos[$row->codproduto][$el->codestoquelocal][1]['saldovalorunitario'], 2) }}
                     </a>
                 @endif
             </td>
