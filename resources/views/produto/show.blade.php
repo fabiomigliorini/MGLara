@@ -148,13 +148,15 @@
  
 	<?php
 
-	$arr_saldos = array();
+	$arr_saldos = [];
+    $arr_totais = [true => 0, false => 0];
 	foreach ($model->EstoqueSaldoS as $es)
 	{
         $arr_saldos[$es->EstoqueLocal->estoquelocal][$es->fiscal] = array(
             "saldoquantidade" => $es->saldoquantidade,
             "codestoquesaldo" => $es->codestoquesaldo,
         );
+        $arr_totais[$es->fiscal] += $es->saldoquantidade;
 	}
     
     //dd($arr_saldos);
@@ -162,15 +164,14 @@
 	?>
         
         <div class='panel panel-info'>
-            <div class="panel-heading">Estoque</div>            
-            <ul class="list-group bg-infoo">
-                <li class="list-group-item">
+            <div class="panel-heading">
                     <div class="row item">
-                        <div class="col-md-6"></div>
+                        <div class="col-md-6">Estoque</div>
                         <div class="col-md-3 text-right">Físico</div>
                         <div class="col-md-3 text-right">Fiscal</div>
                     </div>
-                </li>
+            </div>            
+            <ul class="list-group bg-infoo">
             @foreach($arr_saldos as $estoquelocal => $saldo)
                 <li class="list-group-item">
                     <div class="row item">            
@@ -195,7 +196,22 @@
                         </div>
                     </div>            
                 </li>
-            @endforeach        
+            @endforeach    
+                <li class="list-group-item">
+                    <div class="row item">            
+                        <div class="col-md-6">
+                            Total
+                        </div>
+
+                        <div class="col-md-3 text-right">
+                            {{ formataNumero($arr_totais[false], 0) }}
+                        </div>
+                
+                        <div class="col-md-3 text-right">
+                            {{ formataNumero($arr_totais[true], 0) }}
+                        </div>
+                    </div>            
+                </li>
             </ul>
         </div>
         
