@@ -2,27 +2,63 @@
 
 namespace MGLara\Models;
 
+/**
+ * Campos
+ * @property  bigint                         $codgrupousuario                    NOT NULL DEFAULT nextval('tblgrupousuario_codgrupousuario_seq'::regclass)
+ * @property  varchar(50)                    $grupousuario                       NOT NULL
+ * @property  varchar(600)                   $observacoes                        
+ * @property  timestamp                      $alteracao                          
+ * @property  bigint                         $codusuarioalteracao                
+ * @property  timestamp                      $criacao                            
+ * @property  bigint                         $codusuariocriacao                  
+ *
+ * Chaves Estrangeiras
+ * @property  Usuario                        $UsuarioAlteracao
+ * @property  Usuario                        $UsuarioCriacao
+ *
+ * Tabelas Filhas
+ * @property  Permissao[]                    $PermissaoS
+ * @property  Usuario[]                      $UsuarioS
+ * @property  Filial[]                       $FilialS
+ */
 
 class GrupoUsuario extends MGModel
 {
     protected $table = 'tblgrupousuario';
     protected $primaryKey = 'codgrupousuario';
     protected $fillable = [
-      'grupousuario',
-      'observacoes',  
+        'grupousuario',
+        'observacoes',
     ];
+    protected $dates = [
+        'alteracao',
+        'criacao',
+    ];
+
+
+    // Chaves Estrangeiras
+    public function UsuarioAlteracao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuarioalteracao');
+    }
+
+    public function UsuarioCriacao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
+    }
     
-    public function Usuario()
+    // // Tabelas Filhas (sem gerador)
+    public function UsuarioS()
     {
         return $this->belongsToMany(Usuario::class,'tblgrupousuariousuario', 'codgrupousuario', 'codusuario');
     }   
 
-    public function Permissao()
+    public function PermissaoS()
     {
         return $this->belongsToMany(Permissao::class, 'tblgrupousuariopermissao', 'codgrupousuario', 'codpermissao');
     }
 
-    public function Filiais()
+    public function FilialS()
     {
         return $this->belongsToMany(Filial::class, 'tblgrupousuariousuario', 'codgrupousuario', 'codfilial');
     }

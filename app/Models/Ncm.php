@@ -2,14 +2,90 @@
 
 namespace MGLara\Models;
 
+/**
+ * Campos
+ * @property  bigint                         $codncm                             NOT NULL DEFAULT nextval('tblncm_codncm_seq'::regclass)
+ * @property  varchar(10)                    $ncm                                NOT NULL
+ * @property  varchar(1500)                  $descricao                          NOT NULL
+ * @property  timestamp                      $alteracao                          
+ * @property  bigint                         $codusuarioalteracao                
+ * @property  timestamp                      $criacao                            
+ * @property  bigint                         $codusuariocriacao                  
+ * @property  bigint                         $codncmpai                          
+ *
+ * Chaves Estrangeiras
+ * @property  Ncm                            $Ncm                           
+ * @property  Usuario                        $UsuarioAlteracao
+ * @property  Usuario                        $UsuarioCriacao
+ *
+ * Tabelas Filhas
+ * @property  Cest[]                         $CestS
+ * @property  Ibptax[]                       $IbptaxS
+ * @property  Ncm[]                          $NcmS
+ * @property  Produto[]                      $ProdutoS
+ * @property  RegulamentoIcmsStMt[]          $RegulamentoIcmsStMtS
+ */
+
 class Ncm extends MGModel
 {
     protected $table = 'tblncm';
     protected $primaryKey = 'codncm';
     protected $fillable = [
-      'ncm',
+        'ncm',
+        'descricao',
+        'codncmpai',
     ];
+    protected $dates = [
+        'alteracao',
+        'criacao',
+    ];
+
+
+    // Chaves Estrangeiras
+    public function Ncm()
+    {
+        return $this->belongsTo(Ncm::class, 'codncm', 'codncmpai');
+    }
+
+    public function UsuarioAlteracao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuarioalteracao');
+    }
+
+    public function UsuarioCriacao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
+    }
+
+
+    // Tabelas Filhas
+    public function CestS()
+    {
+        return $this->hasMany(Cest::class, 'codncm', 'codncm');
+    }
+
+    public function IbptaxS()
+    {
+        return $this->hasMany(Ibptax::class, 'codncm', 'codncm');
+    }
+
+    public function NcmS()
+    {
+        return $this->hasMany(Ncm::class, 'codncm', 'codncmpai');
+    }
+
+    public function ProdutoS()
+    {
+        return $this->hasMany(Produto::class, 'codncm', 'codncm');
+    }
+
+    public function RegulamentoIcmsStMtS()
+    {
+        return $this->hasMany(RegulamentoIcmsStMt::class, 'codncm', 'codncm');
+    }
        
+    
+    /*
     public function ProdutoS()
     {
         return $this->hasMany(Produto::class, 'codncm', 'codncm');
@@ -39,7 +115,7 @@ class Ncm extends MGModel
     {
         return $this->hasMany(RegulamentoIcmsStMt::class, 'codncm', 'codncm');
     } 
-    
+    */
     
     /* Fim relacionamentos */
     

@@ -6,12 +6,11 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-##use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use MGLara\Models\MGModel;
 
 
-class Usuario extends MGModel implements AuthenticatableContract, /*AuthorizableContract,*/ CanResetPasswordContract
+class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswordContract
 {
     use Authenticatable, Authorizable, CanResetPassword;
 
@@ -144,7 +143,8 @@ class Usuario extends MGModel implements AuthenticatableContract, /*Authorizable
     
     protected function getAllPermissionsFormAllRoles()
     {
-        $permissions = $this->GrupoUsuario->load('Permissao')->fetch('permissao')->toArray();
+        $permissions = $this->GrupoUsuario->load('PermissaoS')->fetch('permissao_s')->toArray();
+       
         return array_map('strtolower', array_unique(array_flatten(array_map(function ($permission) {
             return array_pluck($permission, 'permissao');
         }, $permissions))));

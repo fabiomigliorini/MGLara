@@ -27,6 +27,7 @@ abstract class MGModel extends Model {
     protected $_mensagensErro;
     public $_validator;
     
+    /*
     public function UsuarioCriacao()
     {
         return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
@@ -36,7 +37,7 @@ abstract class MGModel extends Model {
     {
         return $this->belongsTo(Usuario::class, 'codusuarioalteracao', 'codusuario');
     }     
-    
+    */
     
     #public function __construct() {
         

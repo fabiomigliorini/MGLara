@@ -2,24 +2,40 @@
 
 namespace MGLara\Models;
 
-use Illuminate\Support\Facades\Validator;
+/**
+ * Campos
+ * @property  bigint                         $codmarca                           NOT NULL DEFAULT nextval('tblmarca_codmarca_seq'::regclass)
+ * @property  varchar(50)                    $marca                              
+ * @property  boolean                        $site                               NOT NULL DEFAULT false
+ * @property  varchar(1024)                  $descricaosite                      
+ * @property  timestamp                      $alteracao                          
+ * @property  bigint                         $codusuarioalteracao                
+ * @property  timestamp                      $criacao                            
+ * @property  bigint                         $codusuariocriacao                  
+ *
+ * Chaves Estrangeiras
+ * @property  Usuario                        $UsuarioAlteracao
+ * @property  Usuario                        $UsuarioCriacao
+ *
+ * Tabelas Filhas
+ * @property  ProdutoBarra[]                 $ProdutoBarraS
+ * @property  Produto[]                      $ProdutoS
+ */
 
 class Marca extends MGModel
 {
     protected $table = 'tblmarca';
     protected $primaryKey = 'codmarca';
     protected $fillable = [
-      'marca',
-      'site',  
-      'descricaosite',
+        'marca',
+        'site',
+        'descricaosite',
     ];
-    
-    
-    public function ProdutoS()
-    {
-        return $this->hasMany(Produto::class, 'codmarca', 'codmarca')->orderBy('produto');
-    }      
-    
+    protected $dates = [
+        'alteracao',
+        'criacao',
+    ];
+
     public function validate() {
         
         $this->_regrasValidacao = [
@@ -35,7 +51,30 @@ class Marca extends MGModel
         
     }
     
-    # Buscas #
+    // Chaves Estrangeiras
+    public function UsuarioAlteracao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuarioalteracao');
+    }
+
+    public function UsuarioCriacao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
+    }
+
+
+    // Tabelas Filhas
+    public function ProdutoBarraS()
+    {
+        return $this->hasMany(ProdutoBarra::class, 'codmarca', 'codmarca');
+    }
+
+    public function ProdutoS()
+    {
+        return $this->hasMany(Produto::class, 'codmarca', 'codmarca')->orderBy('produto');
+    }
+
+    // Buscas 
     public static function filterAndPaginate($marca)
     {
         return Marca::marca($marca)
@@ -50,6 +89,4 @@ class Marca extends MGModel
             $query->where('marca', "ILIKE", "%$marca%");
         }
     }
-
-            
 }

@@ -1,21 +1,36 @@
 <?php
 
 namespace MGLara\Models;
-use Illuminate\Support\Facades\Validator;
+
+/**
+ * Campos
+ * @property  bigint                         $codgrupoproduto                    NOT NULL DEFAULT nextval('tblgrupoproduto_codgrupoproduto_seq'::regclass)
+ * @property  varchar(50)                    $grupoproduto                       
+ * @property  timestamp                      $alteracao                          
+ * @property  bigint                         $codusuarioalteracao                
+ * @property  timestamp                      $criacao                            
+ * @property  bigint                         $codusuariocriacao                  
+ *
+ * Chaves Estrangeiras
+ * @property  Usuario                        $UsuarioAlteracao
+ * @property  Usuario                        $UsuarioCriacao
+ *
+ * Tabelas Filhas
+ * @property  SubGrupoProduto[]              $SubGrupoProdutoS
+ */
 
 class GrupoProduto extends MGModel
 {
     protected $table = 'tblgrupoproduto';
     protected $primaryKey = 'codgrupoproduto';
     protected $fillable = [
-      'grupoproduto',
+        'grupoproduto',
     ];
-    
-    public function SubGrupoProdutoS()
-    {
-        return $this->hasMany(SubGrupoProduto::class, 'codgrupoproduto', 'codgrupoproduto')->orderBy('subgrupoproduto');
-    }    
-    
+    protected $dates = [
+        'alteracao',
+        'criacao',
+    ];
+
     public function validate() {
 
         $this->_regrasValidacao = [
@@ -27,8 +42,25 @@ class GrupoProduto extends MGModel
 
         return parent::validate();
     }    
-    
-    
+
+    // Chaves Estrangeiras
+    public function UsuarioAlteracao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuarioalteracao');
+    }
+
+    public function UsuarioCriacao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
+    }
+
+
+    // Tabelas Filhas
+    public function SubGrupoProdutoS()
+    {
+        return $this->hasMany(SubGrupoProduto::class, 'codgrupoproduto', 'codgrupoproduto');
+    }
+
     public function scopeGrupoproduto($query, $grupoproduto)
     {
         if (trim($grupoproduto) != "")
@@ -36,4 +68,5 @@ class GrupoProduto extends MGModel
             $query->where('grupoproduto', "ILIKE", "%$grupoproduto%");
         }
     }    
+
 }
