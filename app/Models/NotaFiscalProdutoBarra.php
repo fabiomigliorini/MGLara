@@ -156,7 +156,14 @@ class NotaFiscalProdutoBarra extends MGModel
         {
             //Apaga movimentos gerados por notas canceladas
             foreach ($ems as $em)
+            {
+                foreach ($em->EstoqueMovimentoS as $emOrigem)
+                {
+                    $emOrigem->codestoquemovimentoorigem = null;
+                    $emOrigem->save();
+                }
                 $em->delete();
+            }
             
             //retorna
             return true;
@@ -194,16 +201,25 @@ class NotaFiscalProdutoBarra extends MGModel
             
             case EstoqueMovimentoTipo::PRECO_ORIGEM:
                 
-                $nfechave = $this->NotaFiscal->nfechave;
-                $valor = 0;
+                $nfechave = [$this->NotaFiscal->nfechave];
+                foreach($this->NotaFiscal->NotaFiscalReferenciadaS as $nfref)
+                    $nfechave[] = $nfref->nfechave;
+                
+                print_r($this->codnotafiscalprodutobarra);
                 
                 // Procura NF Origem baseado na chave
-                $nfsOrigem = NotaFiscal
-                    ::where('nfechave', $nfechave)
-                    ->where('codnotafiscal', '!=', $this->NotaFiscal->codnotafiscal)
-                    ->where('codnaturezaoperacao', '=', $this->NotaFiscal->NaturezaOperacao->codnaturezaoperacaodevolucao)
-                    ->get();
-                
+                if (isset($this->NotaFiscal->NaturezaOperacao->codnaturezaoperacaodevolucao))
+                    $nfsOrigem = NotaFiscal
+                        ::whereIn('nfechave', $nfechave)
+                        ->where('codnotafiscal', '!=', $this->NotaFiscal->codnotafiscal)
+                        ->where('codnaturezaoperacao', '=', $this->NotaFiscal->NaturezaOperacao->codnaturezaoperacaodevolucao)
+                        ->get();
+                else
+                    $nfsOrigem = NotaFiscal
+                        ::whereIn('nfechave', $nfechave)
+                        ->where('codnotafiscal', '!=', $this->NotaFiscal->codnotafiscal)
+                        ->get();
+
                 // se nao achou a nota desiste
                 if (sizeof($nfsOrigem) == 0)
                     break;
@@ -228,12 +244,7 @@ class NotaFiscalProdutoBarra extends MGModel
 
                     //se nao achou origem desiste
                     if (sizeof($nfpbsOrigem) == 0)
-                    {
-                        echo $this->NotaFiscal->codnotafiscal . '<hr>';
-                        echo $this->NotaFiscal->NaturezaOperacao->naturezaoperacao . '<hr>';
-                        die();
                         break 2;
-                    }
                     
                     foreach ($nfpbsOrigem[0]->EstoqueMovimentoS as $emOrigem)
                     {
