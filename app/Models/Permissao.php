@@ -2,6 +2,24 @@
 
 namespace MGLara\Models;
 
+/**
+ * Campos
+ * @property  bigint                         $codpermissao                       NOT NULL
+ * @property  varchar(100)                   $permissao                          NOT NULL
+ * @property  varchar(600)                   $observacoes                        
+ * @property  timestamp                      $alteracao                          
+ * @property  bigint                         $codusuarioalteracao                
+ * @property  timestamp                      $criacao                            
+ * @property  bigint                         $codusuariocriacao                  
+ *
+ * Chaves Estrangeiras
+ * @property  Usuario                        $UsuarioAlteracao
+ * @property  Usuario                        $UsuarioCriacao
+ *
+ * Tabelas Filhas
+ * @property  GrupoUsuario[]        $GrupoUsuario
+ */
+
 class Permissao extends MGModel
 {
     protected $table = 'tblpermissao';
@@ -12,6 +30,18 @@ class Permissao extends MGModel
         'observacoes',  
     ];
     
+    // Chaves Estrangeiras
+    public function UsuarioAlteracao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuarioalteracao');
+    }
+
+    public function UsuarioCriacao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
+    }    
+
+    // Tabelas Filhas    
     public function GrupoUsuario()
     {
         return $this->belongsToMany(GrupoUsuario::class, 'tblgrupousuariopermissao', 'codpermissao', 'codgrupousuario');

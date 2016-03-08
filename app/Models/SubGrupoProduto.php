@@ -1,26 +1,39 @@
 <?php
 
 namespace MGLara\Models;
-use Illuminate\Support\Facades\Validator;
+
+/**
+ * Campos
+ * @property  bigint                         $codsubgrupoproduto                 NOT NULL DEFAULT nextval('tblsubgrupoproduto_codsubgrupoproduto_seq'::regclass)
+ * @property  bigint                         $codgrupoproduto                    
+ * @property  varchar(50)                    $subgrupoproduto                    
+ * @property  timestamp                      $alteracao                          
+ * @property  bigint                         $codusuarioalteracao                
+ * @property  timestamp                      $criacao                            
+ * @property  bigint                         $codusuariocriacao                  
+ *
+ * Chaves Estrangeiras
+ * @property  GrupoProduto                   $GrupoProduto                  
+ * @property  Usuario                        $UsuarioAlteracao
+ * @property  Usuario                        $UsuarioCriacao
+ *
+ * Tabelas Filhas
+ * @property  Produto[]                      $ProdutoS
+ */
 
 class SubGrupoProduto extends MGModel
 {
     protected $table = 'tblsubgrupoproduto';
     protected $primaryKey = 'codsubgrupoproduto';
     protected $fillable = [
-      'subgrupoproduto',
-    ]; 
-    
-    public function GrupoProduto()
-    {
-        return $this->belongsTo(GrupoProduto::class, 'codgrupoproduto', 'codgrupoproduto');
-    }    
-    
-    public function ProdutoS()
-    {
-        return $this->hasMany(Produto::class, 'codsubgrupoproduto', 'codsubgrupoproduto')->orderBy('produto');;
-    }    
-    
+        'codgrupoproduto',
+        'subgrupoproduto',
+    ];
+    protected $dates = [
+        'alteracao',
+        'criacao',
+    ];
+
     public function validate() {
 
         $this->_regrasValidacao = [
@@ -31,6 +44,31 @@ class SubGrupoProduto extends MGModel
         ];
         return parent::validate();
     }    
+
+
+    // Chaves Estrangeiras
+    public function GrupoProduto()
+    {
+        return $this->belongsTo(GrupoProduto::class, 'codgrupoproduto', 'codgrupoproduto');
+    }
+
+    public function UsuarioAlteracao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuarioalteracao');
+    }
+
+    public function UsuarioCriacao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
+    }
+
+
+    // Tabelas Filhas
+    public function ProdutoS()
+    {
+        return $this->hasMany(Produto::class, 'codsubgrupoproduto', 'codsubgrupoproduto');
+    }
+
     
     public function scopeSubgrupoproduto($query, $subgrupoproduto, $codgrupoproduto)
     {

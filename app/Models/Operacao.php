@@ -2,6 +2,26 @@
 
 namespace MGLara\Models;
 
+/**
+ * Campos
+ * @property  bigint                         $codoperacao                        NOT NULL DEFAULT nextval('tbloperacao_codoperacao_seq'::regclass)
+ * @property  varchar(50)                    $operacao                           
+ * @property  timestamp                      $alteracao                          
+ * @property  bigint                         $codusuarioalteracao                
+ * @property  timestamp                      $criacao                            
+ * @property  bigint                         $codusuariocriacao                  
+ *
+ * Chaves Estrangeiras
+ * @property  Usuario                        $UsuarioAlteracao
+ * @property  Usuario                        $UsuarioCriacao
+ *
+ * Tabelas Filhas
+ * @property  Negocio[]                      $NegocioS
+ * @property  NfeTerceiro[]                  $NfeTerceiroS
+ * @property  NotaFiscal[]                   $NotaFiscalS
+ * @property  Usuario[]                      $UsuarioS
+ */
+
 class Operacao extends MGModel
 {
     
@@ -11,20 +31,13 @@ class Operacao extends MGModel
     protected $table = 'tbloperacao';
     protected $primaryKey = 'codoperacao';
     protected $fillable = [
-      'operacao',
+        'operacao',
+    ];
+    protected $dates = [
+        'alteracao',
+        'criacao',
     ];
     
-    public function NaturezaOperacaoS()
-    {
-        return $this->hasMany(NaturezaOperacao::class, 'codoperacao', 'codoperacao');
-    }
-    
-    public function Usuario()
-    {
-        return $this->hasMany('Usuario::class', 'codoperacao', 'codoperacao');
-    }
-     
-
     public function validate() {
         
         $this->_regrasValidacao = [
@@ -37,5 +50,53 @@ class Operacao extends MGModel
         
         return parent::validate();
     }
+    
+
+    // Chaves Estrangeiras
+    public function UsuarioAlteracao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuarioalteracao');
+    }
+
+    public function UsuarioCriacao()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
+    }
+
+
+    // Tabelas Filhas
+    public function NegocioS()
+    {
+        return $this->hasMany(Negocio::class, 'codoperacao', 'codoperacao');
+    }
+
+    public function NfeTerceiroS()
+    {
+        return $this->hasMany(NfeTerceiro::class, 'codoperacao', 'codoperacao');
+    }
+
+    public function NotaFiscalS()
+    {
+        return $this->hasMany(NotaFiscal::class, 'codoperacao', 'codoperacao');
+    }
+
+    public function UsuarioS()
+    {
+        return $this->hasMany(Usuario::class, 'codoperacao', 'codoperacao');
+    }    
+    /*
+    public function NaturezaOperacaoS()
+    {
+        return $this->hasMany(NaturezaOperacao::class, 'codoperacao', 'codoperacao');
+    }
+    
+    public function Usuario()
+    {
+        return $this->hasMany('Usuario::class', 'codoperacao', 'codoperacao');
+    }
+    */
+     
+
+
 
 }
