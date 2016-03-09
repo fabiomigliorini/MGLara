@@ -69,8 +69,8 @@ Route::group(['middleware' => 'auth'], function() {
     
     /* Produto */
     Route::resource('produto','ProdutoController');           
-    Route::resource('produto/{id}/recalcula-estoque','ProdutoController@recalculaEstoque');
-    Route::resource('produto/{id}/calcula-custo-medio','ProdutoController@calculaCustoMedio');           
+    Route::resource('produto/{id}/recalcula-movimento-estoque','ProdutoController@recalculaMovimentoEstoque');
+    Route::resource('produto/{id}/recalcula-custo-medio','ProdutoController@recalculaCustoMedio');           
 
     /* NotaFiscal */
     Route::resource('nota-fiscal','NotaFiscalController');           

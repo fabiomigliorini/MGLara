@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
  * @property  boolean                        $fiscal                             NOT NULL
  * @property  numeric(14,3)                  $saldoquantidade                    
  * @property  numeric(14,2)                  $saldovalor                         
- * @property  numeric(14,6)                  $saldovalorunitario                 
+ * @property  numeric(14,6)                  $customedio                 
  * @property  timestamp                      $alteracao                          
  * @property  bigint                         $codusuarioalteracao                
  * @property  timestamp                      $criacao                            
@@ -43,7 +43,7 @@ class EstoqueSaldo extends MGModel
         'fiscal',
         'saldoquantidade',
         'saldovalor',
-        'saldovalorunitario',
+        'customedio',
         'codestoquelocal',
     ];
     protected $dates = [
@@ -205,7 +205,7 @@ class EstoqueSaldo extends MGModel
         return $res;
     }
     
-    public function calculaCustoMedio()
+    public function recalculaCustoMedio()
     {
         $inicialquantidade = 0;
         $inicialvalor = 0;
@@ -231,7 +231,10 @@ class EstoqueSaldo extends MGModel
             $saidavalor = $mov->saidavalor;
             $saldoquantidade = $inicialquantidade + $entradaquantidade - $saidaquantidade;
             $saldovalor = $inicialvalor + $entradavalor - $saidavalor;
-            $saldovalorunitario = ($saldoquantidade>0)?$saldovalor/$saldoquantidade:0;
+            
+            $customedio = null;
+            if (($entradaquantidade + $inicialquantidade) > 0)
+                $customedio = ($entradavalor + $inicialvalor)/($entradaquantidade + $inicialquantidade);
             
             
             foreach ($mes->EstoqueMovimentoS as $mov)
@@ -239,8 +242,8 @@ class EstoqueSaldo extends MGModel
                 if ($mov->EstoqueMovimentoTipo->preco != EstoqueMovimentoTipo::PRECO_MEDIO)
                     continue;
                 
-                $mov->entradavalor = (!empty($mov->entradaquantidade))?round($mov->entradaquantidade * $saldovalorunitario, 2):null;
-                $mov->saidavalor = (!empty($mov->saidaquantidade))?round($mov->saidaquantidade * $saldovalorunitario, 2):null;
+                $mov->entradavalor = (!empty($mov->entradaquantidade))?round($mov->entradaquantidade * $customedio, 2):null;
+                $mov->saidavalor = (!empty($mov->saidaquantidade))?round($mov->saidaquantidade * $customedio, 2):null;
                 $mov->save();
                 
                 $entradaquantidade += $mov->entradaquantidade;
@@ -253,8 +256,8 @@ class EstoqueSaldo extends MGModel
                     if ($movfilho->EstoqueMovimentoTipo->preco != EstoqueMovimentoTipo::PRECO_ORIGEM)
                         continue;
                     
-                    $movfilho->entradavalor = (!empty($movfilho->entradaquantidade))?round($movfilho->entradaquantidade * $saldovalorunitario, 2):null;
-                    $movfilho->saidavalor = (!empty($movfilho->saidaquantidade))?round($movfilho->saidaquantidade * $saldovalorunitario, 2):null;
+                    $movfilho->entradavalor = (!empty($movfilho->entradaquantidade))?round($movfilho->entradaquantidade * $customedio, 2):null;
+                    $movfilho->saidavalor = (!empty($movfilho->saidaquantidade))?round($movfilho->saidaquantidade * $customedio, 2):null;
                     $movfilho->save();
                 }
             }
@@ -262,7 +265,10 @@ class EstoqueSaldo extends MGModel
             
             $saldoquantidade = $inicialquantidade + $entradaquantidade - $saidaquantidade;
             $saldovalor = $inicialvalor + $entradavalor - $saidavalor;
-            $saldovalorunitario = ($saldoquantidade>0)?$saldovalor/$saldoquantidade:0;
+            
+            $customedio = null;
+            if (($entradaquantidade + $inicialquantidade) > 0)
+                $customedio = ($entradavalor + $inicialvalor)/($entradaquantidade + $inicialquantidade);
 
             $mes->inicialquantidade = $inicialquantidade;
             $mes->inicialvalor = $inicialvalor;
@@ -272,7 +278,7 @@ class EstoqueSaldo extends MGModel
             $mes->saidavalor = $saidavalor;
             $mes->saldoquantidade = $saldoquantidade;
             $mes->saldovalor = $saldovalor;
-            $mes->saldovalorunitario = $saldovalorunitario;
+            $mes->customedio = $customedio;
             
             $mes->save();
             
@@ -283,7 +289,7 @@ class EstoqueSaldo extends MGModel
         
         $this->saldoquantidade = $saldoquantidade;
         $this->saldovalor = $saldovalor;
-        $this->saldovalorunitario = $saldovalorunitario;
+        $this->customedio = $customedio;
         $this->save();
         
         return true;

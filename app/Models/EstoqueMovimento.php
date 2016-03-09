@@ -146,7 +146,7 @@ class EstoqueMovimento extends MGModel
         $this->EstoqueMes->saldovalor = $this->EstoqueMes->entradavalor - $this->EstoqueMes->saidavalor;
         
         if ($this->EstoqueMes->saldoquantidade <> 0)
-            $this->EstoqueMes->saldovalorunitario = $this->EstoqueMes->saldovalor / $this->EstoqueMes->saldoquantidade;
+            $this->EstoqueMes->customedio = $this->EstoqueMes->saldovalor / $this->EstoqueMes->saldoquantidade;
         */
         
         $ret = parent::save($options);

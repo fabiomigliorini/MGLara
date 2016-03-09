@@ -4,7 +4,8 @@
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="{{ url("estoque-movimento/create") }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
-            <li><a href="#" id="btnRecalculaEstoque"><span class="glyphicon glyphicon-refresh"></span> Recalcular Estoque</a></li>             
+            <li><a href="#" id="btnRecalculaMovimentoEstoque"><span class="glyphicon glyphicon-refresh"></span> Recalcular Movimento de Estoque</a></li>
+            <li><a href="#" id="btnRecalculaCustoMedio"><span class="glyphicon glyphicon-usd"></span> Recalcular Custo Medio</a></li>
         </ul>
     </div>
 </nav>
@@ -97,7 +98,7 @@ if (sizeof($anteriores) < 8)
             <th colspan="2">Entrada</th>
             <th colspan="2">Saída</th>
             <th colspan="2">Saldo</th>
-            <th rowspan="2" class='col-sm-1'>Unitário</th>
+            <th rowspan="2" class='col-sm-1'>Custo Médio</th>
             <th rowspan="2" class='col-sm-3'>Documento</th>
         </tr>
         <tr>
@@ -113,14 +114,14 @@ if (sizeof($anteriores) < 8)
         <?php
         $saldoquantidade = $model->inicialquantidade;
         $saldovalor = $model->inicialvalor;
-        $saldovalorunitario = ($saldoquantidade != 0)?$saldovalor/$saldoquantidade:0;
+        $customedio = ($saldoquantidade != 0)?$saldovalor/$saldoquantidade:0;
         ?>
         <tr>
             <td></td>
             <th colspan="5">Saldo Inicial</th>
             <td class="text-right <?php echo ($saldoquantidade < 0)?"text-danger":""; ?>">{{ formataNumero($saldoquantidade, 3) }}</td>
             <td class="text-right <?php echo ($saldovalor < 0)?"text-danger":""; ?>">{{ formataNumero($saldovalor) }}</td>
-            <td class="text-right">{{ formataNumero($saldovalorunitario, 6) }}</td>
+            <td class="text-right">{{ formataNumero($customedio, 6) }}</td>
             <td></td>
         </tr>
         @foreach($model->EstoqueMovimentoS()->orderBy('data', 'asc')->orderBy('entradaquantidade', 'asc')->get() as $row)
@@ -128,7 +129,7 @@ if (sizeof($anteriores) < 8)
             <?php
                 $saldoquantidade += $row->entradaquantidade - $row->saidaquantidade;
                 $saldovalor += $row->entradavalor - $row->saidavalor;
-                $saldovalorunitario = ($saldoquantidade != 0)?$saldovalor/$saldoquantidade:0;
+                $customedio = (($row->entradaquantidade + $row->saidaquantidade) != 0)?($row->entradavalor + $row->saidavalor)/(($row->entradaquantidade + $row->saidaquantidade)):0;
             ?>
             <td>{{ formataData($row->data, 'L') }}</td>
             <td>{{ $row->EstoqueMovimentoTipo->descricao }}</td>
@@ -138,7 +139,7 @@ if (sizeof($anteriores) < 8)
             <td class="text-right">{{ formataNumero($row->saidavalor) }}</td>
             <td class="text-right <?php echo ($saldoquantidade < 0)?"text-danger":""; ?>">{{ formataNumero($saldoquantidade, 3) }}</td>
             <td class="text-right <?php echo ($saldovalor < 0)?"text-danger":""; ?>"">{{ formataNumero($saldovalor) }}</td>
-            <td class="text-right">{{ formataNumero($saldovalorunitario, 6) }}</td>
+            <td class="text-right">{{ formataNumero($customedio, 6) }}</td>
             <td>
                 @if (isset($row->codnotafiscalprodutobarra))
                     {{ formataNumero($row->NotaFiscalProdutoBarra->NotaFiscal->numero, 0) }} -
@@ -150,6 +151,8 @@ if (sizeof($anteriores) < 8)
                     <i class="glyphicon glyphicon-pencil"></i>
                 </a>
                 @endif
+                
+                {{ $row->observacoes }}
             </td>
         </tr>
         @endforeach
@@ -168,21 +171,33 @@ if (sizeof($anteriores) < 8)
             <th class="text-right">{{ formataNumero($model->saidavalor) }}</th>
             <th class="text-right <?php echo ($model->saldoquantidade < 0)?"text-danger":""; ?>">{{ formataNumero($model->saldoquantidade, 3) }}</th>
             <th class="text-right <?php echo ($model->saldovalor < 0)?"text-danger":""; ?>"">{{ formataNumero($model->saldovalor) }}</th>
-            <th class="text-right">{{ formataNumero($model->saldovalorunitario, 6) }}</th>
+            <th class="text-right">{{ formataNumero($model->customedio, 6) }}</th>
             <th></th>
         </tr>
     </tfoot>
     </tbody>
 </table>
 
+<!-- Modal -->
+<div class="modal fade" id="modalRecalculando" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        Aguarde, recalculando...
+      </div>
+    </div>
+  </div>
+</div>
+
 @section('inscript')
 <script type="text/javascript">
     
-function recalculaEstoque() {
-    $.getJSON("<?php echo url("produto/{$model->EstoqueSaldo->codproduto}/recalcula-estoque"); ?>")
+function recalculaMovimentoEstoque() {
+    $.getJSON("<?php echo url("produto/{$model->EstoqueSaldo->codproduto}/recalcula-movimento-estoque"); ?>")
         .done(function(data) 
         {
-            var mensagem = 'Recalculo efetuado com sucesso!'
+            $('#modalRecalculando').modal('hide');
+            var mensagem = 'Recálculo efetuado com sucesso!'
             if (!data.resultado)
                 mensagem = data.mensagem;
             bootbox.alert(mensagem, function (result){
@@ -191,18 +206,53 @@ function recalculaEstoque() {
         })
         .fail(function( jqxhr, textStatus, error ) 
         {
+            $('#modalRecalculando').modal('hide');
+            bootbox.alert(error);
+        });	
+    
+}
+
+function recalculaCustoMedio() {
+    $.getJSON("<?php echo url("produto/{$model->EstoqueSaldo->codproduto}/recalcula-custo-medio"); ?>")
+        .done(function(data) 
+        {
+            $('#modalRecalculando').modal('hide');
+            var mensagem = 'Recálculo efetuado com sucesso!'
+            if (!data.resultado)
+                mensagem = data.mensagem;
+            bootbox.alert(mensagem, function (result){
+                location.reload();                    
+            });
+        })
+        .fail(function( jqxhr, textStatus, error ) 
+        {
+            $('#modalRecalculando').modal('hide');
             bootbox.alert(error);
         });	
     
 }
 
 $(document).ready(function() {
-    $('#btnRecalculaEstoque').click(function (e) {
-        bootbox.confirm("Recalcular estoque para este produto?", function(result) {
+    $('#btnRecalculaMovimentoEstoque').click(function (e) {
+        bootbox.confirm("Recalcular Movimento de Estoque para este produto?", function(result) {
             if (result)
-                recalculaEstoque();
+            {
+                $('#modalRecalculando').modal();
+                recalculaMovimentoEstoque();
+            }
         }); 
     });
+    
+    $('#btnRecalculaCustoMedio').click(function (e) {
+        bootbox.confirm("Recalcular Movimento de Estoque para este produto?", function(result) {
+            if (result)
+            {
+                $('#modalRecalculando').modal();
+                recalculaCustoMedio();
+            }
+        }); 
+    });
+    
 });
 </script>
 @endsection
