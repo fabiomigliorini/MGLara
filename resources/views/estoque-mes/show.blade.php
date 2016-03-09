@@ -121,6 +121,18 @@ if (sizeof($anteriores) < 8)
                     {{ $row->NotaFiscalProdutoBarra->NotaFiscal->Pessoa->fantasia }}
                 @endif
                 
+                @if (isset($row->codestoquemovimentoorigem))
+                    <a href="{{ url("estoque-mes/" . $row->EstoqueMovimentoOrigem->codestoquemes) }}">
+                       {{ $row->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocal->estoquelocal }}
+                    </a>
+                @endif
+                
+                @foreach ($row->EstoqueMovimentoS as $em)
+                    <a href="{{ url("estoque-mes/" . $em->codestoquemes) }}">
+                       {{ $em->EstoqueMes->EstoqueSaldo->EstoqueLocal->estoquelocal }}
+                    </a>
+                @endforeach
+                
                 {{ $row->observacoes }}
             </td>
         </tr>

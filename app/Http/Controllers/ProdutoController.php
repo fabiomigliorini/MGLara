@@ -88,7 +88,7 @@ class ProdutoController extends Controller
     {
         $model = Produto::findOrFail($id);
         $ret = $model->recalculaMovimentoEstoque();
-        echo json_encode($ret);
+        return json_encode($ret);
     }
     
     /**
@@ -102,7 +102,22 @@ class ProdutoController extends Controller
     {
         $model = Produto::findOrFail($id);
         $ret = $model->recalculaCustoMedio();
-        echo json_encode($ret);
+        return json_encode($ret);
     }
+    
+    /**
+     * Tenta cobrir estoque negativo, transferindo entre EstoqueLocal
+     * 
+     * @param bigint $id
+     * @return \Illuminate\Http\Response
+     * 
+     */
+    public function cobreEstoqueNegativo($id)
+    {
+        $model = Produto::findOrFail($id);
+        $ret = $model->cobreEstoqueNegativo();
+        return $ret;
+    }
+    
     
 }

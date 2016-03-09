@@ -7,6 +7,7 @@
  */
 
 namespace MGLara\Models;
+use Carbon\Carbon;
 
 use Illuminate\Support\Facades\DB;
 
@@ -270,6 +271,9 @@ class EstoqueSaldo extends MGModel
             if (($entradaquantidade + $inicialquantidade) > 0)
                 $customedio = ($entradavalor + $inicialvalor)/($entradaquantidade + $inicialquantidade);
 
+            if ($saldoquantidade == 0)
+                $saldovalor = 0;
+            
             $mes->inicialquantidade = $inicialquantidade;
             $mes->inicialvalor = $inicialvalor;
             $mes->entradaquantidade = $entradaquantidade;
@@ -293,6 +297,45 @@ class EstoqueSaldo extends MGModel
         $this->save();
         
         return true;
+    }
+    
+    
+    /**
+     * 
+     * @param EstoqueSaldo $destino
+     * @param double $quantidade
+     */
+    public function transfere(EstoqueSaldo $destino, $quantidade)
+    {
+        $data = Carbon::create($year = 2015, $month = 12, $day = 31, $hour = 23, $minute = 59, $second = 59);
+        $emOrigem = EstoqueMes::buscaOuCria($this->codproduto, $this->codestoquelocal, $this->fiscal, $data);
+        $emDestino = EstoqueMes::buscaOuCria($destino->codproduto, $destino->codestoquelocal, $destino->fiscal, $data);
+        $data = Carbon::create($year = 2015, $month = 12, $day = 31, $hour = 23, $minute = 59, $second = 59);
+        
+        $movOrigem = new EstoqueMovimento();
+        $movOrigem->codestoquemes = $emOrigem->codestoquemes;
+        $movOrigem->data = $data;
+        $movOrigem->codestoquemovimentotipo = 4101; // Transferencia Saida
+        $movOrigem->manual = true;
+        $movOrigem->saidaquantidade = $quantidade;
+        $movOrigem->saidavalor = $quantidade * $emOrigem->customedio;
+        $ret = $movOrigem->save();
+        
+        if ($ret)
+        {
+            $movDestino = new EstoqueMovimento();
+            $movDestino->codestoquemes = $emDestino->codestoquemes;
+            $movDestino->data = $data;
+            $movDestino->codestoquemovimentotipo = 4201; // Transferencia Entrada
+            $movDestino->codestoquemovimentoorigem = $movOrigem->codestoquemovimento;
+            $movDestino->manual = true;
+            $movDestino->entradaquantidade = $quantidade;
+            $movDestino->entradavalor = $quantidade * $emOrigem->customedio;
+            $ret = $movDestino->save();
+        }
+        
+        return ($ret);
+
     }
 
 }

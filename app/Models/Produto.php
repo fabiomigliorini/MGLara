@@ -2,6 +2,7 @@
 
 namespace MGLara\Models;
 use Illuminate\Support\Facades\DB;
+use MGLara\Models\EstoqueSaldo;
 
 /**
  * Campos
@@ -194,5 +195,48 @@ class Produto extends MGModel
         return $ret;
     }
 
+    /**
+     * @var EstoqueSaldo $negativo
+     * @var EstoqueSaldo[] $negativos
+     */
+    public function cobreEstoqueNegativo()
+    {
+        $negativos = EstoqueSaldo::where('codproduto', $this->codproduto)->where('saldoquantidade', '<', 0)->get();
+        $saldoquantidade = [];
+        foreach($negativos as $negativo)
+        {
+            $quantidade = abs($negativo->saldoquantidade);
+            
+            $origens = EstoqueSaldo::where('codproduto', $this->codproduto)->where('fiscal', $negativo->fiscal)->where('saldoquantidade', '>', 0)->orderBy('codestoquelocal', 'DESC')->get();
+            
+            foreach ($origens as $origem)
+            {
+                if (!isset($saldoquantidade[$origem->codestoquesaldo]))
+                    $saldoquantidade[$origem->codestoquesaldo] = $origem->saldoquantidade;
+                
+                $transferir = ($quantidade > $saldoquantidade[$origem->codestoquesaldo])?$saldoquantidade[$origem->codestoquesaldo]:$quantidade;
+                
+                $ret[] = array(
+                    'origem' => $origem->EstoqueSaldo->EstoqueLocal->estoquelocal,
+                    'destino' => $negativo->EstoqueSaldo->EstoqueLocal->estoquelocal,
+                    'quantidade' => $quantidade,
+                    'resultado' => $origem->transfere($negativo, $transferir)
+                );
+                
+                $quantidade -= $transferir;
+                $saldoquantidade[$origem->codestoquesaldo] -= $transferir;
+                
+                if ($quantidade == 0)
+                    break;
+
+            }
+            
+        }
+        
+        $this->recalculaCustoMedio();
+        
+        return $ret;
+        
+    }
     
 }

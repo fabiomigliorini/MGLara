@@ -101,7 +101,7 @@ class EstoqueMes extends MGModel
      * @param type $codestoquelocal
      * @param type $fiscal
      * @param Carbon $data
-     * @return \MGLara\Models\EstoqueMes
+     * @return EstoqueMes
      */
     public static function buscaOuCria($codproduto, $codestoquelocal, $fiscal, $data)
     {
