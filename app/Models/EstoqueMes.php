@@ -1,7 +1,7 @@
 <?php
 
 namespace MGLara\Models;
-
+use Carbon\Carbon;
 /**
  * Campos
  * @property  bigint                         $codestoquemes                      NOT NULL DEFAULT nextval('tblestoquemes_codestoquemes_seq'::regclass)
@@ -95,11 +95,21 @@ class EstoqueMes extends MGModel
         }
     }
     
+    /**
+     * 
+     * @param type $codproduto
+     * @param type $codestoquelocal
+     * @param type $fiscal
+     * @param Carbon $data
+     * @return \MGLara\Models\EstoqueMes
+     */
     public static function buscaOuCria($codproduto, $codestoquelocal, $fiscal, $data)
     {
         $es = EstoqueSaldo::buscaOuCria($codproduto, $codestoquelocal, $fiscal);
         $data->day = 1;
-        $data->month = 1;
+        //Antes de 2015, cria somente um registro de mes por ano, em dezembro
+        if ($data->year <= 2015)
+            $data->month = 12;
         $em = self::where('codestoquesaldo', $es->codestoquesaldo)->where('mes', $data)->first();
         if ($em == false)
         {

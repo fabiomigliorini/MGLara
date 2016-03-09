@@ -155,6 +155,7 @@ class Produto extends MGModel
             inner join tblnaturezaoperacao no on (no.codnaturezaoperacao = nf.codnaturezaoperacao)
             inner join tblestoquemovimentotipo emt on (emt.codestoquemovimentotipo = no.codestoquemovimentotipo)
             where pb.codproduto = {$this->codproduto}
+            and no.estoque = true
             and nf.saida between '2015-01-01 00:00:00.0' and '2015-12-31 23:59:59.9'
             order by emt.preco, nfpb.criacao
             ";

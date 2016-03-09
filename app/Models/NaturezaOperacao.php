@@ -20,6 +20,7 @@ namespace MGLara\Models;
  * @property  smallint                       $finnfe                             NOT NULL DEFAULT 1
  * @property  boolean                        $ibpt                               NOT NULL DEFAULT false
  * @property  bigint                         $codestoquemovimentotipo            NOT NULL
+ * @property  boolean                        $estoque                            NOT NULL DEFAULT true - Define se a natureza movimenta o estoque
  *
  * Chaves Estrangeiras
  * @property  ContaContabil                  $ContaContabil                 
@@ -53,6 +54,7 @@ class NaturezaOperacao extends MGModel
         'finnfe',
         'ibpt',
         'codestoquemovimentotipo',
+        'estoque',
     ];
     protected $dates = [
         'alteracao',
