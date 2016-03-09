@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\DB;
  * @property  varchar(100)                   $produto                            NOT NULL
  * @property  varchar(50)                    $referencia                         
  * @property  bigint                         $codunidademedida                   NOT NULL
- * @property  bigint                         $codsubgrupoproduto                 
- * @property  bigint                         $codmarca                           
+ * @property  bigint                         $codsubgrupoproduto                 NOT NULL
+ * @property  bigint                         $codmarca                           NOT NULL
  * @property  numeric(14,2)                  $preco                              
  * @property  boolean                        $importado                          NOT NULL DEFAULT false
  * @property  bigint                         $codtributacao                      NOT NULL
