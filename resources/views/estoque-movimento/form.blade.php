@@ -21,20 +21,11 @@ if(isset($model)){
 </div>
 
 <div class="form-group">
-  <label for="codestoquemovimentoorigem" class="col-sm-2 control-label">
-    {!! Form::label('Movimento estoque origem:') !!}
-  </label>
-  <div class="col-md-2 col-xs-4">
-    {!! Form::text('codestoquemovimentoorigem', null, ['class'=> 'form-control'], ['id'=>'codestoquemovimentotipo']) !!}
-  </div>
-</div>
-
-<div class="form-group">
   <label for="data" class="col-sm-2 control-label">
     {!! Form::label('Data:') !!}
   </label>
   <div class="col-md-2 col-xs-4">
-    {!! Form::text('data', null, ['class'=> 'form-control', 'id'=>'data']) !!}
+    {!! Form::text('data', null, ['class'=> 'form-control text-center', 'id'=>'data']) !!}
   </div>
 </div>
 
@@ -43,7 +34,7 @@ if(isset($model)){
     {!! Form::label('Quantidade entrada:') !!}
   </label>
   <div class="col-md-2 col-xs-4">
-    {!! Form::text('entradaquantidade', null, ['class'=> 'form-control', 'id'=>'entradaquantidade']) !!}
+    {!! Form::text('entradaquantidade', null, ['class'=> 'form-control text-right', 'id'=>'entradaquantidade']) !!}
   </div>
 </div>
 
@@ -52,7 +43,7 @@ if(isset($model)){
     {!! Form::label('Valor entrada:') !!}
   </label>
   <div class="col-md-2 col-xs-4">
-    {!! Form::text('entradavalor', null, ['class'=> 'form-control', 'id'=>'entradavalor']) !!}
+    {!! Form::text('entradavalor', null, ['class'=> 'form-control text-right', 'id'=>'entradavalor']) !!}
   </div>
 </div>
 
@@ -61,7 +52,7 @@ if(isset($model)){
     {!! Form::label('Quantidade saída:') !!}
   </label>
   <div class="col-md-2 col-xs-4">
-    {!! Form::text('saidaquantidade', null, ['class'=> 'form-control', 'id'=>'saidaquantidade']) !!}
+    {!! Form::text('saidaquantidade', null, ['class'=> 'form-control text-right', 'id'=>'saidaquantidade']) !!}
   </div>
 </div>
 
@@ -70,7 +61,7 @@ if(isset($model)){
     {!! Form::label('Valor saída:') !!}
   </label>
   <div class="col-md-2 col-xs-4">
-      {!! Form::text('saidavalor', null, ['class'=> 'form-control', 'id'=>'saidavalor']) !!} 
+      {!! Form::text('saidavalor', null, ['class'=> 'form-control text-right', 'id'=>'saidavalor']) !!} 
   </div>
 </div>
 
@@ -87,11 +78,12 @@ $(document).ready(function() {
         allowClear: true,
         width: 'resolve'        
     })<?php echo (isset($model->codestoquemovimentotipo) ? ".select2('val', $model->codestoquemovimentotipo);" : ';');?>
-    $('#data').datepicker({
-        format: 'dd/mm/yyyy'
+    $('#data').datetimepicker({
+        locale: 'pt-br',
+        format: 'DD/MM/YYYY HH:mm:ss'
     });  
-    $('#saidavalor, #entradavalor').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.' });
-    $('#saidaquantidade, #entradaquantidade').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:5 });
+    $('#saidavalor, #entradavalor').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
+    $('#saidaquantidade, #entradaquantidade').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:3 });
     <?php if ($disabled > 1) :?>
         $('#entradavalor, #saidavalor').prop("disabled", true);
     <?php endif;?>

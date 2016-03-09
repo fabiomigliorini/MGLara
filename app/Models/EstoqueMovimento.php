@@ -60,10 +60,17 @@ class EstoqueMovimento extends MGModel
         'criacao',
     ];
 
+    /*
     public function setDataAttribute($value) {
+        
+        //dd($value);
        $this->attributes['data'] = $this->valueToCarbonObject($value);
+       
+       //echo 'aqui';
+       //die();
     } 
     public function setEntradaquantidadeAttribute($value) {
+        dd($value);
        $this->attributes['entradaquantidade'] = str_replace(',', '.', $value);
     } 
     public function setEntradavalorAttribute($value) {
@@ -75,6 +82,8 @@ class EstoqueMovimento extends MGModel
     public function setSaidavalorAttribute($value) {
        $this->attributes['saidavalor'] = str_replace(',', '.', $value);
     } 
+     * 
+     */
         
     // Chaves Estrangeiras
     public function EstoqueMovimentoOrigem()

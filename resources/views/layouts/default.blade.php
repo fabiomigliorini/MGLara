@@ -9,7 +9,7 @@
     <link rel="icon" href="{{ URL::asset('favicon.ico') }}">
     <title>MG papelaria</title>
     <link href="{{ URL::asset('public/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::asset('public/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
+    <link href="{{ URL::asset('public/vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
     <!--<link href="{{ URL::asset('public/vendor/select2/css/select2.min.css') }}" rel="stylesheet">-->
     <link href="{{ URL::asset('public/vendor/select2/select2.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('public/vendor/bootstrap-switch/css/bootstrap3/bootstrap-switch.min.css') }}" rel="stylesheet">
@@ -22,8 +22,8 @@
     <script src="{{ URL::asset('public/vendor/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
     <script src="{{ URL::asset('public/vendor/bootbox/bootbox.min.js') }}"></script>
     <!--<script src="{{ URL::asset('public/vendor/bootstrap-switch/toggle.buttons.js') }}"></script>-->
-    <script src="{{ URL::asset('public/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
-    <script src="{{ URL::asset('public/vendor/bootstrap-datepicker/locales/bootstrap-datepicker.pt-BR.min.js') }}" charset="UTF-8"></script>
+    <script src="{{ URL::asset('public/vendor/moment/moment-with-locales.js') }}"></script>
+    <script src="{{ URL::asset('public/vendor/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
     <!--<script src="{{ URL::asset('public/vendor/select2/js/select2.min.js') }}"></script>-->
     <script src="{{ URL::asset('public/vendor/select2/select2-3.4.1min.js') }}"></script>
     <script src="{{ URL::asset('public/vendor/select2/select2_locale_pt-BR.js') }}"></script>
