@@ -73,7 +73,7 @@ if (sizeof($anteriores) < 8)
             <th colspan="2">Entrada</th>
             <th colspan="2">Saída</th>
             <th colspan="2">Saldo</th>
-            <th rowspan="2" class='col-sm-1'>Unitário</th>
+            <th rowspan="2" class='col-sm-1'>Custo Médio</th>
             <th rowspan="2" class='col-sm-3'>Documento</th>
         </tr>
         <tr>
@@ -104,7 +104,7 @@ if (sizeof($anteriores) < 8)
             <?php
                 $saldoquantidade += $row->entradaquantidade - $row->saidaquantidade;
                 $saldovalor += $row->entradavalor - $row->saidavalor;
-                $customedio = ($saldoquantidade != 0)?$saldovalor/$saldoquantidade:0;
+                $customedio = (($row->entradaquantidade + $row->saidaquantidade) != 0)?($row->entradavalor + $row->saidavalor)/(($row->entradaquantidade + $row->saidaquantidade)):0;
             ?>
             <td>{{ formataData($row->data, 'L') }}</td>
             <td>{{ $row->EstoqueMovimentoTipo->descricao }}</td>
