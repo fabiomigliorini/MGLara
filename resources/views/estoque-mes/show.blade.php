@@ -3,6 +3,7 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
+            <li><a href="{{ url("estoque-movimento/create") }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
             <li><a href="#" id="btnRecalculaMovimentoEstoque"><span class="glyphicon glyphicon-refresh"></span> Recalcular Movimento de Estoque</a></li>
             <li><a href="#" id="btnRecalculaCustoMedio"><span class="glyphicon glyphicon-usd"></span> Recalcular Custo Medio</a></li>
         </ul>
@@ -32,18 +33,42 @@
     </div> 
     <div class="col-sm-1">
         @if (isset($model->EstoqueSaldo->Produto->codmarca))
-            {{ $model->EstoqueSaldo->Produto->Marca->marca }}
+            <a href="{{ url("marca/{$model->EstoqueSaldo->Produto->Marca->codmarca}") }}">
+                {{ $model->EstoqueSaldo->Produto->Marca->marca }}
+            </a>
         @endif
     </div> 
     <div class="col-sm-1">
-        {{ formataCodigo($model->EstoqueSaldo->codproduto, 6) }}
+        <a href="{{ url("produto/{$model->EstoqueSaldo->codproduto}") }}">
+            {{ formataCodigo($model->EstoqueSaldo->codproduto, 6) }}
+        </a>
     </div> 
     <div class="col-sm-1">
         {{ formataNumero($model->EstoqueSaldo->Produto->preco, 2) }}
     </div> 
 </div>
 <hr>
-
+<!--
+<div class="">
+{!! Form::model(Request::all(), [
+  'route' => 'estoque-mes.show', 
+  'method' => 'GET', 
+  'class' => 'form-inline',
+  'id' => 'estoque-mes-filtro',
+  'role' => 'search'
+])!!}
+    <div class="btn-group" data-toggle="buttons">
+      <label class="btn btn-default">
+          <a href="" class="radio-filter"> Todos</a>
+      </label>
+      <label class="btn btn-default">
+          <a href="{{ url("estoque-mes/40676?var=10") }}" class="text-danger radio-filter"> Somente negativos</a>
+      </label>
+    </div>
+{!! Form::close() !!}  
+</div>
+<br>
+-->
 
 <?php
 
@@ -132,6 +157,12 @@ if (sizeof($anteriores) < 8)
                        {{ $em->EstoqueMes->EstoqueSaldo->EstoqueLocal->estoquelocal }}
                     </a>
                 @endforeach
+                
+                @if($row->manual)
+                <a href="{{ url("estoque-movimento/$row->codestoquemovimento/edit") }}"class="pull-right btn btn-info btn-sm">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                </a>
+                @endif
                 
                 {{ $row->observacoes }}
             </td>

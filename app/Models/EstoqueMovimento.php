@@ -2,6 +2,7 @@
 
 namespace MGLara\Models;
 
+
 /**
  * Campos
  * @property  bigint                         $codestoquemovimento                NOT NULL DEFAULT nextval('tblestoquemovimento_codestoquemovimento_seq'::regclass)
@@ -36,6 +37,8 @@ namespace MGLara\Models;
 
 class EstoqueMovimento extends MGModel
 {
+    use \MGLara\Support\Traits\Eloquent\HasDateFieldsTrait;
+    
     protected $table = 'tblestoquemovimento';
     protected $primaryKey = 'codestoquemovimento';
     protected $fillable = [
@@ -57,6 +60,22 @@ class EstoqueMovimento extends MGModel
         'criacao',
     ];
 
+    public function setDataAttribute($value) {
+       $this->attributes['data'] = $this->valueToCarbonObject($value);
+    } 
+    public function setEntradaquantidadeAttribute($value) {
+       $this->attributes['entradaquantidade'] = str_replace(',', '.', $value);
+    } 
+    public function setEntradavalorAttribute($value) {
+       $this->attributes['entradavalor'] = str_replace(',', '.', $value);
+    } 
+    public function setSaidaquantidadeAttribute($value) {
+       $this->attributes['entradaquantidade'] = str_replace(',', '.', $value);
+    } 
+    public function setSaidavalorAttribute($value) {
+       $this->attributes['saidavalor'] = str_replace(',', '.', $value);
+    } 
+        
     // Chaves Estrangeiras
     public function EstoqueMovimentoOrigem()
     {
@@ -111,6 +130,7 @@ class EstoqueMovimento extends MGModel
         
         return parent::validate();
     }
+    
     
     public function save(array $options = Array())
     {

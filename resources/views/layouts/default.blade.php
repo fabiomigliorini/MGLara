@@ -23,7 +23,7 @@
     <script src="{{ URL::asset('public/vendor/bootbox/bootbox.min.js') }}"></script>
     <!--<script src="{{ URL::asset('public/vendor/bootstrap-switch/toggle.buttons.js') }}"></script>-->
     <script src="{{ URL::asset('public/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
-    <script src="{{ URL::asset('public/vendor/bootstrap-datepicker/locales/bootstrap-datepicker.pt-BR.min.js') }}"></script>
+    <script src="{{ URL::asset('public/vendor/bootstrap-datepicker/locales/bootstrap-datepicker.pt-BR.min.js') }}" charset="UTF-8"></script>
     <!--<script src="{{ URL::asset('public/vendor/select2/js/select2.min.js') }}"></script>-->
     <script src="{{ URL::asset('public/vendor/select2/select2-3.4.1min.js') }}"></script>
     <script src="{{ URL::asset('public/vendor/select2/select2_locale_pt-BR.js') }}"></script>
