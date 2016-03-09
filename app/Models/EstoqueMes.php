@@ -15,7 +15,7 @@ namespace MGLara\Models;
  * @property  numeric(14,2)                  $saidavalor                         
  * @property  numeric(14,3)                  $saldoquantidade                    
  * @property  numeric(14,2)                  $saldovalor                         
- * @property  numeric(14,6)                  $saldovalorunitario                 
+ * @property  numeric(14,6)                  $customedio                 
  * @property  timestamp                      $alteracao                          
  * @property  bigint                         $codusuarioalteracao                
  * @property  timestamp                      $criacao                            
@@ -45,7 +45,7 @@ class EstoqueMes extends MGModel
         'saidavalor',
         'saldoquantidade',
         'saldovalor',
-        'saldovalorunitario',
+        'customedio',
     ];
     protected $dates = [
         'mes',
@@ -99,6 +99,7 @@ class EstoqueMes extends MGModel
     {
         $es = EstoqueSaldo::buscaOuCria($codproduto, $codestoquelocal, $fiscal);
         $data->day = 1;
+        $data->month = 1;
         $em = self::where('codestoquesaldo', $es->codestoquesaldo)->where('mes', $data)->first();
         if ($em == false)
         {

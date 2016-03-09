@@ -84,10 +84,10 @@ class ProdutoController extends Controller
         //
     }
     
-    public function recalculaEstoque($id)
+    public function recalculaMovimentoEstoque($id)
     {
         $model = Produto::findOrFail($id);
-        $ret = $model->recalculaEstoque();
+        $ret = $model->recalculaMovimentoEstoque();
         echo json_encode($ret);
     }
     
@@ -98,10 +98,10 @@ class ProdutoController extends Controller
      * @return \Illuminate\Http\Response
      * 
      */
-    public function calculaCustoMedio($id)
+    public function recalculaCustoMedio($id)
     {
         $model = Produto::findOrFail($id);
-        $ret = $model->calculaCustoMedio();
+        $ret = $model->recalculaCustoMedio();
         echo json_encode($ret);
     }
     

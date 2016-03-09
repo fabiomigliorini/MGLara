@@ -3,7 +3,7 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
-            <li><a href="#" id="btnBuscaCodProduto"><span class="glyphicon glyphicon-refresh"></span> Recalcular Estoque</a></li>             
+            <li><a href="#" id="btnBuscaCodProduto"><span class="glyphicon glyphicon-refresh"></span> Recalcular Movimento de Estoque</a></li>             
         </ul>
     </div>
 </nav>
@@ -25,7 +25,7 @@ foreach($model->ProdutoS as $prod)
             'codestoquesaldo' => $es->codestoquesaldo,
             'saldoquantidade' => $es->saldoquantidade,
             'saldovalor' => $es->saldovalor,
-            'saldovalorunitario' => $es->saldovalorunitario,
+            'customedio' => $es->customedio,
         ];
         
         if (!isset($arr_totais[$es->codestoquelocal][$es->fiscal]))
@@ -89,7 +89,7 @@ foreach($model->ProdutoS as $prod)
                 @if (isset($arr_saldos[$row->codproduto][$el->codestoquelocal][0]))
                     <?php $codestoquesaldo = $arr_saldos[$row->codproduto][$el->codestoquelocal][0]['codestoquesaldo']; ?>
                     <a href="{{ url("estoque-saldo/$codestoquesaldo") }}">
-                        {{ formataNumero($arr_saldos[$row->codproduto][$el->codestoquelocal][0]['saldovalorunitario'], 2) }}
+                        {{ formataNumero($arr_saldos[$row->codproduto][$el->codestoquelocal][0]['customedio'], 2) }}
                     </a>
                 @endif
             </td>
@@ -120,7 +120,7 @@ foreach($model->ProdutoS as $prod)
                 @if (isset($arr_saldos[$row->codproduto][$el->codestoquelocal][1]))
                     <?php $codestoquesaldo = $arr_saldos[$row->codproduto][$el->codestoquelocal][1]['codestoquesaldo']; ?>
                     <a href="{{ url("estoque-saldo/$codestoquesaldo") }}">
-                        {{ formataNumero($arr_saldos[$row->codproduto][$el->codestoquelocal][1]['saldovalorunitario'], 2) }}
+                        {{ formataNumero($arr_saldos[$row->codproduto][$el->codestoquelocal][1]['customedio'], 2) }}
                     </a>
                 @endif
             </td>
@@ -186,7 +186,7 @@ foreach($model->ProdutoS as $prod)
     <h3>Nenhum registro encontrado!</h3>
 @endif    
 
-<div id="modalRecalculaEstoque" class="modal fade" role="dialog">
+<div id="modalrecalculaMovimentoEstoque" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -200,16 +200,16 @@ foreach($model->ProdutoS as $prod)
             </div>
             <div class="modal-body">
                 <div class="progress">
-                    <div class="progress-bar progress-bar-striped active" role="progressbar" id="pbRecalculaEstoque" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" id="pbrecalculaMovimentoEstoque" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
                     </div>
                 </div>
-                <div class='row-fluid text-center' id='labelPbRecalculaEstoque'></div>
+                <div class='row-fluid text-center' id='labelPbrecalculaMovimentoEstoque'></div>
                 <br>
-                <pre class='row-fluid hidden' id='logPbRecalculaEstoque' style='height: 400px'></pre>
+                <pre class='row-fluid hidden' id='logPbrecalculaMovimentoEstoque' style='height: 400px'></pre>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" disabled id="btnRecalculaEstoque">Iniciar</button>
-                <button type="button" class="btn btn-default" id="btnFechaModalRecalculaEstoque" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-default" disabled id="btnRecalculaMovimentoEstoque">Iniciar</button>
+                <button type="button" class="btn btn-default" id="btnFechaModalrecalculaMovimentoEstoque" data-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
@@ -221,11 +221,11 @@ foreach($model->ProdutoS as $prod)
 var codprodutos;
 var i_codprodutos = 0;
 
-function recalculaEstoque() {
+function recalculaMovimentoEstoque() {
     
     var codproduto = codprodutos[i_codprodutos];
     
-    var url = '{{ url('produto/{id}/recalcula-estoque' )}}';
+    var url = '{{ url('produto/{id}/recalcula-movimento-estoque' )}}';
     url = url.replace('{id}', codproduto);
         
     $.getJSON(url)
@@ -237,17 +237,17 @@ function recalculaEstoque() {
             if (!data.resultado)
                 mensagem = 'Erro - ' + data.mensagem;
             
-            $('#logPbRecalculaEstoque').prepend(codproduto + ': ' + mensagem + '<br>');
+            $('#logPbrecalculaMovimentoEstoque').prepend(codproduto + ': ' + mensagem + '<br>');
             
             i_codprodutos++;
-            atualizaPbRecalculaEstoque();
+            atualizaPbrecalculaMovimentoEstoque();
             
             if (i_codprodutos <= (codprodutos.length -1))
-                recalculaEstoque();
+                recalculaMovimentoEstoque();
             else
             {
-                $('#btnRecalculaEstoque').removeAttr('disabled');
-                $('#btnFechaModalRecalculaEstoque').removeAttr('disabled');
+                $('#btnRecalculaMovimentoEstoque').removeAttr('disabled');
+                $('#btnFechaModalrecalculaMovimentoEstoque').removeAttr('disabled');
             }
         })
         .fail(function( jqxhr, textStatus, error ) 
@@ -256,15 +256,15 @@ function recalculaEstoque() {
         });	
 }
 
-function atualizaPbRecalculaEstoque () {
+function atualizaPbrecalculaMovimentoEstoque () {
     var perc = (i_codprodutos / codprodutos.length) * 100;
-    $('#pbRecalculaEstoque').addClass('active');
-    $('#pbRecalculaEstoque').css('width', perc + '%');
-    $('#labelPbRecalculaEstoque').text(i_codprodutos + ' de ' + codprodutos.length + ' produtos!');
+    $('#pbrecalculaMovimentoEstoque').addClass('active');
+    $('#pbrecalculaMovimentoEstoque').css('width', perc + '%');
+    $('#labelPbrecalculaMovimentoEstoque').text(i_codprodutos + ' de ' + codprodutos.length + ' produtos!');
     if (i_codprodutos >= (codprodutos.length-1))
     {
-        $('#pbRecalculaEstoque').removeClass('active');
-        $('#labelPbRecalculaEstoque').text(codprodutos.length + ' produtos Processados!');
+        $('#pbrecalculaMovimentoEstoque').removeClass('active');
+        $('#labelPbrecalculaMovimentoEstoque').text(codprodutos.length + ' produtos Processados!');
     }
 }
 
@@ -273,9 +273,9 @@ function buscaCodProduto() {
         .done(function(data) 
         {
             codprodutos = data;
-            atualizaPbRecalculaEstoque();
-            $('#modalRecalculaEstoque').modal('show');
-            $('#btnRecalculaEstoque').removeAttr('disabled');
+            atualizaPbrecalculaMovimentoEstoque();
+            $('#modalrecalculaMovimentoEstoque').modal('show');
+            $('#btnRecalculaMovimentoEstoque').removeAttr('disabled');
         })
         .fail(function( jqxhr, textStatus, error ) 
         {
@@ -289,14 +289,14 @@ $(document).ready(function() {
         buscaCodProduto();
     });
     
-    $('#btnRecalculaEstoque').click(function (e) {
+    $('#btnRecalculaMovimentoEstoque').click(function (e) {
         
         i_codprodutos = 0;
-        $('#logPbRecalculaEstoque').html('');
-        $('#btnRecalculaEstoque').attr('disabled', 'disabled');
-        $('#btnFechaModalRecalculaEstoque').attr('disabled', 'disabled');
-        $('#logPbRecalculaEstoque').removeClass('hidden');
-        recalculaEstoque();
+        $('#logPbrecalculaMovimentoEstoque').html('');
+        $('#btnRecalculaMovimentoEstoque').attr('disabled', 'disabled');
+        $('#btnFechaModalrecalculaMovimentoEstoque').attr('disabled', 'disabled');
+        $('#logPbrecalculaMovimentoEstoque').removeClass('hidden');
+        recalculaMovimentoEstoque();
     });
 });
 </script>@endsection

@@ -138,7 +138,7 @@ class Produto extends MGModel
         return $this->hasMany(ProdutoHistoricoPreco::class, 'codproduto', 'codproduto');
     }
 
-    public function recalculaEstoque()
+    public function recalculaMovimentoEstoque()
     {
         
         $resultado = true;
@@ -165,7 +165,7 @@ class Produto extends MGModel
         {
             $nfpb = NotaFiscalProdutoBarra::find($nf->codnotafiscalprodutobarra);
             
-            $ret['codnotafiscalprodutobarra'][$nfpb->codnotafiscalprodutobarra] = $nfpb->recalculaEstoque();
+            $ret['codnotafiscalprodutobarra'][$nfpb->codnotafiscalprodutobarra] = $nfpb->recalculaMovimentoEstoque();
             
             if ($ret['codnotafiscalprodutobarra'][$nfpb->codnotafiscalprodutobarra] !== true)
             {
@@ -176,16 +176,16 @@ class Produto extends MGModel
         $ret["resultado"] = $resultado;
         $ret["mensagem"] = $mensagem;
         
-        $this->calculaCustoMedio();
+        $this->recalculaCustoMedio();
         
         return $ret;
         
     }
     
-    public function calculaCustoMedio()
+    public function recalculaCustoMedio()
     {
         foreach ($this->EstoqueSaldoS as $es)
-            $ret['codestoquesaldo'][$es->codestoquesaldo] = $es->calculaCustoMedio();
+            $ret['codestoquesaldo'][$es->codestoquesaldo] = $es->recalculaCustoMedio();
         
         $ret["resultado"] = true;
         $ret["mensagem"] = null;

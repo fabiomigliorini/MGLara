@@ -147,7 +147,7 @@ class NotaFiscalProdutoBarra extends MGModel
         return $this->ProdutoBarra->converteQuantidade($this->quantidade);
     }
     
-    public function recalculaEstoque()
+    public function recalculaMovimentoEstoque()
     {
         $ems = $this->EstoqueMovimentoS;
         
@@ -196,7 +196,7 @@ class NotaFiscalProdutoBarra extends MGModel
         {
                 
             case EstoqueMovimentoTipo::PRECO_MEDIO;
-                $valor = $em->EstoqueMes->saldovalorunitario;
+                $valor = $em->EstoqueMes->customedio;
                 break;
             
             case EstoqueMovimentoTipo::PRECO_ORIGEM:
@@ -204,8 +204,6 @@ class NotaFiscalProdutoBarra extends MGModel
                 $nfechave = [$this->NotaFiscal->nfechave];
                 foreach($this->NotaFiscal->NotaFiscalReferenciadaS as $nfref)
                     $nfechave[] = $nfref->nfechave;
-                
-                print_r($this->codnotafiscalprodutobarra);
                 
                 // Procura NF Origem baseado na chave
                 if (isset($this->NotaFiscal->NaturezaOperacao->codnaturezaoperacaodevolucao))
@@ -249,7 +247,7 @@ class NotaFiscalProdutoBarra extends MGModel
                     foreach ($nfpbsOrigem[0]->EstoqueMovimentoS as $emOrigem)
                     {
                         $em->codestoquemovimentoorigem = $emOrigem->codestoquemovimento;
-                        $valor = $emOrigem->EstoqueMes->saldovalorunitario;
+                        $valor = $emOrigem->EstoqueMes->customedio;
                     }   
                     
                 }
