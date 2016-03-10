@@ -10,6 +10,7 @@ use MGLara\Models\EstoqueMovimento;
 use MGLara\Models\EstoqueMovimentoTipo;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Input;
 
 class EstoqueMovimentoController extends Controller
 {
@@ -42,15 +43,11 @@ class EstoqueMovimentoController extends Controller
      */
     public function store(Request $request)
     {
-        echo '<pre>';
-        dd($request);
-        
-        $request->replace(['data' => Carbon::createFromFormat('d/m/Y H:i:s', $request->input('data'))]);
-            
-        dd($request);
-        die();
+        Input::merge(array('data' => Carbon::createFromFormat(
+            'd/m/Y H:i:s', 
+            $request->input('data'))->toDateTimeString()
+        ));
         $model = new EstoqueMovimento($request->all());
-        
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         $model->codestoquemes = 3930;
