@@ -20,7 +20,7 @@
                 @endif
             </td> 
         </tr> 
-        @foreach($model->Ncm->IbptaxsS as $ibpt)
+        @foreach($model->Ncm->IbptaxS as $ibpt)
         <tr> 
             <th scope="row">IBPT</th> 
             <td>
