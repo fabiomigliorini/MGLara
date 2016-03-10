@@ -201,7 +201,9 @@ class Produto extends MGModel
      */
     public function cobreEstoqueNegativo()
     {
-        $negativos = EstoqueSaldo::where('codproduto', $this->codproduto)->where('saldoquantidade', '<', 0)->get();
+        set_time_limit(1000);
+        
+        $negativos = EstoqueSaldo::where('codproduto', $this->codproduto)->where('saldoquantidade', '<', 0)->where('fiscal', true)->get();
         $saldoquantidade = [];
         $ret = [];
         foreach($negativos as $negativo)
