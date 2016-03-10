@@ -203,11 +203,17 @@ class Produto extends MGModel
     {
         $negativos = EstoqueSaldo::where('codproduto', $this->codproduto)->where('saldoquantidade', '<', 0)->get();
         $saldoquantidade = [];
+        $ret = [];
         foreach($negativos as $negativo)
         {
             $quantidade = abs($negativo->saldoquantidade);
             
-            $origens = EstoqueSaldo::where('codproduto', $this->codproduto)->where('fiscal', $negativo->fiscal)->where('saldoquantidade', '>', 0)->orderBy('codestoquelocal', 'DESC')->get();
+            $origens = EstoqueSaldo::where('codproduto', $this->codproduto)->where('fiscal', $negativo->fiscal)->where('saldoquantidade', '>', 0)->where('codestoquelocal', 301001)->get();
+            $origens = $origens->merge(EstoqueSaldo::where('codproduto', $this->codproduto)->where('fiscal', $negativo->fiscal)->where('saldoquantidade', '>', 0)->where('codestoquelocal', 201001)->get());
+            $origens = $origens->merge(EstoqueSaldo::where('codproduto', $this->codproduto)->where('fiscal', $negativo->fiscal)->where('saldoquantidade', '>', 0)->where('codestoquelocal', 101001)->get());
+            $origens = $origens->merge(EstoqueSaldo::where('codproduto', $this->codproduto)->where('fiscal', $negativo->fiscal)->where('saldoquantidade', '>', 0)->where('codestoquelocal', 102001)->get());
+            $origens = $origens->merge(EstoqueSaldo::where('codproduto', $this->codproduto)->where('fiscal', $negativo->fiscal)->where('saldoquantidade', '>', 0)->where('codestoquelocal', 103001)->get());
+            $origens = $origens->merge(EstoqueSaldo::where('codproduto', $this->codproduto)->where('fiscal', $negativo->fiscal)->where('saldoquantidade', '>', 0)->where('codestoquelocal', 104001)->get());
             
             foreach ($origens as $origem)
             {
@@ -216,10 +222,13 @@ class Produto extends MGModel
                 
                 $transferir = ($quantidade > $saldoquantidade[$origem->codestoquesaldo])?$saldoquantidade[$origem->codestoquesaldo]:$quantidade;
                 
+                if ($transferir == 0)
+                    continue;
+
                 $ret[] = array(
-                    'origem' => $origem->EstoqueSaldo->EstoqueLocal->estoquelocal,
-                    'destino' => $negativo->EstoqueSaldo->EstoqueLocal->estoquelocal,
-                    'quantidade' => $quantidade,
+                    'origem' => $origem->EstoqueLocal->estoquelocal,
+                    'destino' => $negativo->EstoqueLocal->estoquelocal,
+                    'quantidade' => $transferir,
                     'resultado' => $origem->transfere($negativo, $transferir)
                 );
                 

@@ -112,11 +112,14 @@ class ProdutoController extends Controller
      * @return \Illuminate\Http\Response
      * 
      */
-    public function cobreEstoqueNegativo($id)
+    public function cobreEstoqueNegativo($id = null)
     {
+        if (empty($id))
+            die('percorre');
+        
         $model = Produto::findOrFail($id);
         $ret = $model->cobreEstoqueNegativo();
-        return $ret;
+        return json_encode($ret);
     }
     
     
