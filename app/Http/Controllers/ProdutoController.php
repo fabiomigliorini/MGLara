@@ -7,6 +7,7 @@ use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Produto;
 use MGLara\Models\NegocioProdutoBarra;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class ProdutoController extends Controller
 {
@@ -114,11 +115,47 @@ class ProdutoController extends Controller
      */
     public function cobreEstoqueNegativo($id = null)
     {
+        $codprodutos = [];
         if (empty($id))
-            die('percorre');
+        {
+            $pular = 0;
+            
+            if (isset($_GET['pular']))
+                $pular = $_GET['pular'];
+            
+            $itens = 10;
+            if (isset($_GET['itens']))
+                $itens = $_GET['itens'];
+            
+            $sql = "
+                    select distinct(es.codproduto) 
+                    from tblestoquesaldo es
+                    where es.fiscal
+                    and es.saldoquantidade < 0
+                    and es.codproduto in (select distinct es2.codproduto from tblestoquesaldo es2 where es2.fiscal and es2.saldoquantidade > 0)
+                    order by es.codproduto
+                    limit $itens
+                    offset $pular
+                    ";
+            
+            $prods = DB::select($sql);
+            
+            foreach($prods as $prod)
+                $codprodutos[] = $prod->codproduto;
+            
+        }
+        else
+        {
+            $codprodutos[] = $id;
+        }
         
-        $model = Produto::findOrFail($id);
-        $ret = $model->cobreEstoqueNegativo();
+        $ret = [];
+        foreach ($codprodutos as $codproduto)
+        {
+            $model = Produto::findOrFail($codproduto);
+            $ret[$codproduto] = $model->cobreEstoqueNegativo();
+        }
+        
         return json_encode($ret);
     }
     
