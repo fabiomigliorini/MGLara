@@ -4,10 +4,10 @@ namespace MGLara\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use MGLara\Http\Requests;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\EstoqueMovimento;
 use MGLara\Models\EstoqueMovimentoTipo;
+use MGLara\Models\EstoqueMes;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Input;
@@ -29,10 +29,11 @@ class EstoqueMovimentoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $tipos = EstoqueMovimentoTipo::lists('descricao', 'codestoquemovimentotipo')->all();
-        return view('estoque-movimento.create', compact('tipos'/*, 'filiais', 'ecfs', 'ops', 'portadores', 'prints'*/));
+        $options = EstoqueMovimentoTipo::all();
+        return view('estoque-movimento.create', compact('tipos', 'request', 'options'));
     }
 
     /**
@@ -47,10 +48,21 @@ class EstoqueMovimentoController extends Controller
             'd/m/Y H:i:s', 
             $request->input('data'))->toDateTimeString()
         ));
+
         $model = new EstoqueMovimento($request->all());
-        if (!$model->validate())
+        
+        $em = EstoqueMes::buscaOuCria(
+                $model->EstoqueMes->EstoqueSaldo->codproduto, 
+                $model->EstoqueMes->EstoqueSaldo->codestoquelocal, 
+                $model->EstoqueMes->EstoqueSaldo->fiscal, 
+                $model->data);
+        
+        $model->codestoquemes = $em->codestoquemes;
+        
+        if (!$model->validate()) {
             $this->throwValidationException($request, $model->_validator);
-        $model->codestoquemes = 3930;
+        }
+
         $model->manual = TRUE;
         $model->save();
         Session::flash('flash_create', 'Registro inserido.');

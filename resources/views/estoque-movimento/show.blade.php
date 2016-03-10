@@ -3,7 +3,6 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
-            <li><a href="<?php echo url('estoque-movimento/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
             <li><a href="<?php echo url("estoque-movimento/$model->codestoquemovimento/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li>
                 {!! Form::open(['method' => 'DELETE', 'route' => ['estoque-movimento.destroy', $model->codestoquemovimento]]) !!}

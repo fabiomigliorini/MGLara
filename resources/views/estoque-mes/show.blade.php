@@ -3,7 +3,7 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
-            <li><a href="{{ url("estoque-movimento/create") }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
+            <li><a href="{{ url("estoque-movimento/create/$model->codestoquemes") }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
             <li><a href="#" id="btnRecalculaMovimentoEstoque"><span class="glyphicon glyphicon-refresh"></span> Recalcular Movimento de Estoque</a></li>
             <li><a href="#" id="btnRecalculaCustoMedio"><span class="glyphicon glyphicon-usd"></span> Recalcular Custo Medio</a></li>
         </ul>
