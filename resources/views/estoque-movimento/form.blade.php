@@ -80,9 +80,9 @@ $(document).ready(function() {
     $('#data').datetimepicker({
         locale: 'pt-br',
         format: 'DD/MM/YYYY HH:mm:ss'
-        <?php if(isset($model->data))?>
-        ,defaultDate:'<?php echo formataData($model->data, 'L') ;?>'
-        
+        <?php if (isset($model->data)) {?>
+        ,defaultDate:'<?php echo formataData($model->data, 'L');?>'
+        <?php }?>
     });  
     $('#saidavalor, #entradavalor').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
     $('#saidaquantidade, #entradaquantidade').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:3 });
