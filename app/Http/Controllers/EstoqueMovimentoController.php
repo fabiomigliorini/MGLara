@@ -91,10 +91,15 @@ class EstoqueMovimentoController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Input::merge(array('data' => Carbon::createFromFormat(
+            'd/m/Y H:i:s', 
+            $request->input('data'))->toDateTimeString()
+        ));
         $model = EstoqueMovimento::findOrFail($id);
         $model->fill($request->all());
-        if (!$model->validate())
+        if (!$model->validate()) {
             $this->throwValidationException($request, $model->_validator);
+        }
         $model->save();
         
         Session::flash('flash_update', 'Registro atualizado.');
@@ -107,8 +112,15 @@ class EstoqueMovimentoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
+    public function destroy($id) {
+
+        try{
+            EstoqueMovimento::find($id)->delete();
+            Session::flash('flash_delete', 'Registro deletado!');
+            return redirect("estoque-mes/$model->codestoquemes");
+        }
+        catch(\Exception $e){
+            return view('errors.fk');
+        }        
     }
 }

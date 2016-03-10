@@ -70,7 +70,6 @@ if(isset($model)){
   {!! Form::submit($submitTextButton, array('class' => 'btn btn-primary')) !!}
   </div>
 </div>
-
 @section('inscript')
 <script type="text/javascript">
 $(document).ready(function() {
@@ -81,18 +80,31 @@ $(document).ready(function() {
     $('#data').datetimepicker({
         locale: 'pt-br',
         format: 'DD/MM/YYYY HH:mm:ss'
+        <?php if(isset($model->data))?>
+        ,defaultDate:'<?php echo formataData($model->data, 'L') ;?>'
+        
     });  
     $('#saidavalor, #entradavalor').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
     $('#saidaquantidade, #entradaquantidade').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:3 });
     <?php if ($disabled > 1) :?>
         $('#entradavalor, #saidavalor').prop("disabled", true);
     <?php endif;?>
-    $('#codestoquemovimentotipo').change(function() {
-        console.log($('#codestoquemovimentotipo').val());
-        //$('#codestoquemovimentoorigem').prop("required", true);
-            
-    }); 
-                   
+     
+     
+     
 });
+
+function onSubmit ()
+{
+    var entradaquantidade = $('#entradaquantidade').val();
+    var saidaquantidade = $('#saidaquantidade').val();
+    var saidavalor = $('#saidavalor').val();
+    var entradavalor = $('#entradavalor').val();
+    
+    $('#entradaquantidade').val(entradaquantidade.replace(',', '.'));
+    $('#saidaquantidade').val(saidaquantidade.replace(',', '.'));
+    $('#saidavalor').val(saidavalor.replace(',', '.'));
+    $('#entradavalor').val(entradavalor.replace(',', '.'));
+}   
 </script>
 @endsection

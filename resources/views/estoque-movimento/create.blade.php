@@ -11,7 +11,7 @@
 <h1 class="header">Estoque movimento manual</h1>
 <hr>
 <br>
-{!! Form::open(['route'=>'estoque-movimento.store', 'method' => 'POST', 'class' => 'form-horizontal']) !!}
+{!! Form::open(['route'=>'estoque-movimento.store', 'method' => 'POST', 'class' => 'form-horizontal', 'onsubmit' => 'onSubmit()']) !!}
     @include('errors.form_error')
     @include('estoque-movimento.form', ['submitTextButton' => 'Salvar'])
  {!! Form::close() !!}   

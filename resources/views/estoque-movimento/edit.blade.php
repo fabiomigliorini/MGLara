@@ -13,7 +13,7 @@
 <hr>
 
 <br>
-{!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'action' => ['EstoqueMovimentoController@update', $model->codestoquemovimento]]) !!}
+{!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'onsubmit' => 'onSubmit()', 'action' => ['EstoqueMovimentoController@update', $model->codestoquemovimento]]) !!}
     @include('errors.form_error')
     @include('estoque-movimento.form', ['submitTextButton' => 'Salvar'])
 {!! Form::close() !!}
