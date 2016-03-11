@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\Input;
 
 class EstoqueMovimentoController extends Controller
 {
+    
+    public function __construct()
+    {
+        $this->datas = [];
+        $this->numericos = [];
+    }    
+    
     /**
      * Display a listing of the resource.
      *
@@ -31,9 +38,10 @@ class EstoqueMovimentoController extends Controller
      */
     public function create(Request $request)
     {
+        $em = EstoqueMes::find($request->codestoquemes);
         $tipos = EstoqueMovimentoTipo::lists('descricao', 'codestoquemovimentotipo')->all();
         $options = EstoqueMovimentoTipo::all();
-        return view('estoque-movimento.create', compact('tipos', 'request', 'options'));
+        return view('estoque-movimento.create', compact('tipos', 'request', 'options', 'em'));
     }
 
     /**
@@ -44,15 +52,14 @@ class EstoqueMovimentoController extends Controller
      */
     public function store(Request $request)
     {
-        Input::merge(array('data' => Carbon::createFromFormat(
-            'd/m/Y H:i:s', 
-            $request->input('data'))->toDateTimeString()
-        ));
-        Input::merge(array('entradaquantidade' => str_replace(',', '.', (str_replace('.', '', $request->input('entradaquantidade'))))));
-        Input::merge(array('saidaquantidade' => str_replace(',', '.', (str_replace('.', '', $request->input('saidaquantidade'))))));
-        Input::merge(array('entradavalor' => str_replace(',', '.', (str_replace('.', '', $request->input('entradavalor'))))));
-        Input::merge(array('saidavalor' => str_replace(',', '.', (str_replace('.', '', $request->input('saidavalor'))))));
-        
+        $this->converteDatas(['data' => $request->input('data')]);
+        $this->converteNumericos([
+            'entradaquantidade' => $request->input('entradaquantidade'),
+            'saidaquantidade' => $request->input('saidaquantidade'),
+            'entradavalor' => $request->input('entradavalor'),
+            'saidavalor' => $request->input('saidavalor')
+        ]);
+
         $model = new EstoqueMovimento($request->all());
         
         $em = EstoqueMes::buscaOuCria(
@@ -109,14 +116,14 @@ class EstoqueMovimentoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Input::merge(array('data' => Carbon::createFromFormat(
-            'd/m/Y H:i:s', 
-            $request->input('data'))->toDateTimeString()
-        ));
-        Input::merge(array('quantidadeentrada' => str_replace(',', '.', (str_replace('.', '', $request->input('quantidadeentrada'))))));
-        Input::merge(array('quantidadesaida' => str_replace(',', '.', (str_replace('.', '', $request->input('quantidadesaida'))))));
-        Input::merge(array('valorentrada' => str_replace(',', '.', (str_replace('.', '', $request->input('valorentrada'))))));
-        Input::merge(array('valorsaida' => str_replace(',', '.', (str_replace('.', '', $request->input('valorsaida'))))));
+        $this->converteDatas(['data' => $request->input('data')]);
+        $this->converteNumericos([
+            'entradaquantidade' => $request->input('entradaquantidade'),
+            'saidaquantidade' => $request->input('saidaquantidade'),
+            'entradavalor' => $request->input('entradavalor'),
+            'saidavalor' => $request->input('saidavalor')
+        ]);
+        
         $model = EstoqueMovimento::findOrFail($id);
         $model->fill($request->all());
         if (!$model->validate()) {
