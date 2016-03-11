@@ -12,7 +12,7 @@
 <h1 class="header">Alterar permissão #{{$model->codpermissao}}</h1>
 <hr>
 <br>
-{!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'action' => ['PermissaoController@update', $model->codpermissao] ]) !!}
+{!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal','onsubmit'=> 'onSubmit()','id'=> 'estoque-movimentoForm', 'action' => ['PermissaoController@update', $model->codpermissao] ]) !!}
     @include('errors.form_error')
     @include('permissao.form', ['submitTextButton' => 'Salvar'])
 {!! Form::close() !!}

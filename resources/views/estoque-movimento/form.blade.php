@@ -109,26 +109,28 @@ $(document).ready(function() {
         }
     });
      
-     
+    $('.form-horizontal').submit(function(e) {
+        var currentForm = this;
+        e.preventDefault();
+        bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
+            if (result) {
+                currentForm.submit();
+            }
+        });
+    }); 
+   
 });
-
-function onSubmit ()
-{
-    /*
-    var entradaquantidade = $('#entradaquantidade').val();
-    var saidaquantidade = $('#saidaquantidade').val();
-    var saidavalor = $('#saidavalor').val();
-    var entradavalor = $('#entradavalor').val();
-    
-    val = $('#entradaquantidade').autoNumeric('get');
-    $('#entradaquantidade').autoNumeric('destroy');
-    $('#entradaquantidade').set(val);
-    
-    $('#saidaquantidade').autoNumeric('destroy');
-    $('#saidaquantidade').autoNumeric('destroy');
-    $('#saidavalor').autoNumeric('destroy');
-    $('#entradavalor').autoNumeric('destroy');
-    */
-}   
+    function onSubmit ()
+    {
+        var currentForm = this;
+        //e.preventDefault();
+        bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
+            if (result) {
+                //currentForm.submit();
+                true;
+            }
+        });
+    }  
+  
 </script>
 @endsection
