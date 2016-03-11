@@ -7,7 +7,17 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Estoque movimento manual</h1>
+<h1 class="header">
+    <a href='{{ url("grupo-produto/{$em->EstoqueSaldo->Produto->SubGrupoProduto->codgrupoproduto}") }}'>
+        {{$em->EstoqueSaldo->Produto->SubGrupoProduto->GrupoProduto->grupoproduto}}
+    </a> ›
+    <a href='{{ url("sub-grupo-produto/{$em->EstoqueSaldo->Produto->codsubgrupoproduto}") }}'>
+        {{$em->EstoqueSaldo->Produto->SubGrupoProduto->subgrupoproduto}}
+    </a> ›
+    <a href='{{ url("produto/{$em->EstoqueSaldo->codproduto}") }}'>
+        {{ $em->EstoqueSaldo->Produto->produto }}     
+    </a>    
+</h1>
 <hr>
 <br>
 {!! Form::open(['route'=> ['estoque-movimento.store', 'codestoquemes' => $request->codestoquemes], 'method' => 'POST', 'class' => 'form-horizontal', 'onsubmit' => 'onSubmit()']) !!}
