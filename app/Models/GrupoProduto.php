@@ -58,7 +58,7 @@ class GrupoProduto extends MGModel
     // Tabelas Filhas
     public function SubGrupoProdutoS()
     {
-        return $this->hasMany(SubGrupoProduto::class, 'codgrupoproduto', 'codgrupoproduto');
+        return $this->hasMany(SubGrupoProduto::class, 'codgrupoproduto', 'codgrupoproduto')->orderBy('subgrupoproduto');
     }
 
     public function scopeGrupoproduto($query, $grupoproduto)
