@@ -115,6 +115,8 @@ class ProdutoController extends Controller
      */
     public function cobreEstoqueNegativo($id = null)
     {
+
+	echo '<meta http-equiv="refresh" content="1; URL=' . url('produto/cobre-estoque-negativo') . '">';
         $codprodutos = [];
         if (empty($id))
         {
