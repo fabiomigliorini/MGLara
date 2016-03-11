@@ -51,7 +51,7 @@ Route::group(['middleware' => 'auth'], function() {
     
     /* Estoque movimento */
     Route::resource('estoque-movimento','EstoqueMovimentoController');       
-    Route::resource('estoque-movimento/create/{codestoquemes}','EstoqueMovimentoController@create');       
+    //Route::resource('estoque-movimento/create/{codestoquemes}','EstoqueMovimentoController@create');       
     
     /* EstoqueSaldo */
     Route::resource('estoque-saldo','EstoqueSaldoController');       
