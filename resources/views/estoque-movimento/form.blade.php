@@ -88,10 +88,12 @@ $(document).ready(function() {
     $('#data').datetimepicker({
         locale: 'pt-br',
         format: 'DD/MM/YYYY HH:mm:ss'
-        <?php if (isset($model->data)) {?>
-        ,defaultDate:'<?php echo formataData($model->data, 'L');?>'
-        <?php }?>
-    });  
+    });
+
+    <?php if (isset($model->data)) {?>
+        $("#data").val("<?php echo formataData($model->data, 'L');?>").change();
+    <?php }?>
+    
     $('#saidavalor, #entradavalor').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
     $('#saidaquantidade, #entradaquantidade').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:3 });
     
