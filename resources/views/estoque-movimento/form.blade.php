@@ -64,15 +64,24 @@ if(isset($model)){
       {!! Form::text('saidavalor', null, ['class'=> 'form-control text-right', 'id'=>'saidavalor']) !!} 
   </div>
 </div>
-
 <div class="form-group">
 	<div class="col-sm-offset-2 col-sm-10">
   {!! Form::submit($submitTextButton, array('class' => 'btn btn-primary')) !!}
   </div>
 </div>
+<?php 
+$items = [];
+foreach ($options as $option)
+{
+    $items[$option['codestoquemovimentotipo']] = $option['preco'];
+}
+
+?>
 @section('inscript')
 <script type="text/javascript">
 $(document).ready(function() {
+    var tipos = <?php echo json_encode($items)?>;
+    console.log(tipos);    
     $('#codestoquemovimentotipo').select2({
         allowClear: true,
         width: 'resolve'        
