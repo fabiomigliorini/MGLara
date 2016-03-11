@@ -21,14 +21,7 @@ class ValidatorServiceProvider extends ServiceProvider
             } else {
                 return false;
             }  
-        });      
-
-        $this->app['validator']->extend('precoInformado', function ($attribute, $value, $parameters)
-        {
-            
-            
-            
-        });      
+        });          
     }
 
     /**

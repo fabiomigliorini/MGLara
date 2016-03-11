@@ -101,13 +101,34 @@ class EstoqueMovimento extends MGModel
     }
     
     public function validate() {
-                
+        $i = 0; $validate = 'numeric';
+        if(!empty($this->entradaquantidade)) {
+            $i++;
+        }
+        if (!empty($this->entradavalor)) {
+            $i++;
+        }
+        if (!empty($this->saidaquantidade)) {
+            $i++;
+        }
+        if (!empty($this->saidavalor)) {
+            $i++;
+        }
+        if ($i == 0) {
+            $validate = 'required|numeric';
+        }
         $this->_regrasValidacao = [
-
+            'entradaquantidade' => $validate,
+            'entradavalor' => $validate,
+            'saidaquantidade' => $validate,
+            'saidavalor' => $validate,
         ];
-    
+
         $this->_mensagensErro = [
-            //'field.required' => 'Preencha o campo',
+            'entradaquantidade.required' => 'Pelo menos 1 dos valores de entrada e/ou saída dever ser preechido',
+            'entradavalor.required' => 'Pelo menos 1 dos valores de entrada e/ou saída dever ser preechido',
+            'saidaquantidade.required' => 'Pelo menos 1 dos valores de entrada e/ou saída dever ser preechido',
+            'saidavalor.required' => 'Pelo menos 1 dos valores de entrada e/ou saída dever ser preechido',
         ];
         
         return parent::validate();
