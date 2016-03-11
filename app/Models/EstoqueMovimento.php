@@ -101,9 +101,9 @@ class EstoqueMovimento extends MGModel
     }
     
     public function validate() {
-        dd($this);
+                
         $this->_regrasValidacao = [
-            //'field' => 'required|min:2', 
+
         ];
     
         $this->_mensagensErro = [

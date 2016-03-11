@@ -49,10 +49,6 @@ Route::group(['middleware' => 'auth'], function() {
     /* Estoque mês */
     Route::resource('estoque-mes','EstoqueMesController');       
     
-    /* Estoque movimento */
-    Route::resource('estoque-movimento','EstoqueMovimentoController');       
-    //Route::resource('estoque-movimento/create/{codestoquemes}','EstoqueMovimentoController@create');       
-    
     /* EstoqueSaldo */
     Route::resource('estoque-saldo','EstoqueSaldoController');       
     
@@ -75,6 +71,10 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto/{id}/recalcula-custo-medio','ProdutoController@recalculaCustoMedio');           
     Route::resource('produto/{id}/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');           
 
+    /* Estoque movimento */
+    Route::resource('estoque-movimento','EstoqueMovimentoController');       
+    Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');      
+    
     /* NotaFiscal */
     Route::resource('nota-fiscal','NotaFiscalController');           
     

@@ -48,7 +48,11 @@ class EstoqueMovimentoController extends Controller
             'd/m/Y H:i:s', 
             $request->input('data'))->toDateTimeString()
         ));
-
+        Input::merge(array('entradaquantidade' => str_replace(',', '.', (str_replace('.', '', $request->input('entradaquantidade'))))));
+        Input::merge(array('saidaquantidade' => str_replace(',', '.', (str_replace('.', '', $request->input('saidaquantidade'))))));
+        Input::merge(array('entradavalor' => str_replace(',', '.', (str_replace('.', '', $request->input('entradavalor'))))));
+        Input::merge(array('saidavalor' => str_replace(',', '.', (str_replace('.', '', $request->input('saidavalor'))))));
+        
         $model = new EstoqueMovimento($request->all());
         
         $em = EstoqueMes::buscaOuCria(
@@ -65,6 +69,7 @@ class EstoqueMovimentoController extends Controller
 
         $model->manual = TRUE;
         $model->save();
+        $model->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
         Session::flash('flash_create', 'Registro inserido.');
         return redirect("estoque-mes/$model->codestoquemes");
     }
@@ -91,7 +96,8 @@ class EstoqueMovimentoController extends Controller
     {
         $model = EstoqueMovimento::findOrFail($id);
         $tipos = EstoqueMovimentoTipo::lists('descricao', 'codestoquemovimentotipo')->all();
-        return view('estoque-movimento.edit',  compact('model', 'tipos'));        
+        $options = EstoqueMovimentoTipo::all();
+        return view('estoque-movimento.edit',  compact('model', 'tipos', 'options'));        
     }
 
     /**
@@ -107,13 +113,17 @@ class EstoqueMovimentoController extends Controller
             'd/m/Y H:i:s', 
             $request->input('data'))->toDateTimeString()
         ));
+        Input::merge(array('quantidadeentrada' => str_replace(',', '.', (str_replace('.', '', $request->input('quantidadeentrada'))))));
+        Input::merge(array('quantidadesaida' => str_replace(',', '.', (str_replace('.', '', $request->input('quantidadesaida'))))));
+        Input::merge(array('valorentrada' => str_replace(',', '.', (str_replace('.', '', $request->input('valorentrada'))))));
+        Input::merge(array('valorsaida' => str_replace(',', '.', (str_replace('.', '', $request->input('valorsaida'))))));
         $model = EstoqueMovimento::findOrFail($id);
         $model->fill($request->all());
         if (!$model->validate()) {
             $this->throwValidationException($request, $model->_validator);
         }
         $model->save();
-        
+        $model->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
         Session::flash('flash_update', 'Registro atualizado.');
         return redirect("estoque-mes/$model->codestoquemes");
     }

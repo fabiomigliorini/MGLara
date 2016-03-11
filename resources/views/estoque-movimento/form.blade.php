@@ -25,7 +25,7 @@ if(isset($model)){
     {!! Form::label('Data:') !!}
   </label>
   <div class="col-md-2 col-xs-4">
-    {!! Form::text('data', null, ['class'=> 'form-control text-center', 'id'=>'data']) !!}
+    {!! Form::text('data', null, ['class'=> 'form-control text-center', 'id'=>'data', 'required'=>'required']) !!}
   </div>
 </div>
 
@@ -81,7 +81,6 @@ foreach ($options as $option)
 <script type="text/javascript">
 $(document).ready(function() {
     var tipos = <?php echo json_encode($items)?>;
-    console.log(tipos);    
     $('#codestoquemovimentotipo').select2({
         allowClear: true,
         width: 'resolve'        
@@ -95,25 +94,39 @@ $(document).ready(function() {
     });  
     $('#saidavalor, #entradavalor').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
     $('#saidaquantidade, #entradaquantidade').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:3 });
+    
     <?php if ($disabled > 1) :?>
         $('#entradavalor, #saidavalor').prop("disabled", true);
     <?php endif;?>
      
+    $('#codestoquemovimentotipo').change(function() {
+        if(tipos[$('#codestoquemovimentotipo').val()] == 1) {
+            $('#entradavalor, #saidavalor').prop("disabled", false);
+        } else {
+            $('#entradavalor, #saidavalor').prop("disabled", true);
+        }
+    });
      
      
 });
 
 function onSubmit ()
 {
+    /*
     var entradaquantidade = $('#entradaquantidade').val();
     var saidaquantidade = $('#saidaquantidade').val();
     var saidavalor = $('#saidavalor').val();
     var entradavalor = $('#entradavalor').val();
     
-    $('#entradaquantidade').val(entradaquantidade.replace(',', '.'));
-    $('#saidaquantidade').val(saidaquantidade.replace(',', '.'));
-    $('#saidavalor').val(saidavalor.replace(',', '.'));
-    $('#entradavalor').val(entradavalor.replace(',', '.'));
+    val = $('#entradaquantidade').autoNumeric('get');
+    $('#entradaquantidade').autoNumeric('destroy');
+    $('#entradaquantidade').set(val);
+    
+    $('#saidaquantidade').autoNumeric('destroy');
+    $('#saidaquantidade').autoNumeric('destroy');
+    $('#saidavalor').autoNumeric('destroy');
+    $('#entradavalor').autoNumeric('destroy');
+    */
 }   
 </script>
 @endsection
