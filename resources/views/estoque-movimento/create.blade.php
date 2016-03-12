@@ -20,7 +20,7 @@
 </h1>
 <hr>
 <br>
-{!! Form::open(['route'=> ['estoque-movimento.store', 'codestoquemes' => $request->codestoquemes], 'method' => 'POST', 'class' => 'form-horizontal', 'onsubmit' => 'onSubmit()']) !!}
+{!! Form::open(['route'=> ['estoque-movimento.store', 'codestoquemes' => $request->codestoquemes], 'method' => 'POST', 'class' => 'form-horizontal', 'id' => 'estoqueMovimento']) !!}
     @include('errors.form_error')
     @include('estoque-movimento.form', ['submitTextButton' => 'Salvar'])
  {!! Form::close() !!}   

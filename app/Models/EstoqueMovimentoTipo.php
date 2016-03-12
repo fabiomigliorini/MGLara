@@ -5,6 +5,7 @@ namespace MGLara\Models;
 /**
  * Campos
  * @property  bigint                         $codestoquemovimentotipo            NOT NULL DEFAULT nextval('tblestoquemovimentotipo_codestoquemovimentotipo_seq'::regclass)
+ * @property  bigint                         $codestoquemovimentotipoorigem      codigo do tipo de movimentacao para fazer transacao reversa
  * @property  varchar(100)                   $descricao                          NOT NULL
  * @property  varchar(3)                     $sigla                              NOT NULL
  * @property  timestamp                      $alteracao                          
@@ -20,6 +21,7 @@ namespace MGLara\Models;
  * Tabelas Filhas
  * @property  NaturezaOperacao[]             $NaturezaOperacaoS
  * @property  EstoqueMovimento[]             $EstoqueMovimentoS
+ * @property  EstoqueMovimentoTipo[]         $EstoqueMovimentoTipoS
  */
 
 class EstoqueMovimentoTipo extends MGModel
@@ -50,6 +52,7 @@ class EstoqueMovimentoTipo extends MGModel
     {
         return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
     }
+  
 
     // Tabelas Filhas
     public function NaturezaOperacaoS()
@@ -62,4 +65,10 @@ class EstoqueMovimentoTipo extends MGModel
         return $this->hasMany(EstoqueMovimento::class, 'codestoquemovimentotipo', 'codestoquemovimentotipo');
     }
 
+    public function EstoqueMovimentoTipoS()
+    {
+        return $this->hasMany(EstoqueMovimentoTipo::class, 'codestoquemovimentotipoorigem', 'codestoquemovimentotipo');
+    }
+    
+    
 }

@@ -161,5 +161,94 @@ class ProdutoController extends Controller
         return json_encode($ret);
     }
     
-    
+    public function ajax(Request $request)
+    //public function ajax($texto, $inativo = false, $limite = 20, $pagina = 1) 
+    {
+        $pagina = $request->get('page');
+        $limite = $request->get('per_page');
+        $inativo = $request->get('inativo');
+        // limpa texto
+        $ordem = (strstr($request->get('q'), '$'))?'preco ASC, descricao ASC':'descricao ASC, preco ASC';
+        $texto = str_replace('$', '', $request->get('q'));
+        $texto  = str_replace(' ', '%', trim($request->get('q')));
+
+        // corrige pagina se veio sujeira
+        if ($pagina < 1) $pagina = 1;
+
+        // calcula de onde continuar a consulta
+        $offset = ($pagina-1)*$limite;
+
+        // inicializa array com resultados
+        $resultados = array();
+
+        // se o texto foi preenchido
+        #if (strlen($texto)>=3)
+        #{
+            $sql = "SELECT codprodutobarra as id, codproduto, barras, descricao, sigla, preco, marca, referencia 
+                          FROM vwProdutoBarra 
+                         WHERE codProdutoBarra is not null ";
+
+            #if (!$inativo) {
+            #    $sql .= "AND Inativo is null ";
+            #}
+
+        $sql .= " AND (";
+
+            // Verifica se foi digitado um valor e procura pelo preco
+        #    If ((Yii::app()->format->formatNumber(Yii::app()->format->unformatNumber($texto)) == $texto)
+        #            && (strpos($texto, ",") != 0)
+        #            && ((strlen($texto) - strpos($texto, ",")) == 3)) 
+        #    {
+        #            $sql .= "preco = :preco";
+        #            $params = array(
+        #                    ':preco'=>Yii::app()->format->unformatNumber($texto),
+        #                    );
+        #}
+            
+            //senao procura por barras, descricao, marca e referencia
+            #else
+            #{
+                    $sql .= "barras ilike '%$texto%' ";
+                    $sql .= "OR descricao ilike '%$texto%' ";
+                    $sql .= "OR marca ilike '%$texto%' ";
+                    $sql .= "OR referencia ilike '%$texto%' ";
+                    
+                    /*$params = array(
+                        ':texto'=>'%'.$texto.'%',
+                    );*/
+            #}
+
+            //ordena
+            #$sql .= ") ORDER BY $ordem LIMIT $limite OFFSET $offset";
+            $sql .= ") ORDER BY $ordem LIMIT $limite OFFSET $offset";
+
+            #$command = Yii::app()->db->createCommand($sql);
+            #$command->params = $params;
+
+            #$resultados = $command->queryAll();
+
+            
+            $resultados = DB::select($sql);
+            
+            for ($i=0; $i<sizeof($resultados);$i++)
+            {
+                    $resultados[$i]->codproduto = \formataCodigo($resultados[$i]->codproduto, 6);
+                    $resultados[$i]->preco = \formataNumero($resultados[$i]->preco);
+                    if (empty($resultados[$i]->referencia))
+                            $resultados[$i]->referencia = "-";
+            }
+
+            return response()->json($resultados);
+//            json_encode([
+//                    'mais' => count($resultados)==$limite?true:false, 
+//                    'pagina' => (int) $pagina, 
+//                    'itens' => $resultados
+//                ]
+//            );            
+            
+        } 
+
+        // transforma o array em JSON
+
+        
 }

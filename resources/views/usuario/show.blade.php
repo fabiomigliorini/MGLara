@@ -60,11 +60,11 @@
           </tr>
           <tr> 
             <th>Último acesso</th> 
-            <td>{{ formataData($model->ultimoacesso, 'L') }}</td> 
+            <td>{{ $model->ultimoacesso }}</td> 
           </tr>           
           <tr> 
             <th>Inativo</th> 
-            <td><?php if(!empty($model->inativo)) echo formataData($model->inativo, 'M');?></td> 
+            <td>{!! isset($model->inativo) ? formataData($model->inativo, 'M') : '' !!}</td> 
           </tr> 
         </tbody> 
       </table>

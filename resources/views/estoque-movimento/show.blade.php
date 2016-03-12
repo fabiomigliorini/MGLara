@@ -57,4 +57,18 @@
 </div>
 <hr>
 @include('includes.autor')
+@section('inscript')
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#Delete').click(function (e) {
+        bootbox.confirm("Deseja excluir esse registro?", function(result) {
+            if (result)
+            {
+                $('form').submit();
+            }
+        }); 
+    });
+}
+</script>
+@endsection
 @stop
