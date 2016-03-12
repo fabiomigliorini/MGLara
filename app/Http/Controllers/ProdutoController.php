@@ -116,25 +116,36 @@ class ProdutoController extends Controller
     public function cobreEstoqueNegativo($id = null)
     {
 
-	echo '<meta http-equiv="refresh" content="1; URL=' . url('produto/cobre-estoque-negativo') . '">';
+        //echo '<meta http-equiv="refresh" content="1; URL=' . url('produto/cobre-estoque-negativo') . '">';
         $codprodutos = [];
+        $pular = 0;
+        if (isset($_GET['pular']))
+            $pular = $_GET['pular'];
+        
         if (empty($id))
         {
-            $pular = 0;
             
-            if (isset($_GET['pular']))
-                $pular = $_GET['pular'];
-            
-            $itens = 10;
+            $itens = 2;
             if (isset($_GET['itens']))
                 $itens = $_GET['itens'];
-            
+            /*
             $sql = "
                     select distinct(es.codproduto) 
                     from tblestoquesaldo es
                     where es.fiscal
                     and es.saldoquantidade < 0
                     and es.codproduto in (select distinct es2.codproduto from tblestoquesaldo es2 where es2.fiscal and es2.saldoquantidade > 0)
+                    order by es.codproduto
+                    limit $itens
+                    offset $pular
+                    ";
+            */
+            
+            $sql = "
+                    select distinct(es.codproduto) 
+                    from tblestoquesaldo es
+                    where es.fiscal
+                    and es.saldoquantidade < 0
                     order by es.codproduto
                     limit $itens
                     offset $pular
@@ -156,7 +167,12 @@ class ProdutoController extends Controller
         {
             $model = Produto::findOrFail($codproduto);
             $ret[$codproduto] = $model->cobreEstoqueNegativo();
+            if (sizeof($ret[$codproduto]) == 0)
+                $pular++;
         }
+        
+        if (sizeof($codprodutos)>1)
+            echo '<meta http-equiv="refresh" content="1; URL=' . url('produto/cobre-estoque-negativo') . '?pular=' . $pular . '">';
         
         return json_encode($ret);
     }

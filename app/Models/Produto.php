@@ -203,6 +203,231 @@ class Produto extends MGModel
     {
         set_time_limit(1000);
         
+        $negativos = EstoqueSaldo::
+            where('codproduto', $this->codproduto)
+            ->where('saldoquantidade', '<=', -1)
+            ->where('fiscal', true)
+            ->get();
+        $saldoquantidade = [];
+        $ret = [];
+        foreach($negativos as $negativo)
+        {
+            //cai fora do xerox
+            if ($negativo->Produto->codsubgrupoproduto == 17001)
+                continue;
+            
+            $quantidade = abs(floor($negativo->saldoquantidade));
+            
+            $sql = "
+                select * from (
+                    -- MESMO NCM/SUBGRUPO/MARCA/LOCAL
+                    select 11 as prioridade, es.codestoquesaldo, p.codproduto, p.produto, p.preco, es.codestoquelocal, es.saldoquantidade
+                    from tblestoquesaldo es 
+                    inner join tblproduto p on (p.codproduto = es.codproduto)
+                    inner join 
+                        (
+                        select es_orig.codestoquelocal, es_orig.fiscal, es_orig.codproduto, p_orig.codncm, p_orig.preco, p_orig.codsubgrupoproduto, p_orig.codmarca
+                        from tblestoquesaldo es_orig
+                        inner join tblproduto p_orig on (p_orig.codproduto = es_orig.codproduto)
+                        where es_orig.codestoquesaldo = {$negativo->codestoquesaldo}
+                        ) orig on 
+                        (
+                        p.codncm = orig.codncm
+                        and p.preco between (orig.preco * .80) and  (orig.preco * 1.20) 
+                        AND p.codsubgrupoproduto = orig.codsubgrupoproduto
+                        and p.codmarca = orig.codmarca
+                        AND ES.codestoquelocal = orig.codestoquelocal 
+                        )
+                    where es.saldoquantidade > 0
+                    union 
+                    -- MESMO NCM/SUBGRUPO/MARCA NA SINOPEL
+                    select 21 as prioridade, es.codestoquesaldo, p.codproduto, p.produto, p.preco, es.codestoquelocal, es.saldoquantidade
+                    from tblestoquesaldo es 
+                    inner join tblproduto p on (p.codproduto = es.codproduto)
+                    inner join 
+                        (
+                        select es_orig.codestoquelocal, es_orig.fiscal, es_orig.codproduto, p_orig.codncm, p_orig.preco, p_orig.codsubgrupoproduto, p_orig.codmarca
+                        from tblestoquesaldo es_orig
+                        inner join tblproduto p_orig on (p_orig.codproduto = es_orig.codproduto)
+                        where es_orig.codestoquesaldo = {$negativo->codestoquesaldo}
+                        ) orig on 
+                        (
+                        p.codncm = orig.codncm
+                        and p.preco between (orig.preco * .80) and  (orig.preco * 1.20) 
+                        AND p.codsubgrupoproduto = orig.codsubgrupoproduto
+                        and p.codmarca = orig.codmarca
+                        AND ES.codestoquelocal = 301001
+                        )
+                    where es.saldoquantidade > 0
+                    union 
+                    -- MESMO NCM NA SINOPEL
+                    select 22 as prioridade, es.codestoquesaldo, p.codproduto, p.produto, p.preco, es.codestoquelocal, es.saldoquantidade
+                    from tblestoquesaldo es 
+                    inner join tblproduto p on (p.codproduto = es.codproduto)
+                    inner join 
+                        (
+                        select es_orig.codestoquelocal, es_orig.fiscal, es_orig.codproduto, p_orig.codncm, p_orig.preco, p_orig.codsubgrupoproduto, p_orig.codmarca
+                        from tblestoquesaldo es_orig
+                        inner join tblproduto p_orig on (p_orig.codproduto = es_orig.codproduto)
+                        where es_orig.codestoquesaldo = {$negativo->codestoquesaldo}
+                        ) orig on 
+                        (
+                        p.codncm = orig.codncm
+                        and p.preco between (orig.preco * .80) and  (orig.preco * 1.20) 
+                        --AND p.codsubgrupoproduto = orig.codsubgrupoproduto
+                        --and p.codmarca = orig.codmarca
+                        AND ES.codestoquelocal = 301001
+                        )
+                    where es.saldoquantidade > 0
+                    union 
+                    -- MESMO NCM/SUBGRUPO/MARCA NA FDF
+                    select 31 as prioridade, es.codestoquesaldo, p.codproduto, p.produto, p.preco, es.codestoquelocal, es.saldoquantidade
+                    from tblestoquesaldo es 
+                    inner join tblproduto p on (p.codproduto = es.codproduto)
+                    inner join 
+                        (
+                        select es_orig.codestoquelocal, es_orig.fiscal, es_orig.codproduto, p_orig.codncm, p_orig.preco, p_orig.codsubgrupoproduto, p_orig.codmarca
+                        from tblestoquesaldo es_orig
+                        inner join tblproduto p_orig on (p_orig.codproduto = es_orig.codproduto)
+                        where es_orig.codestoquesaldo = {$negativo->codestoquesaldo}
+                        ) orig on 
+                        (
+                        p.codncm = orig.codncm
+                        and p.preco between (orig.preco * .80) and  (orig.preco * 1.20) 
+                        AND p.codsubgrupoproduto = orig.codsubgrupoproduto
+                        and p.codmarca = orig.codmarca
+                        AND ES.codestoquelocal = 201001
+                        )
+                    where es.saldoquantidade > 0
+                    union 
+                    -- MESMO NCM NA FDF
+                    select 32 as prioridade, es.codestoquesaldo, p.codproduto, p.produto, p.preco, es.codestoquelocal, es.saldoquantidade
+                    from tblestoquesaldo es 
+                    inner join tblproduto p on (p.codproduto = es.codproduto)
+                    inner join 
+                        (
+                        select es_orig.codestoquelocal, es_orig.fiscal, es_orig.codproduto, p_orig.codncm, p_orig.preco, p_orig.codsubgrupoproduto, p_orig.codmarca
+                        from tblestoquesaldo es_orig
+                        inner join tblproduto p_orig on (p_orig.codproduto = es_orig.codproduto)
+                        where es_orig.codestoquesaldo = {$negativo->codestoquesaldo}
+                        ) orig on 
+                        (
+                        p.codncm = orig.codncm
+                        and p.preco between (orig.preco * .80) and  (orig.preco * 1.20) 
+                        --AND p.codsubgrupoproduto = orig.codsubgrupoproduto
+                        --and p.codmarca = orig.codmarca
+                        AND ES.codestoquelocal = 201001
+                        )
+                    where es.saldoquantidade > 0
+                    union
+                    -- MESMO NCM/SUBGRUPO/MARCA NAS MIGLIORINIS
+                    select 41 as prioridade, es.codestoquesaldo, p.codproduto, p.produto, p.preco, es.codestoquelocal, es.saldoquantidade
+                    from tblestoquesaldo es 
+                    inner join tblproduto p on (p.codproduto = es.codproduto)
+                    inner join 
+                        (
+                        select es_orig.codestoquelocal, es_orig.fiscal, es_orig.codproduto, p_orig.codncm, p_orig.preco, p_orig.codsubgrupoproduto, p_orig.codmarca
+                        from tblestoquesaldo es_orig
+                        inner join tblproduto p_orig on (p_orig.codproduto = es_orig.codproduto)
+                        where es_orig.codestoquesaldo = {$negativo->codestoquesaldo}
+                        ) orig on 
+                        (
+                        p.codncm = orig.codncm
+                        and p.preco between (orig.preco * .80) and  (orig.preco * 1.20) 
+                        AND p.codsubgrupoproduto = orig.codsubgrupoproduto
+                        and p.codmarca = orig.codmarca
+                        AND ES.codestoquelocal not in (301001, 201001)
+                        )
+                    where es.saldoquantidade > 0
+                    union
+                    -- MESMO NCM/SUBGRUPO 
+                    select 51 as prioridade, es.codestoquesaldo, p.codproduto, p.produto, p.preco, es.codestoquelocal, es.saldoquantidade
+                    from tblestoquesaldo es 
+                    inner join tblproduto p on (p.codproduto = es.codproduto)
+                    inner join 
+                        (
+                        select es_orig.codestoquelocal, es_orig.fiscal, es_orig.codproduto, p_orig.codncm, p_orig.preco, p_orig.codsubgrupoproduto, p_orig.codmarca
+                        from tblestoquesaldo es_orig
+                        inner join tblproduto p_orig on (p_orig.codproduto = es_orig.codproduto)
+                        where es_orig.codestoquesaldo = {$negativo->codestoquesaldo}
+                        ) orig on 
+                        (
+                        p.codncm = orig.codncm
+                        and p.preco between (orig.preco * .80) and  (orig.preco * 1.20) 
+                        AND p.codsubgrupoproduto = orig.codsubgrupoproduto
+                        --and p.codmarca = orig.codmarca
+                        --AND ES.codestoquelocal = 301001
+                        )
+                    where es.saldoquantidade > 0
+                    ) iq2
+                order by iq2.prioridade, iq2.codestoquelocal desc                
+            ";
+                        
+            $alternativas = DB::select($sql);
+            
+            //echo $sql;
+            
+            /*
+            $origens = EstoqueSaldo::where('codproduto', $this->codproduto)->where('fiscal', $negativo->fiscal)->where('saldoquantidade', '>', 0)->where('codestoquelocal', 301001)->get();
+            $origens = $origens->merge(EstoqueSaldo::where('codproduto', $this->codproduto)->where('fiscal', $negativo->fiscal)->where('saldoquantidade', '>', 0)->where('codestoquelocal', 201001)->get());
+            $origens = $origens->merge(EstoqueSaldo::where('codproduto', $this->codproduto)->where('fiscal', $negativo->fiscal)->where('saldoquantidade', '>', 0)->where('codestoquelocal', 101001)->get());
+            $origens = $origens->merge(EstoqueSaldo::where('codproduto', $this->codproduto)->where('fiscal', $negativo->fiscal)->where('saldoquantidade', '>', 0)->where('codestoquelocal', 102001)->get());
+            $origens = $origens->merge(EstoqueSaldo::where('codproduto', $this->codproduto)->where('fiscal', $negativo->fiscal)->where('saldoquantidade', '>', 0)->where('codestoquelocal', 103001)->get());
+            $origens = $origens->merge(EstoqueSaldo::where('codproduto', $this->codproduto)->where('fiscal', $negativo->fiscal)->where('saldoquantidade', '>', 0)->where('codestoquelocal', 104001)->get());
+            */
+            
+            $i = 1;
+            foreach ($alternativas as $alternativa)
+            {
+                if (isset($saldoquantidade[$alternativa->codestoquesaldo]))
+                    if ($saldoquantidade[$alternativa->codestoquesaldo] == 0)
+                        continue;
+                    
+                $origem = EstoqueSaldo::find($alternativa->codestoquesaldo);
+                
+                if (!isset($saldoquantidade[$alternativa->codestoquesaldo]))
+                    $saldoquantidade[$alternativa->codestoquesaldo] = $origem->saldoquantidade;
+                
+                $transferir = ($quantidade > $saldoquantidade[$origem->codestoquesaldo])?$saldoquantidade[$origem->codestoquesaldo]:$quantidade;
+                
+                if ($transferir == 0)
+                    continue;
+
+                $ret[] = array(
+                    'origem codestoquesaldo' => $origem->codestoquesaldo,
+                    'origem local' => $origem->EstoqueLocal->estoquelocal,
+                    'origem produto' => $origem->Produto->produto,
+                    'destino codestoquesaldo' => $negativo->codestoquesaldo,
+                    'destino local' => $negativo->EstoqueLocal->estoquelocal,
+                    'destino produto' => $negativo->Produto->produto,
+                    'quantidade' => $transferir,
+                    'resultado' => $origem->transfere($negativo, $transferir)
+                );
+                
+                $origem->recalculaCustoMedio();
+                
+                $quantidade -= $transferir;
+                $saldoquantidade[$origem->codestoquesaldo] -= $transferir;
+                
+                if ($quantidade == 0)
+                    break;
+                
+
+            }
+            
+            $negativo->recalculaCustoMedio();
+            
+        }
+        
+        return $ret;
+        
+    }
+    
+    /*
+    public function cobreEstoqueNegativo()
+    {
+        set_time_limit(1000);
+        
         $negativos = EstoqueSaldo::where('codproduto', $this->codproduto)->where('saldoquantidade', '<', 0)->where('fiscal', true)->get();
         $saldoquantidade = [];
         $ret = [];
@@ -249,5 +474,7 @@ class Produto extends MGModel
         return $ret;
         
     }
+     * 
+     */
     
 }
