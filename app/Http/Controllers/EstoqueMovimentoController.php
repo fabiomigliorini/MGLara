@@ -82,13 +82,13 @@ class EstoqueMovimentoController extends Controller
             $origem = new EstoqueMovimento();
             //$origem = $model->EstoqueMovimentoOrigem;
 
-            $em_origem = EstoqueMes::buscaOuCria(
+            $emOrigem = EstoqueMes::buscaOuCria(
                     $request->input('codproduto'), 
                     $request->input('codestoquelocal'), 
                     $model->EstoqueMes->EstoqueSaldo->fiscal, 
                     $model->data);
 
-            $origem->codestoquemes = $em_origem->codestoquemes;
+            $origem->codestoquemes = $emOrigem->codestoquemes;
             $origem->codestoquemovimentotipo = $model->EstoqueMovimentoTipo->codestoquemovimentotipoorigem;
             $origem->data = $model->data;
             $origem->entradaquantidade = $model->saidaquantidade;
@@ -97,13 +97,18 @@ class EstoqueMovimentoController extends Controller
             $origem->saidavalor = $model->entradavalor ; 
             $origem->manual = true;
             $origem->save();
-            $origem->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
+            $emOrigem = $origem->EstoqueMes;
             $model->codestoquemovimentoorigem = $origem->codestoquemovimento;
         }   
         
         $model->manual = TRUE;
         $model->save();
+        
         $model->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
+        
+        if (isset($emOrigem))
+            $emOrigem->EstoqueSaldo->recalculaCustoMedio();
+        
         Session::flash('flash_create', 'Registro inserido.');
         return redirect("estoque-mes/$model->codestoquemes");
     }
@@ -172,13 +177,16 @@ class EstoqueMovimentoController extends Controller
         {
             $origem = $model->EstoqueMovimentoOrigem;
 
-            $em_origem = EstoqueMes::buscaOuCria(
+            $emOrigem = EstoqueMes::buscaOuCria(
                     $request->input('codproduto'), 
                     $request->input('codestoquelocal'), 
                     $model->EstoqueMes->EstoqueSaldo->fiscal, 
                     $model->data);
+            
+            if ($origem->codestoquemes != $emOrigem->codestoquemes)
+                $emOrigemAnterior = $origem->EstoqueMes;
 
-            $origem->codestoquemes = $em_origem->codestoquemes;
+            $origem->codestoquemes = $emOrigem->codestoquemes;
             $origem->codestoquemovimentotipo = $model->EstoqueMovimentoTipo->codestoquemovimentotipoorigem;
             $origem->data = $model->data;
             $origem->entradaquantidade = $model->saidaquantidade;
@@ -187,13 +195,23 @@ class EstoqueMovimentoController extends Controller
             $origem->saidavalor = $model->entradavalor ; 
             $origem->manual = true;
             $origem->save();
-            $origem->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
+            
+            $origem = EstoqueMovimento::find($origem->codestoquemovimento);
+            $emOrigem = $origem->EstoqueMes;
+            
             $model->codestoquemovimentoorigem = $origem->codestoquemovimento;
         }         
         
         
         $model->save();
         $model->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
+        
+        if (isset($emOrigemAnterior))
+            $emOrigemAnterior->EstoqueSaldo->recalculaCustoMedio();
+
+        if (isset($emOrigem))
+            $emOrigem->EstoqueSaldo->recalculaCustoMedio();
+        
         Session::flash('flash_update', 'Registro atualizado.');
         return redirect("estoque-mes/$model->codestoquemes");
     }

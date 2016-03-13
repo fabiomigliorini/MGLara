@@ -263,7 +263,6 @@ class EstoqueSaldo extends MGModel
                 }
             }
             
-            
             $saldoquantidade = $inicialquantidade + $entradaquantidade - $saidaquantidade;
             $saldovalor = $inicialvalor + $entradavalor - $saidavalor;
             
