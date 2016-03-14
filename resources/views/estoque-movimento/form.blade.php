@@ -102,9 +102,11 @@ if(isset($model)) {
         $produto = $model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->Produto->codproduto;
     } else {
         $estoquelocal = $model->EstoqueMes->EstoqueSaldo->EstoqueLocal->codestoquelocal;
+        $produto = $model->EstoqueMes->EstoqueSaldo->Produto->codproduto;
     }
 } else {
     $estoquelocal = $em->EstoqueSaldo->EstoqueLocal->codestoquelocal;
+    $produto = $em->EstoqueSaldo->Produto->codproduto;
 }   
 ?>
 @section('inscript')
@@ -127,7 +129,6 @@ $(document).ready(function() {
         allowClear: true,
         width: 'resolve'        
     })<?php echo (isset($model->codestoquemovimentotipo) ? ".select2('val', $model->codestoquemovimentotipo);" : ';');?>
-    //console.log($('#codestoquemovimentotipo').val());
     $('#data').datetimepicker({
         locale: 'pt-br',
         format: 'DD/MM/YYYY HH:mm:ss'
@@ -138,59 +139,11 @@ $(document).ready(function() {
     })<?php echo (isset($estoquelocal) ? ".select2('val', $estoquelocal);" : ';');?>
     
     <?php if(isset($produto)) :?>
-    $('#codproduto').val(<?php echo $produto;?>);
+    //$('#codproduto').val(<?php echo $produto;?>);
     <?php endif;?>
-    /*
-    $('#codproduto').select2({
-        minimumInputLength: 3,
-        allowClear: true,
-        closeOnSelect: true,
-        placeholder: 'Produto',
-        formatResult:function(item) {
-            var markup = "<div class='row'>";
-            markup    += "<small class='text-muted col-md-2'><small>" + item.barras + "<br>" + item.codproduto + "</small></small>";
-            markup    += "<div class='col-md-8'>" + item.descricao + "<small class='muted text-right pull-right'>" + item.referencia + "</small></div>";
-            markup    += "<div><div class='col-md-8 text-right pull-right'><small class='span1 text-muted'>" + item.sigla + "</small>" + item.preco + "";
-            markup    += "</div></div>";
-            markup    += "</div>";
-            return markup;
-        },
-        formatSelection:function(item) { 
-            return item.barras + " - " + item.descricao + " - " + item.preco; 
-        },
-        ajax: {
-            url: baseUrl+'/produto/ajax',
-            dataType: 'json',
-            quietMillis: 500,
-            data: function(term, current_page) { 
-                return {
-                    q: term, 
-                    per_page: 10, 
-                    current_page: current_page
-                }; 
-            },
-            results:function(data,page) {
-                //var more = (current_page * 20) < data.total;
-                return {
-                    results: data, 
-                    //more: data.mais
-                };
-            }
-        },
-        initSelection: function (element, callback) {
-            $.ajax({
-                type: "GET",
-                url: baseUrl+'/pessoa-ajax',
-                data: "id=<?php if(isset($model))echo $model->codpessoa;?>",
-                dataType: "json",
-                success: function(result) { 
-                    callback(result); 
-                }
-            });
-        },
-        width:'resolve'
-    }); 
-    */
+    
+
+    
 
     <?php if (isset($model->data)) {?>
         $("#data").val("<?php echo formataData($model->data, 'L');?>").change();
@@ -233,6 +186,57 @@ $(document).ready(function() {
             });              
         }
     }
+
+    $('#codproduto').select2({
+        minimumInputLength: 3,
+        allowClear: true,
+        closeOnSelect: true,
+        placeholder: 'Produto',
+        formatResult:function(item) {
+            var markup = "<div class='row'>";
+            markup    += "<small class='text-muted col-md-2'> <small>#" /*+ item.barras + "<br>"*/ + item.id + "</small></small>";
+            markup    += "<div class='col-md-8'>" + item.produto + "<small class='muted text-right pull-right'></small></div>";
+            markup    += "<div><div class='col-md-8 text-right pull-right'><small class='span1 text-muted'></small>" + item.preco + "";
+            markup    += "</div></div>";
+            markup    += "</div>";
+            return markup;
+        },
+        formatSelection:function(item) { 
+            return /*item.barras + " - " +*/ item.produto + " - " + item.preco; 
+        },
+        ajax: {
+            url: baseUrl+'/produto/ajax',
+            dataType: 'json',
+            quietMillis: 500,
+            data: function(term, current_page) { 
+                return {
+                    q: term, 
+                    per_page: 10, 
+                    current_page: current_page
+                }; 
+            },
+            results:function(data,page) {
+                //var more = (current_page * 20) < data.total;
+                return {
+                    results: data, 
+                    //more: data.mais
+                };
+            }
+        },
+        initSelection: function (element, callback) {
+            $.ajax({
+                type: "GET",
+                url: baseUrl+'/produto/ajax',
+                data: "id=<?php echo $produto;?>",
+                dataType: "json",
+                success: function(result) { 
+                    callback(result[0]); 
+                }
+            });
+        },
+        width:'resolve'
+    })<?php echo (isset($produto) ? ".select2('val', $produto);" : ';');?>
+
 
 });
 
