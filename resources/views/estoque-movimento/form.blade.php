@@ -96,12 +96,16 @@ foreach ($options as $option)
     $items[$option['codestoquemovimentotipo']] = $option['preco'];
     $items[$option['codestoquemovimentotipo'].'origem'] = $option['codestoquemovimentotipoorigem'];
 }
-if (!empty($model->codestoquemovimentoorigem)) {
-    $estoquelocal = $model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocal->codestoquelocal;
-    $produto = $model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->Produto->codproduto;
-}
-
-    
+if(isset($model)) {
+    if (!empty($model->codestoquemovimentoorigem)) {
+        $estoquelocal = $model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocal->codestoquelocal;
+        $produto = $model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->Produto->codproduto;
+    } else {
+        $estoquelocal = $model->EstoqueMes->EstoqueSaldo->EstoqueLocal->codestoquelocal;
+    }
+} else {
+    $estoquelocal = $em->EstoqueSaldo->EstoqueLocal->codestoquelocal;
+}   
 ?>
 @section('inscript')
 <script type="text/javascript">
