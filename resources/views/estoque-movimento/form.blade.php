@@ -107,16 +107,16 @@ if (!empty($model->codestoquemovimentoorigem)) {
 <script type="text/javascript">
  
 $(document).ready(function() {
-    $('#estoqueMovimento').submit(function(e) {
-        var currentForm = $('#estoqueMovimento');
+    
+    $('#estoqueMovimento').on("submit", function(e){
+        var currentForm = this;
         e.preventDefault();
         bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
             if (result) {
-                $('#estoqueMovimento').submit();
+                currentForm.submit();
             }
         });
-    });       
-     
+    });    
 
     var tipos = <?php echo json_encode($items)?>;
     $('#codestoquemovimentotipo').select2({
@@ -229,22 +229,8 @@ $(document).ready(function() {
             });              
         }
     }
-     
 
-   
 });
-/*
-    function onSubmit ()
-    {
-        var currentForm = this;
-        //e.preventDefault();
-        bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
-            if (result) {
-                //currentForm.submit();
-                true;
-            }
-        });
-    }  
-*/  
+
 </script>
 @endsection

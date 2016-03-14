@@ -5,7 +5,7 @@
         <ul class="nav navbar-nav">
             <li><a href="<?php echo url("estoque-movimento/$model->codestoquemovimento/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li>
-                {!! Form::open(['method' => 'DELETE', 'route' => ['estoque-movimento.destroy', $model->codestoquemovimento]]) !!}
+                {!! Form::open(['method' => 'DELETE',  'id'=>'deleteId', 'route' => ['estoque-movimento.destroy', $model->codestoquemovimento]]) !!}
                 <span class="glyphicon glyphicon-trash"></span>
                 {!! Form::submit('Excluir') !!}
                 {!! Form::close() !!}

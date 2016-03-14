@@ -51,40 +51,15 @@
     
 $(document).ready(function() {
     
-    $('form').submit(function(e){
-        var confirm = ConfirmDialog('Confirm', 'Are you sure?');
-        if(confirm){
-            form.submit();
-        }
-    });
-            
-    function ConfirmDialog(title,message){
-
-        var confirmdialog = $('<div></div>').appendTo('body')
-        .html('<div><h6>'+message+'</h6></div>')
-        .dialog({
-            modal: true, title: title, zIndex: 10000, autoOpen: false,
-            width: 'auto', resizable: false,
-            buttons: {
-                Yes: function(){
-                    $(this).dialog("close");
-                    return true;
-                },
-                No: function(){
-                    $(this).dialog("close");
-                    return false;
-                }
-            },
-            close: function(event, ui){
-                $(this).remove();
-                return false;
+    $('#deleteId').on("submit", function(e) {
+        var currentForm = this;
+        e.preventDefault();
+        bootbox.confirm("Tem certeza que deseja excluir?", function(result) {
+            if (result) {
+                currentForm.submit();
             }
         });
-
-        return confirmdialog.dialog("open");
-    }
-
-    
+    });    
   $('.pagination').addClass('hide');
   var loading_options = {
       finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
