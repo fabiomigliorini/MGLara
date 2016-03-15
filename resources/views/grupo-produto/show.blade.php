@@ -4,7 +4,8 @@
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="<?php echo url('grupo-produto');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="#" id="btnBuscaCodProduto"><span class="glyphicon glyphicon-refresh"></span> Recalcular Movimento de Estoque</a></li>             
+            <li><a href="#" id="btnBuscaCodProdutoMovimento"><span class="glyphicon glyphicon-refresh"></span> Recalcular Movimento de Estoque</a></li>             
+            <li><a href="#" id="btnBuscaCodProdutoCusto"><span class="glyphicon glyphicon-usd"></span> Recalcular Custo Medio</a></li>
         </ul>
     </div>
 </nav>
@@ -150,7 +151,8 @@ foreach($ess as $es)
                 <pre class='row-fluid hidden' id='logPbrecalculaMovimentoEstoque' style='height: 400px'></pre>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" disabled id="btnRecalculaMovimentoEstoque">Iniciar</button>
+                <button type="button" class="btn btn-default" disabled id="btnRecalculaMovimentoEstoque">Recalcular Movimento</button>
+                <button type="button" class="btn btn-default" disabled id="btnRecalculaCustoMedio">Recalcular Custo</button>
                 <button type="button" class="btn btn-default" id="btnFechaModalrecalculaMovimentoEstoque" data-dismiss="modal">Fechar</button>
             </div>
         </div>
@@ -163,11 +165,15 @@ foreach($ess as $es)
 var codprodutos;
 var i_codprodutos = 0;
 
-function recalculaMovimentoEstoque() {
+function recalculaMovimentoEstoque(tipo) {
     
     var codproduto = codprodutos[i_codprodutos];
     
-    var url = '{{ url('produto/{id}/recalcula-movimento-estoque' )}}';
+    if (tipo == 'Movimento')
+        var url = '{{ url('produto/{id}/recalcula-movimento-estoque' )}}';
+    else
+        var url = '{{ url('produto/{id}/recalcula-custo-medio' )}}';
+
     url = url.replace('{id}', codproduto);
         
     $.getJSON(url)
@@ -185,7 +191,7 @@ function recalculaMovimentoEstoque() {
             atualizaPbrecalculaMovimentoEstoque();
             
             if (i_codprodutos <= (codprodutos.length -1))
-                recalculaMovimentoEstoque();
+                recalculaMovimentoEstoque(tipo);
             else
             {
                 $('#btnRecalculaMovimentoEstoque').removeAttr('disabled');
@@ -210,14 +216,26 @@ function atualizaPbrecalculaMovimentoEstoque () {
     }
 }
 
-function buscaCodProduto() {
+function buscaCodProduto(tipo) {
     $.getJSON("<?php echo url("grupo-produto/{$model->codgrupoproduto}/busca-codproduto"); ?>")
         .done(function(data) 
         {
             codprodutos = data;
             atualizaPbrecalculaMovimentoEstoque();
             $('#modalrecalculaMovimentoEstoque').modal('show');
-            $('#btnRecalculaMovimentoEstoque').removeAttr('disabled');
+            if (tipo == 'Movimento')
+            {
+                $('#btnRecalculaMovimentoEstoque').removeClass('hidden');
+                $('#btnRecalculaMovimentoEstoque').removeAttr('disabled');
+                $('#btnRecalculaCustoMedio').addClass('hidden');
+            }
+            else
+            {
+                $('#btnRecalculaCustoMedio').removeClass('hidden');
+                $('#btnRecalculaCustoMedio').removeAttr('disabled');
+                $('#btnRecalculaMovimentoEstoque').addClass('hidden');
+            }
+                
         })
         .fail(function( jqxhr, textStatus, error ) 
         {
@@ -226,19 +244,40 @@ function buscaCodProduto() {
     
 }
 
+function iniciaProcesso(tipo)
+{
+    i_codprodutos = 0;
+    $('#logPbrecalculaMovimentoEstoque').html('');
+    
+    if (tipo == 'Movimento')
+    {
+        $('#btnRecalculaMovimentoEstoque').attr('disabled', 'disabled');
+    }
+    else
+    {
+        $('#btnRecalculaCustoMedio').attr('disabled', 'disabled');
+    }
+    
+    $('#btnFechaModalrecalculaMovimentoEstoque').attr('disabled', 'disabled');
+    $('#logPbrecalculaMovimentoEstoque').removeClass('hidden');
+    recalculaMovimentoEstoque(tipo);
+}
+
 $(document).ready(function() {
-    $('#btnBuscaCodProduto').click(function (e) {
-        buscaCodProduto();
+    $('#btnBuscaCodProdutoMovimento').click(function (e) {
+        buscaCodProduto('Movimento');
+    });
+    
+    $('#btnBuscaCodProdutoCusto').click(function (e) {
+        buscaCodProduto('Custo');
+    });
+    
+    $('#btnRecalculaCustoMedio').click(function (e) {
+        iniciaProcesso('Custo');
     });
     
     $('#btnRecalculaMovimentoEstoque').click(function (e) {
-        
-        i_codprodutos = 0;
-        $('#logPbrecalculaMovimentoEstoque').html('');
-        $('#btnRecalculaMovimentoEstoque').attr('disabled', 'disabled');
-        $('#btnFechaModalrecalculaMovimentoEstoque').attr('disabled', 'disabled');
-        $('#logPbrecalculaMovimentoEstoque').removeClass('hidden');
-        recalculaMovimentoEstoque();
+        iniciaProcesso('Movimento');
     });
 });
 </script>@endsection
