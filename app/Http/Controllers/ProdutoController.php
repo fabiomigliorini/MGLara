@@ -264,7 +264,39 @@ class ProdutoController extends Controller
             
         } 
 
-        // transforma o array em JSON
+        public function ajaxProduto(Request $request) 
+        {
+            if($request->get('q')) {
+                $pagina = $request->get('page');
+                $limite = $request->get('per_page');
+                $inativo = $request->get('inativo');
+                // limpa texto
+                $ordem = (strstr($request->get('q'), '$'))?'produto ASC':'produto ASC';
+                $texto = str_replace('$', '', $request->get('q'));
+                $texto  = str_replace(' ', '%', trim($request->get('q')));
+
+                // corrige pagina se veio sujeira
+                if ($pagina < 1) $pagina = 1;
+
+                // calcula de onde continuar a consulta
+                $offset = ($pagina-1)*$limite;
+
+                // inicializa array com resultados
+                $resultados = array();     
+
+                $sql = "SELECT codproduto as id, produto, referencia, preco FROM tblproduto 
+                            WHERE produto ilike '%$texto%'";
+                $sql .= " ORDER BY produto LIMIT $limite OFFSET $offset";
+                $resultados = DB::select($sql);
+                return response()->json($resultados);
+            } elseif($request->get('id')) {
+                $query = DB::table('tblproduto')
+                        ->where('codproduto', '=', $request->get('id'))
+                        ->select('codproduto as id', 'produto', 'referencia', 'preco')
+                        ->get();
+                return response()->json($query);
+            }
+        }
 
         
 }

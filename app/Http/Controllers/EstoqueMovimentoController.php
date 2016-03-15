@@ -223,15 +223,27 @@ class EstoqueMovimentoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-
         try{
             $model = EstoqueMovimento::find($id);
-            $model->delete();
+            if(!empty($model->codestoquemovimentoorigem))
+            {
+                $origem = $model->EstoqueMovimentoOrigem;
+                $model->delete();
+                $origem->delete();
+            } else {
+                $filha = $model->EstoqueMovimentoS->first();
+                if(!empty($filha)) {
+                    $filha->delete();
+                    $model->delete();
+                } else {
+                    $model->delete();
+                }
+            }
             Session::flash('flash_delete', 'Registro deletado!');
             return redirect("estoque-mes/$model->codestoquemes");
         }
         catch(\Exception $e){
             return view('errors.fk');
-        }        
-    }
+        }    
+    }    
 }
