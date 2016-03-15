@@ -161,7 +161,8 @@ $(document).ready(function() {
     <?php }?>
     
     $('#saidavalor, #entradavalor').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
-    $('#saidaquantidade, #entradaquantidade').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:3 });
+    $('#saidaquantidade, #entradaquantidade, .saldoquantidade').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:3 });
+    
     
     <?php if ($disabled > 1) :?>
         $('#entradavalor, #saidavalor').prop("disabled", true);
@@ -273,14 +274,15 @@ $(document).ready(function() {
                 $('#saldoEstoqueLocal').removeClass('hide');
                 if(data.length > 0){
                     $.each(data, function(k, v) {
-                        if (v.fiscal == 'true') {
+                        if (v.fiscal == true) {
                             var fiscal = 'Fiscal';
                         } else {
                             var fiscal = 'Físico';
                         }
-                        $('#saldoEstoqueLocalContent').prepend('<p>Quantidade: ' + v.saldoquantidade + '<span class="pull-right">'+fiscal+'</span></p>');
-                        //console.log(v.saldoquantidade);
+                        $('#saldoEstoqueLocalContent').prepend('<p>Quantidade: <span class="saldoquantidade">' + v.saldoquantidade + '</span><span class="pull-right">'+fiscal+'</span></p>');
+                        
                     });
+                    $('.saldoquantidade').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:3 });
                 } else {
                     $('#saldoEstoqueLocalContent').prepend('<p>Sem saldo</p>');
                 }
