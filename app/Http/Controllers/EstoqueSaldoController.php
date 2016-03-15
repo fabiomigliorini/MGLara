@@ -26,5 +26,11 @@ class EstoqueSaldoController extends Controller
                ->get();
         return redirect("estoque-mes/{$ems[0]->codestoquemes}");
     }
+    
+    public function zera($id)
+    {
+        $model = EstoqueSaldo::findOrFail($id);
+        return json_encode($model->zera());
+    }
 
 }

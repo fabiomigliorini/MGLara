@@ -346,6 +346,7 @@ class EstoqueSaldo extends MGModel
         $data = Carbon::create($year = 2015, $month = 12, $day = 31, $hour = 23, $minute = 59, $second = 59);
         $mes = EstoqueMes::buscaOuCria($this->codproduto, $this->codestoquelocal, $this->fiscal, $data);
         $mov = new EstoqueMovimento();
+        $data = Carbon::create($year = 2015, $month = 12, $day = 31, $hour = 23, $minute = 59, $second = 59);
         
         $mov->codestoquemes = $mes->codestoquemes;
         $mov->data = $data;
@@ -355,14 +356,14 @@ class EstoqueSaldo extends MGModel
         if ($this->saldoquantidade > 0)
             $mov->saidaquantidade = $this->saldoquantidade;
         elseif ($this->saldoquantidade < 0)
-            $mov->entradaquantidade = $this->saldoquantidade;
+            $mov->entradaquantidade = abs($this->saldoquantidade);
         
         if ($this->saldovalor > 0)
             $mov->saidavalor = $this->saldovalor;
         elseif ($this->saldovalor < 0)
-            $mov->entradavalor = $this->saldovalor;
+            $mov->entradavalor = abs($this->saldovalor);
         
-        $mov->save();
+        $ret = $mov->save();
         
         $this->recalculaCustoMedio();
         
