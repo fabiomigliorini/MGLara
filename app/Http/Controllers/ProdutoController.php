@@ -297,6 +297,20 @@ class ProdutoController extends Controller
                 return response()->json($query);
             }
         }
+        
+        public function estoqueSaldo(Request $request) 
+        {
+            $query = DB::table('tblestoquesaldo')
+                    ->where('codproduto', '=', $request->get('codproduto'))
+                    ->select('codestoquelocal', 'fiscal', 'saldoquantidade');
+            
+            if($request->get('codestoquelocal')) $query->where('codestoquelocal', '=', $request->get('codestoquelocal'));
+            
+            $resultado = $query->get();
+            
+            return response()->json($resultado);
+            
+        }
 
         
 }

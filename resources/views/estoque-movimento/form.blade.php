@@ -37,6 +37,13 @@ if(isset($model)){
       <div class="col-md-2 col-xs-4">
         {!! Form::select('codestoquelocal', $el, ['class'=> 'form-control'], ['style'=>'width:100%', 'id'=>'codestoquelocal']) !!}
       </div>
+        <div id="saldoEstoqueLocal" class="hide">
+            <div role="tooltip" class="popover fade right in" id="popoversaldos">
+                <div class="arrow" style="top: 17px;"></div>
+                <h3 class="popover-title">Saldos</h3>
+                <div class="popover-content" id="saldoEstoqueLocalContent"></div>
+            </div>           
+        </div>
     </div>    
 </div>
 
@@ -110,6 +117,17 @@ if(isset($model)) {
 }   
 ?>
 @section('inscript')
+<style type="text/css">
+    #saldoEstoqueLocal {
+        position: relative;
+    }
+    #popoversaldos {
+        top: 0px; 
+        left: 420px; 
+        display: block;
+        min-width: 400px;
+    }
+</style>
 <script type="text/javascript">
  
 $(document).ready(function() {
@@ -138,13 +156,6 @@ $(document).ready(function() {
         width: 'resolve'        
     })<?php echo (isset($estoquelocal) ? ".select2('val', $estoquelocal);" : ';');?>
     
-    <?php if(isset($produto)) :?>
-    //$('#codproduto').val(<?php echo $produto;?>);
-    <?php endif;?>
-    
-
-    
-
     <?php if (isset($model->data)) {?>
         $("#data").val("<?php echo formataData($model->data, 'L');?>").change();
     <?php }?>
@@ -174,6 +185,7 @@ $(document).ready(function() {
             });              
         }
     });
+    
     if($('#codestoquemovimentotipo').val()) {
         if(tipos[$('#codestoquemovimentotipo').val()+'origem'] == null) {
             
@@ -237,7 +249,46 @@ $(document).ready(function() {
         width:'resolve'
     })<?php echo (isset($produto) ? ".select2('val', $produto);" : ';');?>
 
+    
+  
 
+    if($('#codestoquelocal').val()) {
+        $("#saldoEstoqueLocalContent").empty();
+        var codproduto = $('#codproduto').val();
+        var codestoquelocal = $('#codestoquelocal').val();
+        estoqueSaldo(codproduto, codestoquelocal);
+    }
+    
+    $('#codestoquelocal').change(function() {
+        $("#saldoEstoqueLocalContent").empty();
+        var codproduto = $('#codproduto').val();
+        var codestoquelocal = $('#codestoquelocal').val();
+        estoqueSaldo(codproduto, codestoquelocal);
+    });
+    
+    
+    function estoqueSaldo(codproduto, codestoquelocal) {
+        $.getJSON(baseUrl + '/produto/estoque-saldo?codproduto='+codproduto+'&codestoquelocal='+codestoquelocal)
+            .done(function(data) {
+                $('#saldoEstoqueLocal').removeClass('hide');
+                if(data.length > 0){
+                    $.each(data, function(k, v) {
+                        if (v.fiscal == 'true') {
+                            var fiscal = 'Fiscal';
+                        } else {
+                            var fiscal = 'Físico';
+                        }
+                        $('#saldoEstoqueLocalContent').prepend('<p>Quantidade: ' + v.saldoquantidade + '<span class="pull-right">'+fiscal+'</span></p>');
+                        //console.log(v.saldoquantidade);
+                    });
+                } else {
+                    $('#saldoEstoqueLocalContent').prepend('<p>Sem saldo</p>');
+                }
+            }).fail(function(error ) {
+                return console.log(error)
+            });    
+        return false;    
+    }
 });
 
 </script>
