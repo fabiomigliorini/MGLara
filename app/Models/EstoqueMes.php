@@ -106,16 +106,17 @@ class EstoqueMes extends MGModel
     public static function buscaOuCria($codproduto, $codestoquelocal, $fiscal, $data)
     {
         $es = EstoqueSaldo::buscaOuCria($codproduto, $codestoquelocal, $fiscal);
-        $data->day = 1;
+        $mes = $data;
+        $mes->day = 1;
         //Antes de 2015, cria somente um registro de mes por ano, em dezembro
-        if ($data->year <= 2015)
-            $data->month = 12;
-        $em = self::where('codestoquesaldo', $es->codestoquesaldo)->where('mes', $data)->first();
+        if ($mes->year <= 2015)
+            $mes->month = 12;
+        $em = self::where('codestoquesaldo', $es->codestoquesaldo)->where('mes', $mes)->first();
         if ($em == false)
         {
             $em = new EstoqueMes;
             $em->codestoquesaldo = $es->codestoquesaldo;
-            $em->mes = $data;
+            $em->mes = $mes;
             $em->save();
         }
         return $em;
