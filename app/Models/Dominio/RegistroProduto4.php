@@ -324,5 +324,29 @@ class RegistroProduto4 extends Registro
         ];
         
         $this->identificador = 4;
+        $this->quantidadeInicial = 0;
+        $this->quantidadeFinal = 0;
+        $this->valorInicial = 0;
+        $this->valorFinal = 0;
+        $this->observacao = "Exportação MGsis @ " . date('d/m/Y H:i:s');
+        $this->exportaDnf = 'N';
+        $this->incentivoFiscal = 'N';
+        $this->geraInformacaoGrfCbt = 'N';
+        $this->geraInformacaoScanc = 'N';
+        $this->produtoGasolinaA = 'N';
+        $this->unidade = 'UN';
+        $this->tipoServicoProduto = 1;
+        $this->geraInformacoesRegistro88stSintegra = 'N';
+        $this->tipo = 'O';
+        $this->tipoArma = 0;
+        $this->produtoComposto = 'N';
+        $this->informacoesComplementaresIpmPdi = 'N';
+        $this->cestaBasica = 'N';
+        $this->tipoMedicamento = 'O';
+        $this->produtoIncluidoCampoSubstituicaoTributaria = 'N';
+        $this->servicoTributadoIssqn = 'N';
+        $this->periodicidadeIpi = 'M';
+        $this->contaContabil = 55;
+        $this->unidadeInventariadaDiferente = 'N';        
     }
 }

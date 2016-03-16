@@ -40,33 +40,7 @@ class ArquivoEstoque extends Arquivo
                     continue;
 
                 
-                $reg = new RegistroProduto4();
-                
-                $reg->quantidadeInicial = 0;
-                $reg->quantidadeFinal = 0;
-                $reg->valorInicial = 0;
-                $reg->valorFinal = 0;
-                $reg->observacao = "Exportação MGsis @ " . date('d/m/Y H:i:s');
-                $reg->exportaDnf = 'N';
-                $reg->incentivoFiscal = 'N';
-                $reg->geraInformacaoGrfCbt = 'N';
-                $reg->geraInformacaoScanc = 'N';
-                $reg->produtoGasolinaA = 'N';
-                $reg->unidade = 'UN';
-                $reg->tipoServicoProduto = 1;
-                $reg->geraInformacoesRegistro88stSintegra = 'N';
-                $reg->tipo = 'O';
-                $reg->tipoArma = 0;
-                $reg->produtoComposto = 'N';
-                $reg->informacoesComplementaresIpmPdi = 'N';
-                $reg->cestaBasica = 'N';
-                $reg->tipoMedicamento = 'O';
-                $reg->produtoIncluidoCampoSubstituicaoTributaria = 'N';
-                $reg->servicoTributadoIssqn = 'N';
-                $reg->periodicidadeIpi = 'M';
-                $reg->contaContabil = 55;
-                $reg->unidadeInventariadaDiferente = 'N';
-                
+                $reg = new RegistroProduto4();              
                 $reg->codigoProduto = $saldo->codproduto;
                 $reg->codigoEmpresa = $this->_Filial->empresadominio;
 
