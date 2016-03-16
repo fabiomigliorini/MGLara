@@ -371,4 +371,20 @@ class EstoqueSaldo extends MGModel
         
     }
 
+    public function scopeFiscal($query, $fiscal)
+    {
+        if ($fiscal)
+            $query->where('fiscal', true);
+        else
+            $query->where('fiscal', false);
+    } 
+
+    public function scopeLocal($query, $EstoqueLocal)
+    {
+        if (gettype($EstoqueLocal) == 'integer')
+            $query->where('codestoquelocal', $EstoqueLocal);
+        else
+            $query->where('codestoquelocal', $EstoqueLocal->codestoquelocal);
+    } 
+    
 }

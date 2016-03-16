@@ -141,4 +141,22 @@ class EstoqueMes extends MGModel
                ->get();
         return $ems->reverse();
     }
+    
+    public function scopeUltimo($query, Carbon $mes = null)
+    {
+        if ($mes !== null)
+        {
+            $query->where('mes', '<=', $mes);
+        }
+        $query->OrderBy('mes', 'DESC');
+    }
+    
+    public function scopeSaldo($query, $EstoqueSaldo)
+    {
+        if (gettype($EstoqueSaldo) == 'integer')
+            $query->where('codestoquesaldo', $EstoqueSaldo);
+        else
+            $query->where('codestoquesaldo', $EstoqueSaldo->codestoquesaldo);
+    } 
+    
 }
