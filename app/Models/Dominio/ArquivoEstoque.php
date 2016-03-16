@@ -51,11 +51,11 @@ class ArquivoEstoque extends Arquivo
                         break;
                     
                     case 7: // Uso e Consumo
-                        $reg->codigoGrupo = 3;
+                        $reg->codigoGrupo = 2;
                         break;
                     
                     default: // Imobilizado
-                        $reg->codigoGrupo = 3;
+                        $reg->codigoGrupo = 1;
                         break;
                 }
                 
