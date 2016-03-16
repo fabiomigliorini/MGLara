@@ -93,6 +93,7 @@ foreach ($options as $option)
     $items[$option['codestoquemovimentotipo'].'origem'] = $option['codestoquemovimentotipoorigem'];
 }
 if(isset($model)) {
+    $datainicial = $model->data;
     if (!empty($model->codestoquemovimentoorigem)) {
         $estoquelocal = $model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocal->codestoquelocal;
         $produto = $model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->Produto->codproduto;
@@ -101,10 +102,12 @@ if(isset($model)) {
         $produto = $model->EstoqueMes->EstoqueSaldo->Produto->codproduto;
     }
 } else {
+    $datainicial = $em->mes->year.'-'.$em->mes->month.'-'. date("t", mktime(0,0,0,$em->mes->month,'01',$em->mes->year));
     $estoquelocal = $em->EstoqueSaldo->EstoqueLocal->codestoquelocal;
     $produto = $em->EstoqueSaldo->Produto->codproduto;
-}   
+}
 ?>
+
 @section('inscript')
 <style type="text/css">
     #saldoEstoqueLocal {
@@ -145,10 +148,8 @@ $(document).ready(function() {
         width: 'resolve'        
     })<?php echo (isset($estoquelocal) ? ".select2('val', $estoquelocal);" : ';');?>
     
-    <?php if (isset($model->data)) {?>
-        $("#data").val("<?php echo formataData($model->data, 'L');?>").change();
-    <?php }?>
-    
+    $("#data").val("<?php echo formataData($datainicial, 'L');?>").change();
+
     $('#saidavalor, #entradavalor').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
     $('#saidaquantidade, #entradaquantidade, .saldoquantidade').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:3 });
     
