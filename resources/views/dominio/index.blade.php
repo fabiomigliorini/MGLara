@@ -15,7 +15,7 @@
 <?php
 
 use MGLara\Models\Filial;
-$filiais = [''=>''] + Filial::lists('filial', 'codfilial')->all();
+$filiais = [''=>''] + Filial::orderBy('codfilial')->lists('filial', 'codfilial')->all();
 
 ?>
     
@@ -52,6 +52,31 @@ $filiais = [''=>''] + Filial::lists('filial', 'codfilial')->all();
     
 </form>
 
+<div id="modalProcessando" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    Processando ... 
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" id="pbProcessando" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                    </div>
+                </div>
+                <div class='row-fluid text-center' id='labelPbProcessando'></div>
+                <br>
+                <pre class='row-fluid' id='logPbProcessando' style='height: 400px'></pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="btnFechaModalProcessando" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section('inscript')
 <script type="text/javascript">
 function estoque ()
@@ -67,10 +92,14 @@ function estoque ()
         }
         )
         .done(function(data) {
-            console.log(data);
-            bootbox.alert('Feito');
+            $('#btnFechaModalProcessando').removeAttr('disabled');
+            $('#logPbProcessando').prepend(JSON.stringify(data, null, '\t'));
+            $('#pbProcessando').css('width', '100%');        
         }).fail(function(error ) {
-            console.log(data);
+            $('#btnFechaModalProcessando').removeAttr('disabled');
+            $('#logPbProcessando').prepend(error);
+            $('#pbProcessando').css('width', '100%');        
+            console.log(error);
         });    
     
 }
@@ -90,6 +119,9 @@ $(document).ready(function() {
     });
     
     $('#btnGerar').click(function (){
+        $('#modalProcessando').modal('show');
+        $('#btnFechaModalProcessando').attr('disabled', 'disabled');
+        $('#pbProcessando').css('width', '0%');        
         estoque();
     });
 

@@ -9,6 +9,10 @@ use MGLara\Models\EstoqueSaldo;
 use MGLara\Models\EstoqueMes;
 
 /**
+ * 
+ * Geração de arquivos textos com o Estoque para integracao
+ * com o Dominio Sistemas
+ * 
  * @property Carbon $mes 
  * @property Filial $Filial
  */
@@ -17,6 +21,13 @@ class ArquivoEstoque extends Arquivo
     var $_mes;
     var $_Filial;
     
+    /**
+     * 
+     * Inicializa Classe
+     * 
+     * @param \Carbon\Carbon $mes
+     * @param \MGLara\Models\Filial $Filial
+     */
     function __construct(Carbon $mes, Filial $Filial)
     {
         $this->_mes = $mes;
@@ -24,14 +35,12 @@ class ArquivoEstoque extends Arquivo
         $this->_arquivo = $mes->format('Ym') . '-' . str_pad($Filial->empresadominio, 4, '0', STR_PAD_LEFT) . '-Estoque.txt';
     }
     
-    /**
-     * @var EstoqueMes $mes
-     */
     function processa()
     {
         foreach ($this->_Filial->EstoqueLocalS as $local)
         {
-            foreach (EstoqueSaldo::Local($local)->Fiscal(true)->limit(100)->get() as $saldo)
+            //foreach (EstoqueSaldo::Local($local)->Fiscal(true)->limit(3000)->get() as $saldo)
+            foreach (EstoqueSaldo::Local($local)->Fiscal(true)->get() as $saldo)
             {
                 $mes = EstoqueMes::Saldo($saldo)->Ultimo($this->_mes)->first();
                 if ($mes === null)
@@ -73,5 +82,8 @@ class ArquivoEstoque extends Arquivo
                 
             }
         }
+        
+        return parent::processa();
     }
 }
+
