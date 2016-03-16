@@ -63,15 +63,9 @@ if(isset($model)){
   <div class="col-md-2 col-xs-4">
     {!! Form::text('entradaquantidade', null, ['class'=> 'form-control text-right', 'id'=>'entradaquantidade']) !!}
   </div>
-</div>
-
-<div class="form-group">
-  <label for="entradavalor" class="col-sm-2 control-label">
-    {!! Form::label('Valor entrada:') !!}
-  </label>
-  <div class="col-md-2 col-xs-4">
-    {!! Form::text('entradavalor', null, ['class'=> 'form-control text-right', 'id'=>'entradavalor']) !!}
-  </div>
+    <div class="col-md-2 col-xs-4">
+        <strong class="pull-left" style="margin-top: 7px;">Valor:</strong> {!! Form::text('entradavalor', null, ['class'=> 'form-control text-right', 'id'=>'entradavalor', 'style' => 'float: right; width: 130px;']) !!}
+    </div>
 </div>
 
 <div class="form-group">
@@ -81,20 +75,15 @@ if(isset($model)){
   <div class="col-md-2 col-xs-4">
     {!! Form::text('saidaquantidade', null, ['class'=> 'form-control text-right', 'id'=>'saidaquantidade']) !!}
   </div>
+    <div class="col-md-2 col-xs-4">
+        <strong class="pull-left" style="margin-top: 7px;">Valor:</strong> {!! Form::text('saidavalor', null, ['class'=> 'form-control text-right', 'id'=>'saidavalor', 'style' => 'float: right; width: 130px;']) !!}
+    </div>    
 </div>
 
 <div class="form-group">
-  <label for="saidavalor" class="col-sm-2 control-label">
-    {!! Form::label('Valor saída:') !!}
-  </label>
-  <div class="col-md-2 col-xs-4">
-      {!! Form::text('saidavalor', null, ['class'=> 'form-control text-right', 'id'=>'saidavalor']) !!} 
-  </div>
-</div>
-<div class="form-group">
-	<div class="col-sm-offset-2 col-sm-10">
-  {!! Form::submit($submitTextButton, array('class' => 'btn btn-primary', 'id'=>'Submit')) !!}
-  </div>
+    <div class="col-sm-offset-2 col-sm-10">
+        {!! Form::submit($submitTextButton, array('class' => 'btn btn-primary', 'id'=>'Submit')) !!}
+    </div>
 </div>
 <?php 
 $items = [];
