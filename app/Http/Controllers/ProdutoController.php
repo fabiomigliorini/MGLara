@@ -302,10 +302,13 @@ class ProdutoController extends Controller
         {
             $query = DB::table('tblestoquesaldo')
                     ->where('codproduto', '=', $request->get('codproduto'))
-                    ->select('codestoquelocal', 'fiscal', 'saldoquantidade');
+                    ->select('customedio', 'saldovalor', 'saldoquantidade');
             
             if($request->get('codestoquelocal')) $query->where('codestoquelocal', '=', $request->get('codestoquelocal'));
-            
+            if($request->get('fiscal')==1) 
+                $query->where('fiscal', '=', true);
+            else 
+                $query->where('fiscal', '=', false);
             $resultado = $query->get();
             
             return response()->json($resultado);
