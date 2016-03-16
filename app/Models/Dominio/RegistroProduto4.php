@@ -123,7 +123,7 @@ class RegistroProduto4 extends Registro
             'dataSaldoFinal' => [
                 'tamanho' => 10,
                 'tipo' => 'date',
-                'formato' => 'd/m/y'
+                'formato' => 'd/m/Y'
             ],
             'codigoProdutoAnexoIouII' => [
                 'tamanho' => 7,
@@ -141,7 +141,7 @@ class RegistroProduto4 extends Registro
                 'tamanho' => 1,
                 'tipo' => 'char',
             ],
-            'codigoProduto' => [
+            'codigoProdutoGrfCbt' => [
                 'tamanho' => 7,
                 'tipo' => 'numeric',
             ],
@@ -250,7 +250,7 @@ class RegistroProduto4 extends Registro
             'dataInicioSubstituicaoTributaria' => [
                 'tamanho' => 10,
                 'tipo' => 'date',
-                'formato' => 'd/m/y'
+                'formato' => 'd/m/Y'
             ],
             'produtoPrecoTabelado' => [
                 'tamanho' => 1,
@@ -328,7 +328,7 @@ class RegistroProduto4 extends Registro
         $this->quantidadeFinal = 0;
         $this->valorInicial = 0;
         $this->valorFinal = 0;
-        $this->observacao = "Exportação MGsis @ " . date('d/m/Y H:i:s');
+        $this->observacao = "Exportacao MGsis @ " . date('d/m/Y H:i:s');
         $this->exportaDnf = 'N';
         $this->incentivoFiscal = 'N';
         $this->geraInformacaoGrfCbt = 'N';
@@ -342,7 +342,7 @@ class RegistroProduto4 extends Registro
         $this->produtoComposto = 'N';
         $this->informacoesComplementaresIpmPdi = 'N';
         $this->cestaBasica = 'N';
-        $this->tipoMedicamento = 'O';
+        $this->tipoMedicamento = '0';
         $this->produtoIncluidoCampoSubstituicaoTributaria = 'N';
         $this->servicoTributadoIssqn = 'N';
         $this->periodicidadeIpi = 'M';
