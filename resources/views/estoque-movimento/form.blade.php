@@ -60,7 +60,6 @@ if(isset($model->EstoqueMovimentoTipo)){
         <div id="saldoEstoqueLocal" class="hide">
             <div role="tooltip" class="popover fade right in" id="popoversaldos">
                 <div class="arrow" style="top: 17px;"></div>
-                <h3 class="popover-title">Saldos</h3>
                 <div class="popover-content" id="saldoEstoqueLocalContent"></div>
             </div>           
         </div>
@@ -129,8 +128,14 @@ if(isset($model)) {
         top: 0px; 
         left: 420px; 
         display: block;
-        min-width: 400px;
+        min-width: 300px;
     }
+    #saldoEstoqueLocalContent strong {
+        float: left;
+        margin-right: 5px;
+        text-align: right;
+        width: 105px;
+    }    
 </style>
 <script type="text/javascript">
  
@@ -219,7 +224,7 @@ $(document).ready(function() {
             return markup;
         },
         formatSelection:function(item) { 
-            return /*item.barras + " - " +*/ item.produto + " - " + item.preco; 
+            return item.produto + " - " + item.preco; 
         },
         ajax: {
             url: baseUrl+'/produto/ajax',
@@ -261,32 +266,32 @@ $(document).ready(function() {
         $("#saldoEstoqueLocalContent").empty();
         var codproduto = $('#codproduto').val();
         var codestoquelocal = $('#codestoquelocal').val();
-        estoqueSaldo(codproduto, codestoquelocal);
+        var fiscal = <?php echo $model->EstoqueMes->EstoqueSaldo->fiscal; ?>;
+        estoqueSaldo(codproduto, codestoquelocal, fiscal);
     }
     
     $('#codestoquelocal').change(function() {
         $("#saldoEstoqueLocalContent").empty();
         var codproduto = $('#codproduto').val();
         var codestoquelocal = $('#codestoquelocal').val();
-        estoqueSaldo(codproduto, codestoquelocal);
+        var fiscal = <?php echo $model->EstoqueMes->EstoqueSaldo->fiscal; ?>;
+        estoqueSaldo(codproduto, codestoquelocal, fiscal);
     });
     
     
-    function estoqueSaldo(codproduto, codestoquelocal) {
-        $.getJSON(baseUrl + '/produto/estoque-saldo?codproduto='+codproduto+'&codestoquelocal='+codestoquelocal)
+    function estoqueSaldo(codproduto, codestoquelocal, fiscal) {
+        $.getJSON(baseUrl + '/produto/estoque-saldo?codproduto='+codproduto+'&codestoquelocal='+codestoquelocal+'&fiscal='+fiscal)
             .done(function(data) {
                 $('#saldoEstoqueLocal').removeClass('hide');
                 if(data.length > 0){
                     $.each(data, function(k, v) {
-                        if (v.fiscal == true) {
-                            var fiscal = 'Fiscal';
-                        } else {
-                            var fiscal = 'Físico';
-                        }
-                        $('#saldoEstoqueLocalContent').prepend('<p>Quantidade: <span class="saldoquantidade">' + v.saldoquantidade + '</span><span class="pull-right">'+fiscal+'</span></p>');
-                        
+                        $('#saldoEstoqueLocalContent').prepend('<p><strong>Quantidade:</strong> <span class="saldoquantidade">' + v.saldoquantidade + '</span></p>' +
+                            '<p><strong>Valor:</strong> <span class="saldovalor">' + v.saldovalor +'</span></p>' +
+                            '<p><strong>Custo médio:</strong> <span class="customedio">' + v.customedio +'</span></p>');
                     });
                     $('.saldoquantidade').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:3 });
+                    $('.customedio').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:6 });
+                    $('.saldovalor').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
                 } else {
                     $('#saldoEstoqueLocalContent').prepend('<p>Sem saldo</p>');
                 }
