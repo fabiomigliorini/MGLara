@@ -228,15 +228,23 @@ class EstoqueMovimentoController extends Controller
             if(!empty($model->codestoquemovimentoorigem))
             {
                 $origem = $model->EstoqueMovimentoOrigem;
+                
                 $model->delete();
+                $model->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
+                
                 $origem->delete();
+                $origeml->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
             } else {
                 $filha = $model->EstoqueMovimentoS->first();
                 if(!empty($filha)) {
                     $filha->delete();
+                    $filha->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
+                    
                     $model->delete();
+                    $model->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
                 } else {
                     $model->delete();
+                    $model->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
                 }
             }
             Session::flash('flash_delete', 'Registro deletado!');
