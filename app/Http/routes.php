@@ -24,6 +24,10 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('home','DashboardController');  
     Route::resource('/','DashboardController');  
 
+    /* Integracao Dominio */
+    Route::get('dominio/estoque','DominioController@estoque');               
+    Route::resource('dominio','DominioController');           
+    
     /* Usuários */
     Route::resource('usuario','UsuarioController');       
     Route::resource('usuario/{codusuario}/permissao','UsuarioController@permissao');       
