@@ -21,6 +21,9 @@ class Arquivo
         {
             $conteudo .= $reg->geraLinha();
         }
+        echo '<pre>';
+        echo $conteudo;
+        echo '</pre>';
         dd($conteudo);
         return true;
     }

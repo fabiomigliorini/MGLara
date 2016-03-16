@@ -11,8 +11,8 @@ class Registro
         $linha = '';
         foreach ($this->_campos as $campo => $detalhes)
         {
-            $linha .= $this->$campo;
+            $linha .= (isset($this->$campo))?$this->$campo:'';
         }
-        return $linha;
+        return $linha . "\n";
     }
 }
