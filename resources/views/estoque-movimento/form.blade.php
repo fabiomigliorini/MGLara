@@ -1,6 +1,14 @@
 <?php
+
+use MGLara\Models\EstoqueLocal;
+use MGLara\Models\EstoqueMovimentoTipo;
+
+$el = EstoqueLocal::lists('estoquelocal', 'codestoquelocal')->all();
+$tipos = [''=>''] + EstoqueMovimentoTipo::lists('descricao', 'codestoquemovimentotipo')->all();
+$options = EstoqueMovimentoTipo::all();
+
 $disabled = 0;
-if(isset($model)){
+if(isset($model->EstoqueMovimentoTipo)){
     if($model->EstoqueMovimentoTipo->preco == 1) {
         $disabled = 1;
     } elseif ($model->EstoqueMovimentoTipo->preco == 2) {
@@ -12,6 +20,16 @@ if(isset($model)){
 ?>
 
 <div class="form-group">
+  <label for="data" class="col-sm-2 control-label">
+    {!! Form::label('Data:') !!}
+  </label>
+  <div class="col-md-2 col-xs-4">
+    {!! Form::text('data', null, ['class'=> 'form-control text-center', 'id'=>'data', 'required'=>'required']) !!}
+  </div>
+</div>
+
+
+<div class="form-group">
   <label for="codestoquemovimentotipo" class="col-sm-2 control-label">
     {!! Form::label('Tipo:') !!}
   </label>
@@ -19,6 +37,8 @@ if(isset($model)){
     {!! Form::select('codestoquemovimentotipo', $tipos, ['class'=> 'form-control', 'required'=>'required'], ['id'=>'codestoquemovimentotipo']) !!}
   </div>
 </div>
+
+
 
 <div id="origens" class="hide">
     <div class="form-group">
@@ -47,14 +67,6 @@ if(isset($model)){
     </div>    
 </div>
 
-<div class="form-group">
-  <label for="data" class="col-sm-2 control-label">
-    {!! Form::label('Data:') !!}
-  </label>
-  <div class="col-md-2 col-xs-4">
-    {!! Form::text('data', null, ['class'=> 'form-control text-center', 'id'=>'data', 'required'=>'required']) !!}
-  </div>
-</div>
 
 <div class="form-group">
   <label for="entradaquantidade" class="col-sm-2 control-label">
@@ -93,7 +105,7 @@ foreach ($options as $option)
     $items[$option['codestoquemovimentotipo'].'origem'] = $option['codestoquemovimentotipoorigem'];
 }
 if(isset($model)) {
-    $datainicial = $model->data;
+    //$datainicial = $model->data;
     if (!empty($model->codestoquemovimentoorigem)) {
         $estoquelocal = $model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocal->codestoquelocal;
         $produto = $model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->Produto->codproduto;
@@ -102,9 +114,9 @@ if(isset($model)) {
         $produto = $model->EstoqueMes->EstoqueSaldo->Produto->codproduto;
     }
 } else {
-    $datainicial = $em->mes->year.'-'.$em->mes->month.'-'. date("t", mktime(0,0,0,$em->mes->month,'01',$em->mes->year));
-    $estoquelocal = $em->EstoqueSaldo->EstoqueLocal->codestoquelocal;
-    $produto = $em->EstoqueSaldo->Produto->codproduto;
+    //$datainicial = $model->EstoqueMes->mes->year.'-'.$model->EstoqueMes->mes->month.'-'. date("t", mktime(0,0,0,$model->EstoqueMes->mes->month,'01',$model->EstoqueMes->mes->year));
+    $estoquelocal = $model->EstoqueMes->EstoqueSaldo->EstoqueLocal->codestoquelocal;
+    $produto = $model->EstoqueMes->EstoqueSaldo->Produto->codproduto;
 }
 ?>
 
@@ -139,16 +151,18 @@ $(document).ready(function() {
         allowClear: true,
         width: 'resolve'        
     })<?php echo (isset($model->codestoquemovimentotipo) ? ".select2('val', $model->codestoquemovimentotipo);" : ';');?>
+    
     $('#data').datetimepicker({
         locale: 'pt-br',
         format: 'DD/MM/YYYY HH:mm:ss'
     });
+    $("#data").val("<?php echo formataData($model->data, 'L');?>").change();
+    
     $('#codestoquelocal').select2({
         allowClear: true,
         width: 'resolve'        
     })<?php echo (isset($estoquelocal) ? ".select2('val', $estoquelocal);" : ';');?>
     
-    $("#data").val("<?php echo formataData($datainicial, 'L');?>").change();
 
     $('#saidavalor, #entradavalor').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
     $('#saidaquantidade, #entradaquantidade, .saldoquantidade').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:3 });

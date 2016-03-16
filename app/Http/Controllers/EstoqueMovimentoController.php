@@ -39,11 +39,12 @@ class EstoqueMovimentoController extends Controller
      */
     public function create(Request $request)
     {
-        $em = EstoqueMes::find($request->codestoquemes);
-        $el = EstoqueLocal::lists('estoquelocal', 'codestoquelocal')->all();
-        $tipos = EstoqueMovimentoTipo::lists('descricao', 'codestoquemovimentotipo')->all();
-        $options = EstoqueMovimentoTipo::all();
-        return view('estoque-movimento.create', compact('tipos', 'request', 'options', 'em', 'el'));
+        $model = new EstoqueMovimento();
+        $model->codestoquemes = $request->codestoquemes;
+        $model->data = $model->EstoqueMes->mes;
+        $model->data = $model->data->modify('last day of this month');
+        
+        return view('estoque-movimento.create', compact('model', 'tipos', 'request', 'options', 'el'));
     }
 
     /**
@@ -134,9 +135,6 @@ class EstoqueMovimentoController extends Controller
     public function edit($id)
     {
         $model = EstoqueMovimento::findOrFail($id);
-        $tipos = EstoqueMovimentoTipo::lists('descricao', 'codestoquemovimentotipo')->all();
-        $options = EstoqueMovimentoTipo::all();
-        $el = EstoqueLocal::lists('estoquelocal', 'codestoquelocal')->all();
 
         return view('estoque-movimento.edit',  compact('model', 'tipos', 'options', 'el'));        
     }

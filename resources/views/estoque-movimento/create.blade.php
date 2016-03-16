@@ -8,19 +8,19 @@
     </div>
 </nav>
 <h1 class="header">
-    <a href='{{ url("grupo-produto/{$em->EstoqueSaldo->Produto->SubGrupoProduto->codgrupoproduto}") }}'>
-        {{$em->EstoqueSaldo->Produto->SubGrupoProduto->GrupoProduto->grupoproduto}}
+    <a href='{{ url("grupo-produto/{$model->EstoqueMes->EstoqueSaldo->Produto->SubGrupoProduto->codgrupoproduto}") }}'>
+        {{$model->EstoqueMes->EstoqueSaldo->Produto->SubGrupoProduto->GrupoProduto->grupoproduto}}
     </a> ›
-    <a href='{{ url("sub-grupo-produto/{$em->EstoqueSaldo->Produto->codsubgrupoproduto}") }}'>
-        {{$em->EstoqueSaldo->Produto->SubGrupoProduto->subgrupoproduto}}
+    <a href='{{ url("sub-grupo-produto/{$model->EstoqueMes->EstoqueSaldo->Produto->codsubgrupoproduto}") }}'>
+        {{$model->EstoqueMes->EstoqueSaldo->Produto->SubGrupoProduto->subgrupoproduto}}
     </a> ›
-    <a href='{{ url("produto/{$em->EstoqueSaldo->codproduto}") }}'>
-        {{ $em->EstoqueSaldo->Produto->produto }}     
+    <a href='{{ url("produto/{$model->EstoqueMes->EstoqueSaldo->codproduto}") }}'>
+        {{ $model->EstoqueMes->EstoqueSaldo->Produto->produto }}     
     </a>    
 </h1>
 <hr>
 <br>
-{!! Form::open(['route'=> ['estoque-movimento.store', 'codestoquemes' => $request->codestoquemes], 'method' => 'POST', 'class' => 'form-horizontal', 'id' => 'estoqueMovimento']) !!}
+{!! Form::model($model, ['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'estoqueMovimento', 'route' => ['estoque-movimento.store', 'codestoquemes' => $request->codestoquemes]]) !!}
     @include('errors.form_error')
     @include('estoque-movimento.form', ['submitTextButton' => 'Salvar'])
  {!! Form::close() !!}   
