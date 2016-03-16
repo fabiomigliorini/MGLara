@@ -21,7 +21,7 @@ class ArquivoEstoque extends Arquivo
     {
         $this->_mes = $mes;
         $this->_Filial = $Filial;
-        
+        $this->_arquivo = $mes->format('Ym') . '-' . str_pad($Filial->empresadominio, 4, '0', STR_PAD_LEFT) . '-Estoque.txt';
     }
     
     /**
@@ -40,8 +40,8 @@ class ArquivoEstoque extends Arquivo
                     continue;
 
                 
-                $reg = new RegistroProduto4();              
-                $reg->codigoProduto = $saldo->codproduto;
+                $reg = new RegistroProduto4();          
+                $reg->codigoProduto = str_pad($saldo->codproduto, 6, '0', STR_PAD_LEFT);
                 $reg->codigoEmpresa = $this->_Filial->empresadominio;
 
                 switch ($saldo->Produto->codtipoproduto)
