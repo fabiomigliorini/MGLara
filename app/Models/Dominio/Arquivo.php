@@ -16,6 +16,7 @@ class Arquivo
     
     function grava()
     {
+        dd($this->_registros);
         return true;
     }
     

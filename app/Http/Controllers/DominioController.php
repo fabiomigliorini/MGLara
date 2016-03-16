@@ -35,6 +35,7 @@ class DominioController extends Controller
             $mes = \Carbon\Carbon::createFromFormat('d/m/Y H:i:s', "01/$request->mes 00:00:00");
             $filial = Filial::findOrFail($request->codfilial);
             $arquivo = new ArquivoEstoque($mes, $filial);
+            $arquivo->processa();
             $ret['resultado'] = $arquivo->grava();
         }
         
