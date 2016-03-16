@@ -16,7 +16,12 @@ class Arquivo
     
     function grava()
     {
-        dd($this->_registros);
+        $conteudo = '';
+        foreach ($this->_registros as $reg)
+        {
+            $conteudo .= $reg->geraLinha();
+        }
+        dd($conteudo);
         return true;
     }
     

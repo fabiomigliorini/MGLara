@@ -31,7 +31,7 @@ class ArquivoEstoque extends Arquivo
     {
         foreach ($this->_Filial->EstoqueLocalS as $local)
         {
-            foreach (EstoqueSaldo::Local($local)->Fiscal(true)->get() as $saldo)
+            foreach (EstoqueSaldo::Local($local)->Fiscal(true)->limit(100)->get() as $saldo)
             {
                 $mes = EstoqueMes::Saldo($saldo)->Ultimo($this->_mes)->first();
                 if ($mes === null)
