@@ -44,7 +44,10 @@ class Marca extends MGModel
         ];
     
         $this->_mensagensErro = [
-            'marca.required' => 'Marca nao pode ser vazio bla bla bla bla bla!',
+            'marca.required' => 'O campo Marca não pode ser vazio',
+            'marca.min' => 'O campo Marca deve ter mais de 9 caracteres',
+            'descricaosite.required' => 'O campo Descrição não pode ser vazio',
+            'descricaosite.min' => 'O campo Descrição deve ter mais de 39 caracteres',
         ];
         
         return parent::validate();
@@ -75,11 +78,20 @@ class Marca extends MGModel
     }
 
     // Buscas 
-    public static function filterAndPaginate($marca)
+    public static function filterAndPaginate($codmarca, $marca)
     {
-        return Marca::marca($marca)
+        return Marca::codmarca(numeroLimpo($codmarca))
+            ->marca($marca)
             ->orderBy('marca', 'ASC')
             ->paginate(20);
+    }
+    
+    public function scopeCodmarca($query, $codmarca)
+    {
+        if ($codmarca)
+        {
+            $query->where('codmarca', "$codmarca");
+        }
     }
     
     public function scopeMarca($query, $marca)

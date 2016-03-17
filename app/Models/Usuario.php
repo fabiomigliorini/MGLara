@@ -246,6 +246,7 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     
         $this->_mensagensErro = [
             'usuario.required' => 'O campo usuário não pode ser vazio',
+            'usuario.min' => 'O campo usuário deve ter mais de 4 caracteres',
         ];
         
         return parent::validate();

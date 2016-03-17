@@ -3,17 +3,16 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
   <div class="container-fluid"> 
     <ul class="nav navbar-nav">
-    <!--
-    <li>
-        <a href="{{ url('marca')}}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a>
-    </li> 
-    -->
+        <li><a href="<?php echo url('marca/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li> 
     </ul>
   </div>
 </nav>
 <h1 class="header">Marcas</h1>
-<div class="marcas-pagination pull-right">{!! $model->appends(Request::all())->render() !!}</div>
 <hr>
+<div class="row">
+    <div class="col-md-6">
+        <div class="marcas-pagination pull-left">{!! $model->appends(Request::all())->render() !!}</div>
+    </div>
 <?php
 
 //dd($ess);
@@ -37,7 +36,20 @@ foreach($ess as $es)
 
 //dd($arr_saldos);
 ?>
+    <div class="col-md-6">
+    {!! Form::model(Request::all(), ['route' => 'marca.index', 'method' => 'GET', 'class' => 'navbar-form navbar-right pull-right', 'role' => 'search', 'style'=>'margin:0']) !!}
+      <div class="form-group">
+          <div class="col-md-2">{!! Form::text('codmarca', null, ['class' => 'form-control', 'placeholder' => '#', 'style'=>'width:100px']) !!}</div>
+      </div>
+      <div class="form-group">
+        {!! Form::text('marca', null, ['class' => 'form-control', 'placeholder' => 'Nome da marca']) !!}
+      </div>
+      <button type="submit" class="btn btn-default">Buscar</button>
+    {!! Form::close() !!}
+    </div>
+</div>
 
+<hr>
 <table class="table table-striped table-condensed table-hover table-bordered">
     <thead>
         <th colspan="2">

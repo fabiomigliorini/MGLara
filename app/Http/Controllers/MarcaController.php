@@ -5,6 +5,8 @@ namespace MGLara\Http\Controllers;
 use Illuminate\Http\Request;
 
 use MGLara\Http\Requests;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Marca;
 use MGLara\Models\EstoqueLocal;
@@ -20,7 +22,8 @@ class MarcaController extends Controller
     public function index(Request $request)
     {
         $model = Marca::filterAndPaginate(
-            $request->get('codmarca')
+            $request->get('codmarca'),
+            $request->get('marca')    
         ); 
         $ess = EstoqueSaldo::saldoPorMarca();
         $els = EstoqueLocal::where('inativo', null)->orderBy('codestoquelocal')->get();
@@ -34,7 +37,8 @@ class MarcaController extends Controller
      */
     public function create()
     {
-        //
+        $model = Marca::class;
+        return view('marca.create', compact('model'));
     }
 
     /**
@@ -45,7 +49,12 @@ class MarcaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $model = new Marca($request->all());
+        if (!$model->validate())
+            $this->throwValidationException($request, $model->_validator);
+        $model->save();
+        Session::flash('flash_create', 'Registro inserido.');
+        return redirect('marca');
     }
 
     /**
@@ -71,7 +80,8 @@ class MarcaController extends Controller
      */
     public function edit($id)
     {
-        //
+        $model = Marca::findOrFail($id);
+        return view('marca.edit',  compact('model'));
     }
 
     /**
@@ -83,7 +93,13 @@ class MarcaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $model = Marca::findOrFail($id);
+        $model->fill($request->all());
+        if (!$model->validate())
+            $this->throwValidationException($request, $model->_validator);
+        $model->save();
+        Session::flash('flash_update', 'Registro atualizado.');
+        return redirect("marca/$id");        
     }
 
     /**
@@ -94,7 +110,14 @@ class MarcaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+	        Marca::find($id)->delete();
+	        Session::flash('flash_delete', 'Registro deletado!');
+	        return Redirect::route('marca.index');
+        }
+        catch(\Exception $e){
+        	return view('errors.fk');
+        }     
     }
     
     public function buscaCodproduto($id)
