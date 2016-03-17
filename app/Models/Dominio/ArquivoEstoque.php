@@ -37,6 +37,8 @@ class ArquivoEstoque extends Arquivo
     
     function processa()
     {
+        $mes = $this->_mes->modify('last day of this month');
+        
         foreach ($this->_Filial->EstoqueLocalS as $local)
         {
             //foreach (EstoqueSaldo::Local($local)->Fiscal(true)->limit(3000)->get() as $saldo)
@@ -74,7 +76,7 @@ class ArquivoEstoque extends Arquivo
                 $reg->unidadeMedida = $saldo->Produto->UnidadeMedida->sigla;
                 $reg->valorUnitario = $saldo->Produto->preco;
                 $reg->codigoNcm = $saldo->Produto->Ncm->ncm;
-                $reg->dataSaldoFinal = $mes->mes->modify('last day of this month');
+                $reg->dataSaldoFinal = $mes;
                 $reg->valorFinalEstoque = $mes->saldovalor;
                 $reg->quantidadeFinalEstoque = $mes->saldoquantidade;
                 

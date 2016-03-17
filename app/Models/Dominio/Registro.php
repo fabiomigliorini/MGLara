@@ -6,6 +6,7 @@ use Carbon\Carbon;
 class Registro 
 {
     protected $_campos = [];
+    protected $_quebraLinha = "\r\n";
     //
     public function geraLinha()
     {
@@ -44,6 +45,6 @@ class Registro
 
             $linha .= $valor;
         }
-        return $linha . "\n";
+        return $linha . $this->_quebraLinha;
     }
 }
