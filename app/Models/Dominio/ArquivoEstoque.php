@@ -75,8 +75,8 @@ class ArquivoEstoque extends Arquivo
                 $reg->valorUnitario = $saldo->Produto->preco;
                 $reg->codigoNcm = $saldo->Produto->Ncm->ncm;
                 $reg->dataSaldoFinal = $mes->mes->modify('last day of this month');
-                $reg->valorFinal = $mes->saldovalor;
-                $reg->quantidadeFinal = $mes->saldoquantidade;
+                $reg->valorFinalEstoque = $mes->saldovalor;
+                $reg->quantidadeFinalEstoque = $mes->saldoquantidade;
                 
                 $this->_registros[] = $reg;
                 

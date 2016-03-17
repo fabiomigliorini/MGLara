@@ -12,36 +12,37 @@ class Registro
         $linha = '';
         foreach ($this->_campos as $campo => $detalhes)
         {
-            $valor = (isset($this->$campo))?$this->$campo:'';
-            switch ($detalhes['tipo'])
+            $valor = (isset($this->$campo))?$this->$campo:null;
+            
+            $tamanho = $detalhes['tamanho'];
+            
+            $padChar = ' ';
+            $padType = STR_PAD_RIGHT;
+            
+            if ($valor !== null)
             {
-                case 'numeric':
-                    $valorFormatado = str_pad($valor, $detalhes['tamanho'], '0', STR_PAD_LEFT);
-                    break;
+                switch ($detalhes['tipo'])
+                {
+                    case 'decimal':
+                        $valor = (int) ($valor * pow(10, $detalhes['casas']));
+                    case 'numeric':
+                        $padChar = '0';
+                        $padType = STR_PAD_LEFT;
+                        break;
 
-                case 'decimal':
-                    $valor = (int) ($valor * pow(10, $detalhes['casas']));
-                    $valorFormatado = str_pad($valor, $detalhes['tamanho'], '0', STR_PAD_LEFT);
-                    break;
+                    case 'date':
+                        if ($valor instanceof Carbon)
+                            $valor = $valor->format($detalhes['formato']);
+                        break;
 
-                case 'date':
-                    if ($valor instanceof Carbon)
-                        $valorFormatado = str_pad($valor->format($detalhes['formato']), $detalhes['tamanho'], ' ', STR_PAD_RIGHT);
-                    else
-                        $valorFormatado = str_pad($valor, $detalhes['tamanho'], ' ', STR_PAD_RIGHT);
-                    break;
-                
-                case 'char':
-                default:
-                    $valorFormatado = str_pad($valor, $detalhes['tamanho'], ' ', STR_PAD_RIGHT);
-                    break;
-
+                }
             }
             
-            if (strlen($valorFormatado) > $detalhes['tamanho'])
-                $valorFormatado = substr ($valorFormatado, 0, $detalhes['tamanho']);
+            $valor = str_pad($valor, $tamanho, $padChar, $padType);
+            if (strlen($valor) > $tamanho)
+                $valor = substr ($valor, 0, $tamanho);
 
-            $linha .= $valorFormatado;
+            $linha .= $valor;
         }
         return $linha . "\n";
     }

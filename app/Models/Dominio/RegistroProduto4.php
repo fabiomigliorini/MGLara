@@ -290,12 +290,12 @@ class RegistroProduto4 extends Registro
                 'tamanho' => 7,
                 'tipo' => 'numeric',
             ],
-            'quantidadeInicial' => [
+            'quantidadeInicialEstoque' => [
                 'tamanho' => 16,
                 'tipo' => 'decimal',
                 'casas' => '5'
             ],
-            'quantidadeFinal' => [
+            'quantidadeFinalEstoque' => [
                 'tamanho' => 16,
                 'tipo' => 'decimal',
                 'casas' => '5'
@@ -324,10 +324,10 @@ class RegistroProduto4 extends Registro
         ];
         
         $this->identificador = 4;
-        $this->quantidadeInicial = 0;
-        $this->quantidadeFinal = 0;
-        $this->valorInicial = 0;
-        $this->valorFinal = 0;
+        $this->quantidadeInicialEstoque = 0;
+        $this->quantidadeFinalEstoque = 0;
+        $this->valorInicialEstoque = 0;
+        $this->valorFinalEstoque = 0;
         $this->observacao = "Exportacao MGsis @ " . date('d/m/Y H:i:s');
         $this->exportaDnf = 'N';
         $this->incentivoFiscal = 'N';
