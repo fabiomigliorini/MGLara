@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 
 use MGLara\Http\Requests;
 use MGLara\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 use MGLara\Models\GrupoProduto;
 use MGLara\Models\EstoqueSaldo;
 use MGLara\Models\EstoqueLocal;
@@ -33,7 +34,8 @@ class GrupoProdutoController extends Controller
      */
     public function create()
     {
-        //
+        $model = GrupoProduto::class;
+        return view('grupo-produto.create', compact('model'));
     }
 
     /**
@@ -44,7 +46,12 @@ class GrupoProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $model = new GrupoProduto($request->all());
+        if (!$model->validate())
+            $this->throwValidationException($request, $model->_validator);
+        $model->save();
+        Session::flash('flash_create', 'Registro inserido.');
+        return redirect('grupo-produto');
     }
 
     /**
@@ -69,7 +76,8 @@ class GrupoProdutoController extends Controller
      */
     public function edit($id)
     {
-        //
+        $model = GrupoProduto::findOrFail($id);
+        return view('grupo-produto.edit',  compact('model'));
     }
 
     /**
@@ -81,18 +89,31 @@ class GrupoProdutoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $model = GrupoProduto::findOrFail($id);
+        $model->fill($request->all());
+        if (!$model->validate())
+            $this->throwValidationException($request, $model->_validator);
+        $model->save();
+        Session::flash('flash_update', 'Registro atualizado.');
+        return redirect("grupo-produto/$id");   
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int  $i
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
+        try{
+	        GrupoProduto::find($id)->delete();
+	        Session::flash('flash_delete', 'Registro deletado!');
+	        return Redirect::route('grupo-produto.index');
+        }
+        catch(\Exception $e){
+        	return view('errors.fk');
+        }     
     }
 
     public function buscaCodProduto($id)

@@ -34,10 +34,11 @@ class GrupoProduto extends MGModel
     public function validate() {
 
         $this->_regrasValidacao = [
-            'grupoproduto' => 'required|min:2', 
+            'grupoproduto' => 'required|min:5', 
         ];    
         $this->_mensagensErro = [
             'grupoproduto.required' => 'Grupo de produto nao pode ser vazio.',
+            'grupoproduto.min' => 'Grupo de produto deve ter mais de 4 caracteres.',
         ];
 
         return parent::validate();

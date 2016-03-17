@@ -3,11 +3,9 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
   <div class="container-fluid"> 
     <ul class="nav navbar-nav">
-      <!--
       <li>
-        <a href="<?php echo url('permissao/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a>
+        <a href="<?php echo url('grupo-produto/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a>
       </li>
-      -->
     </ul>
   </div>
 </nav>

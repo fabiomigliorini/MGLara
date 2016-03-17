@@ -88,17 +88,19 @@ class Marca extends MGModel
     
     public function scopeCodmarca($query, $codmarca)
     {
-        if ($codmarca)
-        {
-            $query->where('codmarca', "$codmarca");
-        }
+        if (trim($codmarca) === '')
+            return;
+        
+        $query->where('codmarca', $codmarca);
     }
     
     public function scopeMarca($query, $marca)
     {
-        if (trim($marca) != "")
-        {
-            $query->where('marca', "ILIKE", "%$marca%");
-        }
+        if (trim($marca) === '')
+            return;
+        
+        $marca = explode(' ', $marca);
+        foreach ($marca as $str)
+            $query->where('marca', 'ILIKE', "%$str%");
     }
 }
