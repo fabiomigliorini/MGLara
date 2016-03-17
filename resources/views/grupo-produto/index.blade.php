@@ -11,7 +11,10 @@
 </nav>
 <h1 class="header">Grupos de Produtos</h1>
 <br>
-
+<div class="row">
+    <div class="col-md-6">
+        <div class="marcas-pagination pull-left">{!! $model->appends(Request::all())->render() !!}</div>
+    </div>
 <?php
 
 foreach($ess as $es)
@@ -30,9 +33,21 @@ foreach($ess as $es)
     $arr_totais[$es->codestoquelocal][$es->fiscal]['saldoquantidade'] += $es->saldoquantidade;
     $arr_totais[$es->codestoquelocal][$es->fiscal]['saldovalor'] += $es->saldovalor;
 }
-//dd($arr_saldos);
 ?>
-
+    <div class="col-md-6">
+    {!! Form::model(Request::all(), ['route' => 'grupo-produto.index', 'method' => 'GET', 'class' => 'navbar-form navbar-right pull-right', 'role' => 'search', 'style'=>'margin:0']) !!}
+      <div class="form-group">
+          {!! Form::number('codgrupoproduto', null, ['class' => 'form-control', 'placeholder' => '#', 'style'=>'width:100px']) !!}
+      </div>
+      <div class="form-group">
+        {!! Form::text('grupoproduto', null, ['class' => 'form-control', 'placeholder' => 'Nome do grupo']) !!}
+      </div>
+      <button type="submit" class="btn btn-default">Buscar</button>
+    {!! Form::close() !!}
+    </div>
+</div>
+<hr>
+@if (count($model) > 0)
 <table class="table table-striped table-condensed table-hover table-bordered small">
     <thead>
         <th colspan="2" class="col-sm-4">
@@ -127,15 +142,21 @@ foreach($ess as $es)
         </tr>
     </tfoot>
 </table>
+@endif 
 
 @if (count($model) === 0)
     <h3>Nenhum registro encontrado!</h3>
 @endif    
 
 @section('inscript')
+<style type="text/css">
+    ul.pagination {
+        margin: 0;
+    }
+</style>
 <script type="text/javascript">
   $(document).ready(function() {
-      
+    $('ul.pagination').removeClass('hide');
   });
 </script>
 @endsection

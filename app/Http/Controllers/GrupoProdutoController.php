@@ -19,9 +19,12 @@ class GrupoProdutoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $model = GrupoProduto::orderBy('grupoproduto')->get();
+        $model = GrupoProduto::filterAndPaginate(
+            $request->get('codgrupoproduto'),
+            $request->get('grupoproduto')    
+        );         
         $ess = EstoqueSaldo::saldoPorGrupoProduto();
         $els = EstoqueLocal::where('inativo', null)->orderBy('codestoquelocal')->get();
         return view('grupo-produto.index', compact('model', 'ess', 'els'));

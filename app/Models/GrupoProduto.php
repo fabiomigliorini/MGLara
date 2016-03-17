@@ -62,12 +62,31 @@ class GrupoProduto extends MGModel
         return $this->hasMany(SubGrupoProduto::class, 'codgrupoproduto', 'codgrupoproduto')->orderBy('subgrupoproduto');
     }
 
+    // Buscas 
+    public static function filterAndPaginate($codgrupoproduto, $grupoproduto)
+    {
+        return GrupoProduto::codgrupoproduto(numeroLimpo($codgrupoproduto))
+            ->grupoproduto($grupoproduto)
+            ->orderBy('grupoproduto', 'ASC')
+            ->paginate(20);
+    }
+    
+    public function scopeCodgrupoproduto($query, $codgrupoproduto)
+    {
+        if (trim($codgrupoproduto) === '')
+            return;
+        
+        $query->where('codgrupoproduto', $codgrupoproduto);
+    }
+    
     public function scopeGrupoproduto($query, $grupoproduto)
     {
-        if (trim($grupoproduto) != "")
-        {
-            $query->where('grupoproduto', "ILIKE", "%$grupoproduto%");
-        }
-    }    
+        if (trim($grupoproduto) === '')
+            return;
+        
+        $grupoproduto = explode(' ', $grupoproduto);
+        foreach ($grupoproduto as $str)
+            $query->where('grupoproduto', 'ILIKE', "%$str%");
+    }
 
 }

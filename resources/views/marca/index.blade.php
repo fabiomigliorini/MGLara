@@ -48,6 +48,7 @@ foreach($ess as $es)
 </div>
 
 <hr>
+@if (count($model) > 0)
 <table class="table table-striped table-condensed table-hover table-bordered">
     <thead>
         <th colspan="2">
@@ -141,6 +142,7 @@ foreach($ess as $es)
         </tr>
     </tfoot>
 </table>
+@endif 
 
 @if (count($model) === 0)
     <h3>Nenhum registro encontrado!</h3>

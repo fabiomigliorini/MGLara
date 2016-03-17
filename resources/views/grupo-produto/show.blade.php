@@ -6,6 +6,14 @@
             <li><a href="<?php echo url('grupo-produto');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
             <li><a href="#" id="btnBuscaCodProdutoMovimento"><span class="glyphicon glyphicon-refresh"></span> Recalcular Movimento de Estoque</a></li>             
             <li><a href="#" id="btnBuscaCodProdutoCusto"><span class="glyphicon glyphicon-usd"></span> Recalcular Custo Medio</a></li>
+            <li><a href="<?php echo url('grupo-produto/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li> 
+            <li><a href="<?php echo url("grupo-produto/$model->codgrupoproduto/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
+            <li>
+                {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['grupo-produto.destroy', $model->codgrupoproduto]]) !!}
+                <span class="glyphicon glyphicon-trash"></span>
+                {!! Form::submit('Excluir') !!}
+                {!! Form::close() !!}
+            </li>             
         </ul>
     </div>
 </nav>
