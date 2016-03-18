@@ -35,13 +35,20 @@ foreach($ess as $es)
 //dd($arr_saldos);
 ?>
     <div class="col-md-6">
-    {!! Form::model(Request::all(), ['route' => 'marca.index', 'method' => 'GET', 'class' => 'navbar-form navbar-right pull-right', 'role' => 'search', 'style'=>'margin:0']) !!}
-      <div class="form-group">
-          <div class="col-md-2">{!! Form::number('codmarca', null, ['class' => 'form-control', 'placeholder' => '#', 'style'=>'width:100px']) !!}</div>
-      </div>
-      <div class="form-group">
-        {!! Form::text('marca', null, ['class' => 'form-control', 'placeholder' => 'Nome da marca']) !!}
-      </div>
+    {!! Form::model(Request::all(), ['route' => 'marca.index', 'method' => 'GET', 'class' => 'navbar-form navbar-right pull-right', 'id'=> 'query-marcas', 'role' => 'search', 'style'=>'margin:0']) !!}
+        <div class="form-group">
+            <div class="col-md-2">{!! Form::number('codmarca', null, ['class' => 'form-control', 'placeholder' => '#', 'style'=>'width:100px']) !!}</div>
+        </div>
+        <div class="form-group">
+          {!! Form::text('marca', null, ['class' => 'form-control', 'placeholder' => 'Nome da marca']) !!}
+        </div>
+        <div class="form-group">
+            <select class="form-control" name="inativo" id="inativo">
+                <option value="0">Todos</option>
+                <option value="1" selected="selected">Ativos</option>
+                <option value="2">Inativos</option>
+            </select>
+        </div>    
       <button type="submit" class="btn btn-default">Buscar</button>
     {!! Form::close() !!}
     </div>
@@ -66,6 +73,10 @@ foreach($ess as $es)
         <tr>
             <th rowspan="2">
                 <a href="{{ url("marca/$row->codmarca") }}">{{$row->marca}}</a>
+                @if(!empty($row->inativo))
+                <br>
+                <span class="label label-danger">Inativado em {{ formataData($row->inativo, 'L')}} </span>
+                @endif
             </th>
             <th>
                 Físico

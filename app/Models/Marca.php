@@ -34,6 +34,7 @@ class Marca extends MGModel
     protected $dates = [
         'alteracao',
         'criacao',
+        'inativo'
     ];
 
     public function validate() {
@@ -78,10 +79,11 @@ class Marca extends MGModel
     }
 
     // Buscas 
-    public static function filterAndPaginate($codmarca, $marca)
+    public static function filterAndPaginate($codmarca, $marca, $inativo)
     {
         return Marca::codmarca(numeroLimpo($codmarca))
             ->marca($marca)
+            ->inativo($inativo)
             ->orderBy('marca', 'ASC')
             ->paginate(20);
     }
@@ -103,4 +105,17 @@ class Marca extends MGModel
         foreach ($marca as $str)
             $query->where('marca', 'ILIKE', "%$str%");
     }
+    public function scopeInativo($query, $inativo)
+    {
+        if (trim($inativo) === '')
+            $query->whereNull('inativo');
+        
+        if($inativo == 1)
+            $query->whereNull('inativo');
+
+        if($inativo == 2)
+            $query->whereNotNull('inativo');
+    }
+      
+    
 }

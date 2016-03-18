@@ -11,6 +11,7 @@ use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Marca;
 use MGLara\Models\EstoqueLocal;
 use MGLara\Models\EstoqueSaldo;
+use Carbon\Carbon;
 
 class MarcaController extends Controller
 {
@@ -20,10 +21,11 @@ class MarcaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {
+    {      
         $model = Marca::filterAndPaginate(
             $request->get('codmarca'),
-            $request->get('marca')    
+            $request->get('marca'),
+            $request->get('inativo')    
         ); 
         $ess = EstoqueSaldo::saldoPorMarca();
         $els = EstoqueLocal::where('inativo', null)->orderBy('codestoquelocal')->get();
@@ -126,5 +128,16 @@ class MarcaController extends Controller
         foreach ($model->ProdutoS as $prod)
             $arr_codproduto[] = $prod->codproduto;
         echo json_encode($arr_codproduto);        
+    }
+
+    public function inativo(Request $request)
+    {
+        $model = Marca::find($request->get('codmarca'));
+        if($request->get('acao') == 'ativar')
+            $model->inativo = null;
+        else
+            $model->inativo = Carbon::now();
+        
+        $model->save();
     }    
 }

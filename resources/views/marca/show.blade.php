@@ -12,6 +12,17 @@
         <li><a href="<?php echo url('marca/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li> 
         <li><a href="<?php echo url("marca/$model->codmarca/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
         <li>
+            @if(empty($model->inativo))
+            <a href="" id="inativar-marca">
+                <span class="glyphicon glyphicon-ban-circle"></span> Inativar
+            </a>
+            @else
+            <a href="" id="inativar-marca">
+                <span class="glyphicon glyphicon-ok-sign"></span> Ativar
+            </a>
+            @endif
+        </li> 
+        <li>
             {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['marca.destroy', $model->codmarca]]) !!}
             <span class="glyphicon glyphicon-trash"></span>
             {!! Form::submit('Excluir') !!}
@@ -20,6 +31,11 @@
     </ul>
   </div>
 </nav>
+@if(!empty($model->inativo))
+    <br>
+    <div class="alert alert-danger" role="alert">Inativado em {{formataData($model->inativo, 'L')}}</div>
+@endif
+
 <h1 class="header">
     {{ $model->marca }}
 </h1>
@@ -220,7 +236,6 @@ foreach($model->ProdutoS as $prod)
     </div>
 </div>
 
-
 @section('inscript')
 <script type="text/javascript">
 
@@ -303,6 +318,29 @@ $(document).ready(function() {
         $('#btnFechaModalrecalculaMovimentoEstoque').attr('disabled', 'disabled');
         $('#logPbrecalculaMovimentoEstoque').removeClass('hidden');
         recalculaMovimentoEstoque();
+    });
+    
+    $('#inativar-marca').on("click", function(e) {
+        e.preventDefault();
+        bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
+            var codmarca = {{ $model->codmarca }};
+            var token = '{{ csrf_token() }}';
+            var inativo = '{{ $model->inativo }}';
+            if(inativo.length == 0) {
+                acao = 'inativar';
+            } else {
+                acao = 'ativar';
+            }
+            $.post(baseUrl + '/marca/inativo', {
+                codmarca: codmarca,
+                acao: acao,
+                _token: token
+            }).done(function (data) {
+                location.reload();
+            }).fail(function (error){
+              location.reload();          
+          });
+        });
     });
 });
 </script>
