@@ -37,10 +37,11 @@ class SubGrupoProduto extends MGModel
     public function validate() {
 
         $this->_regrasValidacao = [
-            'subgrupoproduto' => 'required|min:2', 
+            'subgrupoproduto' => 'required|min:5', 
         ];    
         $this->_mensagensErro = [
             'subgrupoproduto.required' => 'Sub grupo de produto nao pode ser vazio.',
+            'subgrupoproduto.min' => 'Sub grupo de produto nao pode ter menos de 5 caracteres.',
         ];
         return parent::validate();
     }    
@@ -70,13 +71,31 @@ class SubGrupoProduto extends MGModel
     }
 
     
-    public function scopeSubgrupoproduto($query, $subgrupoproduto, $codgrupoproduto)
+    // Buscas 
+    public static function filterAndPaginate($codsubgrupoproduto, $subgrupoproduto)
     {
-        $query->where('codgrupoproduto', "=", "$codgrupoproduto");
-        if (trim($subgrupoproduto) != "")
-        {
-            $query->where('subgrupoproduto', "ILIKE", "%$subgrupoproduto%");
-        }
-    }     
+        return SubGrupoProduto::codsubgrupoproduto(numeroLimpo($codsubgrupoproduto))
+            ->subgrupoproduto($subgrupoproduto)
+            ->orderBy('subgrupoproduto', 'ASC')
+            ->paginate(20);
+    }
+    
+    public function scopeCodsubgrupoproduto($query, $codsubgrupoproduto)
+    {
+        if (trim($codsubgrupoproduto) === '')
+            return;
+        
+        $query->where('codsubgrupoproduto', $codsubgrupoproduto);
+    }
+    
+    public function scopeSubgrupoproduto($query, $subgrupoproduto)
+    {
+        if (trim($subgrupoproduto) === '')
+            return;
+        
+        $subgrupoproduto = explode(' ', $subgrupoproduto);
+        foreach ($subgrupoproduto as $str)
+            $query->where('subgrupoproduto', 'ILIKE', "%$str%");
+    }    
     
 }

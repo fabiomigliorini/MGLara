@@ -7,7 +7,7 @@
             <li><a href="<?php echo url('grupo-produto/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
             <li><a href="<?php echo url("grupo-produto/$model->codgrupoproduto");?>"><span class="glyphicon glyphicon-eye-open"></span> Detalhes</a></li> 
             <li>
-                {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['marca.destroy', $model->codgrupoproduto]]) !!}
+                {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['grupo-produto.destroy', $model->codgrupoproduto]]) !!}
                 <span class="glyphicon glyphicon-trash"></span>
                 {!! Form::submit('Excluir') !!}
                 {!! Form::close() !!}

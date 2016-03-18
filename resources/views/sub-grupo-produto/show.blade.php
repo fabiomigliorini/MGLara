@@ -3,7 +3,16 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
-            <li><a href="#" id="btnBuscaCodProduto"><span class="glyphicon glyphicon-refresh"></span> Recalcular Movimento de Estoque</a></li>             
+            <li><a href="#" id="btnBuscaCodProduto"><span class="glyphicon glyphicon-refresh"></span> Recalcular Movimento de Estoque</a></li>            
+            <li><a href="<?php echo url("grupo-produto/$model->codgrupoproduto");?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>
+            <li><a href="<?php echo url('sub-grupo-produto/create?codgrupoproduto='.$model->GrupoProduto->codgrupoproduto);?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li> 
+            <li><a href="<?php echo url("sub-grupo-produto/$model->codsubgrupoproduto/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
+            <li>
+                {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['sub-grupo-produto.destroy', $model->codsubgrupoproduto]]) !!}
+                <span class="glyphicon glyphicon-trash"></span>
+                {!! Form::submit('Excluir') !!}
+                {!! Form::close() !!}
+            </li>              
         </ul>
     </div>
 </nav>
@@ -40,7 +49,7 @@ foreach($model->ProdutoS as $prod)
 }
 
 ?>
-
+@if (count($model->ProdutoS) > 0)
 <table class="table table-striped table-condensed table-hover table-bordered small">
     <thead>
         <th colspan="2" class="col-sm-4">
@@ -181,9 +190,10 @@ foreach($model->ProdutoS as $prod)
         </tr>
     </tfoot>
 </table>
+@endif  
 
-@if (count($model) === 0)
-    <h3>Nenhum registro encontrado!</h3>
+@if (count($model->ProdutoS) === 0)
+    <h3>Nenhum produto cadastrado!</h3>
 @endif    
 
 <div id="modalrecalculaMovimentoEstoque" class="modal fade" role="dialog">

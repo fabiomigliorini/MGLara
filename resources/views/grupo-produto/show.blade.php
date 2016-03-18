@@ -40,7 +40,7 @@ foreach($ess as $es)
 }
 //dd($arr_saldos);
 ?>
-
+@if (count($model->SubGrupoProdutoS) > 0)
 <table class="table table-striped table-condensed table-hover table-bordered small">
     <thead>
         <th colspan="2" class="col-sm-4">
@@ -135,9 +135,10 @@ foreach($ess as $es)
         </tr>
     </tfoot>
 </table>
+@endif
 
-@if (count($model) === 0)
-    <h3>Nenhum registro encontrado!</h3>
+@if (count($model->SubGrupoProdutoS) === 0)
+    <h3>Nenhum produto cadastrado!</h3>
 @endif    
 
 <div id="modalrecalculaMovimentoEstoque" class="modal fade" role="dialog">

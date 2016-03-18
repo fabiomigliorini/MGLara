@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use MGLara\Http\Requests;
 use MGLara\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Session;
 use MGLara\Models\SubGrupoProduto;
 use MGLara\Models\EstoqueSaldo;
 use MGLara\Models\EstoqueLocal;
@@ -18,9 +18,14 @@ class SubGrupoProdutoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        /*
+        $model = SubGrupoProduto::filterAndPaginate(
+            $request->get('codsubgrupoproduto'),
+            $request->get('subgrupoproduto')    
+        );
+        */
     }
 
     /**
@@ -28,9 +33,11 @@ class SubGrupoProdutoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $model = SubGrupoProduto::class;
+        
+        return view('sub-grupo-produto.create', compact('model','request'));
     }
 
     /**
@@ -41,7 +48,13 @@ class SubGrupoProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $model = new SubGrupoProduto($request->all());
+        if (!$model->validate())
+            $this->throwValidationException($request, $model->_validator);
+        $model->codgrupoproduto = $request->get('codgrupoproduto');
+        $model->save();
+        Session::flash('flash_create', 'Registro inserido.');
+        return redirect("sub-grupo-produto/$model->codsubgrupoproduto");
     }
 
     /**
@@ -66,7 +79,8 @@ class SubGrupoProdutoController extends Controller
      */
     public function edit($id)
     {
-        //
+        $model = SubGrupoProduto::findOrFail($id);
+        return view('sub-grupo-produto.edit',  compact('model'));
     }
 
     /**
@@ -78,7 +92,13 @@ class SubGrupoProdutoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $model = SubGrupoProduto::findOrFail($id);
+        $model->fill($request->all());
+        if (!$model->validate())
+            $this->throwValidationException($request, $model->_validator);
+        $model->save();
+        Session::flash('flash_update', 'Registro atualizado.');
+        return redirect("sub-grupo-produto/$id");
     }
 
     /**
@@ -89,7 +109,16 @@ class SubGrupoProdutoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+            $model = SubGrupoProduto::find($id);
+            $model->delete();
+            Session::flash('flash_delete', 'Registro deletado!');
+            return redirect("grupo-produto/$model->codgrupoproduto");
+
+        }
+        catch(\Exception $e){
+            return view('errors.fk');
+        }     
     }
     
     public function buscaCodProduto($id)

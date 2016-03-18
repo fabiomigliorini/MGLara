@@ -54,7 +54,7 @@ class GrupoProdutoController extends Controller
             $this->throwValidationException($request, $model->_validator);
         $model->save();
         Session::flash('flash_create', 'Registro inserido.');
-        return redirect('grupo-produto');
+        return redirect("grupo-produto/$model->codgrupoproduto");
     }
 
     /**
