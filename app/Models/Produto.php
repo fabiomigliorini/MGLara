@@ -116,7 +116,11 @@ class Produto extends MGModel
     {
         return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
     }
-
+    
+    public function ImagemS()
+    {
+        return $this->belongsToMany(Imagem::class, 'tblprodutoimagem', 'codproduto', 'codprodutoimagem');
+    }
 
     // Tabelas Filhas
     public function EstoqueSaldoS()

@@ -27,6 +27,7 @@ class Marca extends MGModel
     protected $table = 'tblmarca';
     protected $primaryKey = 'codmarca';
     protected $fillable = [
+        'codimagem',
         'marca',
         'site',
         'descricaosite',
@@ -65,7 +66,11 @@ class Marca extends MGModel
     {
         return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
     }
-
+    
+    public function Imagem()
+    {
+        return $this->belongsTo(Imagem::class, 'codimagem', 'codimagem');
+    }
 
     // Tabelas Filhas
     public function ProdutoBarraS()

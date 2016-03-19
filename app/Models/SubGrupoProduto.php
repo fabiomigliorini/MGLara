@@ -30,6 +30,7 @@ class SubGrupoProduto extends MGModel
         'subgrupoproduto',
     ];
     protected $dates = [
+        'inativo',
         'alteracao',
         'criacao',
     ];
@@ -62,7 +63,11 @@ class SubGrupoProduto extends MGModel
     {
         return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
     }
-
+    
+    public function Imagem()
+    {
+        return $this->belongsTo(Imagem::class, 'codimagem', 'codimagem');
+    }
 
     // Tabelas Filhas
     public function ProdutoS()

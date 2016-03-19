@@ -143,3 +143,11 @@ h1.header {
 .marcas-pagination {
     margin: 0;
 }
+.marca-imagem {
+    position: relative;
+    top: -65px;
+}
+.carregar {
+    margin-top: 20px;
+}
+

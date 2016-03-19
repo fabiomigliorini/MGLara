@@ -79,16 +79,24 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto/{id}/recalcula-custo-medio','ProdutoController@recalculaCustoMedio');           
     Route::resource('produto/{id}/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');           
 
-    /* Estoque movimento */
+
+    
+    /* Estoque Movimento */
     Route::resource('estoque-movimento','EstoqueMovimentoController');       
     Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');      
     
-    /* NotaFiscal */
+    /* Nota Fiscal */
     Route::resource('nota-fiscal','NotaFiscalController');           
+
+    /* Gerador de Codigo */
+    Route::resource('gerador-codigo/model/{tabela}','GeradorCodigoController@model');       
+    
+    /* Imagem */
+    Route::resource('imagem','ImagemController');       
+    Route::resource('imagem/edit/{id}','ImagemController@edit');       
+
     
     /* Auxiliares */
     Route::resource('printers','UsuarioController@printers');
     
-    /* Gerador de Codigo */
-    Route::resource('gerador-codigo/model/{tabela}','GeradorCodigoController@model');   
 });

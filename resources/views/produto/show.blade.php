@@ -8,6 +8,7 @@
             <li><a href="<?php echo url("produto/$model->codproduto/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li><a href="<?php echo url("produto/$model->codproduto/juntar-barras");?>"><span class="glyphicon glyphicon-resize-small"></span> Juntar códigosde barra</a></li> 
             <li><a href="<?php echo url("produto/$model->codproduto/transferir-barras");?>"><span class="glyphicon glyphicon-transfer"></span> Transferir códigos de barra</a></li> 
+            <li><a href="{{ url("imagem/produto/$model->codproduto") }}"><span class="glyphicon glyphicon-picture"></span> Imagems</a></li> 
             <li>
                 {!! Form::open(['method' => 'DELETE', 'route' => ['produto.destroy', $model->codproduto]]) !!}
                 <span class="glyphicon glyphicon-trash"></span>
