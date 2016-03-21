@@ -94,6 +94,12 @@ if(!function_exists('numeroLimpo')) {
     }
 }
 
+if(!function_exists('modelUrl')) {
+    function modelUrl($string) {
+        return $output = ltrim(strtolower(preg_replace('/[A-Z]/', '-$0', $string)), '-');
+    }
+}
+
 if(!function_exists('isNull')) {
     function isNull($str) {
         return "<span class='null'>$str</span>";

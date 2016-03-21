@@ -36,19 +36,17 @@
     <div class="alert alert-danger" role="alert">Inativado em {{formataData($model->inativo, 'L')}}</div>
 @endif
 <div class="row">
-    <div class="col-md-10">
-        <h1 class="header">
-            {{ $model->marca }}
-        </h1>
+    <div class="col-md-6">
+        <h1 class="header">{{ $model->marca }}</h1>
     </div>    
-    <div class="col-md-2">
+    <div class="pull-right foto-item-unico">
         @if(empty($model->codimagem))
-            <a class="btn btn-default carregar" href="{{ url("/imagem/edit/$model->codmarca?model=Marca") }}">
+            <a class="btn btn-default carregar" href="{{ url("/imagem/edit?id=$model->codmarca&model=Marca") }}">
                 <i class="glyphicon glyphicon-picture"></i>
                  Carregar imagem
             </a>
         @else
-            <img data-src="holder.js/200x150" class="img-thumbnail" alt="Sem imagem" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzE0MHgxNDAKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNTM4ZjM4NjQ0NiB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE1MzhmMzg2NDQ2Ij48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ0LjA2MjUiIHk9Ijc0LjUiPjE0MHgxNDA8L3RleHQ+PC9nPjwvZz48L3N2Zz4=" data-holder-rendered="true" style="width: 200px; height: 150px;">
+        <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
         @endif
     </div>
 </div>

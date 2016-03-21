@@ -6,7 +6,12 @@
 $id = 'cod'.strtolower($request->model);
 
 ?>
-{!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'id' => 'form-imagem', 'action' => ['ImagemController@update', $model->$id, 'model' => $request->model] ]) !!}
+{!! Form::model($model, [
+    'method' => 'PATCH', 'class' => 'form-horizontal', 
+    'id' => 'form-imagem', 
+    'action' => ['ImagemController@update', $model->$id, 'model' => $request->model],
+    'files'=>true 
+]) !!}
     @include('errors.form_error')
     
 <div class="form-group">
@@ -14,7 +19,8 @@ $id = 'cod'.strtolower($request->model);
         {!! Form::label('Imagem: ') !!}
     </label>    
     <div class="col-md-3 col-xs-4">
-        <input type="file" name="codimagem"  accept="image/*">
+        
+        {!! Form::file('codimagem',null, ['id'=>'codimagem', 'accept'=>'image/*'] ) !!}
     </div>
 </div>
 <div class="form-group">

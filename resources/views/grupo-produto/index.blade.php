@@ -10,7 +10,7 @@
   </div>
 </nav>
 <h1 class="header">Grupos de Produtos</h1>
-<br>
+<hr>
 <div class="row">
     <div class="col-md-6">
         <div class="marcas-pagination pull-left">{!! $model->appends(Request::all())->render() !!}</div>
@@ -46,7 +46,7 @@ foreach($ess as $es)
     {!! Form::close() !!}
     </div>
 </div>
-<hr>
+<br>
 @if (count($model) > 0)
 <table class="table table-striped table-condensed table-hover table-bordered small">
     <thead>

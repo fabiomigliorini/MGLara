@@ -17,8 +17,22 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">{{ $model->grupoproduto }}</h1>
-<br>
+<div class="row">
+    <div class="col-md-6">
+        <h1 class="header">{{ $model->grupoproduto }}</h1>
+    </div>
+    <div class="pull-right foto-item-unico">
+        @if(empty($model->codimagem))
+            <a class="btn btn-default carregar" href="{{ url("/imagem/edit?id=$model->codgrupoproduto&model=GrupoProduto") }}">
+                <i class="glyphicon glyphicon-picture"></i>
+                 Carregar imagem
+            </a>
+        @else
+        <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
+        @endif
+    </div>
+</div>
+<hr>
 
 <?php
 

@@ -148,6 +148,15 @@ h1.header {
     top: -65px;
 }
 .carregar {
-    margin-top: 20px;
+    margin-top: 40px;
 }
-
+.foto-item-unico {
+    height: 100px;
+    margin-bottom: 10px;
+    margin-top: -15px;
+    position: absolute;
+    right: 30px;
+}
+.foto-item-unico img {
+    height: 100%;
+}

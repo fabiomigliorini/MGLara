@@ -3,9 +3,11 @@
 namespace MGLara\Http\Controllers;
 
 use Illuminate\Http\Request;
-use MGLara\Http\Requests;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Imagem;
+use Illuminate\Support\Facades\Input;
 
 class ImagemController extends Controller
 {
@@ -65,11 +67,11 @@ class ImagemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $id)
+    public function edit(Request $request)
     {
         //dd($request);
         $Model = '\MGLara\Models\\' . $request->get('model');
-        $model = $Model::find($id);
+        $model = $Model::find($request->get('id'));
         
         return view('imagem.edit', compact('model', 'request'));
     }
@@ -83,27 +85,30 @@ class ImagemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $diretorio = 'public/images';
-                
         $Model = '\MGLara\Models\\' . $request->get('model');
-        $model = new $Model($request->all());
+        $model = $Model::findOrFail($id);
 
-        // Upload
-        //$request->file->move($diretorio, $model->codimagem);
-        //$request->file('codimagem')->move($diretorio, $model->codimagem);
+        $codimagem = Input::file('codimagem');
+        $extensao = $codimagem->getClientOriginalExtension();
         
         $imagem = new Imagem();
         $imagem->save();
         
+        $imagem_update = Imagem::findOrFail($imagem->codimagem);
+        $imagem_update->observacoes = $imagem->codimagem.'.'.$extensao;
+        $imagem_update->save();
         
-        #if (!$model->validate())
-        #    $this->throwValidationException($request, $model->_validator);
+        $diretorio = './public/imagens';
+        $arquivo = $imagem->codimagem.'.'.$extensao;       
+        
+        $codimagem->move($diretorio, $arquivo);    
         
         $model->codimagem = $imagem->codimagem;
-        dd($model);
+        
         $model->save();
-        Session::flash('flash_create', 'Registro inserido.');
-        return redirect('marca');  
+        Session::flash('flash_update', 'Registro atualizado.');
+        
+        return redirect(modelUrl($request->get('model')).'/'.$id);  
     }
 
     /**

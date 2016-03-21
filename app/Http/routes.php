@@ -62,10 +62,10 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('grupo-produto/{id}/busca-codproduto','GrupoProdutoController@buscaCodproduto');           
 
     /* Marca */
-    Route::resource('marca','MarcaController');           
-    Route::resource('marca/{id}/busca-codproduto','MarcaController@buscaCodproduto');           
     Route::resource('marca/inativo','MarcaController@inativo');           
-    
+    Route::resource('marca/{id}/busca-codproduto','MarcaController@buscaCodproduto'); 
+    Route::resource('marca','MarcaController');           
+              
     /* SubGrupoProduto */
     Route::resource('sub-grupo-produto','SubGrupoProdutoController');           
     Route::resource('sub-grupo-produto/{id}/busca-codproduto','SubGrupoProdutoController@buscaCodproduto');           
@@ -79,22 +79,20 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto/{id}/recalcula-custo-medio','ProdutoController@recalculaCustoMedio');           
     Route::resource('produto/{id}/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');           
 
-
-    
-    /* Estoque Movimento */
-    Route::resource('estoque-movimento','EstoqueMovimentoController');       
-    Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');      
+        /* Imagem */
+    Route::resource('imagem/edit','ImagemController@edit');       
+    Route::resource('imagem','ImagemController'); 
     
     /* Nota Fiscal */
     Route::resource('nota-fiscal','NotaFiscalController');           
-
+    
     /* Gerador de Codigo */
+    Route::resource('gerador-codigo','GeradorCodigoController');       
     Route::resource('gerador-codigo/model/{tabela}','GeradorCodigoController@model');       
     
-    /* Imagem */
-    Route::resource('imagem','ImagemController');       
-    Route::resource('imagem/edit/{id}','ImagemController@edit');       
-
+    /* Estoque Movimento */
+    Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');      
+    Route::resource('estoque-movimento','EstoqueMovimentoController');       
     
     /* Auxiliares */
     Route::resource('printers','UsuarioController@printers');
