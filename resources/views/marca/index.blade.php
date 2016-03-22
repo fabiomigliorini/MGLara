@@ -72,6 +72,11 @@ foreach($ess as $es)
         @foreach($model as $row)
         <tr>
             <th rowspan="2">
+                @if(!empty($row->codimagem))
+                    <div class="pull-right foto-item-listagem">
+                        <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>
+                    </div>
+                @endif                
                 <a href="{{ url("marca/$row->codmarca") }}">{{$row->marca}}</a>
                 @if(!empty($row->inativo))
                 <br>
@@ -172,3 +177,4 @@ foreach($ess as $es)
 </script>
 @endsection
 @stop
+

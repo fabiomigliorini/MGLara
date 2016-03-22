@@ -110,6 +110,7 @@ class Marca extends MGModel
         foreach ($marca as $str)
             $query->where('marca', 'ILIKE', "%$str%");
     }
+    
     public function scopeInativo($query, $inativo)
     {
         if (trim($inativo) === '')

@@ -9,8 +9,10 @@ use MGLara\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use MGLara\Models\GrupoProduto;
+use MGLara\Models\SubGrupoProduto;
 use MGLara\Models\EstoqueSaldo;
 use MGLara\Models\EstoqueLocal;
+use Carbon\Carbon;
 
 class GrupoProdutoController extends Controller
 {
@@ -23,7 +25,8 @@ class GrupoProdutoController extends Controller
     {
         $model = GrupoProduto::filterAndPaginate(
             $request->get('codgrupoproduto'),
-            $request->get('grupoproduto')    
+            $request->get('grupoproduto'),    
+            $request->get('inativo')    
         );         
         $ess = EstoqueSaldo::saldoPorGrupoProduto();
         $els = EstoqueLocal::where('inativo', null)->orderBy('codestoquelocal')->get();
@@ -63,12 +66,18 @@ class GrupoProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $model = GrupoProduto::findOrFail($id);
+        $subgrupos = SubGrupoProduto::filterAndPaginate(
+            $model->codgrupoproduto,    
+            $request->get('codsubgrupoproduto'),
+            $request->get('subgrupoproduto'),    
+            $request->get('inativo')  
+        );
         $ess = EstoqueSaldo::saldoPorSubGrupoProduto($model->codgrupoproduto);
         $els = EstoqueLocal::where('inativo', null)->orderBy('codestoquelocal')->get();
-        return view('grupo-produto.show', compact('model', 'ess', 'els'));
+        return view('grupo-produto.show', compact('model','subgrupos', 'ess', 'els'));
     }
 
     /**
@@ -128,4 +137,14 @@ class GrupoProdutoController extends Controller
         echo json_encode($arr_codproduto);        
     }
     
+    public function inativo(Request $request)
+    {
+        $model = GrupoProduto::find($request->get('codgrupoproduto'));
+        if($request->get('acao') == 'ativar')
+            $model->inativo = null;
+        else
+            $model->inativo = Carbon::now();
+        
+        $model->save();
+    }      
 }

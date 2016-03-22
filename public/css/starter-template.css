@@ -160,3 +160,6 @@ h1.header {
 .foto-item-unico img {
     height: 100%;
 }
+.foto-item-listagem {
+    width: 120px;
+}

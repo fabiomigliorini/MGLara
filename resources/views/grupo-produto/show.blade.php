@@ -9,6 +9,17 @@
             <li><a href="<?php echo url('grupo-produto/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li> 
             <li><a href="<?php echo url("grupo-produto/$model->codgrupoproduto/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li>
+                @if(empty($model->inativo))
+                <a href="" id="inativar">
+                    <span class="glyphicon glyphicon-ban-circle"></span> Inativar
+                </a>
+                @else
+                <a href="" id="inativar">
+                    <span class="glyphicon glyphicon-ok-sign"></span> Ativar
+                </a>
+                @endif
+            </li>             
+            <li>
                 {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['grupo-produto.destroy', $model->codgrupoproduto]]) !!}
                 <span class="glyphicon glyphicon-trash"></span>
                 {!! Form::submit('Excluir') !!}
@@ -17,6 +28,10 @@
         </ul>
     </div>
 </nav>
+@if(!empty($model->inativo))
+    <br>
+    <div class="alert alert-danger" role="alert">Inativado em {{formataData($model->inativo, 'L')}}</div>
+@endif
 <div class="row">
     <div class="col-md-6">
         <h1 class="header">{{ $model->grupoproduto }}</h1>
@@ -33,9 +48,35 @@
     </div>
 </div>
 <hr>
-
+<div class="row">
+    <div class="col-md-6"></div>
+    <div class="col-md-6">
+    {!! Form::model(Request::all(), [
+        'action' => ['GrupoProdutoController@show', $model->codgrupoproduto],        
+        'method' => 'GET', 
+        'class' => 'navbar-form navbar-right pull-right', 
+        'id'=> 'query-sub-grupo-produto', 
+        'role' => 'search', 'style'=>'margin:0']) !!}
+    
+        <div class="form-group">
+            <div class="col-md-2">{!! Form::number('codsubgrupoproduto', null, ['class' => 'form-control', 'placeholder' => '#', 'style'=>'width:100px']) !!}</div>
+        </div>
+        <div class="form-group">
+          {!! Form::text('subgrupoproduto', null, ['class' => 'form-control', 'placeholder' => 'Sub Grupo']) !!}
+        </div>
+        <div class="form-group">
+            <select class="form-control" name="inativo" id="inativo">
+                <option value="0">Todos</option>
+                <option value="1" selected="selected">Ativos</option>
+                <option value="2">Inativos</option>
+            </select>
+        </div>    
+      <button type="submit" class="btn btn-default">Buscar</button>
+    {!! Form::close() !!}
+    </div>
+</div>
+<hr>
 <?php
-
 foreach($ess as $es)
 {
     $arr_saldos[$es->codsubgrupoproduto][$es->codestoquelocal][$es->fiscal] = [
@@ -52,7 +93,6 @@ foreach($ess as $es)
     $arr_totais[$es->codestoquelocal][$es->fiscal]['saldoquantidade'] += $es->saldoquantidade;
     $arr_totais[$es->codestoquelocal][$es->fiscal]['saldovalor'] += $es->saldovalor;
 }
-//dd($arr_saldos);
 ?>
 @if (count($model->SubGrupoProdutoS) > 0)
 <table class="table table-striped table-condensed table-hover table-bordered small">
@@ -68,10 +108,19 @@ foreach($ess as $es)
     </thead>
     
     <tbody>
-        @foreach($model->SubGrupoProdutoS as $row)
+        @foreach($subgrupos as $row)
         <tr>
             <th rowspan="2">
+                @if(!empty($row->codimagem))
+                    <div class="pull-right foto-item-listagem">
+                        <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>
+                    </div>
+                @endif
                 <a href="{{ url("sub-grupo-produto/$row->codsubgrupoproduto") }}">{{$row->subgrupoproduto}}</a>
+                @if(!empty($row->inativo))
+                <br>
+                <span class="label label-danger">Inativado em {{ formataData($row->inativo, 'L')}} </span>
+                @endif                
             </th>
             <th>
                 Físico
@@ -302,6 +351,30 @@ $(document).ready(function() {
     $('#btnRecalculaMovimentoEstoque').click(function (e) {
         iniciaProcesso('Movimento');
     });
+    
+    $('#inativar').on("click", function(e) {
+        e.preventDefault();
+        bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
+            var codgrupoproduto = {{ $model->codgrupoproduto }};
+            var token = '{{ csrf_token() }}';
+            var inativo = '{{ $model->inativo }}';
+            if(inativo.length == 0) {
+                acao = 'inativar';
+            } else {
+                acao = 'ativar';
+            }
+            $.post(baseUrl + '/grupo-produto/inativo', {
+                codgrupoproduto: codgrupoproduto,
+                acao: acao,
+                _token: token
+            }).done(function (data) {
+                location.reload();
+            }).fail(function (error){
+              location.reload();          
+          });
+        });
+    });
+    
 });
 </script>@endsection
 @stop

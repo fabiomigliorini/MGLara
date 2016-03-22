@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 use MGLara\Models\SubGrupoProduto;
 use MGLara\Models\EstoqueSaldo;
 use MGLara\Models\EstoqueLocal;
+use Carbon\Carbon;
 
 class SubGrupoProdutoController extends Controller
 {
@@ -128,4 +129,16 @@ class SubGrupoProdutoController extends Controller
             $arr_codproduto[] = $prod->codproduto;
         echo json_encode($arr_codproduto);        
     }
+
+    public function inativo(Request $request)
+    {
+        $model = SubGrupoProduto::find($request->get('codsubgrupoproduto'));
+        if($request->get('acao') == 'ativar')
+            $model->inativo = null;
+        else
+            $model->inativo = Carbon::now();
+        
+        $model->save();
+    }      
+    
 }

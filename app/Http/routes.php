@@ -55,20 +55,23 @@ Route::group(['middleware' => 'auth'], function() {
     
     /* EstoqueSaldo */
     Route::resource('estoque-saldo','EstoqueSaldoController');       
-    Route::get('estoque-saldo/{id}/zera','EstoqueSaldoController@zera');
+    Route::get('estoque-saldo/{id}/zera','EstoqueSaldoController@zera');        
     
     /* GrupoProduto */
-    Route::resource('grupo-produto','GrupoProdutoController');           
+    Route::post('grupo-produto/inativo','GrupoProdutoController@inativo');
     Route::resource('grupo-produto/{id}/busca-codproduto','GrupoProdutoController@buscaCodproduto');           
-
+    Route::resource('grupo-produto','GrupoProdutoController');           
+               
     /* Marca */
     Route::resource('marca/inativo','MarcaController@inativo');           
     Route::resource('marca/{id}/busca-codproduto','MarcaController@buscaCodproduto'); 
     Route::resource('marca','MarcaController');           
               
     /* SubGrupoProduto */
-    Route::resource('sub-grupo-produto','SubGrupoProdutoController');           
     Route::resource('sub-grupo-produto/{id}/busca-codproduto','SubGrupoProdutoController@buscaCodproduto');           
+    Route::post('sub-grupo-produto/inativo','SubGrupoProdutoController@inativo');  
+    Route::resource('sub-grupo-produto','SubGrupoProdutoController');           
+         
     
     /* Produto */
     Route::get('produto/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');           
@@ -86,13 +89,14 @@ Route::group(['middleware' => 'auth'], function() {
     /* Nota Fiscal */
     Route::resource('nota-fiscal','NotaFiscalController');           
     
-    /* Gerador de Codigo */
-    Route::resource('gerador-codigo','GeradorCodigoController');       
-    Route::resource('gerador-codigo/model/{tabela}','GeradorCodigoController@model');       
-    
     /* Estoque Movimento */
-    Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');      
-    Route::resource('estoque-movimento','EstoqueMovimentoController');       
+    Route::resource('estoque-movimento','EstoqueMovimentoController');
+    Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');     
+    
+    /* Gerador de Codigo */
+    Route::get('gerador-codigo/model/{tabela}','GeradorCodigoController@model');       
+    //Route::resource('gerador-codigo','GeradorCodigoController');       
+      
     
     /* Auxiliares */
     Route::resource('printers','UsuarioController@printers');

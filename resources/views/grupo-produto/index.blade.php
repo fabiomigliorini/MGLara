@@ -36,12 +36,19 @@ foreach($ess as $es)
 ?>
     <div class="col-md-6">
     {!! Form::model(Request::all(), ['route' => 'grupo-produto.index', 'method' => 'GET', 'class' => 'navbar-form navbar-right pull-right', 'role' => 'search', 'style'=>'margin:0']) !!}
-      <div class="form-group">
-          {!! Form::number('codgrupoproduto', null, ['class' => 'form-control', 'placeholder' => '#', 'style'=>'width:100px']) !!}
-      </div>
-      <div class="form-group">
-        {!! Form::text('grupoproduto', null, ['class' => 'form-control', 'placeholder' => 'Nome do grupo']) !!}
-      </div>
+        <div class="form-group">
+            {!! Form::number('codgrupoproduto', null, ['class' => 'form-control', 'placeholder' => '#', 'style'=>'width:100px']) !!}
+        </div>
+        <div class="form-group">
+          {!! Form::text('grupoproduto', null, ['class' => 'form-control', 'placeholder' => 'Nome do grupo']) !!}
+        </div>
+        <div class="form-group">
+            <select class="form-control" name="inativo" id="inativo">
+                <option value="0">Todos</option>
+                <option value="1" selected="selected">Ativos</option>
+                <option value="2">Inativos</option>
+            </select>
+        </div>      
       <button type="submit" class="btn btn-default">Buscar</button>
     {!! Form::close() !!}
     </div>
@@ -64,7 +71,16 @@ foreach($ess as $es)
         @foreach($model as $row)
         <tr>
             <th rowspan="2">
+                @if(!empty($row->codimagem))
+                    <div class="pull-right foto-item-listagem">
+                        <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>
+                    </div>
+                @endif                
                 <a href="{{ url("grupo-produto/$row->codgrupoproduto") }}">{{$row->grupoproduto}}</a>
+                @if(!empty($row->inativo))
+                <br>
+                <span class="label label-danger">Inativado em {{ formataData($row->inativo, 'L')}} </span>
+                @endif                
             </th>
             <th>
                 Físico

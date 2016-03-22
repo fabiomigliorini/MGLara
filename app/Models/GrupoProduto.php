@@ -67,10 +67,11 @@ class GrupoProduto extends MGModel
     }
 
     // Buscas 
-    public static function filterAndPaginate($codgrupoproduto, $grupoproduto)
+    public static function filterAndPaginate($codgrupoproduto, $grupoproduto, $inativo)
     {
         return GrupoProduto::codgrupoproduto(numeroLimpo($codgrupoproduto))
             ->grupoproduto($grupoproduto)
+            ->inativo($inativo)
             ->orderBy('grupoproduto', 'ASC')
             ->paginate(20);
     }
@@ -91,6 +92,18 @@ class GrupoProduto extends MGModel
         $grupoproduto = explode(' ', $grupoproduto);
         foreach ($grupoproduto as $str)
             $query->where('grupoproduto', 'ILIKE', "%$str%");
+    }
+    
+    public function scopeInativo($query, $inativo)
+    {
+        if (trim($inativo) === '')
+            $query->whereNull('inativo');
+        
+        if($inativo == 1)
+            $query->whereNull('inativo');
+
+        if($inativo == 2)
+            $query->whereNotNull('inativo');
     }
 
 }

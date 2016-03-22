@@ -8,6 +8,18 @@
             <li><a href="<?php echo url('sub-grupo-produto/create?codgrupoproduto='.$model->GrupoProduto->codgrupoproduto);?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li> 
             <li><a href="<?php echo url("sub-grupo-produto/$model->codsubgrupoproduto/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li>
+                @if(empty($model->inativo))
+                <a href="" id="inativar">
+                    <span class="glyphicon glyphicon-ban-circle"></span> Inativar
+                </a>
+                @else
+                <a href="" id="inativar">
+                    <span class="glyphicon glyphicon-ok-sign"></span> Ativar
+                </a>
+                @endif
+            </li>             
+            
+            <li>
                 {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['sub-grupo-produto.destroy', $model->codsubgrupoproduto]]) !!}
                 <span class="glyphicon glyphicon-trash"></span>
                 {!! Form::submit('Excluir') !!}
@@ -16,16 +28,28 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">
-    <a href="{{ url("grupo-produto/$model->codgrupoproduto") }}">
-        {{ $model->GrupoProduto->grupoproduto }} 
-    </a>
-    › {{ $model->subgrupoproduto }}
-</h1>
-<br>
-
+<div class="row">
+    <div class="col-md-6">
+        <h1 class="header">
+            <a href="{{ url("grupo-produto/$model->codgrupoproduto") }}">
+                {{ $model->GrupoProduto->grupoproduto }} 
+            </a>
+            › {{ $model->subgrupoproduto }}
+        </h1>
+    </div>
+    <div class="pull-right foto-item-unico">
+        @if(empty($model->codimagem))
+            <a class="btn btn-default carregar" href="{{ url("/imagem/edit?id=$model->codsubgrupoproduto&model=SubGrupoProduto") }}">
+                <i class="glyphicon glyphicon-picture"></i>
+                 Carregar imagem
+            </a>
+        @else
+        <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
+        @endif
+    </div>
+</div>
+<hr>
 <?php
-
 foreach($model->ProdutoS as $prod)
 {
     foreach ($prod->EstoqueSaldoS as $es)
@@ -47,7 +71,6 @@ foreach($model->ProdutoS as $prod)
         $arr_totais[$es->codestoquelocal][$es->fiscal]['saldovalor'] += $es->saldovalor;
     }
 }
-
 ?>
 @if (count($model->ProdutoS) > 0)
 <table class="table table-striped table-condensed table-hover table-bordered small">
@@ -308,6 +331,30 @@ $(document).ready(function() {
         $('#logPbrecalculaMovimentoEstoque').removeClass('hidden');
         recalculaMovimentoEstoque();
     });
+    
+    $('#inativar').on("click", function(e) {
+        e.preventDefault();
+        bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
+            var codsubgrupoproduto = {{ $model->codsubgrupoproduto }};
+            var token = '{{ csrf_token() }}';
+            var inativo = '{{ $model->inativo }}';
+            if(inativo.length == 0) {
+                acao = 'inativar';
+            } else {
+                acao = 'ativar';
+            }
+            $.post(baseUrl + '/sub-grupo-produto/inativo', {
+                codsubgrupoproduto: codsubgrupoproduto,
+                acao: acao,
+                _token: token
+            }).done(function (data) {
+                location.reload();
+            }).fail(function (error){
+              location.reload();          
+          });
+        });
+    });
+    
 });
 </script>@endsection
 @stop

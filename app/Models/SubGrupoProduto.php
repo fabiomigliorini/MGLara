@@ -77,10 +77,12 @@ class SubGrupoProduto extends MGModel
 
     
     // Buscas 
-    public static function filterAndPaginate($codsubgrupoproduto, $subgrupoproduto)
+    public static function filterAndPaginate($codgrupoproduto, $codsubgrupoproduto, $subgrupoproduto, $inativo)
     {
         return SubGrupoProduto::codsubgrupoproduto(numeroLimpo($codsubgrupoproduto))
+            ->where('codgrupoproduto', $codgrupoproduto)  
             ->subgrupoproduto($subgrupoproduto)
+            ->inativo($inativo)
             ->orderBy('subgrupoproduto', 'ASC')
             ->paginate(20);
     }
@@ -102,5 +104,17 @@ class SubGrupoProduto extends MGModel
         foreach ($subgrupoproduto as $str)
             $query->where('subgrupoproduto', 'ILIKE', "%$str%");
     }    
+    
+    public function scopeInativo($query, $inativo)
+    {
+        if (trim($inativo) === '')
+            $query->whereNull('inativo');
+        
+        if($inativo == 1)
+            $query->whereNull('inativo');
+
+        if($inativo == 2)
+            $query->whereNotNull('inativo');
+    }
     
 }
