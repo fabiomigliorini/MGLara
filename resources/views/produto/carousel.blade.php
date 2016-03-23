@@ -1,4 +1,3 @@
-@if(count ($model->ImagemS) > 0)
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner" role="listbox">
     @foreach($model->ImagemS as $imagem)
@@ -52,4 +51,3 @@ $(document).ready(function() {
 });
 </script>
 @endsection
-@endif

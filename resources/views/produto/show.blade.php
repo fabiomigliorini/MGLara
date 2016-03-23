@@ -67,6 +67,7 @@
             </div>
         </div>        
         <div class="panel panel-info produtos-detalhe-carousel">
+            @if(count ($model->ImagemS) > 0)
             <div class="pull-right carousel-menu">
                 <a class="btn btn-default" href="{{ url("/imagem/produto?produto=$model->codproduto") }}">
                     <i class="glyphicon glyphicon-picture"></i> 
@@ -81,8 +82,11 @@
                     Excluir 
                 </a>
             </div>
+            @endif
             <div class="panel-body">
-                @include('produto.carousel')
+                @if(count ($model->ImagemS) > 0)
+                    @include('produto.carousel')
+                @endif
             </div>
         </div>        
     </div>

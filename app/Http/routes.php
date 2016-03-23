@@ -95,7 +95,7 @@ Route::group(['middleware' => 'auth'], function() {
     
     /* Estoque Movimento */
     Route::resource('estoque-movimento','EstoqueMovimentoController');
-    //Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');     
+    Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');     
     
     /* Gerador de Codigo */
     Route::get('gerador-codigo/model/{tabela}','GeradorCodigoController@model');       
