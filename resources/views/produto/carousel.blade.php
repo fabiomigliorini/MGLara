@@ -1,16 +1,9 @@
-<?php
-$dir = str_pad($model->codproduto, 6, "0", STR_PAD_LEFT);
-$cmd = shell_exec("ls -d public/imagens/produtos/$dir/*.jpg");
-$imagens = explode("\n", $cmd);
-$itens = array_pop($imagens);
-$i = 36;
-?>
-@if(!empty($imagens))
+@if(count ($model->ImagemS) > 0)
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner" role="listbox">
-    @foreach($imagens as $imagem)
+    @foreach($model->ImagemS as $imagem)
     <div class="item produto-item">
-        <img src="{{ URL::asset($imagem) }}" alt="" style="width:100%; max-height: 500px" id="{{$i++}}">
+        <img src="<?php echo URL::asset('public/imagens/'.$imagem->observacoes);?>" alt="" style="width:100%; max-height: 500px" id="{{$imagem->codimagem}}">
     </div>
     @endforeach
   </div>
@@ -28,20 +21,34 @@ $i = 36;
 <script type="text/javascript">
 $(document).ready(function() {
     $('.carousel-inner .item').first().addClass('active');
+    
     $('.carousel').carousel({
-        interval:3000
+        interval:5000
     });
-    $('.carousel').on('slide.bs.carousel', function (e) {
-        var active = $(e.target).find('.carousel-inner > .item.active > img').attr('id');
-        $('.btn-detalhe').attr('href', baseUrl+'/imagem/'+active);
-        $('.btn-delete').attr('href', baseUrl+'/imagem/'+active+'/destroy');
+    $('.carousel').on('slid.bs.carousel', function (e) {
+        var imagem = $(e.target).find('.active > img').attr('id');
+        var produto = <?php echo $model->codproduto?>;
+        $('.btn-detalhe').attr('href', baseUrl+'/imagem/'+imagem);
+        $('.btn-delete').attr('href', baseUrl+'/imagem/produto/'+produto+'/delete?imagem='+imagem);
     })    
     $('.btn-detalhe, .btn-delete').on('mouseenter', function() {
        $(".carousel").carousel('pause');
     });
     $('.btn-detalhe, .btn-delete').on('mouseleave', function() {
        $(".carousel").carousel('cycle');
-    });    
+    });
+    
+    $('.btn-delete').click(function (e) {
+        e.preventDefault();
+        var url = $('.btn-delete').attr('href');
+        bootbox.confirm("Tem certeza que deseja deletar essa imagem", function(result) {
+            if (result)
+            {
+                window.location.href = url;
+            }
+        }); 
+    });
+    
 });
 </script>
 @endsection

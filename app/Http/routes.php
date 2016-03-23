@@ -83,10 +83,9 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto/{id}/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');           
 
     /* Imagem */
-    
-    
-    Route::resource('imagem/produto','ImagemController@produto');       
+    Route::resource('imagem/produto/{id}/delete','ImagemController@produtoDelete');
     Route::post('imagem/produtostore','ImagemController@produtoStore');       
+    Route::resource('imagem/produto','ImagemController@produto');       
     Route::resource('imagem/edit','ImagemController@edit');
     Route::resource('imagem','ImagemController'); 
            
@@ -96,7 +95,7 @@ Route::group(['middleware' => 'auth'], function() {
     
     /* Estoque Movimento */
     Route::resource('estoque-movimento','EstoqueMovimentoController');
-    Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');     
+    //Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');     
     
     /* Gerador de Codigo */
     Route::get('gerador-codigo/model/{tabela}','GeradorCodigoController@model');       

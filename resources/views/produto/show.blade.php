@@ -76,9 +76,9 @@
                     <i class="glyphicon glyphicon-eye-open"></i> 
                     Detalhes
                 </a>
-                <a class="btn btn-default btn-delete" href="">
+                <a class="btn btn-default btn-delete" href="{{ url("imagem/produto/$model->codproduto/delete?imagem={$model->ImagemS->first()->codimagem}") }}">
                     <i class="glyphicon glyphicon-trash"></i> 
-                    Excluir
+                    Excluir 
                 </a>
             </div>
             <div class="panel-body">

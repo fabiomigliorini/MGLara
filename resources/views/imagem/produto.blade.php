@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<h1 class="header">Enviar imagem ({{ $model->codproduto }})</h1>
+<h1 class="header">Enviar imagem</h1>
 <hr>
 @include('errors.form_error')
 {!! Form::model($model, [

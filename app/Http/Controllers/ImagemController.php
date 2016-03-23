@@ -45,12 +45,25 @@ class ImagemController extends Controller
         $arquivo = $imagem->codimagem.'.'.$extensao;       
         
         $codimagem->move($diretorio, $arquivo);    
-        $model->ImagemS()->attach(['codimagem'=>$imagem->codimagem]);
+        $model->ImagemS()->attach($imagem->codimagem);
         Session::flash('flash_update', 'Imagem inserida.');
         return redirect('produto/'.$request->get('id')); 
     }
 
-    /**
+    public function produtoDelete(Request $request, $id)
+    {
+        try {
+            $model = Produto::find($id);
+            $model->ImagemS()->detach($request->get('imagem'));
+	    Session::flash('flash_delete', 'Imagem deletada!');
+	    return redirect("produto/$id"); 
+        }
+        catch(\Exception $e){
+            return view('errors.fk');
+        }         
+    }
+
+        /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -79,7 +92,8 @@ class ImagemController extends Controller
      */
     public function show($id)
     {
-        //
+        $model = Imagem::find($id);
+        return view('imagem.show', compact('model'));
     }
 
     /**
