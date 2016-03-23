@@ -82,9 +82,14 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto/{id}/recalcula-custo-medio','ProdutoController@recalculaCustoMedio');           
     Route::resource('produto/{id}/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');           
 
-        /* Imagem */
-    Route::resource('imagem/edit','ImagemController@edit');       
+    /* Imagem */
+    
+    
+    Route::resource('imagem/produto','ImagemController@produto');       
+    Route::post('imagem/produtostore','ImagemController@produtoStore');       
+    Route::resource('imagem/edit','ImagemController@edit');
     Route::resource('imagem','ImagemController'); 
+           
     
     /* Nota Fiscal */
     Route::resource('nota-fiscal','NotaFiscalController');           

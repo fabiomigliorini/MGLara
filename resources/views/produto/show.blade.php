@@ -8,7 +8,6 @@
             <li><a href="<?php echo url("produto/$model->codproduto/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li><a href="<?php echo url("produto/$model->codproduto/juntar-barras");?>"><span class="glyphicon glyphicon-resize-small"></span> Juntar códigosde barra</a></li> 
             <li><a href="<?php echo url("produto/$model->codproduto/transferir-barras");?>"><span class="glyphicon glyphicon-transfer"></span> Transferir códigos de barra</a></li> 
-            <li><a href="{{ url("imagem/produto/$model->codproduto") }}"><span class="glyphicon glyphicon-picture"></span> Imagems</a></li> 
             <li>
                 {!! Form::open(['method' => 'DELETE', 'route' => ['produto.destroy', $model->codproduto]]) !!}
                 <span class="glyphicon glyphicon-trash"></span>
@@ -24,7 +23,6 @@
 <div class="row">
     <div class="col-md-5">
         {!! Form::model(Request::all(), [
-           
           'method' => 'POST', 
           'class' => 'form-inline',
           'id' => 'produto-busca-barras',
@@ -69,6 +67,20 @@
             </div>
         </div>        
         <div class="panel panel-info produtos-detalhe-carousel">
+            <div class="pull-right carousel-menu">
+                <a class="btn btn-default" href="{{ url("/imagem/produto?produto=$model->codproduto") }}">
+                    <i class="glyphicon glyphicon-picture"></i> 
+                    Nova
+                </a>
+                <a class="btn btn-default btn-detalhe" href="">
+                    <i class="glyphicon glyphicon-eye-open"></i> 
+                    Detalhes
+                </a>
+                <a class="btn btn-default btn-delete" href="">
+                    <i class="glyphicon glyphicon-trash"></i> 
+                    Excluir
+                </a>
+            </div>
             <div class="panel-body">
                 @include('produto.carousel')
             </div>
@@ -152,18 +164,15 @@
 	<?php
 
 	$arr_saldos = [];
-    $arr_totais = [true => 0, false => 0];
+        $arr_totais = [true => 0, false => 0];
 	foreach ($model->EstoqueSaldoS as $es)
 	{
-        $arr_saldos[$es->EstoqueLocal->estoquelocal][$es->fiscal] = array(
-            "saldoquantidade" => $es->saldoquantidade,
-            "codestoquesaldo" => $es->codestoquesaldo,
-        );
-        $arr_totais[$es->fiscal] += $es->saldoquantidade;
-	}
-    
-    //dd($arr_saldos);
-
+            $arr_saldos[$es->EstoqueLocal->estoquelocal][$es->fiscal] = array(
+                "saldoquantidade" => $es->saldoquantidade,
+                "codestoquesaldo" => $es->codestoquesaldo,
+            );
+            $arr_totais[$es->fiscal] += $es->saldoquantidade;
+            }
 	?>
         
         <div class='panel panel-info'>

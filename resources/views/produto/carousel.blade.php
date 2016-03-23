@@ -1,15 +1,16 @@
 <?php
 $dir = str_pad($model->codproduto, 6, "0", STR_PAD_LEFT);
-$cmd = shell_exec("ls -d public/images/produtos/$dir/*.jpg");
+$cmd = shell_exec("ls -d public/imagens/produtos/$dir/*.jpg");
 $imagens = explode("\n", $cmd);
 $itens = array_pop($imagens);
+$i = 36;
 ?>
 @if(!empty($imagens))
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner" role="listbox">
     @foreach($imagens as $imagem)
     <div class="item produto-item">
-        <img src="{{ URL::asset($imagem) }}" alt="" style="width:100%; max-height: 500px">
+        <img src="{{ URL::asset($imagem) }}" alt="" style="width:100%; max-height: 500px" id="{{$i++}}">
     </div>
     @endforeach
   </div>
@@ -30,6 +31,17 @@ $(document).ready(function() {
     $('.carousel').carousel({
         interval:3000
     });
+    $('.carousel').on('slide.bs.carousel', function (e) {
+        var active = $(e.target).find('.carousel-inner > .item.active > img').attr('id');
+        $('.btn-detalhe').attr('href', baseUrl+'/imagem/'+active);
+        $('.btn-delete').attr('href', baseUrl+'/imagem/'+active+'/destroy');
+    })    
+    $('.btn-detalhe, .btn-delete').on('mouseenter', function() {
+       $(".carousel").carousel('pause');
+    });
+    $('.btn-detalhe, .btn-delete').on('mouseleave', function() {
+       $(".carousel").carousel('cycle');
+    });    
 });
 </script>
 @endsection

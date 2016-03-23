@@ -137,6 +137,12 @@ h1.header {
 .carousel-control.right {
     background: none;
 }
+.carousel-menu {
+    margin-right: -1px;
+    margin-top: -1px;
+    position: relative;
+    z-index: 100;
+}
 
 
 /* Marcas */

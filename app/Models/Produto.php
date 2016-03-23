@@ -119,7 +119,7 @@ class Produto extends MGModel
     
     public function ImagemS()
     {
-        return $this->belongsToMany(Imagem::class, 'tblprodutoimagem', 'codproduto', 'codprodutoimagem');
+        return $this->belongsToMany(Imagem::class, 'tblprodutoimagem', 'codproduto', 'codimagem');
     }
 
     // Tabelas Filhas

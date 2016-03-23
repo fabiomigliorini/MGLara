@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Imagem;
+use MGLara\Models\Produto;
 use Illuminate\Support\Facades\Input;
 
 class ImagemController extends Controller
@@ -21,12 +22,32 @@ class ImagemController extends Controller
         return view('imagem.index');
     }
 
-    public function produto($id)
+    public function produto(Request $request)
     {
-        $model = Produto::find($id);
-        
-        
+        $model = Produto::find($request->produto);
         return view('imagem.produto', compact('model'));
+    }
+    
+    public function produtoStore(Request $request)
+    {
+        $model = Produto::find($request->get('id'));
+        $codimagem = Input::file('imagem');
+        $extensao = $codimagem->getClientOriginalExtension();
+        
+        $imagem = new Imagem();
+        $imagem->save();
+        
+        $imagem_update = Imagem::findOrFail($imagem->codimagem);
+        $imagem_update->observacoes = $imagem->codimagem.'.'.$extensao;
+        $imagem_update->save();
+        
+        $diretorio = './public/imagens';
+        $arquivo = $imagem->codimagem.'.'.$extensao;       
+        
+        $codimagem->move($diretorio, $arquivo);    
+        $model->ImagemS()->attach(['codimagem'=>$imagem->codimagem]);
+        Session::flash('flash_update', 'Imagem inserida.');
+        return redirect('produto/'.$request->get('id')); 
     }
 
     /**
@@ -34,7 +55,7 @@ class ImagemController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request, $id)
+    public function create(Request $request)
     {
         //
     }
