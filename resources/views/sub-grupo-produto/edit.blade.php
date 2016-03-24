@@ -6,12 +6,6 @@
             <li><a href="<?php echo url("grupo-produto/$model->codgrupoproduto");?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
             <li><a href="<?php echo url('sub-grupo-produto/create?codgrupoproduto='.$model->GrupoProduto->codgrupoproduto);?>" ><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
             <li><a href="<?php echo url("sub-grupo-produto/$model->codsubgrupoproduto");?>"><span class="glyphicon glyphicon-eye-open"></span> Detalhes</a></li> 
-            <li>
-                {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['marca.destroy', $model->codsubgrupoproduto]]) !!}
-                <span class="glyphicon glyphicon-trash"></span>
-                {!! Form::submit('Excluir') !!}
-                {!! Form::close() !!}
-            </li> 
         </ul>
     </div>
 </nav>

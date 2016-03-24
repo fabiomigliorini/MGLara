@@ -45,6 +45,9 @@
             </a>
         @else
         <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
+        <span class="caption simple-caption">
+            <a href="" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+        </span>            
         @endif
     </div>
 </div>
@@ -334,24 +337,26 @@ $(document).ready(function() {
     
     $('#inativar').on("click", function(e) {
         e.preventDefault();
-        bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
-            var codsubgrupoproduto = {{ $model->codsubgrupoproduto }};
-            var token = '{{ csrf_token() }}';
-            var inativo = '{{ $model->inativo }}';
-            if(inativo.length == 0) {
-                acao = 'inativar';
-            } else {
-                acao = 'ativar';
+        var codsubgrupoproduto = {{ $model->codsubgrupoproduto }};
+        var token = '{{ csrf_token() }}';
+        var inativo = '{{ $model->inativo }}';
+        if(inativo.length === 0) {
+            acao = 'inativar';
+        } else {
+            acao = 'ativar';
+        }
+        bootbox.confirm("Tem certeza que deseja "+acao+"?", function(result) {
+            if(result) {
+                $.post(baseUrl + '/sub-grupo-produto/inativo', {
+                    codsubgrupoproduto: codsubgrupoproduto,
+                    acao: acao,
+                    _token: token
+                }).done(function (data) {
+                    location.reload();
+                }).fail(function (error) {
+                  location.reload();          
+                });
             }
-            $.post(baseUrl + '/sub-grupo-produto/inativo', {
-                codsubgrupoproduto: codsubgrupoproduto,
-                acao: acao,
-                _token: token
-            }).done(function (data) {
-                location.reload();
-            }).fail(function (error){
-              location.reload();          
-          });
         });
     });
     

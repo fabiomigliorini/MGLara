@@ -49,17 +49,18 @@
             <li><a href="{{ url('estoque-mes') }}">Estoque mês</a></li>
             <!-- <li role="separator" class="divider"></li> -->
             <!-- <li><a href="#">Consulta de preço</a></li> -->
-            <li><a href="<?php echo url('produto');?>">Produtos</a><li>
+            <li><a href="{{ url('produto') }}">Produtos</a><li>
             <!-- <li role="separator" class="divider"></li> -->
             <!-- <li><a href="#">Etiquetas de Produtos</a></li> -->
             <!-- <li role="separator" class="divider"></li> -->
             <!-- <li><a href="#">Histórico de Preços</a></li> -->
             <!-- <li role="separator" class="divider"></li> -->
-             <li><a href="<?php echo url('grupo-produto');?>">Grupos de Produtos</a><li> 
-             <li><a href="<?php echo url('marca');?>">Marcas</a><li> 
+            <li><a href="{{ url('grupo-produto') }}">Grupos de Produtos</a><li> 
+            <li><a href="{{ url('marca') }}">Marcas</a><li> 
             <!-- <li><a href="#">NCM</a></li> -->
             <!-- <li><a href="#">Tipos de produtos</a></li> -->
             <!-- <li><a href="#">Unidades de medida</a></li> -->
+            <li><a href="{{ url('imagem') }}">Imagens</a></li> 
           </ul>
         </li>
         <!--

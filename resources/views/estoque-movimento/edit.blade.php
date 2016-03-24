@@ -3,13 +3,7 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
-            <li><a href="<?php echo url("estoque-movimento/$model->codestoquemovimento");?>"><span class="glyphicon glyphicon-eye-open"></span> Detalhes</a></li> 
-            <li>
-                {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['estoque-movimento.destroy', $model->codestoquemovimento]]) !!}
-                <span class="glyphicon glyphicon-trash"></span>
-                {!! Form::submit('Excluir') !!}
-                {!! Form::close() !!}
-            </li>            
+            <li><a href="<?php echo url("estoque-movimento/$model->codestoquemovimento");?>"><span class="glyphicon glyphicon-eye-open"></span> Detalhes</a></li>             
         </ul>
     </div>
 </nav>

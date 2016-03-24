@@ -156,16 +156,89 @@ h1.header {
 .carregar {
     margin-top: 40px;
 }
-.foto-item-unico {
+/*.foto-item-unico {
     height: 100px;
     margin-bottom: 10px;
     margin-top: -15px;
     position: absolute;
     right: 30px;
-}
+}*/
 .foto-item-unico img {
     height: 100%;
 }
 .foto-item-listagem {
     width: 120px;
+}
+.foto-item-unico {
+    cursor: pointer;
+    height: 100px;
+    min-width: 150px;
+    float: left;
+    position: relative;
+    overflow: hidden;
+}
+.foto-item-unico img {
+    position: absolute;
+    left: 0;
+    -webkit-transition: all 300ms ease-out;
+    -moz-transition: all 300ms ease-out;
+    -o-transition: all 300ms ease-out;
+    -ms-transition: all 300ms ease-out;	
+    transition: all 300ms ease-out;
+}
+.foto-item-unico .caption {
+    position: absolute;
+    z-index: 100;
+    -webkit-transition: all 300ms ease-out;
+    -moz-transition: all 300ms ease-out;
+    -o-transition: all 300ms ease-out;
+    -ms-transition: all 300ms ease-out;	
+    transition: all 300ms ease-out;
+    right: 0;
+}
+.foto-item-unico .simple-caption {
+    height: 30px;
+    display: block;
+    bottom: -30px;
+    text-align: center;
+}
+.foto-item-unico .scale-caption h3 {
+    -webkit-transition-delay: 300ms;
+    -moz-transition-delay: 300ms;
+    -o-transition-delay: 300ms;
+    -ms-transition-delay: 300ms;	
+    transition-delay: 300ms;
+}
+.foto-item-unico .scale-caption p {
+    -webkit-transition-delay: 500ms;
+    -moz-transition-delay: 500ms;
+    -o-transition-delay: 500ms;
+    -ms-transition-delay: 500ms;	
+    transition-delay: 500ms;
+}
+.foto-item-unico:hover .simple-caption {
+    -moz-transform: translateY(-100%);
+    -o-transform: translateY(-100%);
+    -webkit-transform: translateY(-100%);
+    opacity: 1;
+    transform: translateY(-100%);
+}
+.foto-item-unico:hover .fade-caption, 
+.foto-item-unico:hover .scale-caption  {
+    opacity: 1;
+}
+.foto-item-unico:hover .slide-caption {
+    background-color: rgba(0,0,0,1) !important;
+    -moz-transform: translateX(-100%);
+    -o-transform: translateX(-100%);
+    -webkit-transform: translateX(-100%);
+    opacity: 1;
+    transform: translateX(-100%);
+}
+.foto-item-unico:hover .scale-caption h3, 
+.foto-item-unico:hover .scale-caption p {
+    -moz-transform: translateX(200px);
+    -o-transform: translateX(200px);
+    -webkit-transform: translateX(200px);
+    transform: translateX(200px);
 }

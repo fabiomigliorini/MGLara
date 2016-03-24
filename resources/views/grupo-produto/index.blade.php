@@ -73,7 +73,7 @@ foreach($ess as $es)
             <th rowspan="2">
                 @if(!empty($row->codimagem))
                     <div class="pull-right foto-item-listagem">
-                        <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>
+                        <img class="img-responsive pull-right" alt="{{$row->grupoproduto}}" title="{{$row->grupoproduto}}" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>
                     </div>
                 @endif                
                 <a href="{{ url("grupo-produto/$row->codgrupoproduto") }}">{{$row->grupoproduto}}</a>
