@@ -4,32 +4,21 @@
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li>
-                <a href="{{ url('imagem/lixeira') }}"><i class="glyphicon glyphicon-trash"></i> Lixeira</a>
+                <a href="{{ url('imagem') }}"><i class="glyphicon glyphicon-list-alt"></i> Listagem</a>
+            </li> 
+            <li>
+                <a href=""><i class="glyphicon glyphicon-trash"></i> Esvaziar</a>
             </li> 
         </ul>
     </div>
 </nav>
-<h1 class="header">Imagens</h1>
+<h1 class="header">Lixeira</h1>
 <hr>
-<div class="search-bar">
-{!! Form::model(Request::all(), ['route' => 'imagem.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'imagem-search', 'role' => 'search'])!!}
-    <div class="form-group">
-        <select class="form-control" name="inativo" id="inativo">
-            <option value="0">Todos</option>
-            <option value="1" selected="selected">Ativos</option>
-            <option value="2">Inativos</option>
-        </select>
-    </div>      
-    <button type="submit" class="btn btn-default">Buscar</button>
-{!! Form::close() !!}
-</div>
-
-<br>
 <div id="registros">
     <div id="imagens" class="row">
     @foreach($model as $row)
         <div class="imagem-grid-item col-xs-2">
-            <a href="{{ url("imagem/{$row->codimagem}") }}" class="thumbnail @if(!empty($row->inativo)) inativo @endif">
+            <a href="{{ url("imagem/{$row->codimagem}") }}" class="thumbnail">
                 <img src="<?php echo URL::asset('public/imagens/'.$row->observacoes);?>" class="img-responsive">
             </a>
         </div>          

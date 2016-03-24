@@ -64,7 +64,7 @@ $(document).ready(function() {
   var loading_options = {
       finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
       msgText: "<div class='center'>Carregando mais itens...</div>",
-      img: 'public/images/ajax-loader.gif'
+      img: 'public/img/ajax-loader.gif'
   };
 
   $('#items').infinitescroll({

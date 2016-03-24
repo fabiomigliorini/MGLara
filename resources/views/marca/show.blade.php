@@ -48,7 +48,7 @@
         @else
         <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
         <span class="caption simple-caption">
-            <a href="" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+            <a href="{{ url("/imagem/edit?id=$model->codmarca&model=Marca") }}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
         </span>        
         @endif
     </div>

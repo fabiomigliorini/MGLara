@@ -4,7 +4,7 @@
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li>
-                <a href=""><span class="glyphicon glyphicon-list-alt"></span> Listagem</a>
+                <a href="{{ url('imagem') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a>
             </li> 
         </ul>
     </div>
@@ -12,5 +12,16 @@
 
 <h1 class="header">Imagem {{ formataCodigo($model->codimagem) }}</h1>
 <hr>
-<img src="<?php echo URL::asset('public/imagens/'.$model->observacoes);?>">
+<div>
+    <div class="col-xs-6">
+        <h3>Relacionamentos</h3>
+        <ul>
+            <li>...</li>
+            <li>...</li>
+        </ul>
+    </div>
+    <div>
+        <img src="<?php echo URL::asset('public/imagens/'.$model->observacoes);?>">
+    </div>
+</div>
 @stop

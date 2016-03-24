@@ -58,5 +58,24 @@ class Imagem extends MGModel
     {
         return $this->hasMany(SubGrupoProduto::class, 'codimagem', 'codimagem');
     }   
+    
+    // Buscas 
+    public static function filterAndPaginate($inativo)
+    {
+        return Imagem::inativo($inativo)
+            ->orderBy('codimagem', 'DESC')
+            ->paginate(20);
+    }
+    
+    public function scopeInativo($query, $inativo)
+    {
+        if (trim($inativo) === '')
+            $query->whereNull('inativo');
+        
+        if($inativo == 1)
+            $query->whereNull('inativo');
 
+        if($inativo == 2)
+            $query->whereNotNull('inativo');
+    }    
 }

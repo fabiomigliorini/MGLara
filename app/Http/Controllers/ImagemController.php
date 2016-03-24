@@ -9,6 +9,7 @@ use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Imagem;
 use MGLara\Models\Produto;
 use Illuminate\Support\Facades\Input;
+use Carbon\Carbon;
 
 class ImagemController extends Controller
 {
@@ -17,9 +18,13 @@ class ImagemController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('imagem.index');
+        $model = Imagem::filterAndPaginate(
+            $request->get('inativo')
+        ); 
+        
+        return view('imagem.index', compact('model'));
     }
 
     public function produto(Request $request)
@@ -104,7 +109,6 @@ class ImagemController extends Controller
      */
     public function edit(Request $request)
     {
-        //dd($request);
         $Model = '\MGLara\Models\\' . $request->get('model');
         $model = $Model::find($request->get('id'));
         
@@ -129,6 +133,12 @@ class ImagemController extends Controller
         $imagem = new Imagem();
         $imagem->save();
         
+        if(!is_null($model->codimagem)) {
+            $imagem_inativa = Imagem::find($model->codimagem);
+            $imagem_inativa->inativo = Carbon::now();
+            $imagem_inativa->save();
+        }
+        
         $imagem_update = Imagem::findOrFail($imagem->codimagem);
         $imagem_update->observacoes = $imagem->codimagem.'.'.$extensao;
         $imagem_update->save();
@@ -144,6 +154,12 @@ class ImagemController extends Controller
         Session::flash('flash_update', 'Registro atualizado.');
         
         return redirect(modelUrl($request->get('model')).'/'.$id);  
+    }
+
+    public function lixeira()
+    {
+        $model = Imagem::filterAndPaginate(2); 
+        return view('imagem.lixeira', compact('model'));        
     }
 
     /**
