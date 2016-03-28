@@ -23,27 +23,27 @@
         <h3>Relacionamentos</h3>  
         @foreach($model->GrupoProdutoS as $grupo)
         <p>
-            <a href="{{ url("grupo-produto/{$grupo->codgrupoproduto}") }}">{{ $grupo->grupoproduto }}</a>
+            <strong>Grupo:</strong> <a href="{{ url("grupo-produto/{$grupo->codgrupoproduto}") }}">{{ $grupo->grupoproduto }}</a>
         </p>
         @endforeach
         @foreach($model->MarcaS as $marca)
         <p>
-            <a href="{{ url("marca/{$marca->codmarca}") }}">{{ $marca->marca }}</a>
+            <strong>Marca:</strong> <a href="{{ url("marca/{$marca->codmarca}") }}">{{ $marca->marca }}</a>
         </p>
         @endforeach
         @foreach($model->ProdutoS as $produto)
         <p>
-            <a href="{{ url("produto/{$produto->codproduto}") }}">{{ $produto->produto }}</a>
+            <strong>Produto:</strong> <a href="{{ url("produto/{$produto->codproduto}") }}">{{ $produto->produto }}</a>
         </p>
         @endforeach
         @foreach($model->SubGrupoProdutoS as $subgrupo)
         <p>
-            <a href="{{ url("sub-grupo-produto/{$subgrupo->codsubgrupoproduto}") }}">{{ $subgrupo->subgrupoproduto }}</a>
+            <strong>Sub Grupo:</strong> <a href="{{ url("sub-grupo-produto/{$subgrupo->codsubgrupoproduto}") }}">{{ $subgrupo->subgrupoproduto }}</a>
         </p>
         @endforeach
     </div>
-    <div>
-        <img src="<?php echo URL::asset('public/imagens/'.$model->observacoes);?>">
+    <div class="col-xs-6">
+        <img class="img-responsive" src="<?php echo URL::asset('public/imagens/'.$model->observacoes);?>">
     </div>
 </div>
 @stop

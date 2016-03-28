@@ -26,9 +26,10 @@ $(document).ready(function() {
     });
     $('.carousel').on('slid.bs.carousel', function (e) {
         var imagem = $(e.target).find('.active > img').attr('id');
-        var produto = <?php echo $model->codproduto?>;
-        $('.btn-detalhe').attr('href', baseUrl+'/imagem/'+imagem);
-        $('.btn-delete').attr('href', baseUrl+'/imagem/produto/'+produto+'/delete?imagem='+imagem);
+        var produto = {{ $model->codproduto }};
+        //$('.btn-detalhe').attr('href', baseUrl+'/imagem/'+imagem);
+        $('.btn-detalhe').attr('href', baseUrl+'/imagem/produto/' +produto+ '?imagem=' + imagem);
+        $('.btn-delete').attr('href', baseUrl+'/imagem/produto/' +produto+ '/delete?imagem=' + imagem);
     })    
     $('.btn-detalhe, .btn-delete').on('mouseenter', function() {
        $(".carousel").carousel('pause');
@@ -41,8 +42,7 @@ $(document).ready(function() {
         e.preventDefault();
         var url = $('.btn-delete').attr('href');
         bootbox.confirm("Tem certeza que deseja deletar essa imagem", function(result) {
-            if (result)
-            {
+            if (result) {
                 window.location.href = url;
             }
         }); 

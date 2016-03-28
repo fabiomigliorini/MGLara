@@ -68,14 +68,14 @@
         </div>        
         <div class="panel panel-info produtos-detalhe-carousel">
             <div class="pull-right carousel-menu">
-                <a class="btn btn-default" href="{{ url("/imagem/produto?produto=$model->codproduto") }}">
+                <a class="btn btn-default" href="{{ url("/imagem/produto/$model->codproduto") }}">
                     <i class="glyphicon glyphicon-picture"></i> 
                     Nova
                 </a>
                 @if(count ($model->ImagemS) > 0)
-                <a class="btn btn-default btn-detalhe" href="">
-                    <i class="glyphicon glyphicon-eye-open"></i> 
-                    Detalhes
+                <a class="btn btn-default btn-detalhe" href="{{ url("imagem/produto/$model->codproduto?imagem={$model->ImagemS->first()->codimagem}") }}">
+                    <i class="glyphicon glyphicon-pencil"></i> 
+                    Alterar
                 </a>
                 <a class="btn btn-default btn-delete" href="{{ url("imagem/produto/$model->codproduto/delete?imagem={$model->ImagemS->first()->codimagem}") }}">
                     <i class="glyphicon glyphicon-trash"></i> 

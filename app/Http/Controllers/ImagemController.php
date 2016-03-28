@@ -27,20 +27,27 @@ class ImagemController extends Controller
         return view('imagem.index', compact('model'));
     }
 
-    public function produto(Request $request)
+    public function produto(Request $request, $id)
     {
-        $model = Produto::find($request->produto);
-        return view('imagem.produto', compact('model'));
+        $model = Produto::find($id);
+        return view('imagem.produto', compact('model', 'request'));
     }
     
-    public function produtoStore(Request $request)
+    public function produtoStore(Request $request, $id)
     {
-        $model = Produto::find($request->get('id'));
+        $model = Produto::find($id);
         $codimagem = Input::file('imagem');
         $extensao = $codimagem->getClientOriginalExtension();
-        
+       
         $imagem = new Imagem();
         $imagem->save();
+        
+        if($request->get('imagem')) {
+            $imagem_inativa = Imagem::find($request->get('imagem'));
+            $imagem_inativa->inativo = Carbon::now();
+            $imagem_inativa->save();
+            $model->ImagemS()->detach($request->get('imagem'));
+        }
         
         $imagem_update = Imagem::findOrFail($imagem->codimagem);
         $imagem_update->observacoes = $imagem->codimagem.'.'.$extensao;
@@ -52,7 +59,7 @@ class ImagemController extends Controller
         $codimagem->move($diretorio, $arquivo);    
         $model->ImagemS()->attach($imagem->codimagem);
         Session::flash('flash_update', 'Imagem inserida.');
-        return redirect('produto/'.$request->get('id')); 
+        return redirect("produto/$id"); 
     }
 
     public function produtoDelete(Request $request, $id)
@@ -60,6 +67,10 @@ class ImagemController extends Controller
         try {
             $model = Produto::find($id);
             $model->ImagemS()->detach($request->get('imagem'));
+            
+            $imagem = Imagem::find($request->get('imagem'));
+            $imagem->inativo = Carbon::now();
+            
 	    Session::flash('flash_delete', 'Imagem deletada!');
 	    return redirect("produto/$id"); 
         }
@@ -170,6 +181,14 @@ class ImagemController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+            Imagem::find($id)->delete();
+            Session::flash('flash_delete', 'Imagem excluida!');
+            return Redirect::route('imagem.index');
+        }
+        catch(\Exception $e){
+            return view('errors.fk');
+        }     
     }
+    
 }

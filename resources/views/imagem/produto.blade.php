@@ -6,8 +6,8 @@
 {!! Form::model($model, [
     'method' => 'POST', 
     'class' => 'form-horizontal', 
-    'id' => 'form-marca', 
-    'action' => ['ImagemController@produtoStore', 'id'=> $model->codproduto],
+    'id' => 'form-imagem-produto', 
+    'action' => ['ImagemController@produtoStore', $model->codproduto, 'imagem' => $request->get('imagem')],
     'files' => true 
 ]) !!}
 
@@ -16,14 +16,13 @@
         {!! Form::label('Imagem: ') !!}
     </label>    
     <div class="col-md-3 col-xs-4">
-        
-        {!! Form::file('imagem',null, ['id'=>'imagem', 'accept'=>'image/*'] ) !!}
+        <input type="file" id="imagem" name="imagem" accept="image/*">
     </div>
 </div>
 <div class="form-group">
-	<div class="col-sm-offset-2 col-sm-10">
-  {!! Form::submit('Enviar', array('class' => 'btn btn-primary')) !!}
-  </div>
+    <div class="col-sm-offset-2 col-sm-10">
+        {!! Form::submit('Enviar', array('class' => 'btn btn-primary')) !!}
+    </div>
 </div>    
 {!! Form::close() !!}   
 @stop
