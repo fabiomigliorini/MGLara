@@ -481,4 +481,58 @@ class Produto extends MGModel
      * 
      */
     
+
+    // Buscas 
+    public static function filterAndPaginate($codproduto, $barras, $produto, $inativo)
+    {
+        return Produto::codproduto(numeroLimpo($codproduto))
+            ->barras($barras)
+            ->produto($produto)
+                
+                
+                
+                
+            ->inativo($inativo)
+            ->orderBy('produto', 'ASC')
+            ->paginate(20);
+    }
+    
+    public function scopeCodproduto($query, $codproduto)
+    {
+        if (trim($codproduto) === '')
+            return;
+        
+        $query->where('codproduto', $codproduto);
+    }
+    
+    
+    public function scopeBarras($query, $barras)
+    {
+        if (trim($barras) === '')
+            return;
+        
+        $query->where('barras', $barras);
+    }
+    
+    public function scopeProduto($query, $produto)
+    {
+        if (trim($produto) === '')
+            return;
+        
+        $produto = explode(' ', $produto);
+        foreach ($produto as $str)
+            $query->where('produto', 'ILIKE', "%$str%");
+    }
+    
+    public function scopeInativo($query, $inativo)
+    {
+        if (trim($inativo) === '')
+            $query->whereNull('inativo');
+        
+        if($inativo == 1)
+            $query->whereNull('inativo');
+
+        if($inativo == 2)
+            $query->whereNotNull('inativo');
+    }    
 }

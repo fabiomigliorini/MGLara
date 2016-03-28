@@ -97,6 +97,9 @@ h1.header {
 
 
 /* Produtos */
+.produtos-grid-inativo {
+    margin: 0 0 5px 0;
+}
 .produtos-detalhes-produto {
     font-family: sans-serif;
     letter-spacing: -1px;
