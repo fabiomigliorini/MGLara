@@ -26,18 +26,17 @@ class ProdutoController extends Controller
             $request->get('codproduto'),
             $request->get('barras'),
             $request->get('produto'),
-            //$request->get('codmarca'),
-            //$request->get('referencia'),
-            //
-            //$request->get('codtributacao'),
-            //$request->get('site'),
-            //$request->get('codncm'),
-            //$request->get('preco_de'),
-            //$request->get('preco_ate'),
-            //$request->get('criacao_de'),
-            //$request->get('criacao_ate'),
-            //$request->get('alteracao_de'),
-            //$request->get('alteracao_ate')
+            $request->get('codmarca'),
+            $request->get('referencia'),
+            $request->get('codtributacao'),
+            $request->get('site'),
+            $request->get('codncm'),
+            $request->get('preco_de'),
+            $request->get('preco_ate'),
+            $request->get('criacao_de'),
+            $request->get('criacao_ate'),
+            $request->get('alteracao_de'),
+            $request->get('alteracao_ate'),
             $request->get('inativo')
         );
         return view('produto.index', compact('model'));

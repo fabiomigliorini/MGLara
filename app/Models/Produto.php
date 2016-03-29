@@ -483,15 +483,37 @@ class Produto extends MGModel
     
 
     // Buscas 
-    public static function filterAndPaginate($codproduto, $barras, $produto, $inativo)
+    public static function filterAndPaginate(
+            $codproduto, 
+            $barras, 
+            $produto, 
+            $codmarca, 
+            $referencia, 
+            $codtributacao, 
+            $site, 
+            $codncm,
+            $preco_de, 
+            $preco_ate, 
+            $criacao_de, 
+            $criacao_ate, 
+            $alteracao_de, 
+            $alteracao_ate,  
+            $inativo)
     {
         return Produto::codproduto(numeroLimpo($codproduto))
             ->barras($barras)
             ->produto($produto)
-                
-                
-                
-                
+            ->codmarca($codmarca)
+            ->referencia($referencia)
+            ->codtributacao($codtributacao)
+            ->site($site)
+            ->codncm($codncm)
+            ->precoDe($preco_de)
+            ->precoAte($preco_ate)
+            ->criacaoDe($criacao_de)
+            ->criacaoAte($criacao_ate)
+            ->alteracaoDe($alteracao_de)
+            ->alteracaoAte($alteracao_ate)
             ->inativo($inativo)
             ->orderBy('produto', 'ASC')
             ->paginate(20);
@@ -504,8 +526,7 @@ class Produto extends MGModel
         
         $query->where('codproduto', $codproduto);
     }
-    
-    
+       
     public function scopeBarras($query, $barras)
     {
         if (trim($barras) === '')
@@ -522,6 +543,94 @@ class Produto extends MGModel
         $produto = explode(' ', $produto);
         foreach ($produto as $str)
             $query->where('produto', 'ILIKE', "%$str%");
+    }
+        
+    public function scopeCodmarca($query, $codmarca)
+    {
+        if (trim($codmarca) === '')
+            return;
+        
+        $query->where('codmarca', $codmarca);
+    }
+    
+    public function scopeReferencia($query, $referencia)
+    {
+        if (trim($referencia) === '')
+            return;
+        
+        $query->where('referencia', $referencia);
+    }
+    
+    public function scopeCodtributacao($query, $codtributacao)
+    {
+        if (trim($codtributacao) === '')
+            return;
+        
+        $query->where('codtributacao', $codtributacao);
+    }
+    
+    public function scopeSite($query, $site)
+    {
+        if (trim($site) === '')
+            return;
+        
+        $query->where('site', $site);
+    }
+    
+    public function scopeCodncm($query, $codncm)
+    {
+        if (trim($codncm) === '')
+            return;
+        
+        $query->where('codncm', $codncm);
+    }
+    
+    public function scopePrecoDe($query, $preco_de)
+    {
+        if (trim($preco_de) === '')
+            return;
+        
+        $query->where('value', $var);
+    }
+    
+    public function scopePrecoAte($query, $preco_ate)
+    {
+        if (trim($preco_ate) === '')
+            return;
+        
+        $query->where('value', $var);
+    }
+       
+    public function scopeCriacaoDe($query, $criacao_de)
+    {
+        if (trim($criacao_de) === '')
+            return;
+        
+        $query->where('value', $var);
+    }
+    
+    public function scopeCriacaoAte($query, $criacao_ate)
+    {
+        if (trim($criacao_ate) === '')
+            return;
+        
+        $query->where('value', $var);
+    }
+       
+    public function scopeAlteracaoDe($query, $alteracao_de)
+    {
+        if (trim($alteracao_de) === '')
+            return;
+        
+        $query->where('value', $var);
+    }
+    
+    public function scopeAlteracaoAte($query, $alteracao_ate)
+    {
+        if (trim($alteracao_ate) === '')
+            return;
+        
+        $query->where('value', $var);
     }
     
     public function scopeInativo($query, $inativo)

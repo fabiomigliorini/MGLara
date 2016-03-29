@@ -179,12 +179,20 @@ class Ncm extends MGModel
         
     }   
     
-    
-    public function scopeTributacao($query, $ncm)
+    public static function select2($q)
     {
-        if (trim($ncm) != "")
-        {
-            $query->where('ncm', "ILIKE", "%$ncm%");
-        }
+        $sql = Ncm::q($q)
+            ->select('codncm as id', 'ncm', 'descricao')
+            ->orderBy('ncm', 'ASC')
+            ->paginate(10);
+        return response()->json($sql);
     }    
+    
+    public function scopeQ($query, $q)
+    {
+        if (trim($q) === '')
+            return;
+
+        $query->where('descricao', 'ILIKE', "%$q%");
+    }   
 }

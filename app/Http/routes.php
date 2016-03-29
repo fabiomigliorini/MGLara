@@ -62,7 +62,12 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('grupo-produto/{id}/busca-codproduto','GrupoProdutoController@buscaCodproduto');           
     Route::resource('grupo-produto','GrupoProdutoController');           
                
+    /* NCM */
+    Route::get('ncm/ajax','NcmController@ajax');           
+    Route::resource('ncm','NcmController');           
+               
     /* Marca */
+    Route::get('marca/ajax','MarcaController@ajax');           
     Route::resource('marca/inativo','MarcaController@inativo');           
     Route::resource('marca/{id}/busca-codproduto','MarcaController@buscaCodproduto'); 
     Route::resource('marca','MarcaController');           
