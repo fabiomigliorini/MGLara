@@ -8,6 +8,7 @@ use MGLara\Models\Produto;
 use MGLara\Models\NegocioProdutoBarra;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ProdutoController extends Controller
 {

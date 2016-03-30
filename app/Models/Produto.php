@@ -3,6 +3,7 @@
 namespace MGLara\Models;
 use Illuminate\Support\Facades\DB;
 use MGLara\Models\EstoqueSaldo;
+use Carbon\Carbon;
 
 /**
  * Campos
@@ -510,10 +511,8 @@ class Produto extends MGModel
             ->codncm($codncm)
             ->precoDe($preco_de)
             ->precoAte($preco_ate)
-            ->criacaoDe($criacao_de)
-            ->criacaoAte($criacao_ate)
-            ->alteracaoDe($alteracao_de)
-            ->alteracaoAte($alteracao_ate)
+            ->criacao($criacao_de, $criacao_ate)
+            ->alteracao($alteracao_de, $alteracao_ate)
             ->inativo($inativo)
             ->orderBy('produto', 'ASC')
             ->paginate(20);
@@ -574,7 +573,11 @@ class Produto extends MGModel
         if (trim($site) === '')
             return;
         
-        $query->where('site', $site);
+        if($site == 1)
+            $query->where('site', TRUE);
+
+        if($site == 2)
+            $query->where('site', FALSE);
     }
     
     public function scopeCodncm($query, $codncm)
@@ -590,47 +593,52 @@ class Produto extends MGModel
         if (trim($preco_de) === '')
             return;
         
-        $query->where('value', $var);
+        $query->where('preco','<=', $preco_de);
     }
-    
+
     public function scopePrecoAte($query, $preco_ate)
     {
         if (trim($preco_ate) === '')
             return;
         
-        $query->where('value', $var);
+        $query->where('preco','>=', $preco_ate);
+    }
+      
+    public function scopeCriacao($query, $criacao_de, $criacao_ate)
+    {
+        if ( (trim($criacao_de) === '') && (trim($criacao_ate) === '') )
+            return;
+        
+        if(!empty($criacao_de))
+            $criacao_de = Carbon::createFromFormat('d/m/y', $criacao_de)->format('Y-m-d').' 00:00:00.0';
+        
+        if(!empty($criacao_ate))
+            $criacao_ate = Carbon::createFromFormat('d/m/y', $criacao_ate)->format('Y-m-d').' 23:59:59.9';
+        
+        if( (!empty($criacao_de)) && (empty($criacao_ate)) )
+            $criacao_ate = Carbon::now()->format('Y-m-d').' 23:59:59.9';
+
+        if( (empty($criacao_de)) && (!empty($criacao_ate)) )
+            $criacao_de = '1900-01-01 00:00:00.0';
+
+        $query->whereBetween('criacao', [$criacao_de, $criacao_ate]);
     }
        
-    public function scopeCriacaoDe($query, $criacao_de)
+    public function scopeAlteracao($query, $alteracao_de, $alteracao_ate)
     {
-        if (trim($criacao_de) === '')
+        if ( (trim($alteracao_de) === '') && (trim($alteracao_ate) === '') )
             return;
         
-        $query->where('value', $var);
-    }
-    
-    public function scopeCriacaoAte($query, $criacao_ate)
-    {
-        if (trim($criacao_ate) === '')
-            return;
+        if(!empty($alteracao_de))
+            $alteracao_de = Carbon::createFromFormat('d/m/y', $alteracao_de)->toDateTimeString();
         
-        $query->where('value', $var);
-    }
-       
-    public function scopeAlteracaoDe($query, $alteracao_de)
-    {
-        if (trim($alteracao_de) === '')
-            return;
+        if(!empty($alteracao_ate))
+            $alteracao_ate = Carbon::createFromFormat('d/m/y', $alteracao_ate)->toDateTimeString();
         
-        $query->where('value', $var);
-    }
-    
-    public function scopeAlteracaoAte($query, $alteracao_ate)
-    {
-        if (trim($alteracao_ate) === '')
-            return;
-        
-        $query->where('value', $var);
+        if( (!empty($alteracao_de)) && (empty($alteracao_ate)) )
+            $alteracao_ate = Carbon::now();
+
+        $query->whereBetween('criacao', [$alteracao_de, $alteracao_ate]);    
     }
     
     public function scopeInativo($query, $inativo)

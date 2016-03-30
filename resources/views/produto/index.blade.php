@@ -12,7 +12,7 @@
 <h1 class="header">Produtos</h1>
 <hr>
 <div class="search-bar">
-{!! Form::model(Request::all(), ['route' => 'produto.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-search', 'role' => 'search'])!!}
+{!! Form::model(Request::all(), ['route' => 'produto.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
     <div class="form-group">
         {!! Form::text('codproduto', null, ['class' => 'form-control search-cod', 'placeholder' => '#']) !!}
     </div>
@@ -30,7 +30,7 @@
     </div>
 
     <div class="form-group">
-        {!! Form::text('referencia', null, ['class' => 'form-control', 'style'=>'width:100px', 'placeholder' => 'Referencia']) !!}
+        {!! Form::text('referencia', null, ['class' => 'form-control', 'style'=>'width:165px', 'placeholder' => 'Referencia']) !!}
     </div>
 
     <div class="form-group">
@@ -67,20 +67,20 @@
 
     <strong>Preço</strong>
     <div class="form-group">
-        {!! Form::text('preco_de', null, ['class' => 'form-control between', 'id' => 'preco_de', 'placeholder' => 'De']) !!}
-        {!! Form::text('preco_ate', null, ['class' => 'form-control between', 'id' => 'preco_ate', 'placeholder' => 'Até']) !!}
+        {!! Form::text('preco_de', null, ['class' => 'form-control text-right between', 'id' => 'preco_de', 'placeholder' => 'De']) !!}
+        {!! Form::text('preco_ate', null, ['class' => 'form-control text-right between', 'id' => 'preco_ate', 'placeholder' => 'Até']) !!}
     </div>
 
     <strong>Criação</strong>
     <div class="form-group">
-        {!! Form::text('criacao_de', null, ['class' => 'form-control between', 'id' => 'criacao_de', 'placeholder' => 'De']) !!}
-        {!! Form::text('criacao_ate', null, ['class' => 'form-control between', 'id' => 'criacao_ate', 'placeholder' => 'Até']) !!}
+        {!! Form::date('criacao_de', null, ['class' => 'form-control between', 'id' => 'criacao_de', 'placeholder' => 'De']) !!}
+        {!! Form::date('criacao_ate', null, ['class' => 'form-control between', 'id' => 'criacao_ate', 'placeholder' => 'Até']) !!}
     </div>
 
     <strong>Alteração</strong>
     <div class="form-group">
-        {!! Form::text('alteracao_de', null, ['class' => 'form-control between', 'placeholder' => 'De']) !!}
-        {!! Form::text('alteracao_ate', null, ['class' => 'form-control between', 'placeholder' => 'Até']) !!}
+        {!! Form::text('alteracao_de', null, ['class' => 'form-control between', 'id' => 'alteracao_de', 'placeholder' => 'De']) !!}
+        {!! Form::text('alteracao_ate', null, ['class' => 'form-control between', 'id' => 'alteracao_ate', 'placeholder' => 'Até']) !!}
     </div>
 
 {!! Form::close() !!}
@@ -170,10 +170,11 @@ ul.pagination {
     margin: 0;
 }
 .between {
-    width: 60px !important;
+    width: 82px !important;
 }
 #produto-search .form-group {
     margin-bottom: 5px;
+    position: relative;
 }
 #s2id_codncm {
     margin-right: 5px;
@@ -182,20 +183,26 @@ ul.pagination {
 <script type="text/javascript">
 $(document).ready(function() {
     $('ul.pagination').removeClass('hide');
+    $('#produto-search').change(function() {
+        this.submit();
+    });    
     $('#inativo').select2({
         allowClear:true,
         closeOnSelect:true
-    });
+    })<?php echo (app('request')->input('inativo') ? ".select2('val'," .app('request')->input('inativo').");" : ';'); ?>
     $('#codtributacao').select2({
         allowClear:true,
         closeOnSelect:true
-    });
+    })<?php echo (app('request')->input('codtributacao') ? ".select2('val'," .app('request')->input('codtributacao').");" : ';'); ?>
     $('#site').select2({
         allowClear:true,
         closeOnSelect:true
-    });
-    $('#preco_de').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.' });
-    $('#preco_ate').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.' });    
+    })<?php echo (app('request')->input('site') ? ".select2('val'," .app('request')->input('site').");" : ';'); ?>
+    $('#preco_de, #preco_ate').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.' });
+    $('#criacao_de, #criacao_ate, #alteracao_de, #alteracao_ate').datetimepicker({
+        locale: 'pt-br',
+        format: 'DD/MM/YY'
+    });    
     $('#codncm').select2({
         minimumInputLength:1,
         allowClear:true,
