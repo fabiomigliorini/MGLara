@@ -593,7 +593,7 @@ class Produto extends MGModel
         if (trim($preco_de) === '')
             return;
         
-        $query->where('preco','<=', $preco_de);
+        $query->where('preco','>=', converteParaNumerico($preco_de));
     }
 
     public function scopePrecoAte($query, $preco_ate)
@@ -601,7 +601,7 @@ class Produto extends MGModel
         if (trim($preco_ate) === '')
             return;
         
-        $query->where('preco','>=', $preco_ate);
+        $query->where('preco','<=', converteParaNumerico($preco_ate));
     }
       
     public function scopeCriacao($query, $criacao_de, $criacao_ate)
@@ -637,6 +637,9 @@ class Produto extends MGModel
         
         if( (!empty($alteracao_de)) && (empty($alteracao_ate)) )
             $alteracao_ate = Carbon::now();
+        
+        if( (empty($alteracao_de)) && (!empty($alteracao_ate)) )
+            $alteracao_de = '1900-01-01 00:00:00.0';        
 
         $query->whereBetween('criacao', [$alteracao_de, $alteracao_ate]);    
     }

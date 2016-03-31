@@ -94,6 +94,12 @@ if(!function_exists('numeroLimpo')) {
     }
 }
 
+if(!function_exists('converteParaNumerico')) {
+    function converteParaNumerico($value) {
+        return str_replace(',', '.', (str_replace('.', '', $value)));
+    }
+}
+
 if(!function_exists('modelUrl')) {
     function modelUrl($string) {
         return $output = ltrim(strtolower(preg_replace('/[A-Z]/', '-$0', $string)), '-');

@@ -73,8 +73,8 @@
 
     <strong>Criação</strong>
     <div class="form-group">
-        {!! Form::date('criacao_de', null, ['class' => 'form-control between', 'id' => 'criacao_de', 'placeholder' => 'De']) !!}
-        {!! Form::date('criacao_ate', null, ['class' => 'form-control between', 'id' => 'criacao_ate', 'placeholder' => 'Até']) !!}
+        {!! Form::text('criacao_de', null, ['class' => 'form-control between', 'id' => 'criacao_de', 'placeholder' => 'De']) !!}
+        {!! Form::text('criacao_ate', null, ['class' => 'form-control between', 'id' => 'criacao_ate', 'placeholder' => 'Até']) !!}
     </div>
 
     <strong>Alteração</strong>
@@ -200,9 +200,14 @@ $(document).ready(function() {
     })<?php echo (app('request')->input('site') ? ".select2('val'," .app('request')->input('site').");" : ';'); ?>
     $('#preco_de, #preco_ate').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.' });
     $('#criacao_de, #criacao_ate, #alteracao_de, #alteracao_ate').datetimepicker({
+        useCurrent: false,
+        showClear: true,
         locale: 'pt-br',
         format: 'DD/MM/YY'
-    });    
+    });
+    $(document).on('dp.change', '#criacao_de, #criacao_ate, #alteracao_de, #alteracao_ate', function() {
+        $('#produto-search').submit();
+    });
     $('#codncm').select2({
         minimumInputLength:1,
         allowClear:true,
