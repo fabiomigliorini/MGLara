@@ -7,7 +7,7 @@
                 <a href="{{ url('imagem') }}"><i class="glyphicon glyphicon-list-alt"></i> Listagem</a>
             </li> 
             <li>
-                <a href=""><i class="glyphicon glyphicon-trash"></i> Esvaziar</a>
+                <a href="{{ url('imagem/esvaziar-lixeira') }}" id="esvaziar-lixeira"><i class="glyphicon glyphicon-trash"></i> Esvaziar</a>
             </li> 
         </ul>
     </div>
@@ -52,6 +52,17 @@ $(document).ready(function() {
         nextSelector : "#registros .pagination li.active + li a",
         itemSelector : "#imagens div.imagem-grid-item"
     });    
+    
+    $('#esvaziar-lixeira').click(function (e) {
+        e.preventDefault();
+        var url = $('#esvaziar-lixeira').attr('href');
+        bootbox.confirm("Tem certeza que deseja deletar essas imagens", function(result) {
+            if (result) {
+                window.location.href = url;
+            }
+        }); 
+    });
+    
 });  
 </script>
 @endsection

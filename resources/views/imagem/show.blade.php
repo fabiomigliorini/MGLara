@@ -5,13 +5,15 @@
         <ul class="nav navbar-nav">
             <li>
                 <a href="{{ url('imagem') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a>
-            </li> 
+            </li>
+            @if($model->inativo)
             <li>
                 {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['imagem.destroy', $model->codimagem]]) !!}
                 <span class="glyphicon glyphicon-trash"></span>
                 {!! Form::submit('Excluir') !!}
                 {!! Form::close() !!}
-            </li>             
+            </li>
+            @endif
         </ul>
     </div>
 </nav>

@@ -70,6 +70,7 @@ class ImagemController extends Controller
             
             $imagem = Imagem::find($request->get('imagem'));
             $imagem->inativo = Carbon::now();
+            $imagem->save();
             
 	    Session::flash('flash_delete', 'Imagem deletada!');
 	    return redirect("produto/$id"); 
@@ -173,7 +174,25 @@ class ImagemController extends Controller
         return view('imagem.lixeira', compact('model'));        
     }
 
-    /**
+    public function esvaziarLixeira()
+    {
+        try {
+            $imagens = Imagem::whereNotNull('inativo')->get();
+            Imagem::whereNotNull('inativo')->delete();
+
+            foreach ($imagens as $imagem)
+            {
+                unlink('./public/imagens/'.$imagem->observacoes);
+            }
+            
+            Session::flash('flash_delete', 'Imagens excluidas!');
+            return Redirect::route('imagem.index');
+        } catch (\Exception $e) {
+            return view('errors.fk');
+        }
+    }
+
+        /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -182,7 +201,10 @@ class ImagemController extends Controller
     public function destroy($id)
     {
         try{
-            Imagem::find($id)->delete();
+            $imagem = Imagem::find($id);
+            $imagem->delete();
+            unlink('./public/imagens/'.$imagem->observacoes);
+            
             Session::flash('flash_delete', 'Imagem excluida!');
             return Redirect::route('imagem.index');
         }

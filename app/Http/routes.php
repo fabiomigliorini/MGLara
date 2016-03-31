@@ -93,6 +93,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('imagem/produto','ImagemController@produto');       
     Route::resource('imagem/edit','ImagemController@edit');
     Route::resource('imagem/lixeira','ImagemController@lixeira');
+    Route::get('imagem/esvaziar-lixeira','ImagemController@esvaziarLixeira');
     Route::resource('imagem','ImagemController'); 
            
     
