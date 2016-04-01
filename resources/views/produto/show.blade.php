@@ -37,7 +37,9 @@
         {!! Form::close() !!}
     </div>
     <div class="col-md-7">
-        select2
+        {!! Form::model(Request::all(), ['route' => 'produto.show', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-show-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+            {!! Form::text('codproduto', null, ['class' => 'form-control', 'id'=> 'codproduto', 'style'=> 'width: 100%;']) !!}
+        {!! Form::close() !!}
     </div>
 </div>
 <hr>
@@ -239,9 +241,90 @@
 <br>
 @section('inscript')
 <script type="text/javascript">
-  $(document).ready(function() {
-      
-  });
+$(document).ready(function() {
+    $('#codproduto').change(function (){
+        window.location.href = '{{ url("produto/") }}' + $('#codproduto').val();
+    });
+    $('#codproduto').select2({
+        minimumInputLength: 3,
+        allowClear: true,
+        closeOnSelect: true,
+        placeholder: 'Pesquisa de produtos',
+        formatResult:function(item) {
+            var markup = "<div class='row'>";
+            markup    += "<small class='text-muted col-md-2'> <small>#" /*+ item.barras + "<br>"*/ + item.id + "</small></small>";
+            markup    += "<div class='col-md-8'>" + item.produto + "<small class='muted text-right pull-right'></small></div>";
+            markup    += "<div><div class='col-md-8 text-right pull-right'><small class='span1 text-muted'></small>" + item.preco + "";
+            markup    += "</div></div>";
+            markup    += "</div>";
+            return markup;
+        },
+        formatSelection:function(item) { 
+            return item.produto + " - " + item.preco; 
+        },
+        ajax: {
+            url: baseUrl+'/produto/ajax',
+            dataType: 'json',
+            quietMillis: 500,
+            data: function(term, current_page) { 
+                return {
+                    q: term, 
+                    per_page: 10, 
+                    current_page: current_page
+                }; 
+            },
+            results:function(data,page) {
+                //var more = (current_page * 20) < data.total;
+                return {
+                    results: data, 
+                    //more: data.mais
+                };
+            }
+        },
+        initSelection: function (element, callback) {
+            $.ajax({
+                type: "GET",
+                url: baseUrl+'/produto/ajax',
+                data: "id=",
+                dataType: "json",
+                success: function(result) { 
+                    callback(result[0]); 
+                }
+            });
+        },
+        width:'resolve'
+    });
+    
+    
+    $('.carousel-inner .item').first().addClass('active');
+    $('.carousel').carousel({
+        interval:5000
+    });
+    $('.carousel').on('slid.bs.carousel', function (e) {
+        var imagem = $(e.target).find('.active > img').attr('id');
+        var produto = {{ $model->codproduto }};
+        //$('.btn-detalhe').attr('href', baseUrl+'/imagem/'+imagem);
+        $('.btn-detalhe').attr('href', baseUrl+'/imagem/produto/' +produto+ '?imagem=' + imagem);
+        $('.btn-delete').attr('href', baseUrl+'/imagem/produto/' +produto+ '/delete?imagem=' + imagem);
+    })    
+    $('.btn-detalhe, .btn-delete').on('mouseenter', function() {
+       $(".carousel").carousel('pause');
+    });
+    $('.btn-detalhe, .btn-delete').on('mouseleave', function() {
+       $(".carousel").carousel('cycle');
+    });
+    
+    $('.btn-delete').click(function (e) {
+        e.preventDefault();
+        var url = $('.btn-delete').attr('href');
+        bootbox.confirm("Tem certeza que deseja deletar essa imagem", function(result) {
+            if (result) {
+                window.location.href = url;
+            }
+        }); 
+    });
+    
+});
 </script>
 @endsection
 @stop
