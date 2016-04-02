@@ -482,7 +482,22 @@ class Produto extends MGModel
      * 
      */
     
+    public function notasFiscais()
+    {
+        $barras = [];
+        foreach ($this->ProdutoBarraS as $barra)
+        {
+            $barras[] = $barra['codprodutobarra'];
+        }
+        
+        $query = NotaFiscalProdutoBarra::whereIn('codprodutobarra', $barras)
+                ->orderBy('codnotafiscal', 'DESC')
+                ->paginate(15);
+        
+        return $query;        
+    }
 
+    
     // Buscas 
     public static function filterAndPaginate(
             $codproduto, 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Produto;
 use MGLara\Models\NegocioProdutoBarra;
+use MGLara\Models\NotaFiscalProdutoBarra;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -40,6 +41,7 @@ class ProdutoController extends Controller
             $request->get('alteracao_ate'),
             $request->get('inativo')
         );
+        
         return view('produto.index', compact('model'));
     }
 
@@ -68,8 +70,6 @@ class ProdutoController extends Controller
     public function show($id)
     {
         $model = Produto::find($id);
-        //$teste = NegocioProdutoBarra::containt();
-        //$negocios = NegocioProdutoBarra::negocioPorProduto($id);
         return view('produto.show', compact('model'));
     }
 
