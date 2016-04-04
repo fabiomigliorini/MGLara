@@ -5,6 +5,7 @@ namespace MGLara\Http\Controllers;
 use Illuminate\Http\Request;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Produto;
+use MGLara\Models\ProdutoBarra;
 use MGLara\Models\NegocioProdutoBarra;
 use MGLara\Models\NotaFiscalProdutoBarra;
 use Illuminate\Support\Facades\Storage;
@@ -103,7 +104,13 @@ class ProdutoController extends Controller
         //
     }
     
-    public function recalculaMovimentoEstoque($id)
+    public function buscaPorBarras(Request $request)
+    {
+        $barra = ProdutoBarra::buscaPorBarras($request->get('barras'));
+        return response()->json($barra);
+    }
+
+        public function recalculaMovimentoEstoque($id)
     {
         $model = Produto::findOrFail($id);
         $ret = $model->recalculaMovimentoEstoque();

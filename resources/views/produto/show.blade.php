@@ -18,7 +18,6 @@
     </div>
 </nav>
 
-
 <br>
 <div class="row">
     <div class="col-md-5">
@@ -30,7 +29,7 @@
         ])!!}        
         <div class="form-group" style="width: 100%">
             <div class="input-group" style="width: 100%">
-                <input type="text" name="" class="form-control" id="produto-busca-barras">
+                <input type="text" name="" class="form-control text-right" id="barras">
                 <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
             </div>
         </div>            
@@ -48,7 +47,7 @@
         <div class="panel panel-warning">
             <div class="panel-body bg-warning">
                 <h1 class="text-danger produtos-detalhes-produto">
-                    {{ $model->produto }}
+                    {{ $model->produto}} {{ app('request')->input('v') }}
                     <span class="pull-right text-muted">{{ $model->UnidadeMedida->unidademedida }}</span>
                 </h1>
                 <hr>
@@ -322,6 +321,24 @@ $(document).ready(function() {
                 window.location.href = url;
             }
         }); 
+    });
+    
+    $('#produto-busca-barras').on('submit', function(e) {
+        e.preventDefault();
+        $.post(baseUrl + '/produto/busca-barras', {
+            barras: $('#barras').val(),
+            _token: '{{ csrf_token() }}'
+        }).done(function(data) {
+            if(data.length > 0) {
+                var codproduto = JSON.stringify(data[0].codproduto);
+                var variacao = JSON.stringify(data[0].variacao).replace('"', '').replace('"', '');
+                window.location.href = '{{ url('produto') }}/' + codproduto + '?v=' + variacao
+            } else {
+                alert( "Nenhum produto encontrado" );
+            }
+        }).fail(function() {
+            alert( "Erro ao procurar produto" );
+        });
     });
     
 });

@@ -80,6 +80,7 @@ Route::group(['middleware' => 'auth'], function() {
     
     /* Produto */
     Route::get('produto/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');           
+    Route::resource('produto/busca-barras','ProdutoController@buscaPorBarras');
     Route::resource('produto/ajax','ProdutoController@ajaxProduto');
     Route::resource('produto/estoque-saldo','ProdutoController@estoqueSaldo');
     Route::resource('produto','ProdutoController');

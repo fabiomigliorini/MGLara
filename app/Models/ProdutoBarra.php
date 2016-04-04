@@ -104,4 +104,35 @@ class ProdutoBarra extends MGModel
         return $quantidade * $this->ProdutoEmbalagem->quantidade;
     }
     
+    public static function buscaPorBarras($barras)
+    {
+        //Procura pelo Codigo de Barras
+        if ($ret = ProdutoBarra::where('barras', '=', $barras)->select('codproduto','variacao')->get())
+            return $ret;
+
+        //Procura pelo Codigo Interno
+        if (strlen($barras) == 6 && ($barras == numeroLimpo($barras)))
+            if ($ret = ProdutoBarra::where('codproduto', '=', $barras)->whereNull('codprodutoembalagem')->select('codproduto','variacao')->get())
+                return $ret;
+
+        //Procura pelo Codigo Interno * Embalagem
+        $arr = explode('-', $barras);
+        if (
+            count($arr) == 2
+            && strlen($arr[0]) == 6
+            && $arr[0] == numeroLimpo($arr[0])
+            && $arr[1] == numeroLimpo($arr[1])
+            ) 
+        {
+            if ($pe = ProdutoEmbalagem::where('codproduto', '=', $arr[0])->where('quantidade', '=', $arr[1])->select('codproduto','variacao')->get())
+            {
+                if ($ret = ProdutoEmbalagem::where('codprodutoembalagem', '=', $pe->codprodutoembalagem)->select('codproduto','variacao')->get())
+                {
+                    return $ret;
+                }
+            }
+        }
+        return false;
+
+    }    
 }
