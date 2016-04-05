@@ -20,17 +20,17 @@
 <br>
 <div id="registros">
   <div class="list-group" id="items">
-    @foreach($model->notasFiscais() as $nota)
+    @foreach($model->notasFiscais() as $data)
       <div class="list-group-item">
         <div class="row item">
             <div class="col-md-3">
-                {{ formataData($nota->NotaFiscal->saida) }}
+                {{ formataData($data->NotaFiscal->saida) }}
             </div>                            
             <div class="col-md-3">
-                {{ $nota->NotaFiscal->Filial->filial }}
+                {{ $data->NotaFiscal->Filial->filial }}
             </div>
             <div class="col-md-3">
-                {{ formataNumero($nota->quantidade) }}
+                {{ formataNumero($data->quantidade) }}
             </div>
         </div>
       </div>    

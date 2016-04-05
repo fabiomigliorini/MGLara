@@ -496,6 +496,21 @@ class Produto extends MGModel
         
         return $query;        
     }
+    
+    public function produtoNegocios()
+    {
+        $negocios = [];
+        foreach ($this->ProdutoBarraS as $barra)
+        {
+            $negocios[] = $barra['codprodutobarra'];
+        }
+        
+        $query = NegocioProdutoBarra::whereIn('codprodutobarra', $negocios)
+                //->orderBy('codnotafiscal', 'DESC')
+                ->paginate(15);
+        
+        return $query;        
+    }
 
     
     // Buscas 
