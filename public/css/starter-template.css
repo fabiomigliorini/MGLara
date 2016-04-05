@@ -249,3 +249,9 @@ h1.header {
     -webkit-transform: translateX(200px);
     transform: translateX(200px);
 }
+
+
+/* Estoque*/
+#estoque-mes-filtro .col-sm-1 {
+    padding-top: 8px
+}

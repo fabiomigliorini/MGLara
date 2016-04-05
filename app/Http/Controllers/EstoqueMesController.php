@@ -30,7 +30,7 @@ class EstoqueMesController extends Controller
         return view('estoque-mes.index', compact('model'));        
     }
 
-    public function show($codestoquemes) {
+    public function show(Request $request, $codestoquemes) {
         $model = EstoqueMes::find($codestoquemes);
         return view('estoque-mes.show', compact('model'));
     }

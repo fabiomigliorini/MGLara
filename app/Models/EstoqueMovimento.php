@@ -1,7 +1,7 @@
 <?php
 
 namespace MGLara\Models;
-
+use Illuminate\Support\Facades\DB;
 
 /**
  * Campos
@@ -162,4 +162,19 @@ class EstoqueMovimento extends MGModel
         return $ret;
     }
    
+
+    public function scopeNegativos($query, $negativos)
+    {
+        if (trim($negativos) === '')
+            return;
+        
+        if($negativos == 0)
+            return;
+
+        if($negativos == 1)
+            return $query->where(DB::raw('COALESCE(entradaquantidade,0) - COALESCE(saidaquantidade,0)'), '<', 0);
+            //return $query->whereRaw('(entradaquantidade - saidaquantidade) < 0');
+
+    }
+
 }

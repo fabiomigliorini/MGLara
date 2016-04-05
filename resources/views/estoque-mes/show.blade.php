@@ -24,7 +24,7 @@
     </a>
 </h1>
 
-<div class="row row-fluid">
+<div class="row row-fluid" id="estoque-mes-filtro">
     <div class="col-sm-1">
         {{ $model->EstoqueSaldo->EstoqueLocal->estoquelocal }}
     </div> 
@@ -45,7 +45,16 @@
     </div> 
     <div class="col-sm-1">
         {{ formataNumero($model->EstoqueSaldo->Produto->preco, 2) }}
-    </div> 
+    </div>
+    <div class="col-sm-2">
+    {!! Form::model(Request::all(), ['url' => "estoque-mes/$model->codestoquemes", 'method' => 'GET', 'class' => 'form-inline', 'id' => 'estoque-mes-search', 'role' => 'search', 'autocomplete' => 'off'])!!}        
+        <select class="form-control" name="negativos" id="negativos" style="width: 100px;">
+            <option value=""></option>
+            <option value="0">Todos</option>
+            <option value="1">Negativos</option>
+        </select>  
+    {!! Form::close() !!}    
+    </div>
 </div>
 <hr>
 <!--
@@ -124,7 +133,7 @@ if (sizeof($anteriores) < 8)
             <td class="text-right">{{ formataNumero($customedio, 6) }}</td>
             <td></td>
         </tr>
-        @foreach($model->EstoqueMovimentoS()->orderBy('data', 'asc')->orderBy('entradaquantidade', 'asc')->get() as $row)
+        @foreach($model->EstoqueMovimentoS()->orderBy('data', 'asc')->orderBy('entradaquantidade', 'asc')->negativos(app('request')->input('negativos'))->get() as $row)
         <tr>
             <?php
                 $saldoquantidade += $row->entradaquantidade - $row->saidaquantidade;
@@ -264,7 +273,13 @@ $(document).ready(function() {
             }
         }); 
     });
-    
+    $('#estoque-mes-search').change(function() {
+        this.submit();
+    });     
+    $('#negativos').select2({
+        allowClear:true,
+        closeOnSelect:true
+    })<?php echo (app('request')->input('negativos') ? ".select2('val'," .app('request')->input('negativos').");" : ';'); ?>    
 });
 </script>
 @endsection
