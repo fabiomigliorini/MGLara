@@ -150,7 +150,8 @@ return [
         MGLara\Providers\EventServiceProvider::class,
         MGLara\Providers\RouteServiceProvider::class,
         MGLara\Providers\LanguageProvider::class,
-        MGLara\Providers\ValidatorServiceProvider::class
+        MGLara\Providers\ValidatorServiceProvider::class,
+        MGLara\Providers\ProdutoServiceProvider::class
 
     ],
 

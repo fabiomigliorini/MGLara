@@ -66,6 +66,10 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('ncm/ajax','NcmController@ajax');           
     Route::resource('ncm','NcmController');           
                
+    /* CEST */
+    Route::get('cest/ajax','CestController@ajax');           
+    Route::resource('cest','CestController');           
+               
     /* Marca */
     Route::get('marca/ajax','MarcaController@ajax');           
     Route::resource('marca/inativo','MarcaController@inativo');           

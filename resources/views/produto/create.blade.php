@@ -3,7 +3,7 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
-            <li><a href="<?php echo url("produto");?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>
+            <li><a href="{{ url("produto") }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>
         </ul>
     </div>
 </nav>

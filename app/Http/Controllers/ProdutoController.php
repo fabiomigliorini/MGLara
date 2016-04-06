@@ -65,7 +65,16 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->converteDatas(['inativo' => $request->input('inativo')]);
+        $this->converteNumericos(['preco' => $request->input('preco')]);
+        
+        $model = new Produto($request->all());
+        if (!$model->validate())
+            $this->throwValidationException($request, $model->_validator);
+        
+        $model->save();
+        Session::flash('flash_create', 'Registro inserido.');
+        return redirect("produto/$model->codproduto");        
     }
 
     public function show($id)

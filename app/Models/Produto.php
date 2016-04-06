@@ -71,6 +71,30 @@ class Produto extends MGModel
         'criacao',
     ];
 
+    
+    public function validate() {
+        
+        $this->_regrasValidacao = [
+            //'produto' => "required|min:10|unique:tblproduto,produto,".(empty($this->codproduto)?-1:$this->codproduto).",codproduto",
+            'produto' => "required|min:10",
+            'codunidademedida' => 'numeric|required',
+            'codsubgrupoproduto' => 'numeric|required',
+            'codmarca' => 'numeric|required',
+            'codncm' => 'required|min:1000000|max:99999999|numeric', 
+            'preco' => 'required|numeric',
+            //'importado' => 'boolean',
+            'codtributacao' => 'numeric|required',
+            'inativo' => 'date_format:d/m/Y',
+            'codtipoproduto' => 'numeric|required',
+            //'site' => 'boolean',
+        ];
+    
+        $this->_mensagensErro = [
+            'produto.required' => 'O campo descrição não pode ser vazio',
+        ];
+        
+        return parent::validate();
+    }    
 
     // Chaves Estrangeiras
     public function Cest()
