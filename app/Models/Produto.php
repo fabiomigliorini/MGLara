@@ -80,11 +80,11 @@ class Produto extends MGModel
             'codunidademedida' => 'numeric|required',
             'codsubgrupoproduto' => 'numeric|required',
             'codmarca' => 'numeric|required',
-            'codncm' => 'required|min:1000000|max:99999999|numeric', 
+            //'codncm' => 'required|min:1000000|max:99999999|numeric', 
             'preco' => 'required|numeric',
             //'importado' => 'boolean',
             'codtributacao' => 'numeric|required',
-            'inativo' => 'date_format:d/m/Y',
+            //'inativo' => 'date_format:d/m/Y',
             'codtipoproduto' => 'numeric|required',
             //'site' => 'boolean',
         ];

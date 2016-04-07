@@ -124,7 +124,8 @@ $(document).ready(function() {
         locale: 'pt-br',
         format: 'DD/MM/YYYY'
     });
-    $("#inativo").val("<?php echo formataData($model->inativo, 'L');?>").change();
+    
+    <?php echo (isset($model->inativo) ? "$(1#inativo').('val', $model->inativo).change();" : '');?>
     $("#produto").Setcase();
     $('#preco').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
 

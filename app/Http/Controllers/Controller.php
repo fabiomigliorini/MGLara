@@ -25,14 +25,18 @@ abstract class Controller extends BaseController
 //    }
 
 
-    public static function converteDatas($datas)
+    public static function converteDatas($datas, $formato = 'd/m/Y H:i:s')
     {
-        foreach ($datas as $data => $value)
+        foreach ($datas as $key => $value)
         {
-            Input::merge(array($data => Carbon::createFromFormat(
-                'd/m/Y H:i:s', 
-                $value)->toDateTimeString()
-            ));
+            if(empty($value)) {
+                Input::merge([$key=>null]);
+            } else {
+                Input::merge(array($key => Carbon::createFromFormat(
+                    $formato, 
+                    $value)->toDateTimeString()
+                ));
+            }
         }
     }
     

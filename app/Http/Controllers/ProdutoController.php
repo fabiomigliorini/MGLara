@@ -3,6 +3,10 @@
 namespace MGLara\Http\Controllers;
 
 use Illuminate\Http\Request;
+
+use MGLara\Http\Requests;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Produto;
 use MGLara\Models\ProdutoBarra;
@@ -17,7 +21,9 @@ class ProdutoController extends Controller
     
     public function __construct()
     {
-    }    
+        $this->datas = [];
+        $this->numericos = [];
+    }     
 
     /**
      * Display a listing of the resource.
@@ -65,7 +71,7 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        $this->converteDatas(['inativo' => $request->input('inativo')]);
+        $this->converteDatas(['inativo' => $request->input('inativo')], 'd/m/Y');
         $this->converteNumericos(['preco' => $request->input('preco')]);
         
         $model = new Produto($request->all());
