@@ -44,7 +44,7 @@ class Ncm extends MGModel
     // Chaves Estrangeiras
     public function Ncm()
     {
-        return $this->belongsTo(Ncm::class, 'codncm', 'codncmpai');
+        return $this->belongsTo(Ncm::class, 'codncmpai', 'codncm');
     }
 
     public function UsuarioAlteracao()
@@ -84,7 +84,6 @@ class Ncm extends MGModel
         return $this->hasMany(RegulamentoIcmsStMt::class, 'codncm', 'codncm');
     }
        
-    
     /*
     public function ProdutoS()
     {
@@ -118,18 +117,20 @@ class Ncm extends MGModel
     */
     
     /* Fim relacionamentos */
-    
+
     /**
      * 
      * @return Cest[]
      */
     public function cestsDisponiveis()
     {
-        $cests = array();
-        if (sizeof($this->Cests) > 0)
-            $cests = array_merge ($cests, $this->Cests);
-        if (isset($this->NcmPai))
-            $cests = array_merge ($cests, $this->NcmPai->cestsDisponiveis());
+        $cests = [];
+        if ($this->Ncm)
+            $cests = array_merge ($cests, $this->Ncm->cestsDisponiveis());
+
+        if (sizeof($this->CestS) > 0)
+            array_push ($cests, $this->CestS);
+        
         return $cests;
     }
 
@@ -139,28 +140,32 @@ class Ncm extends MGModel
      */
     public function regulamentoIcmsStMtsDisponiveis()
     {
-        $regs = array();
-        // pega regulamentos do registro corrente
-        if (sizeof($this->RegulamentoIcmsStMtsS) > 0)
-            $regs = array_merge ($regs, [$this->RegulamentoIcmsStMtsS]);
+        $regs = [];
+
         // pega regulamentos da arvore recursivamente
-        if (isset($this->NcmPai))
-            $regs = array_merge ($regs, $this->NcmPai->regulamentoIcmsStMtsDisponiveis());
+        if ($this->Ncm)
+            $regs = array_merge ($regs, $this->Ncm->regulamentoIcmsStMtsDisponiveis());
+
+        // pega regulamentos do registro corrente
+        if (sizeof($this->RegulamentoIcmsStMtS) > 0)
+            array_push ($regs, $this->RegulamentoIcmsStMtS);
 
         // apaga os Excetos
+        /*
         $i = 0;
         $apagar = array();
-
         foreach($regs as $reg)
         {
-            if (strstr($reg[$i]['ncmexceto'], $this->ncm))
+            //dd($reg);
+            if (strstr($reg->ncmexceto, $this->ncm))
                 $apagar[] = $i;
             $i++;
         }
 
         foreach ($apagar as $i)
             unset($regs[$i]);
-
+        */
+        
         return $regs;
     }
 	   

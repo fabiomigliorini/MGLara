@@ -35,11 +35,12 @@
         <tr> 
             <th scope="row">Regulamento ICMS ST/MT</th> 
             <td>
-                <?php $regs = $model->Ncm->regulamentoIcmsStMtsDisponiveis();?>
-                @foreach($regs as $key=>$reg)
-                    <strong>{{formataNcm($reg[$key]['ncm'])}}/{{$reg[$key]['subitem']}}</strong> - {{$reg[$key]['descricao']}}
-                    {{ $reg[$key]['ncmexceto'] ? "Exeto NCM: $reg[$key]['ncmexceto']":'' }}
+            @foreach($model->Ncm->regulamentoIcmsStMtsDisponiveis() as $key=>$reg)
+                @foreach ($reg as $val)
+                    <strong>{{formataNcm($val['ncm'])}}/{{$val['subitem']}}</strong> - {{$val['descricao']}}
+                    <br>
                 @endforeach
+            @endforeach 
             </td> 
         </tr> 
     </tbody> 
