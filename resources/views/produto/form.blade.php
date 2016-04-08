@@ -12,7 +12,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 ?>
 <div class="form-group">
     <label for="produto" class="col-sm-2 control-label">{!! Form::label('Descrição:') !!}</label>
-    <div class="col-sm-6">{!! Form::text('produto', null, ['class'=> 'form-control'], ['id'=>'produto']) !!}</div>
+    <div class="col-sm-6">{!! Form::text('produto', null, ['class'=> 'form-control', 'id'=>'produto']) !!}</div>
   </div>
 
 <div class="form-group">
@@ -100,7 +100,8 @@ $(document).ready(function() {
                 currentForm.submit();
             }
         });
-    });    
+    });
+    $('#produto, #codunidademedida, #codsubgrupoproduto, #codmarca, #preco, #codtributacao, #codtipoproduto, #codncm').prop('required', true);
     $('#importado, #site').bootstrapSwitch();
     $('#codtributacao').select2({
         placeholder: 'Tributação'
@@ -226,7 +227,7 @@ $(document).ready(function() {
             },
             results:function(data, page) {
                 var more = (page * 20) < data.total;
-                return {results: data.data};
+                return {results: data};
             }
         },
         initSelection:function (element, callback) {

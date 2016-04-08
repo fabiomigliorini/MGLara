@@ -93,17 +93,17 @@ class CestController extends Controller
         $ncm = Ncm::find($request->get('codncm'));
         $cests = $ncm->cestsDisponiveis();
         if($request->get('codncm')) {
-
             $resultados = [];
-            dd($cests);
             foreach($cests as $cest)
             {
-                $resultados[] = array(
-                    'id' => $cest->codcest,
-                    'ncm' => formataNcm($cest->Ncm->ncm),
-                    'cest' => formataCest($cest->cest),
-                    'descricao' => $cest->descricao,
-                );
+                foreach ($cest as $value) {
+                    $resultados[] = array(
+                        'id' => $value->codcest,
+                        'ncm' => formataNcm($value->Ncm->ncm),
+                        'cest' => formataCest($value->cest),
+                        'descricao' => $value->descricao,
+                    );
+                }
             }            
             return response()->json($resultados);
             

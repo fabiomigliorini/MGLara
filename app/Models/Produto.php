@@ -74,23 +74,38 @@ class Produto extends MGModel
     
     public function validate() {
         
-        $this->_regrasValidacao = [
-            //'produto' => "required|min:10|unique:tblproduto,produto,".(empty($this->codproduto)?-1:$this->codproduto).",codproduto",
-            'produto' => "required|min:10",
-            'codunidademedida' => 'numeric|required',
-            'codsubgrupoproduto' => 'numeric|required',
-            'codmarca' => 'numeric|required',
-            //'codncm' => 'required|min:1000000|max:99999999|numeric', 
-            'preco' => 'required|numeric',
-            //'importado' => 'boolean',
-            'codtributacao' => 'numeric|required',
-            //'inativo' => 'date_format:d/m/Y',
-            'codtipoproduto' => 'numeric|required',
-            //'site' => 'boolean',
+        if ($this->codproduto)
+            $unique = '|unique:tblproduto,codproduto,'.$this->codproduto.',codproduto';
+        else 
+            $unique = '|unique';
+        
+        $this->_regrasValidacao = [            
+            'produto'           => "min:10|max:100|$unique",
+            'referencia'        => 'max:50',
+            'codunidademedida'  => 'required|numeric',
+            'codsubgrupoproduto' => 'required|numeric',
+            'codmarca'          => 'required|numeric',
+            'preco'             => 'required|numeric|min:0.01',
+            'codtributacao'     => 'required|numeric|validaTributacao',
+            'codtipoproduto'    => 'required|numeric',
+            'codncm'            => 'required|numeric|validaNcm',
+            'codcest'           => 'numeric',            
         ];
     
         $this->_mensagensErro = [
-            'produto.required' => 'O campo descrição não pode ser vazio',
+            'produto.required'              => 'O campo descrição não pode ser vazio',
+            'produto.unique'                => 'Já existe um produto com essa descrição',
+            'produto.min'                   => 'A descrição do produto não pode ter menos de 10 caracteres',
+            'codunidademedida.required'     => 'O campo Unidade de medida não pode ser vazio',
+            'codsubgrupoproduto.required'   => 'O campo Grupo do produto não pode ser vazio',
+            'codmarca.required'             => 'O campo Marca não pode ser vazio',
+            'preco.required'                => 'O campo Preço não pode ser vazio',
+            'codtributacao.required'        => 'O campo Tributação não pode ser vazio',
+            'codtributacao.valida_tributacao' => 'Não existe regulamento de ICMS ST para este NCM!',
+            'codtipoproduto.required'       => 'O campo Tipo não pode ser vazio',
+            'codncm.required'               => 'O campo NCM não pode ser vazio',
+            'codncm.valida_ncm'             => 'Ncm Inválido',
+            
         ];
         
         return parent::validate();
