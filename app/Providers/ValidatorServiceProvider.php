@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Auth;
 use MGLara\Models\Ncm;
 use MGLara\Models\Tributacao;
+use MGLara\Models\Produto;
 
 class ValidatorServiceProvider extends ServiceProvider
 {
@@ -44,18 +45,16 @@ class ValidatorServiceProvider extends ServiceProvider
 	 */
         $this->app['validator']->extend('validaTributacao', function ($attribute, $value, $parameters)
         {
-            $ncm = Ncm::find($value);
-            if (!empty($ncm))
-                return;            
-
-            if (sizeof($ncm->regulamentoIcmsStMtsDisponiveis()) > 0) {
+            $ncm = Ncm::find($parameters)->first();
+            $regs = $ncm->regulamentoIcmsStMtsDisponiveis();
+                
+            if (sizeof($regs) > 0) {
                 if ($value != Tributacao::SUBSTITUICAO)
                     return false;
             } else {
                 if ($value == Tributacao::SUBSTITUICAO)
                     return false;
             }
-            
             return true;
         });          
     }

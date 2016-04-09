@@ -24,6 +24,10 @@ namespace MGLara\Models;
 
 class Tributacao extends MGModel
 {
+    const TRIBUTADO = 1;
+    const ISENTO = 2;
+    const SUBSTITUICAO = 3;
+
     protected $table = 'tbltributacao';
     protected $primaryKey = 'codtributacao';
     protected $fillable = [

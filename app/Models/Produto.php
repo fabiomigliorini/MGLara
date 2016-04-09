@@ -80,13 +80,13 @@ class Produto extends MGModel
             $unique = '|unique';
         
         $this->_regrasValidacao = [            
-            'produto'           => "min:10|max:100|$unique",
+            //'produto'           => "min:10|max:100|$unique",
             'referencia'        => 'max:50',
             'codunidademedida'  => 'required|numeric',
             'codsubgrupoproduto' => 'required|numeric',
             'codmarca'          => 'required|numeric',
             'preco'             => 'required|numeric|min:0.01',
-            'codtributacao'     => 'required|numeric|validaTributacao',
+            'codtributacao'     => "required|numeric|validaTributacao:$this->codncm",
             'codtipoproduto'    => 'required|numeric',
             'codncm'            => 'required|numeric|validaNcm',
             'codcest'           => 'numeric',            
