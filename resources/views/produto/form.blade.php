@@ -13,7 +13,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 <div class="form-group">
     <label for="produto" class="col-sm-2 control-label">{!! Form::label('Descrição:') !!}</label>
     <div class="col-sm-6">{!! Form::text('produto', null, ['class'=> 'form-control', 'id'=>'produto']) !!}</div>
-  </div>
+</div>
 
 <div class="form-group">
     <label for="referencia" class="col-sm-2 control-label">{!! Form::label('Referência:') !!}</label>
@@ -132,39 +132,40 @@ $(document).ready(function() {
 
     $('#codmarca').select2({
         placeholder:'Marca',
-        'minimumInputLength':1,
-      'allowClear':true,
-      'closeOnSelect':true,
+        minimumInputLength: 1,
+        allowClear: true,
+        closeOnSelect: true,
       
-      'formatResult':function(item) {
-        var markup = "<div class='row-fluid'>";
-        markup    += item.marca;
-        markup    += "</div>";
-        return markup;
-      },'formatSelection':function(item) { 
-        return item.marca; 
-      },
-      'ajax':{
-        'url':baseUrl + "/marca/ajax",
-        'dataType':'json',
-        'quietMillis':500,
-        'data':function(term,page) { 
-          return {q: term}; 
+        formatResult: function(item) {
+            var markup = "<div class='row-fluid'>";
+            markup    += item.marca;
+            markup    += "</div>";
+            return markup;
         },
-        'results':function(data,page) {
-          var more = (page * 20) < data.total;
-          return {results: data.items};
+        formatSelection: function(item) { 
+            return item.marca; 
+        },
+        ajax:{
+            url: baseUrl + "/marca/ajax",
+            dataType: 'json',
+            quietMillis: 500,
+            data: function(term,page) { 
+            return {q: term}; 
+        },
+        results: function(data,page) {
+            var more = (page * 20) < data.total;
+            return {results: data.items};
         }},
-        'initSelection':function (element, callback) {
+        initSelection: function (element, callback) {
             $.ajax({
               type: "GET",
               url: baseUrl + "/marca/ajax",
-              data: "id=<?php echo $model->codmarca;?>",
+              data: "id="+<?php echo (isset($model->codmarca) ? $model->codmarca : "$('#codmarca').val()");?>,
               dataType: "json",
               success: function(result) { callback(result); }
               });
         },
-        'width':'resolve'
+        width: 'resolve'
     });     
     $('#codncm').select2({
         minimumInputLength:1,
@@ -196,7 +197,7 @@ $(document).ready(function() {
             $.ajax({
                 type: "GET",
                 url: baseUrl+"/ncm/ajax",
-                data: "id="+$('#codncm').val(),
+                data: "id="+<?php echo (isset($model->codncm) ? $model->codncm : "$('#codncm').val()");?>,
                 dataType: "json",
                 success: function(result) { callback(result); }
             });
@@ -234,7 +235,7 @@ $(document).ready(function() {
             $.ajax({
                 type: "GET",
                 url: baseUrl+"/cest/ajax",
-                data: "id="+$('#codcest').val(),
+                data: "id="+<?php echo (isset($model->codcest) ? $model->codcest : "$('#codcest').val()");?>,
                 dataType: "json",
                 success: function(result) { callback(result); }
             });

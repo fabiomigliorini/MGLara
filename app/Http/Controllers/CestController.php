@@ -90,9 +90,9 @@ class CestController extends Controller
     
     public function ajax(Request $request) {
         
-        $ncm = Ncm::find($request->get('codncm'));
-        $cests = $ncm->cestsDisponiveis();
         if($request->get('codncm')) {
+            $ncm = Ncm::find($request->get('codncm'));
+            $cests = $ncm->cestsDisponiveis();            
             $resultados = [];
             foreach($cests as $cest)
             {
