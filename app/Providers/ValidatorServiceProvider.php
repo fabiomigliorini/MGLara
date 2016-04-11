@@ -7,6 +7,7 @@ use Auth;
 use MGLara\Models\Ncm;
 use MGLara\Models\Tributacao;
 use MGLara\Models\Produto;
+use MGLara\Models\Marca;
 
 class ValidatorServiceProvider extends ServiceProvider
 {
@@ -56,7 +57,23 @@ class ValidatorServiceProvider extends ServiceProvider
                     return false;
             }
             return true;
-        });          
+        });    
+        
+        $this->app['validator']->extend('validaMarca', function ($attribute, $value, $parameters)
+        {
+            $marca = Marca::find($parameters[0]);
+            if (!empty($value) && !empty($parameters[0]) && $parameters[1] == '')
+            {
+                if (strpos(strtoupper($value), strtoupper($marca->marca)) === false) {
+                    return false;
+                } else {
+                    return true;
+                }    
+            } else {
+                return true;
+            }
+        }); 
+        
     }
 
     /**
