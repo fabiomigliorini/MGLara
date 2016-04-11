@@ -73,9 +73,7 @@ class Produto extends MGModel
 
     
     public function validate() {
-        //dd($this->codproduto);
         if ($this->codproduto) {
-            dd($this->codproduto);
             $unique = 'unique:tblproduto,produto,'.$this->codproduto.',codproduto';
         } else {
             $unique = 'unique:tblproduto,produto';
@@ -108,7 +106,6 @@ class Produto extends MGModel
             'codtipoproduto.required'       => 'O campo Tipo não pode ser vazio',
             'codncm.required'               => 'O campo NCM não pode ser vazio',
             'codncm.valida_ncm'             => 'Ncm Inválido',
-            
         ];
         
         return parent::validate();

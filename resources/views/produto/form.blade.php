@@ -1,4 +1,5 @@
 <?php
+
 use MGLara\Models\UnidadeMedida;
 use MGLara\Models\SubGrupoProduto;
 use MGLara\Models\Tributacao;
@@ -45,7 +46,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 
 <div class="form-group">
     <label for="importado" class="col-sm-2 control-label">{!! Form::label('Importado:') !!}</label>
-    <div class="col-sm-10" id="wrapper-importado">{!! Form::checkbox('importado', $model->importado, null, [ 'id'=>'importado', 'data-off-text' => 'Nacional', 'data-on-text' => 'Importado']) !!}</div>
+    <div class="col-sm-10" id="wrapper-importado">{!! Form::checkbox('importado', null, false,[ 'id'=>'importado', 'data-off-text' => 'Nacional', 'data-on-text' => 'Importado']) !!}</div>
 </div>
 
 <div class="form-group">
@@ -70,7 +71,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 
 <div class="form-group">
     <label for="site" class="col-sm-2 control-label">{!! Form::label('Disponível no Site:') !!}</label>
-    <div class="col-sm-10" id="wrapper-site">{!! Form::checkbox('site', $model->site, null, ['id'=>'site', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+    <div class="col-sm-10" id="wrapper-site">{!! Form::checkbox('site', null, null, ['id'=>'site', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
 </div>
 
 <div class="form-group">
@@ -102,7 +103,26 @@ $(document).ready(function() {
         });
     });
     $('#produto, #codunidademedida, #codsubgrupoproduto, #codmarca, #preco, #codtributacao, #codtipoproduto, #codncm').prop('required', true);
-    $('#importado, #site').bootstrapSwitch();
+    $('#importado').bootstrapSwitch('state', <?php echo ($model->importado == 1 ? 'true' : 'false'); ?>);
+    $('#site').bootstrapSwitch('state', <?php echo ($model->site == 1 ? 'true' : 'false'); ?>);
+    $('input[name="site"]').on('switchChange.bootstrapSwitch', function(event, state) {
+        var valor;
+        if (state === true) {
+          valor = 1;
+        } else {
+          valor = 0;
+        }
+        $('#site').val(valor);
+    });
+    $('input[name="importado"]').on('switchChange.bootstrapSwitch', function(event, state) {
+        var valor;
+        if (state === true) {
+          valor = 1;
+        } else {
+          valor = 0;
+        }
+        $('#importado').val(valor);
+    });
     $('#codtributacao').select2({
         placeholder: 'Tributação'
     })<?php echo (isset($model->codtributacao) ? ".select2('val', $model->codtributacao);" : ';');?>
@@ -125,8 +145,7 @@ $(document).ready(function() {
         locale: 'pt-br',
         format: 'DD/MM/YYYY'
     });
-    
-    <?php echo (isset($model->inativo) ? "$(1#inativo').('val', $model->inativo).change();" : '');?>
+    <?php if($model->inativo):?>$('#inativo').val({{ formatadata($model->inativo)}}).change();<?php endif;?>
     $("#produto").Setcase();
     $('#preco').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
 

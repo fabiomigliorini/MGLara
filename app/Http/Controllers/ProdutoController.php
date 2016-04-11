@@ -103,9 +103,29 @@ class ProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(Request $request, $id) {
+        $this->converteDatas(['inativo' => $request->input('inativo')], 'd/m/Y');
+        $this->converteNumericos(['preco' => $request->input('preco')]);
+        
+        //dd($request->input('importado'));
+        
+        $model = Produto::findOrFail($id);
+        $model->fill($request->all());
+        if($request->input('importado') == 1)
+            $model->importado = TRUE;
+        else
+            $model->importado = FALSE;
+        
+        if($request->input('site') == 1)
+            $model->site = TRUE;
+        else
+            $model->site = FALSE;
+        
+        if (!$model->validate())
+            $this->throwValidationException($request, $model->_validator);
+        $model->save();
+        Session::flash('flash_update', 'Registro alterado.');
+        return redirect("produto/$model->codproduto");           
     }
 
     /**
