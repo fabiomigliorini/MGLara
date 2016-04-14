@@ -110,43 +110,50 @@
                     <div class="panel panel-info combinacoes">
                         <ul class="list-group bg-info">
                             <li class="list-group-item">
+                                <strong>Códigos de barra</strong>
+                                <span class="pull-right"><a href="{{ url("produto-barra/create?codproduto={$model->codproduto}") }}">Novo</a></span>
+                            </li>
+                            
+                            @foreach($model->ProdutoBarraS as $pb)
+                            <li class="list-group-item">
                                 <div class="row item">
                                     <div class="col-md-3">
-                                        {{ $model->UnidadeMedida->unidademedida }}
-                                    </div>                            
-                                    <div class="col-md-3">
-                                        R$ <strong>{{ formataNumero($model->preco) }}</strong>
+                                        
                                     </div>
-                                    <div class="col-md-6">
-                                    @foreach ($model->ProdutoBarras as $pb)
-                                        <?php if(!empty($pb->codprodutoembalagem))
-                                            continue;
-                                        ?>
-                                        <div class="row-fluid">
-                                            {{$pb->barras}}
-                                            <div class="pull-right">{{$pb->variacao}}</div>
-                                        </div>
-                                    @endforeach
-                                    </div>      
+                                    <div class="col-md-3">
+                                        {{ $pb->barras }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ $pb->variacao }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        
+                                    </div>
                                 </div>
                             </li>
+                            @endforeach
+
+                            <li class="list-group-item">
+                                <strong>Embalagens</strong>
+                                <span class="pull-right"><a href="{{ url("produto-embalagem/create?codproduto={$model->codproduto}") }}">Novo</a></span>
+                            </li>
                             @foreach($model->ProdutoEmbalagemS as $pe)
-                            <li class="list-group-item bg-info">
+                            <li class="list-group-item">
                                 <div class="row item">            
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         {{ $pe->UnidadeMedida->unidademedida }}
-                                        {{ $pe->UnidadeMedida->descricao }}
                                     </div>                            
-                                    <div class="col-md-3">
-                                        R$ {{ formataNumero($pe->preco ? $pe->preco : $pe->preco_calculado) }}
+                                    <div class="col-md-4">
+                                        R$ {{ $pe->preco}}
                                     </div>
-                                    <div class="col-md-6">
-                                    @foreach ($pe->ProdutoBarras as $pb)
+                                    <div class="col-md-4">
                                         <div class="row-fluid">
-                                            {{$pb->barras}}
-                                            <div class="pull-right">{{$pb->variacao}}</div>
+                                            <span class="pull-right">
+                                                <a href="{{ url("produto-embalagem/$pe->codprodutoembalagem/edit") }}"><i class="glyphicon glyphicon-pencil text-danger"></i></a>
+                                                &nbsp;&nbsp;
+                                                <a href=""><i class="glyphicon glyphicon-trash text-danger"></i></a>
+                                            </span>                                                                                
                                         </div>
-                                    @endforeach
                                     </div>      
                                 </div>    
                             </li>            

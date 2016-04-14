@@ -8,6 +8,7 @@ use MGLara\Models\Ncm;
 use MGLara\Models\Tributacao;
 use MGLara\Models\Produto;
 use MGLara\Models\Marca;
+use MGLara\Models\ProdutoEmbalagem;
 
 class ValidatorServiceProvider extends ServiceProvider
 {
@@ -73,6 +74,39 @@ class ValidatorServiceProvider extends ServiceProvider
                 return true;
             }
         }); 
+        
+        $this->app['validator']->extend('validaPrecoMin', function ($attribute, $value, $parameters)
+        {
+            $produto = Produto::find($parameters[0]);
+            
+            if ($value <= $produto->preco)
+                return false;
+            
+            return true;
+        });        
+        
+        $this->app['validator']->extend('validaPrecoMax', function ($attribute, $value, $parameters)
+        {
+            $produto = Produto::find($parameters[0]);
+            
+            if ($value >= ($produto->preco * $parameters[1]))
+                return false;
+            
+            return true;
+        });        
+        
+        $this->app['validator']->extend('validaQuantidade', function ($attribute, $value, $parameters)
+        {
+            if(empty($parameters[1]))
+                $parameters[1] = 0;
+            
+            $query = ProdutoEmbalagem::validaQuantidade($parameters[0], $value, $parameters[1]);
+            
+            if (!$query)
+                return false;
+            
+            return true;
+        });        
         
     }
 
