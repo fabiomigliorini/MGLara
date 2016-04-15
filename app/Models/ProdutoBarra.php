@@ -47,7 +47,24 @@ class ProdutoBarra extends MGModel
         'criacao',
     ];
 
+    public function validate() {
 
+        $this->_regrasValidacao = [            
+            'codproduto'  => 'required',
+            'barras'  => 'required|unique:tblprodutobarra,barras',
+            'codmarca'  => "validaMarcaBarra:$this->codproduto",
+        ];
+    
+        $this->_mensagensErro = [
+            'codproduto.required'     => 'O Código do produto não pode ser vazio',
+            'barras.unique'          => 'Já existe esse código de barras',
+            'barras.required'          => 'O campo Barras deve ser vazio',
+            'codmarca.valida_marca_barra'          => 'Você selecionou a mesma marca informada no Produto, neste caso deixe em branco. Só preencha quando a marca for diferente da marca principal do produto',
+        ];
+        
+        return parent::validate();
+    } 
+    
     // Chaves Estrangeiras
     public function Marca()
     {

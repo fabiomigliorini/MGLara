@@ -108,26 +108,29 @@
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane fade in active" id="tab-produto-combinacoes">
                     <div class="panel panel-info combinacoes">
-                        <ul class="list-group bg-info">
+                        <ul class="list-group">
                             <li class="list-group-item">
                                 <strong>Códigos de barra</strong>
-                                <span class="pull-right"><a href="{{ url("produto-barra/create?codproduto={$model->codproduto}") }}">Novo</a></span>
+                                <span class="pull-right"><a href="{{ url("produto-barra/create?codproduto={$model->codproduto}") }}"><i class="glyphicon glyphicon-plus"></i> Novo</a></span>
                             </li>
-                            
                             @foreach($model->ProdutoBarraS as $pb)
                             <li class="list-group-item">
                                 <div class="row item">
-                                    <div class="col-md-3">
-                                        
+                                    <div class="col-md-2">
+                                        {{ $pb->ProdutoEmbalagem->UnidadeMedida->sigla or $pb->Produto->UnidadeMedida->sigla}}
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         {{ $pb->barras }}
                                     </div>
                                     <div class="col-md-3">
                                         {{ $pb->variacao }}
                                     </div>
                                     <div class="col-md-3">
-                                        
+                                        <span class="pull-right">
+                                            <a href="{{ url("produto-barra/$pb->codprodutobarra/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            &nbsp;&nbsp;
+                                            <a href=""><i class="glyphicon glyphicon-trash"></i></a>
+                                        </span>                                          
                                     </div>
                                 </div>
                             </li>
@@ -135,23 +138,31 @@
 
                             <li class="list-group-item">
                                 <strong>Embalagens</strong>
-                                <span class="pull-right"><a href="{{ url("produto-embalagem/create?codproduto={$model->codproduto}") }}">Novo</a></span>
+                                <span class="pull-right"><a href="{{ url("produto-embalagem/create?codproduto={$model->codproduto}") }}"><i class="glyphicon glyphicon-plus"></i> Novo</a></span>
                             </li>
                             @foreach($model->ProdutoEmbalagemS as $pe)
                             <li class="list-group-item">
                                 <div class="row item">            
                                     <div class="col-md-4">
-                                        {{ $pe->UnidadeMedida->unidademedida }}
+                                        {{ $pe->descricao }}
                                     </div>                            
                                     <div class="col-md-4">
-                                        R$ {{ $pe->preco}}
+                                    @if (empty($pe->preco))
+                                        <div class="text-right text-muted">
+                                            {{ formataNumero($pe->preco_calculado) }}
+                                        </div>
+                                    @else
+                                        <div class="text-right text-success">
+                                            {{ formataNumero($pe->preco_calculado) }}
+                                        </div>	
+                                    @endif
                                     </div>
                                     <div class="col-md-4">
                                         <div class="row-fluid">
                                             <span class="pull-right">
-                                                <a href="{{ url("produto-embalagem/$pe->codprodutoembalagem/edit") }}"><i class="glyphicon glyphicon-pencil text-danger"></i></a>
+                                                <a href="{{ url("produto-embalagem/$pe->codprodutoembalagem/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
                                                 &nbsp;&nbsp;
-                                                <a href=""><i class="glyphicon glyphicon-trash text-danger"></i></a>
+                                                <a href=""><i class="glyphicon glyphicon-trash"></i></a>
                                             </span>                                                                                
                                         </div>
                                     </div>      

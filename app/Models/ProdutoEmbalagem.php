@@ -41,6 +41,23 @@ class ProdutoEmbalagem extends MGModel
         'criacao',
     ];
     
+    public function getDescricaoAttribute()
+    {
+        if (floor($this->quantidade) == $this->quantidade)
+            $digitos = 0;
+        else
+            $digitos = 5;
+        
+        return 'C/ ' . formataNumero($this->quantidade, $digitos);
+    }
+    
+    public function getPrecoCalculadoAttribute()
+    {
+        if ($this->Produto)
+            $preco_calculado = ($this->preco) ? $this->preco : $this->Produto->preco * $this->quantidade;
+        
+        return $preco_calculado;
+    }
     
     public function validate() {
 

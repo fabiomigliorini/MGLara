@@ -75,12 +75,25 @@ class ProdutoController extends Controller
         $this->converteNumericos(['preco' => $request->input('preco')]);
         
         $model = new Produto($request->all());
+        
+        DB::beginTransaction();
+        
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         
-        $model->save();
-        Session::flash('flash_create', 'Registro inserido.');
-        return redirect("produto/$model->codproduto");        
+        try {
+            if (!$model->save())
+                throw new Exception ('Erro Inserir');       
+            
+            DB::commit();
+            Session::flash('flash_create', 'Registro inserido.');
+            return redirect("produto/$model->codproduto");               
+            
+        } catch (Exception $ex) {
+            DB::rollBack();
+            $this->throwValidationException($request, $model->_validator);              
+        }
+     
     }
 
     public function show($id)
