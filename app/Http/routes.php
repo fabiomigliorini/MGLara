@@ -94,6 +94,11 @@ Route::group(['middleware' => 'auth'], function() {
     
     Route::resource('produto-barra','ProdutoBarraController');
     
+    /* Cidades */
+    Route::resource('cidade','CidadeController');
+    
+    /* Pais */
+    Route::resource('pais','PaisController');
     
     Route::resource('produto-embalagem','ProdutoEmbalagemController');
 
