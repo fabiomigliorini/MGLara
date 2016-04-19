@@ -34,6 +34,30 @@ class UnidadeMedida extends MGModel
         'criacao',
     ];
     
+    public function validate() {
+        if ($this->codunidademedida) {
+            $unique_unidademedida = 'unique:tblunidademedida,unidademedida,'.$this->codunidademedida.',codunidademedida';
+            $unique_sigla = 'unique:tblunidademedida,sigla,'.$this->codunidademedida.',codunidademedida';
+        } else {
+            $unique_unidademedida = 'unique:tblunidademedida,unidademedida';
+            $unique_sigla = 'unique:tblunidademedida,sigla';
+        }           
+        
+        $this->_regrasValidacao = [
+            'unidademedida' => "required|$unique_unidademedida",  
+            'sigla' => "required|$unique_sigla",  
+        ];
+    
+        $this->_mensagensErro = [
+            'unidademedida.required' => 'O campo Descrição não pode ser vazio',
+            'unidademedida.unique' => 'Esta descrição já esta cadastrada',
+            'sigla.required' => 'O campo Sigla não pode ser vazio',
+            'sigla.unique' => 'Esta sigla já esta cadastrado',
+        ];
+        
+        return parent::validate();
+    }
+    
     // Chaves Estrangeiras
     public function UsuarioAlteracao()
     {
@@ -56,4 +80,31 @@ class UnidadeMedida extends MGModel
     {
         return $this->hasMany(ProdutoEmbalagem::class, 'codunidademedida', 'codunidademedida');
     }
+    
+    // Buscas 
+    public static function filterAndPaginate($codunidademedida, $unidademedida)
+    {
+        return UnidadeMedida::codunidademedida(numeroLimpo($codunidademedida))
+            ->unidademedida($unidademedida)
+            ->orderBy('unidademedida', 'ASC')
+            ->paginate(20);
+    }
+    
+    public function scopeCodunidademedida($query, $codcodunidademedida)
+    {
+        if (trim($codcodunidademedida) === '')
+            return;
+        
+        $query->where('codunidademedida', $codcodunidademedida);
+    }
+    
+    public function scopeUnidademedida($query, $unidademedida)
+    {
+        if (trim($unidademedida) === '')
+            return;
+        
+        $unidademedida = explode(' ', $unidademedida);
+        foreach ($unidademedida as $str)
+            $query->where('unidademedida', 'ILIKE', "%$str%");
+    }    
 }

@@ -102,6 +102,9 @@ Route::group(['middleware' => 'auth'], function() {
     
     /* Cidades */
     Route::resource('cidade','CidadeController');
+   
+    /*Unidades de medida*/
+    Route::resource('unidade-medida','UnidadeMedidaController');
     
     
     Route::resource('produto-embalagem','ProdutoEmbalagemController');
