@@ -8,10 +8,9 @@ use MGLara\Http\Requests;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
-use MGLara\Models\Estado;
 use MGLara\Models\Cidade;
 
-class EstadoController extends Controller
+class CidadeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -30,8 +29,8 @@ class EstadoController extends Controller
      */
     public function create(Request $request)
     {
-        $model = new Estado();
-        return view('estado.create', compact('model', 'request'));
+        $model = new Cidade();
+        return view('cidade.create', compact('model', 'request'));
     }
 
     /**
@@ -42,15 +41,15 @@ class EstadoController extends Controller
      */
     public function store(Request $request)
     {
-        $model = new Estado($request->all());
+        $model = new Cidade($request->all());
         
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         
-        $model->codpais = $request->get('codpais');
+        $model->codestado = $request->get('codestado');
         $model->save();
         Session::flash('flash_create', 'Registro inserido.');
-        return redirect("pais/$model->codpais");    
+        return redirect("cidade/$model->codcidade"); 
     }
 
     /**
@@ -61,15 +60,8 @@ class EstadoController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $model = Estado::find($id);
-        $cidades = Cidade::filterAndPaginate(
-            $model->codestado, 
-            $request->get('codcidade'), 
-            $request->get('cidade'), 
-            $request->get('sigla'),
-            $request->get('codigooficial')
-        );
-        return view('estado.show', compact('model', 'cidades'));
+        $model = Cidade::find($id);
+        return view('cidade.show', compact('model'));
     }
 
     /**
@@ -80,8 +72,8 @@ class EstadoController extends Controller
      */
     public function edit($id)
     {
-        $model = Estado::findOrFail($id);
-        return view('estado.edit',  compact('model'));
+        $model = Cidade::findOrFail($id);
+        return view('cidade.edit',  compact('model'));
     }
 
     /**
@@ -93,7 +85,7 @@ class EstadoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $model = Estado::findOrFail($id);
+        $model = Cidade::findOrFail($id);
         $model->fill($request->all());
 
         if (!$model->validate())
@@ -102,7 +94,7 @@ class EstadoController extends Controller
         $model->save();
         
         Session::flash('flash_update', 'Registro atualizado.');
-        return redirect("estado/$model->codestado"); 
+        return redirect("cidade/$model->codcidade"); 
     }
 
     /**
@@ -114,13 +106,19 @@ class EstadoController extends Controller
     public function destroy($id)
     {
         try{
-            $model = Estado::find($id);
+            $model = Cidade::find($id);
             $model->delete();
             Session::flash('flash_delete', 'Registro deletado!');
-            return redirect("pais/$model->codpais");
+            return redirect("estado/$model->codestado");
         }
         catch(\Exception $e){
             return view('errors.fk');
         }     
     }
+    
+    public function ajax(Request $request)
+    {
+        //
+    }
+    
 }

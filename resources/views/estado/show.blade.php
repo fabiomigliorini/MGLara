@@ -4,7 +4,7 @@
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="{{ url("pais/$model->codpais") }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="{{ url('estado/create') }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
+            <li><a href="{{ url("estado/create?codpais=$model->codpais") }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
             <li><a href="{{ url("estado/$model->codestado/edit") }}"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li>
                 {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['estado.destroy', $model->codestado]]) !!}

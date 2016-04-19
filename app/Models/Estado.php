@@ -39,7 +39,8 @@ class Estado extends MGModel
         'criacao',
     ];
 
-    public function validate() {
+    public function validate() 
+    {
         if ($this->codestado) {
             $unique_estado = 'unique:tblestado,estado,'.$this->codestado.',codestado';
             $unique_sigla = 'unique:tblestado,sigla,'.$this->codestado.',codestado';
@@ -53,7 +54,7 @@ class Estado extends MGModel
         $this->_regrasValidacao = [
             'estado' => "required|$unique_estado",  
             'sigla' => "required|$unique_sigla",  
-            'codigooficial' => "required|$unique_codigo",  
+            'codigooficial' => "required|numeric|$unique_codigo",  
         ];
     
         $this->_mensagensErro = [
@@ -63,6 +64,7 @@ class Estado extends MGModel
             'sigla.unique' => 'Esta sigla já esta cadastrado',
             'codigooficial.required' => 'O campo Código não pode ser vazio',
             'codigooficial.unique' => 'Este código já esta cadastrado',
+            'codigooficial.numeric' => 'O valor do código deve ser um numero',
         ];
         
         return parent::validate();
