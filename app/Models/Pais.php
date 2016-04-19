@@ -51,7 +51,7 @@ class Pais extends MGModel
     
         $this->_mensagensErro = [
             'pais.required' => 'O campo Pais não pode ser vazio',
-            'pais.unique' => 'Esta país já esta cadastrado',
+            'pais.unique' => 'Este país já esta cadastrado',
             'sigla.required' => 'O campo Sigla não pode ser vazio',
             'sigla.unique' => 'Esta sigla já esta cadastrado',
         ];

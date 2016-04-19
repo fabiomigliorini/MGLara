@@ -40,7 +40,7 @@
 <hr>
 @include('includes.autor')
 <hr>
-<h2>Estados</h2>
+<h2>Estados  <span class="titulo-btn-novo"><a class="btn btn-default" href="{{ url("estado/create?codpais=$model->codpais") }}"><i class=" glyphicon glyphicon-plus"></i> Novo</a></span></h2>
 <hr>
 <div class="search-bar">
 {!! Form::model(Request::all(), ['method' => 'GET', 'class' => 'form-inline', 'id' => 'estado-search', 'role' => 'search', 'autocomplete' => 'off'])!!}

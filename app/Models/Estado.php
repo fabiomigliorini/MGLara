@@ -39,6 +39,34 @@ class Estado extends MGModel
         'criacao',
     ];
 
+    public function validate() {
+        if ($this->codestado) {
+            $unique_estado = 'unique:tblestado,estado,'.$this->codestado.',codestado';
+            $unique_sigla = 'unique:tblestado,sigla,'.$this->codestado.',codestado';
+            $unique_codigo = 'unique:tblestado,codigooficial,'.$this->codestado.',codestado';
+        } else {
+            $unique_estado = 'unique:tblestado,estado';
+            $unique_sigla = 'unique:tblestado,sigla';
+            $unique_codigo = 'unique:tblestado,codigooficial';
+        }           
+        
+        $this->_regrasValidacao = [
+            'estado' => "required|$unique_estado",  
+            'sigla' => "required|$unique_sigla",  
+            'codigooficial' => "required|$unique_codigo",  
+        ];
+    
+        $this->_mensagensErro = [
+            'estado.required' => 'O campo Pais não pode ser vazio',
+            'estado.unique' => 'Este estado já esta cadastrado',
+            'sigla.required' => 'O campo Sigla não pode ser vazio',
+            'sigla.unique' => 'Esta sigla já esta cadastrado',
+            'codigooficial.required' => 'O campo Código não pode ser vazio',
+            'codigooficial.unique' => 'Este código já esta cadastrado',
+        ];
+        
+        return parent::validate();
+    }
 
     // Chaves Estrangeiras
     public function Pais()

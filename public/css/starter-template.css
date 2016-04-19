@@ -104,6 +104,12 @@ h1.header {
     margin-bottom: 5px;
 }
 
+.titulo-btn-novo {
+    font-size: 20px;
+    padding-left: 20px;
+    position: relative;
+    top: -6px;
+}
 
 /* Produtos */
 .produtos-grid-inativo {
@@ -264,3 +270,7 @@ h1.header {
 #estoque-mes-filtro .col-sm-1 {
     padding-top: 8px
 }
+
+
+
+
