@@ -23,26 +23,24 @@
             </ul>
         </li>
         -->
-        <!--
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Financeiro <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#">Pessoas</a><li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Liquidações</a><li>
-            <li><a href="#">Titulos</a><li>
-            <li><a href="#">Agrupamentos</a><li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Bancos</a><li>
-            <li><a href="#">Cheques</a><li>
-            <li><a href="#">Formas de pagamento</a><li>
-            <li><a href="#">Grupos de cliente</a><li>
-            <li><a href="#">Portadores</a><li>
-            <li><a href="#">Tipo movimento titulos</a><li>
-            <li><a href="#">Tipo titulos</a><li>
+            <!--<li><a href="#">Pessoas</a><li>-->
+            <!--<li role="separator" class="divider"></li>-->
+            <!--<li><a href="#">Liquidações</a><li>-->
+            <!--<li><a href="#">Titulos</a><li>-->
+            <!--<li><a href="#">Agrupamentos</a><li>-->
+            <!--<li role="separator" class="divider"></li>-->
+            <!--<li><a href="#">Bancos</a><li>-->
+            <!--<li><a href="#">Cheques</a><li>-->
+            <!--<li><a href="#">Formas de pagamento</a><li>-->
+            <!--<li><a href="#">Grupos de cliente</a><li>-->
+            <li><a href="{{ url('portador') }}">Portadores</a><li>
+            <!--<li><a href="#">Tipo movimento titulos</a><li>-->
+            <!--<li><a href="#">Tipo titulos</a><li>-->
           </ul>
         </li>
-        -->
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Estoque <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -59,7 +57,7 @@
             <li><a href="{{ url('marca') }}">Marcas</a><li> 
             <!-- <li><a href="#">NCM</a></li> -->
             <!-- <li><a href="#">Tipos de produtos</a></li> -->
-            <!-- <li><a href="#">Unidades de medida</a></li> -->
+            <li><a href="#">Unidades de medida</a></li>
             <li><a href="{{ url('imagem') }}">Imagens</a></li> 
           </ul>
         </li>

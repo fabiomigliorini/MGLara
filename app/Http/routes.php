@@ -103,8 +103,11 @@ Route::group(['middleware' => 'auth'], function() {
     /* Cidades */
     Route::resource('cidade','CidadeController');
    
-    /*Unidades de medida*/
+    /* Unidades de medida */
     Route::resource('unidade-medida','UnidadeMedidaController');
+   
+    /* Portadores */
+    Route::resource('portador', 'PortadorController');
     
     
     Route::resource('produto-embalagem','ProdutoEmbalagemController');

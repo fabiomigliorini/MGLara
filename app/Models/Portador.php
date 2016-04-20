@@ -40,6 +40,7 @@ namespace MGLara\Models;
 
 class Portador extends MGModel
 {
+    const CARTEIRA = 999;
     protected $table = 'tblportador';
     protected $primaryKey = 'codportador';
     protected $fillable = [
@@ -64,11 +65,18 @@ class Portador extends MGModel
     public function validate() {
         
         $this->_regrasValidacao = [
-            'portador' => 'required|min:2', 
+            'portador' => 'required|min:2',
+            'agenciadigito' => 'integer',
+            'contadigito' => 'integer',
+            'carteira' => 'integer'
         ];
     
         $this->_mensagensErro = [
             'portador.required' => 'Preencha o campo Portador',
+            'portador.min' => 'Portador deve ter no mínimo 2 caracteres',
+            'agenciadigito.integer' => 'Dígito da agência deve ser um número',
+            'contadigito.integer' => 'Dígito da conta deve ser um número',
+            'carteira.integer' => 'Carteira deve ser um número'
         ];
         
         return parent::validate();
@@ -127,4 +135,40 @@ class Portador extends MGModel
     {
         return $this->hasMany(Usuario::class, 'codportador', 'codportador');
     }
+    
+    // Buscas 
+    public static function filterAndPaginate($codportador, $portador, $codbanco)
+    {
+        return Portador::codportador(numeroLimpo($codportador))
+            ->portador($portador)
+            ->codbanco($codbanco)
+            ->orderBy('portador', 'ASC')
+            ->paginate(20);
+    }
+    
+    public function scopeCodportador($query, $codportador)
+    {
+        if (trim($codportador) === '')
+            return;
+        
+        $query->where('codportador', $codportador);
+    }
+    
+    public function scopePortador($query, $portador)
+    {
+        if (trim($portador) === '')
+            return;
+        
+        $portador = explode(' ', $portador);
+        foreach ($portador as $str)
+            $query->where('portador', 'ILIKE', "%$str%");
+    }
+    
+    public function scopeCodbanco($query, $codbanco)
+    {
+        if (trim($codbanco) === '')
+            return;
+        
+        $query->where('codbanco', $codbanco);
+    }    
 }
