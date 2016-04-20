@@ -110,6 +110,9 @@ Route::group(['middleware' => 'auth'], function() {
    
     /* Grupos de cliente */
     Route::resource('grupo-cliente', 'GrupoClienteController');
+   
+    /* Tipos de produto */
+    Route::resource('tipo-produto', 'TipoProdutoController');
     
     
     Route::resource('produto-embalagem','ProdutoEmbalagemController');

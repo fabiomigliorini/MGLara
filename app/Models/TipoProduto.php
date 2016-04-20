@@ -38,7 +38,7 @@ class TipoProduto extends MGModel
             'tipoproduto' => 'required|min:2', 
         ];    
         $this->_mensagensErro = [
-            'tipoproduto.required' => 'Tipo não pode ser vazio.',
+            'tipoproduto.required' => 'Tipo produto não pode ser vazio.',
         ];
         return parent::validate();
     }    
@@ -67,12 +67,30 @@ class TipoProduto extends MGModel
         return $this->hasMany(TributacaoNaturezaOperacao::class, 'codtipoproduto', 'codtipoproduto');
     }
     
-    
-    public function scopeTributacao($query, $tipoproduto)
+    // Buscas 
+    public static function filterAndPaginate($codtipoproduto, $tipoproduto)
     {
-        if (trim($tipoproduto) != "")
-        {
-            $query->where('tipoproduto', "ILIKE", "%$tipoproduto%");
-        }
-    }    
+        return tipoproduto::codtipoproduto(numeroLimpo($codtipoproduto))
+            ->tipoproduto($tipoproduto)
+            ->orderBy('tipoproduto', 'ASC')
+            ->paginate(20);
+    }
+    
+    public function scopeCodtipoproduto($query, $codcodtipoproduto)
+    {
+        if (trim($codcodtipoproduto) === '')
+            return;
+        
+        $query->where('codtipoproduto', $codcodtipoproduto);
+    }
+    
+    public function scopeTipoproduto($query, $tipoproduto)
+    {
+        if (trim($tipoproduto) === '')
+            return;
+        
+        $tipoproduto = explode(' ', $tipoproduto);
+        foreach ($tipoproduto as $str)
+            $query->where('tipoproduto', 'ILIKE', "%$str%");
+    }     
 }

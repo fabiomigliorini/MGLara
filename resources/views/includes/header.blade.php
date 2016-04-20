@@ -56,8 +56,8 @@
             <li><a href="{{ url('grupo-produto') }}">Grupos de Produtos</a><li> 
             <li><a href="{{ url('marca') }}">Marcas</a><li> 
             <!-- <li><a href="#">NCM</a></li> -->
-            <!-- <li><a href="#">Tipos de produtos</a></li> -->
-            <li><a href="#">Unidades de medida</a></li>
+            <li><a href="{{ url('tipo-produto') }}">Tipos de produtos</a></li>
+            <li><a href="{{ url('unidade-medida') }}">Unidades de medida</a></li>
             <li><a href="{{ url('imagem') }}">Imagens</a></li> 
           </ul>
         </li>
