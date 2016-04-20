@@ -1,16 +1,16 @@
 <?php
 
 namespace MGLara\Http\Controllers;
+
 use Illuminate\Http\Request;
 
 use MGLara\Http\Requests;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
-use MGLara\Models\Portador;
-use MGLara\Models\Banco;
+use MGLara\Models\GrupoCliente;
 
-class PortadorController extends Controller
+class GrupoClienteController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,13 +18,12 @@ class PortadorController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $model = Portador::filterAndPaginate(
-            $request->get('codportador'),
-            $request->get('portador'),
-            $request->get('codbanco')
+        $model = GrupoCliente::filterAndPaginate(
+            $request->get('codgrupocliente'),
+            $request->get('grupocliente')
         );
-        $bancos = [''=>''] + Banco::lists('banco', 'codbanco')->all();
-        return view('portador.index', compact('model', 'bancos'));
+        
+        return view('grupo-cliente.index', compact('model'));
     }
 
     /**
@@ -34,8 +33,8 @@ class PortadorController extends Controller
      */
     public function create()
     {
-        $model = new Portador();
-        return view('portador.create', compact('model'));
+        $model = new GrupoCliente();
+        return view('grupo-cliente.create', compact('model'));
     }
 
     /**
@@ -46,14 +45,14 @@ class PortadorController extends Controller
      */
     public function store(Request $request)
     {
-        $model = new Portador($request->all());
+        $model = new GrupoCliente($request->all());
         
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         
         $model->save();
         Session::flash('flash_create', 'Registro inserido.');
-        return redirect("portador/$model->codportador");    
+        return redirect("grupo-cliente/$model->codgrupocliente");    
     }
 
     /**
@@ -64,8 +63,8 @@ class PortadorController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $model = Portador::find($id);
-        return view('portador.show', compact('model'));
+        $model = GrupoCliente::find($id);
+        return view('grupo-cliente.show', compact('model'));
     }
 
     /**
@@ -76,8 +75,8 @@ class PortadorController extends Controller
      */
     public function edit($id)
     {
-        $model = Portador::findOrFail($id);
-        return view('portador.edit',  compact('model'));
+        $model = GrupoCliente::findOrFail($id);
+        return view('grupo-cliente.edit',  compact('model'));
     }
 
     /**
@@ -89,21 +88,16 @@ class PortadorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $model = Portador::findOrFail($id);
+        $model = GrupoCliente::findOrFail($id);
         $model->fill($request->all());
 
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
-        
-        if($request->input('emiteboleto') == 1)
-            $model->emiteboleto = TRUE;
-        else
-            $model->emiteboleto = FALSE;
-        
+
         $model->save();
         
         Session::flash('flash_update', 'Registro atualizado.');
-        return redirect("portador/$model->codportador"); 
+        return redirect("grupo-cliente/$model->codgrupocliente"); 
     }
 
     /**
@@ -115,9 +109,9 @@ class PortadorController extends Controller
     public function destroy($id)
     {
         try{
-            Portador::find($id)->delete();
+            GrupoCliente::find($id)->delete();
             Session::flash('flash_delete', 'Registro deletado!');
-            return Redirect::route('portador.index');
+            return Redirect::route('grupo-cliente.index');
         }
         catch(\Exception $e){
             return view('errors.fk');

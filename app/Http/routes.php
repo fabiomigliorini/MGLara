@@ -81,7 +81,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('sub-grupo-produto/inativo','SubGrupoProdutoController@inativo');  
     Route::resource('sub-grupo-produto','SubGrupoProdutoController');           
          
-    
     /* Produto */
     Route::get('produto/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');           
     Route::resource('produto/busca-barras','ProdutoController@buscaPorBarras');
@@ -108,6 +107,9 @@ Route::group(['middleware' => 'auth'], function() {
    
     /* Portadores */
     Route::resource('portador', 'PortadorController');
+   
+    /* Grupos de cliente */
+    Route::resource('grupo-cliente', 'GrupoClienteController');
     
     
     Route::resource('produto-embalagem','ProdutoEmbalagemController');

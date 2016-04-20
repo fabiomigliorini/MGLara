@@ -35,7 +35,7 @@
             <!--<li><a href="#">Bancos</a><li>-->
             <!--<li><a href="#">Cheques</a><li>-->
             <!--<li><a href="#">Formas de pagamento</a><li>-->
-            <!--<li><a href="#">Grupos de cliente</a><li>-->
+            <li><a href="{{ url('grupo-cliente') }}">Grupos de cliente</a><li>
             <li><a href="{{ url('portador') }}">Portadores</a><li>
             <!--<li><a href="#">Tipo movimento titulos</a><li>-->
             <!--<li><a href="#">Tipo titulos</a><li>-->
