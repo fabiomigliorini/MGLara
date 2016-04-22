@@ -113,6 +113,9 @@ Route::group(['middleware' => 'auth'], function() {
    
     /* Tipos de produto */
     Route::resource('tipo-produto', 'TipoProdutoController');
+   
+    /* Formas de pagamento */
+    Route::resource('forma-pagamento', 'FormaPagamentoController');
     
     
     Route::resource('produto-embalagem','ProdutoEmbalagemController');

@@ -17,7 +17,7 @@ abstract class Controller extends BaseController
     
     protected $datas;
     protected $numericos;
-    
+
 //    public static function store(Request $request)
 //    {
 //        $this->converteDatas(['data' => $request->input('data')]);

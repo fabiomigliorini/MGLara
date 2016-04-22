@@ -31,7 +31,6 @@ class TipoProduto extends MGModel
         'alteracao',
         'criacao',
     ];
-  
     
     public function validate() {
         $this->_regrasValidacao = [
@@ -43,7 +42,6 @@ class TipoProduto extends MGModel
         return parent::validate();
     }    
     
-
     // Chaves Estrangeiras
     public function UsuarioAlteracao()
     {
