@@ -151,8 +151,8 @@ return [
         MGLara\Providers\RouteServiceProvider::class,
         MGLara\Providers\LanguageProvider::class,
         MGLara\Providers\ValidatorServiceProvider::class,
-        MGLara\Providers\ProdutoServiceProvider::class
-
+        MGLara\Providers\ProdutoServiceProvider::class,
+        MGLara\Providers\BreadcrumbsServiceProvider::class
     ],
 
     /*
@@ -203,9 +203,9 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
         
         /* Collective*/
-        'Form'      => Collective\Html\FormFacade::class,
+        'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
-
+        'Breadcrumbs' => MGLara\Breadcrumbs\Facade::class,
     ],
 
 ];
