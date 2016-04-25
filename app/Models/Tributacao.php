@@ -38,20 +38,21 @@ class Tributacao extends MGModel
         'alteracao',
         'criacao',
     ];
-    
+  
     public function validate() {
         
-
         $this->_regrasValidacao = [
-            'tributacao' => 'required|min:2', 
-        ];    
+            'tributacao' => 'required',
+            'aliquotaicmsecf' => 'required',
+        ];
+    
         $this->_mensagensErro = [
-            'tributacao.required' => 'Grupo de produto nao pode ser vazio.',
+            'tributacao.required' => 'Tributação não pode ser vazio.',
+            'aliquotaicmsecf.required' => 'Aliquota ICMS ECF não pode ser vazio.',
         ];
         
-        parent::validate();
+        return parent::validate();
     }    
-    
 
     // Chaves Estrangeiras
     public function UsuarioAlteracao()
@@ -80,12 +81,31 @@ class Tributacao extends MGModel
     {
         return $this->hasMany(TributacaoNaturezaOperacao::class, 'codtributacao', 'codtributacao');
     }    
+
+    // Buscas 
+    public static function filterAndPaginate($codtributacao, $tributacao)
+    {
+        return Tributacao::codtributacao(numeroLimpo($codtributacao))
+            ->tributacao($tributacao)
+            ->orderBy('tributacao', 'ASC')
+            ->paginate(20);
+    }
+    
+    public function scopeCodtributacao($query, $codtributacao)
+    {
+        if (trim($codtributacao) === '')
+            return;
+        
+        $query->where('codtributacao', $codtributacao);
+    }
     
     public function scopeTributacao($query, $tributacao)
     {
-        if (trim($tributacao) != "")
-        {
-            $query->where('tributacao', "ILIKE", "%$tributacao%");
-        }
-    }    
+        if (trim($tributacao) === '')
+            return;
+        
+        $tributacao = explode(' ', $tributacao);
+        foreach ($tributacao as $str)
+            $query->where('tributacao', 'ILIKE', "%$str%");
+    }
 }

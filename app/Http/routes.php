@@ -108,6 +108,9 @@ Route::group(['middleware' => 'auth'], function() {
     /* Portadores */
     Route::resource('portador', 'PortadorController');
    
+    /* Tributações */
+    Route::resource('tributacao', 'TributacaoController');
+   
     /* Grupos de cliente */
     Route::resource('grupo-cliente', 'GrupoClienteController');
    

@@ -69,7 +69,7 @@
             <!--<li><a href="#">Empresas</a></li>-->
             <!--<li><a href="#">Naturezas de operação</a></li>-->
             <li><a href="{{ url('pais') }}">Países, estados, e cidades</a></li>
-            <!--<li><a href="#">Tributações</a></li>-->
+            <li><a href="{{ url('tributacao') }}">Tributações</a></li>
           </ul>
         </li>
         <li class="dropdown">
