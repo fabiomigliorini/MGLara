@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use MGLara\Models\Produto;
 use MGLara\Models\ProdutoBarra;
 use MGLara\Models\ProdutoEmbalagem;
+use MGLara\Models\ProdutoHistoricoPreco;
 
 class ProdutoServiceProvider extends ServiceProvider
 {
@@ -47,6 +48,24 @@ class ProdutoServiceProvider extends ServiceProvider
                 return false;
             }
         });
+        
+        Produto::updated(function ($produto) {
+            if($produto->getOriginal('preco') != $produto->preco)
+            {
+                $model = new ProdutoHistoricoPreco();
+                $model->codproduto  = $produto->codproduto;
+                $model->precoantigo = $produto->getOriginal('preco');
+                $model->preconovo   = $produto->preco;
+                try {
+                    $model->save();
+                    return true;
+                } catch (Exception $ex) {
+                    return false;
+                }
+                
+            }
+        }); 
+        
     }
 
     /**

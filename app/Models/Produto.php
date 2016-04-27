@@ -70,7 +70,11 @@ class Produto extends MGModel
         'alteracao',
         'criacao',
     ];
-
+    
+    public function getPrecocAttribute()
+    {
+        return $this->preco;
+    }
     
     public function validate() {
         if ($this->codproduto) {
