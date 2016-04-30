@@ -714,7 +714,7 @@ class Produto extends MGModel
         if( (empty($alteracao_de)) && (!empty($alteracao_ate)) )
             $alteracao_de = '1900-01-01 00:00:00.0';        
 
-        $query->whereBetween('criacao', [$alteracao_de, $alteracao_ate]);    
+        $query->whereBetween('alteracao', [$alteracao_de, $alteracao_ate]);    
     }
     
     public function scopeInativo($query, $inativo)

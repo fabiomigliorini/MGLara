@@ -119,6 +119,9 @@ Route::group(['middleware' => 'auth'], function() {
    
     /* Formas de pagamento */
     Route::resource('forma-pagamento', 'FormaPagamentoController');
+   
+    /* Histórico de preços */
+    Route::resource('produto-historico-preco', 'ProdutoHistoricoPrecoController');
     
     
     Route::resource('produto-embalagem','ProdutoEmbalagemController');

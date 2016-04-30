@@ -136,7 +136,6 @@ h1.header {
     font-weight: bold;
     margin: 8px 0 0;
 }
-
 #produto-detalhes {
     padding-bottom: 30px;
 }
@@ -165,7 +164,9 @@ h1.header {
     position: relative;
     z-index: 100;
 }
-
+.produto-historico-preco > .list-group-item {
+    padding: 10px 0;
+}
 
 /* Marcas */
 .marcas-pagination {
