@@ -58,7 +58,7 @@
         'action' => ['GrupoProdutoController@show', $model->codgrupoproduto],        
         'method' => 'GET', 
         'class' => 'navbar-form navbar-right pull-right', 
-        'id'=> 'query-sub-grupo-produto', 
+        'id'=> 'sub-grupo-produto-search', 
         'role' => 'search', 'style'=>'margin:0']) !!}
     
         <div class="form-group">
@@ -69,6 +69,7 @@
         </div>
         <div class="form-group">
             <select class="form-control" name="inativo" id="inativo">
+                <option value=""></option>
                 <option value="0">Todos</option>
                 <option value="1" selected="selected">Ativos</option>
                 <option value="2">Inativos</option>
@@ -339,6 +340,10 @@ function iniciaProcesso(tipo)
 }
 
 $(document).ready(function() {
+    $('#sub-grupo-produto-search').change(function() {
+        this.submit();
+    });     
+   
     $('#btnBuscaCodProdutoMovimento').click(function (e) {
         buscaCodProduto('Movimento');
     });

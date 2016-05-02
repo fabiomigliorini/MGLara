@@ -3,7 +3,7 @@
   {!! Form::model(Request::all(), [
     'method' => 'GET', 
     'class' => 'form-inline',
-    'id' => 'grupousuario-search',
+    'id' => 'grupo-usuario-search',
     'role' => 'search'
   ])!!}
   <div class="form-group">
@@ -51,6 +51,9 @@
 @section('inscript')
 <script type="text/javascript">
   $(document).ready(function() {
+      $('#grupo-usuario-search').change(function() {
+        this.submit();
+      });       
       $(".check-permissao").bootstrapSwitch('size', 'small');
       $('.check-permissao').on('switchChange.bootstrapSwitch', function(event, state) {
           var grupo = '<?php echo $model->codgrupousuario;?>';

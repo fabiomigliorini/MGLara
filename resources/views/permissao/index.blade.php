@@ -56,7 +56,9 @@
 @section('inscript')
 <script type="text/javascript">
   $(document).ready(function() {
-      
+    $('#permissao-search').change(function() {
+        this.submit();
+    });       
   });
 </script>
 @endsection

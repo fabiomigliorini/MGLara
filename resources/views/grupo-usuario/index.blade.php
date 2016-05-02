@@ -16,7 +16,7 @@
     'route' => 'grupo-usuario.index', 
     'method' => 'GET', 
     'class' => 'form-inline',
-    'id' => 'grupousuario-search',
+    'id' => 'grupo-usuario-search',
     'role' => 'search'
   ])!!}
   <div class="form-group">
@@ -53,7 +53,9 @@
 @section('inscript')
 <script type="text/javascript">
   $(document).ready(function() {
-      
+    $('#grupo-usuario-search').change(function() {
+        this.submit();
+    });       
   });
 </script>
 @endsection

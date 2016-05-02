@@ -35,7 +35,7 @@ foreach($ess as $es)
 //dd($arr_saldos);
 ?>
     <div class="col-md-6">
-    {!! Form::model(Request::all(), ['route' => 'marca.index', 'method' => 'GET', 'class' => 'navbar-form navbar-right pull-right', 'id'=> 'query-marcas', 'role' => 'search', 'style'=>'margin:0']) !!}
+    {!! Form::model(Request::all(), ['route' => 'marca.index', 'method' => 'GET', 'class' => 'navbar-form navbar-right pull-right', 'id'=> 'marca-search', 'role' => 'search', 'style'=>'margin:0']) !!}
         <div class="form-group">
             <div class="col-md-2">{!! Form::number('codmarca', null, ['class' => 'form-control', 'placeholder' => '#', 'style'=>'width:100px']) !!}</div>
         </div>
@@ -44,8 +44,9 @@ foreach($ess as $es)
         </div>
         <div class="form-group">
             <select class="form-control" name="inativo" id="inativo">
+                <option value=""></option>
                 <option value="0">Todos</option>
-                <option value="1" selected="selected">Ativos</option>
+                <option value="1">Ativos</option>
                 <option value="2">Inativos</option>
             </select>
         </div>    
@@ -173,6 +174,10 @@ foreach($ess as $es)
 <script type="text/javascript">
   $(document).ready(function() {
     $('ul.pagination').removeClass('hide');
+    $('#marca-search').change(function() {
+        this.submit();
+    });
+        
   });
 </script>
 @endsection

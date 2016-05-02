@@ -15,6 +15,7 @@
 {!! Form::model(Request::all(), ['route' => 'imagem.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'imagem-search', 'role' => 'search'])!!}
     <div class="form-group">
         <select class="form-control" name="inativo" id="inativo">
+            <option value=""></option>
             <option value="0">Todos</option>
             <option value="1" selected="selected">Ativos</option>
             <option value="2">Inativos</option>

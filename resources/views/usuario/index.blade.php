@@ -65,22 +65,19 @@
 @section('inscript')
 <script type="text/javascript">
 $(document).ready(function() {
-  $('#codfilial, #codpessoa' ).change(function() {
-    $("#usuario-search").submit();
-  });    
+  $('#usuario-search').change(function() {
+      this.submit();
+  });
+  $(document).on('dp.change', '#codfilial, #codpessoa', function() {
+      $('#produto-search').submit();
+  });  
   $('#codfilial' ).prepend('<option value="" selected=""></option>');
-
-
-
   $('#codfilial').select2({
       placeholder: 'Filial',
       allowClear: true,
       closeOnSelect: true,      
       width:'resolve'
   });  
-    
-
-    
     
  /* $('#codpessoa').select2({
     'minimumInputLength':3,
