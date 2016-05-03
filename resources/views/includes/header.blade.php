@@ -26,8 +26,8 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Financeiro <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <!--<li><a href="#">Pessoas</a><li>-->
-            <!--<li role="separator" class="divider"></li>-->
+            <li><a href="{{ url('pessoa') }}">Pessoas</a><li>
+            <li role="separator" class="divider"></li>
             <!--<li><a href="#">Liquidações</a><li>-->
             <!--<li><a href="#">Titulos</a><li>-->
             <!--<li><a href="#">Agrupamentos</a><li>-->

@@ -80,6 +80,13 @@ namespace MGLara\Models;
 
 class Pessoa extends MGModel
 {
+    const NOTAFISCAL_TRATAMENTOPADRAO = 0;
+    const NOTAFISCAL_SEMPRE = 1;
+    const NOTAFISCAL_SOMENTE_FECHAMENTO = 2;
+    const NOTAFISCAL_NUNCA = 9;
+
+    const CONSUMIDOR = 1;
+        
     protected $table = 'tblpessoa';
     protected $primaryKey = 'codpessoa';
     protected $fillable = [
@@ -131,6 +138,21 @@ class Pessoa extends MGModel
         'alteracao',
         'criacao',
     ];
+    
+    public function getCobrancanomesmoenderecoAttribute()
+    {
+        if (
+            ($this->enderecocobranca    <>  $this->endereco   ) or 
+            ($this->numerocobranca      <>  $this->numero     ) or 
+            ($this->complementocobranca <>  $this->complemento) or 
+            ($this->bairrocobranca      <>  $this->bairro     ) or 
+            ($this->codcidadecobranca   <>  $this->codcidade  ) or 
+            ($this->cepcobranca         <>  $this->cep        ) 
+           )
+            return false;
+        else
+            return true;
+    }    
     
     public function validate() {
         
@@ -256,14 +278,100 @@ class Pessoa extends MGModel
         return $this->hasMany(Usuario::class, 'codpessoa', 'codpessoa');
     }    
      
-
-
+    // Buscas 
+    public static function filterAndPaginate($id, $pessoa, $cnpj, $email, $telefone, $inativo, $codcidade, $codgrupocliente)
+    {
+        return Pessoa::id(numeroLimpo($id))
+            ->pessoa($pessoa)
+            ->cnpj($cnpj)
+            ->email($email)
+            ->telefone($telefone)
+            ->inativo($inativo)
+            ->cidade($codcidade)
+            ->grupocliente($codgrupocliente)
+            ->orderBy('fantasia', 'ASC')
+            ->paginate(20);
+    }
+    
+    public function scopeId($query, $id)
+    {
+        if (trim($id) === '')
+            return;
+        
+        $query->where('codpessoa', $codpessoa);
+    }
     
     public function scopePessoa($query, $pessoa)
     {
-        if (trim($pessoa) != "")
-        {
-            $query->where('pessoa', "ILIKE", "%$pessoa%");
-        }
-    } 
+        if (trim($pessoa) === '')
+            return;
+        
+        $pessoa = explode(' ', $pessoa);
+        foreach ($pessoa as $str)
+            $query->where('fantasia', 'ILIKE', "%$str%");
+            $query->where('pessoa', 'ILIKE', "%$str%");
+    }
+    
+    public function scopeCnpj($query, $cnpj)
+    {
+        if (trim($cnpj) === '')
+            return;
+        
+        $cnpj = explode(' ', $cnpj);
+        foreach ($cnpj as $str)
+            $query->where('cnpj', 'ILIKE', "%$str%");
+    }
+    
+    public function scopeEmail($query, $email)
+    {
+        if (trim($email) === '')
+            return;
+        
+        $email = explode(' ', $email);
+        foreach ($email as $str)
+            $query->where('email', 'ILIKE', "%$str%");
+            $query->where('emailnfe', 'ILIKE', "%$str%");
+            $query->where('emailcobranca', 'ILIKE', "%$str%");
+    }
+    
+    public function scopeTelefone($query, $telefone)
+    {
+        if (trim($telefone) === '')
+            return;
+        
+        $telefone = explode(' ', $telefone);
+        foreach ($telefone as $str)
+            $query->where('telefone1', 'ILIKE', "%$str%");
+            $query->where('telefone2', 'ILIKE', "%$str%");
+            $query->where('telefone3', 'ILIKE', "%$str%");
+    }
+    
+    public function scopeInativo($query, $inativo)
+    {
+        if (trim($inativo) === '')
+            $query->whereNull('inativo');
+        
+        if($inativo == 1)
+            $query->whereNull('inativo');
+
+        if($inativo == 2)
+            $query->whereNotNull('inativo');
+    }
+    
+    public function scopeCidade($query, $codcidade)
+    {
+        if (trim($codcidade) === '')
+            return;
+        
+        $query->where('codcidade', $codcidade);
+        $query->where('codcidadecobranca', $codcidade);
+    }    
+    
+    public function scopeGrupocliente($query, $codgrupocliente)
+    {
+        if (trim($codgrupocliente) === '')
+            return;
+        
+        $query->where('codgrupocliente', $codgrupocliente);
+    }    
 }

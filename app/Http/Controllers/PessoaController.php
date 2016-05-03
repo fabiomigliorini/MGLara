@@ -5,6 +5,8 @@ namespace MGLara\Http\Controllers;
 use Illuminate\Http\Request;
 
 use MGLara\Http\Requests;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Pessoa;
 
@@ -15,9 +17,19 @@ class PessoaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
+    public function index(Request $request) {
+        $model = Pessoa::filterAndPaginate(
+            $request->get('id'), 
+            $request->get('pessoa'), 
+            $request->get('cnpj'), 
+            $request->get('email'), 
+            $request->get('telefone'), 
+            $request->get('inativo'), 
+            $request->get('cidade'), 
+            $request->get('grupocliente')
+        );
+        
+        return view('pessoa.index', compact('model'));
     }
 
     /**
@@ -27,7 +39,8 @@ class PessoaController extends Controller
      */
     public function create()
     {
-        //
+        $model = new Pessoa();
+        return view('pessoa.create', compact('model'));
     }
 
     /**
@@ -38,7 +51,14 @@ class PessoaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $model = new Pessoa($request->all());
+        
+        if (!$model->validate())
+            $this->throwValidationException($request, $model->_validator);
+        
+        $model->save();
+        Session::flash('flash_create', 'Registro inserido.');
+        return redirect("pessoa/$model->codpessoa");    
     }
 
     /**
@@ -47,9 +67,10 @@ class PessoaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        //
+        $model = Pessoa::find($id);
+        return view('pessoa.show', compact('model', 'estados'));
     }
 
     /**
@@ -60,7 +81,8 @@ class PessoaController extends Controller
      */
     public function edit($id)
     {
-        //
+        $model = Pessoa::findOrFail($id);
+        return view('pessoa.edit',  compact('model'));
     }
 
     /**
@@ -72,7 +94,16 @@ class PessoaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $model = Pessoa::findOrFail($id);
+        $model->fill($request->all());
+
+        if (!$model->validate())
+            $this->throwValidationException($request, $model->_validator);
+
+        $model->save();
+        
+        Session::flash('flash_update', 'Registro atualizado.');
+        return redirect("pessoa/$model->codpessoa"); 
     }
 
     /**
@@ -83,7 +114,14 @@ class PessoaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+            Pessoa::find($id)->delete();
+            Session::flash('flash_delete', 'Registro deletado!');
+            return Redirect::route('pessoa.index');
+        }
+        catch(\Exception $e){
+            return view('errors.fk');
+        }     
     }
 
     public function ajax(Request $request)

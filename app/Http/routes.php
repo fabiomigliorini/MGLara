@@ -100,6 +100,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('estado','EstadoController');
     
     /* Cidades */
+    Route::resource('cidade/ajax','CidadeController@ajax');
     Route::resource('cidade','CidadeController');
    
     /* Unidades de medida */

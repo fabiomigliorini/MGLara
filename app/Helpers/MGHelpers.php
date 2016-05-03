@@ -131,3 +131,124 @@ if(!function_exists('linkRel')) {
         return "<a href='$link'>$text</a>";
     }
 }
+
+if(!function_exists('formataCnpjCpf')) {
+    function formataCnpjCpf ($string, $fisica = '?')
+    {
+        if ($fisica == '?') {
+            $string = numeroLimpo($string);
+            if (strlen($string) <= 11)
+                $fisica = true;
+            else
+                $fisica = false;
+        }
+
+        if ($fisica)
+            return formataPorMascara($string, '###.###.###-##');
+        else
+            return formataPorMascara($string, '##.###.###/####-##');
+    }
+}
+
+if(!function_exists('formataPorMascara')) {
+    function formataPorMascara($string, $mascara, $somenteNumeros = true)
+    {
+        if ($somenteNumeros)
+            $string = numeroLimpo($string);
+        /* @var $caracteres int */
+        $caracteres = substr_count($mascara, '#');
+        $string = str_pad($string, $caracteres, "0", STR_PAD_LEFT);
+        $indice = -1;
+        for ($i=0; $i < strlen($mascara); $i++):
+            if ($mascara[$i]=='#') $mascara[$i] = $string[++$indice];
+        endfor;
+        return $mascara;
+    }
+}
+
+if(!function_exists('formataInscricaoEstadual')) {
+    function formataInscricaoEstadual($string, $siglaestado)
+    {
+        $mascara = array(
+            'AC' => '##.###.###/###-##',
+            'AL' => '#########',
+            'AP' => '#########',
+            'AM' => '##.###.###-#',
+            'BA' => '#######-##',
+            'CE' => '########-#',
+            'DF' => '###########-##',
+            'ES' => '###.###.##-#',
+            'GO' => '##.###.###-#',
+            'MA' => '#########',
+            'MT' => '##.###.###-#',
+            'MS' => '#########',
+            'MG' => '###.###.###/####',
+            'PA' => '##-######-#',
+            'PB' => '########-#',
+            'PR' => '########-##',
+            'PE' => '##.#.###.#######-#',
+            'PI' => '#########',
+            'RJ' => '##.###.##-#',
+            'RN' => '##.###.###-#',
+            'RS' => '###-#######',
+            'RO' => '#############-#',
+            'RR' => '########-#',
+            'SC' => '###.###.###',
+            'SP' => '###.###.###.###',
+            'SE' => '#########-#',
+            'TO' => '###########',			
+        );
+
+        if (!array_key_exists($siglaestado, $mascara))
+            return $string;
+        else
+            return formataPorMascara($string, $mascara[$siglaestado]);
+    }
+}
+
+if(!function_exists('formataEndereco')) {    
+    function formataEndereco($endereco = null, $numero = null, $complemento = null, $bairro = null, $cidade = null, $estado = null, $cep = null, $multilinha = false)
+    {
+        $retorno = $endereco;
+
+        if (!empty($numero))
+            $retorno .= ', ' . $numero;
+
+        $q = $retorno;
+
+        if (!empty($complemento))
+            $retorno .= ' - ' . $complemento;
+
+        if (!empty($bairro))
+            $retorno .= ' - ' . $bairro;
+
+        if (!empty($cidade)){
+            $retorno .= ' - ' . $cidade;
+            $q .= ' - ' . $cidade;
+        }
+
+        if (!empty($estado)){
+            $retorno .= ' / ' . $estado;
+            $q .= ' / ' . $estado;
+        }
+
+        if (!empty($cep))
+            $retorno .= ' - ' . formataCep($cep);
+
+        $q = urlencode($q);
+
+        $retorno =  html_entity_decode($retorno);
+
+        if ($multilinha)
+            $retorno = str_replace (" - ", "<br>", $retorno);
+
+        return "<a href='http://maps.google.com/maps?q=$q' target='_blank'>$retorno</a>";
+    }
+}
+
+if(!function_exists('formataCep')) {
+    function formataCep ($string)
+    {
+        return formataPorMascara($string, "##.###-###");
+    }
+}

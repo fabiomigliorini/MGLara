@@ -62,7 +62,6 @@ class ProdutoServiceProvider extends ServiceProvider
                 } catch (Exception $ex) {
                     return false;
                 }
-                
             }
         }); 
         
