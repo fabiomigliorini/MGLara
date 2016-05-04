@@ -90,20 +90,16 @@
                 {{ $row->telefone1 }}
                 @if($row->telefone2) {{ '/ '.$row->telefone2 }}@endif
                 @if($row->telefone3) {{ '/ '.$row->telefone3 }}@endif
-                
-                <small class="muted">
-                    {{ formataEndereco($row->endereco, $row->numero, $row->complemento, $row->bairro, $row->Cidade->cidade, $row->Cidade->Estado->sigla, $row->cep) }}
-                </small>
+                <div class="muted small">
+                    {!! formataEndereco($row->endereco, $row->numero, $row->complemento, $row->bairro, $row->Cidade->cidade, $row->Cidade->Estado->sigla, $row->cep) !!}
+                </div>
                 @if(!$row->cobrancanomesmoendereco)
-                    <br>
-                    <small class="muted">
-                        {{ formataEndereco($row->enderecocobranca, $row->numerocobranca, $row->complementocobranca, $row->bairrocobranca, $row->CidadeCobranca->cidade, $row->CidadeCobranca->Estado->sigla, $row->cepcobranca) }}
-                    </small>
+                <div class="muted small">
+                    {{ formataEndereco($row->enderecocobranca, $row->numerocobranca, $row->complementocobranca, $row->bairrocobranca, $row->CidadeCobranca->cidade, $row->CidadeCobranca->Estado->sigla, $row->cepcobranca) }}
+                </div>
                 @endif
-                
                 @if(!empty($row->contato) or !empty($row->email) or !empty($row->emailnfe) or !empty($row->emailcobranca))
-                <br>
-                <small class="muted">
+                <div class="muted small">
                     <a href="mailto:{{ $row->email }}">{{ $row->email }}</a>
                     @if($row->email <> $row->emailnfe)
                         <a href="mailto:{{ $row->emailnfe }}">{{ $row->emailnfe }}</a>
@@ -111,7 +107,7 @@
                     @if($row->email <> $row->emailcobranca and $row->emailnfe <> $row->emailcobranca)
                         <a href="mailto:{{ $row->emailcobranca }}">{{ $row->emailcobranca }}</a>
                     @endif
-                </small>
+                </div>
                 @endif
             </div>                            
             <div class="col-md-2 text-right text-muted small">

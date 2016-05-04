@@ -237,12 +237,12 @@ if(!function_exists('formataEndereco')) {
 
         $q = urlencode($q);
 
-        $retorno =  html_entity_decode($retorno);
+        //$retorno =  html_entity_decode($retorno);
 
         if ($multilinha)
             $retorno = str_replace (" - ", "<br>", $retorno);
-
-        return "<a href='http://maps.google.com/maps?q=$q' target='_blank'>$retorno</a>";
+        
+        return "<a href='http://maps.google.com/maps?q=$q' target='_blank'>". $retorno."</a>";
     }
 }
 
