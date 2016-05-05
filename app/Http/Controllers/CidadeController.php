@@ -118,17 +118,7 @@ class CidadeController extends Controller
     
     public function ajax(Request $request){
         if($request->get('q')) {
-            $model = Cidade::cidade($request->get('q'))/*->select('codcidade as id', 'cidade', 'estado')*/->paginate(10);
-
-            foreach ($model as $item) 
-            {
-                $resultado[] = array(
-                    'id'        => $item['codcidade'],
-                    'cidade'    => $item['cidade'],
-                    'uf'        => $item->Estado->sigla,
-                );
-            }            
-
+            $model = Cidade::select2($request->get('q'));
             return response()->json($model);       
         } elseif($request->get('id')) {
             $model = Cidade::find($request->get('id'));

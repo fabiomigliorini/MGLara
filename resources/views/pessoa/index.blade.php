@@ -8,7 +8,7 @@
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li>
-                <a href="{{ url("pessoa/create") }}"><span class="glyphicon glyphicon-plus"></span> Novo</a>
+                <a href="{{ url("pessoa/create") }}"><span class="glyphicon glyphicon-plus"></span> Nova</a>
             </li> 
         </ul>
     </div>
@@ -24,16 +24,16 @@
         {!! Form::text('pessoa', null, ['class' => 'form-control', 'placeholder' => 'Nome']) !!}
     </div>
 <div class="form-group">
-        {!! Form::text('cnpj', null, ['class' => 'form-control', 'placeholder' => 'CNPJ/CPF', ' style'=>'width: 120px']) !!}
+        {!! Form::text('cnpj', null, ['class' => 'form-control', 'placeholder' => 'CNPJ/CPF', ' style'=>'width: 110px']) !!}
     </div>        
     <div class="form-group">
-        {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'E-mail', ' style'=>'width: 120px']) !!}
+        {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'E-mail', ' style'=>'width: 110px']) !!}
     </div>        
     <div class="form-group">
-        {!! Form::text('telefone', null, ['class' => 'form-control', 'placeholder' => 'Fone', ' style'=>'width: 120px']) !!}
+        {!! Form::text('telefone', null, ['class' => 'form-control', 'placeholder' => 'Fone', ' style'=>'width: 110px']) !!}
     </div>
     <div class="form-group">
-        <select placeholder="Inativo" class="form-control" name="inativo" id="inativo" style="width: 120px;">
+        <select placeholder="Inativo" class="form-control" name="inativo" id="inativo" style="width: 80px;">
             <option value=""></option>
             <option value="0">Todos</option>
             <option value="1">Ativos</option>
@@ -41,7 +41,7 @@
         </select>
     </div>
     <div class="form-group">
-        {!! Form::text('cidade', null, ['class' => 'form-control', 'id'=> 'cidade', 'style'=> 'width: 180px;']) !!}
+        {!! Form::text('cidade', null, ['class' => 'form-control', 'id'=> 'cidade', 'style'=> 'width: 230px;']) !!}
     </div>
     <div class="form-group">
         <div style="width: 180px">{!! Form::select('grupocliente', $grupos, ['class'=> 'form-control'], ['id' => 'grupocliente', 'style'=>'width:100%']) !!}</div>
@@ -95,7 +95,15 @@
                 </div>
                 @if(!$row->cobrancanomesmoendereco)
                 <div class="muted small">
-                    {{ formataEndereco($row->enderecocobranca, $row->numerocobranca, $row->complementocobranca, $row->bairrocobranca, $row->CidadeCobranca->cidade, $row->CidadeCobranca->Estado->sigla, $row->cepcobranca) }}
+                    {{ formataEndereco(
+                        $row->enderecocobranca, 
+                        $row->numerocobranca, 
+                        $row->complementocobranca, 
+                        $row->bairrocobranca, 
+                        $row->CidadeCobranca->cidade, 
+                        $row->CidadeCobranca->Estado->sigla, 
+                        $row->cepcobranca
+                    ) }}
                 </div>
                 @endif
                 @if(!empty($row->contato) or !empty($row->email) or !empty($row->emailnfe) or !empty($row->emailcobranca))
@@ -139,42 +147,52 @@ $(document).ready(function() {
         allowClear:true,
         closeOnSelect:true
     })<?php echo (app('request')->input('grupocliente') ? ".select2('val'," .app('request')->input('grupocliente').");" : ';'); ?>    
+    
     $('#cidade').select2({
-        minimumInputLength:3,
-        allowClear:true,
-        closeOnSelect:true,
+        minimumInputLength: 3,
+        allowClear: true,
+        closeOnSelect: true,
         placeholder:'Cidade',
-        formatResult:function(item) {
+        formatResult: function(item) {
             var markup = "";
-            markup    += "<b>" + item.cidade + "</b>&nbsp;";
+            markup    += item.cidade + "<span class='pull-right'>" + item.uf + "</span>";
             return markup;
         },
-        formatSelection:function(item) { 
+        formatSelection: function(item) { 
             return item.cidade; 
         },
         ajax:{
-            url:baseUrl+"/cidade/ajax",
-            dataType:'json',
-            quietMillis:500,
-            data:function(term, page) { 
-                return {q: term}; 
+            url: baseUrl+'/cidade/ajax',
+            dataType: 'json',
+            quietMillis: 500,
+            data: function(term, current_page) { 
+                return {
+                    q: term, 
+                    per_page: 10, 
+                    current_page: current_page
+                }; 
             },
-            results:function(data, page) {
-                var more = (page * 20) < data.total;
-                return {results: items.data};
+            results:function(data,page) {
+                //var more = (current_page * 20) < data.total;
+                return {
+                    results: data.data, 
+                    //more: data.mais
+                };
             }
         },
-        initSelection:function (element, callback) {
+        initSelection: function (element, callback) {
             $.ajax({
                 type: "GET",
-                url: baseUrl+"/cidade/ajax",
-                data: "id="+$('#cidade').val(),
+                url: baseUrl+'/cidade/ajax',
+                data: "id=<?php if(isset($_GET['cidade'])){echo $_GET['cidade'];}?>",
                 dataType: "json",
-                success: function(result) { callback(result); }
+                success: function(result) { 
+                    callback(result); 
+                }
             });
         },
         width:'resolve'
-    });    
+    });      
 
 });
 </script>

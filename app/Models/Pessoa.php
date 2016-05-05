@@ -183,7 +183,7 @@ class Pessoa extends MGModel
 
     public function CidadeCobranca()
     {
-        return $this->belongsTo(Cidade::class, 'codcidade', 'codcidadecobranca');
+        return $this->belongsTo(Cidade::class, 'codcidadecobranca', 'codcidade');
     }
 
     public function EstadoCivil()
@@ -233,7 +233,7 @@ class Pessoa extends MGModel
         return $this->hasMany(Filial::class, 'codpessoa', 'codpessoa');
     }
 
-    public function LiquidacaotituloS()
+    public function LiquidacaoTituloS()
     {
         return $this->hasMany(LiquidacaoTitulo::class, 'codpessoa', 'codpessoa');
     }
@@ -364,7 +364,7 @@ class Pessoa extends MGModel
             return;
         
         $query->where('codcidade', $codcidade);
-        $query->where('codcidadecobranca', $codcidade);
+        $query->orWhere('codcidadecobranca', $codcidade);
     }    
     
     public function scopeGrupocliente($query, $codgrupocliente)

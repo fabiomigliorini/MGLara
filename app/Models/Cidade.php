@@ -109,7 +109,16 @@ class Cidade extends MGModel
             ->orderBy('cidade', 'ASC')
             ->paginate(20);
     }
-        
+    
+    public static function select2($cidade)
+    {
+        return Cidade::cidade($cidade)
+            ->join('tblestado', 'tblcidade.codestado', '=', 'tblestado.codestado')
+            ->select('codcidade as id', 'cidade', 'tblestado.sigla as uf')
+            ->orderBy('cidade', 'ASC')
+            ->paginate(10);
+    }
+
     public function scopeCodestado($query, $codestado)
     {
         $query->where('codestado', $codestado);
@@ -150,5 +159,5 @@ class Cidade extends MGModel
         foreach ($sigla as $str)
             $query->where('sigla', 'ILIKE', "%$str%");
     }  
-    
+   
 }
