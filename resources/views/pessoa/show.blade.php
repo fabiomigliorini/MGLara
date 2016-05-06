@@ -3,11 +3,11 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
-            <li><a href="{{ url('ROTA') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="{{ url('ROTA/create') }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
-            <li><a href="{{ url("ROTA/$model->codROTA/edit") }}"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
+            <li><a href="{{ url('pessoa') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
+            <li><a href="{{ url('pessoa/create') }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
+            <li><a href="{{ url("pessoa/$model->codpessoa/edit") }}"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li>
-                {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['ROTA.destroy', $model->codROTA]]) !!}
+                {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['pessoa.destroy', $model->codpessoa]]) !!}
                 <span class="glyphicon glyphicon-trash"></span>
                 {!! Form::submit('Excluir') !!}
                 {!! Form::close() !!}
@@ -15,7 +15,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">{{ $model->ROTA }}</h1>
+<h1 class="header">{{ $model->pessoa }}</h1>
 <hr>
 <div class="row">
   <div class="col-lg-12">
@@ -23,11 +23,11 @@
         <tbody>  
           <tr> 
             <th class="col-md-2">#</th> 
-            <td class="col-md-10">{{ formataCodigo($model->codROTA) }}</td> 
+            <td class="col-md-10">{{ formataCodigo($model->codpessoa) }}</td> 
           </tr>
           <tr> 
-            <th>ENTIDADE</th> 
-            <td>{{ $model->ROTA }}</td> 
+            <th>Pessoa</th> 
+            <td>{{ $model->pessoa }}</td> 
           </tr>
         </tbody> 
       </table>
