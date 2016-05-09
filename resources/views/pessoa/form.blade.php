@@ -2,9 +2,13 @@
 
     use MGLara\Models\EstadoCivil;
     use MGLara\Models\Sexo;
+    use MGLara\Models\GrupoCliente;
+    use MGLara\Models\FormaPagamento;
 
-    $sexos        = [''=>''] + Sexo::lists('sexo', 'codsexo')->all();
-    $estadoscivil = [''=>''] + EstadoCivil::lists('estadocivil', 'codestadocivil')->all();
+    $sexos              = [''=>''] + Sexo::lists('sexo', 'codsexo')->all();
+    $estadoscivil       = [''=>''] + EstadoCivil::lists('estadocivil', 'codestadocivil')->all();
+    $grupos             = [''=>''] + GrupoCliente::lists('grupocliente', 'codgrupocliente')->all();
+    $formaspagamento    = [''=>''] + FormaPagamento::lists('formapagamento', 'codformapagamento')->all();
 
 ?>
 <div class="form-group">
@@ -20,12 +24,8 @@
     <div class="col-sm-3">{!! Form::text('contato', null, ['class'=> 'form-control', 'id'=>'contato']) !!}</div>
 </div>
 <div class="form-group">
-    <label for="codcidade" class="col-sm-2 control-label">{!! Form::label('Cidade:') !!}</label>
-    <div class="col-sm-3">{!! Form::text('codcidade', null, ['class'=> 'form-control', 'id'=>'codcidade']) !!}</div>
-</div>
-<div class="form-group">
     <label for="fisica" class="col-sm-2 control-label">{!! Form::label('Pessoa física:') !!}</label>
-    <div class="col-sm-10" id="wrapper-site">{!! Form::checkbox('fisica', null, null, ['id'=>'fisica', 'data-off-text' => 'Jurídica', 'data-on-text' => 'Física']) !!}</div>
+    <div class="col-sm-10">{!! Form::checkbox('fisica', null, null, ['id'=>'fisica', 'data-off-text' => 'Jurídica', 'data-on-text' => 'Física']) !!}</div>
 </div>
 <div class="form-group">
     <label for="cnpj" class="col-sm-2 control-label">{!! Form::label('CNPJ/CPF:') !!}</label>
@@ -35,8 +35,7 @@
     <label for="cnpj" class="col-sm-2 control-label">{!! Form::label('Inscrição Estadual:') !!}</label>
     <div class="col-sm-3">{!! Form::text('ie', null, ['class'=> 'form-control', 'id'=>'ie']) !!}</div>
 </div>
-
-<div id="fisica">
+<div id="pessoa-fisica" style="display: none">
     <h3>Dados Pessoa Física</h3>
     <div class="form-group">
         <label for="rg" class="col-sm-2 control-label">{!! Form::label('RG:') !!}</label>
@@ -57,31 +56,179 @@
 </div>
 <div class="form-group">
     <label for="cliente" class="col-sm-2 control-label">{!! Form::label('Cliente:') !!}</label>
-    <div class="col-sm-10" id="wrapper-site">{!! Form::checkbox('cliente', null, null, ['id'=>'cliente', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+    <div class="col-sm-10">{!! Form::checkbox('cliente', null, null, ['id'=>'cliente', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
 </div>
+<div id="dados-cliente"  style="display: none">
+    <h3>Dados Cliente</h3>
     <div class="form-group">
-        <label for="cep" class="col-sm-2 control-label">{!! Form::label('CEP:') !!}</label>
-        <div class="col-sm-2">{!! Form::text('cep', null, ['class'=> 'form-control', 'id'=>'cep']) !!}</div>
-    </div>  
+        <label for="codgrupocliente" class="col-sm-2 control-label">{!! Form::label('Grupo de Cliente:') !!}</label>
+        <div class="col-sm-3">{!! Form::select('codgrupocliente', $grupos, ['class'=> 'form-control'], ['id' => 'codgrupocliente', 'style'=>'width:100%']) !!}</div>
+        
+    </div>    
     <div class="form-group">
-        <label for="endereco" class="col-sm-2 control-label">{!! Form::label('Endereço:') !!}</label>
-        <div class="col-sm-3">{!! Form::text('endereco', null, ['class'=> 'form-control', 'id'=>'endereco']) !!}</div>
-    </div>  
+        <label for="consumidor" class="col-sm-2 control-label">{!! Form::label('Consumidor Final:') !!}</label>
+        <div class="col-sm-10">{!! Form::checkbox('consumidor', null, null, ['id'=>'consumidor', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+    </div>
     <div class="form-group">
-        <label for="numero" class="col-sm-2 control-label">{!! Form::label('Nº:') !!}</label>
-        <div class="col-sm-1">{!! Form::text('numero', null, ['class'=> 'form-control', 'id'=>'numero']) !!}</div>
-    </div>  
+        <label for="codformapagamento" class="col-sm-2 control-label">{!! Form::label('Forma de Pagamento:') !!}</label>
+        <div class="col-sm-4">{!! Form::select('codformapagamento', $formaspagamento, ['class'=> 'form-control'], ['id' => 'codformapagamento', 'style'=>'width:100%']) !!}</div>
+    </div>
     <div class="form-group">
-        <label for="complemento" class="col-sm-2 control-label">{!! Form::label('Complemento:') !!}</label>
-        <div class="col-sm-2">{!! Form::text('complemento', null, ['class'=> 'form-control', 'id'=>'complemento']) !!}</div>
-    </div>  
+        <label for="creditobloqueado" class="col-sm-2 control-label">{!! Form::label('Credito Bloqueado:') !!}</label>
+        <div class="col-sm-10">{!! Form::checkbox('creditobloqueado', null, null, ['id'=>'creditobloqueado', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+    </div>
     <div class="form-group">
-        <label for="bairro" class="col-sm-2 control-label">{!! Form::label('Bairro:') !!}</label>
-        <div class="col-sm-2">{!! Form::text('bairro', null, ['class'=> 'form-control', 'id'=>'bairro']) !!}</div>
-    </div>  
+        <label for="credito" class="col-sm-2 control-label">{!! Form::label('Limite de Credito:') !!}</label>
+        <div class="col-sm-2">{!! Form::text('credito', null, ['class'=> 'form-control', 'id'=>'credito']) !!}</div>
+    </div>
+    <div class="form-group">
+        <label for="toleranciaatraso" class="col-sm-2 control-label">{!! Form::label('Tolerância de Atraso:') !!}</label>
+        <div class="col-sm-2">{!! Form::text('toleranciaatraso', null, ['class'=> 'form-control', 'id'=>'toleranciaatraso']) !!}</div>
+    </div>
+    <div class="form-group">
+        <label for="mensagemvenda" class="col-sm-2 control-label">{!! Form::label('Mensagem de Venda:') !!}</label>
+        <div class="col-sm-2">{!! Form::text('mensagemvenda', null, ['class'=> 'form-control', 'id'=>'mensagemvenda']) !!}</div>
+    </div>
+    <div class="form-group">
+        <label for="desconto" class="col-sm-2 control-label">{!! Form::label('Desconto:') !!}</label>
+        <div class="col-sm-2">{!! Form::text('desconto', null, ['class'=> 'form-control', 'id'=>'desconto']) !!}</div>
+    </div>
+    <div class="form-group">
+        <label for="notafiscal" class="col-sm-2 control-label">{!! Form::label('Nota Fiscal:') !!}</label>
+        <div class="col-sm-2">{!! Form::text('notafiscal', null, ['class'=> 'form-control', 'id'=>'notafiscal']) !!}</div>
+    </div>    
+</div>
+<div class="form-group">
+    <label for="cep" class="col-sm-2 control-label">{!! Form::label('CEP:') !!}</label>
+    <div class="col-sm-2">{!! Form::text('cep', null, ['class'=> 'form-control', 'id'=>'cep']) !!}</div>
+</div>  
+<div class="form-group">
+    <label for="codcidade" class="col-sm-2 control-label">{!! Form::label('Cidade:') !!}</label>
+    <div class="col-sm-3">{!! Form::text('codcidade', null, ['class'=> 'form-control', 'id'=>'codcidade']) !!}</div>
+</div>
 
-
-
+<div class="form-group">
+    <label for="endereco" class="col-sm-2 control-label">{!! Form::label('Endereço:') !!}</label>
+    <div class="col-sm-3">{!! Form::text('endereco', null, ['class'=> 'form-control', 'id'=>'endereco']) !!}</div>
+</div>  
+<div class="form-group">
+    <label for="numero" class="col-sm-2 control-label">{!! Form::label('Número:') !!}</label>
+    <div class="col-sm-1">{!! Form::text('numero', null, ['class'=> 'form-control', 'id'=>'numero']) !!}</div>
+</div>  
+<div class="form-group">
+    <label for="complemento" class="col-sm-2 control-label">{!! Form::label('Complemento:') !!}</label>
+    <div class="col-sm-2">{!! Form::text('complemento', null, ['class'=> 'form-control', 'id'=>'complemento']) !!}</div>
+</div>
+<div class="form-group">
+    <label for="bairro" class="col-sm-2 control-label">{!! Form::label('Bairro:') !!}</label>
+    <div class="col-sm-2">{!! Form::text('bairro', null, ['class'=> 'form-control', 'id'=>'bairro']) !!}</div>
+</div>
+<div class="form-group">
+    <label for="cobrancanomesmoendereco" class="col-sm-2 control-label">{!! Form::label('Cobrança no Mesmo Endereço:') !!}</label>
+    <div class="col-sm-10">{!! Form::checkbox('cobrancanomesmoendereco', null, null, ['id'=>'cobrancanomesmoendereco', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+</div>
+<div id="endereco-cobranca">
+    <h3>Endereço de Cobrança</h3>
+    <div class="form-group">
+        <label for="cepcobranca" class="col-sm-2 control-label">{!! Form::label('CEP:') !!}</label>
+        <div class="col-sm-2">{!! Form::text('cepcobranca', null, ['class'=> 'form-control', 'id'=>'cepcobranca']) !!}</div>
+    </div>
+    <div class="form-group">
+        <label for="enderecocobranca" class="col-sm-2 control-label">{!! Form::label('Endereço:') !!}</label>
+        <div class="col-sm-3">{!! Form::text('enderecocobranca', null, ['class'=> 'form-control', 'id'=>'enderecocobranca']) !!}</div>
+    </div>
+    <div class="form-group">
+        <label for="numerocobranca" class="col-sm-2 control-label">{!! Form::label('Número:') !!}</label>
+        <div class="col-sm-1">{!! Form::text('numerocobranca', null, ['class'=> 'form-control', 'id'=>'numerocobranca']) !!}</div>
+    </div>
+    <div class="form-group">
+        <label for="complementocobranca" class="col-sm-2 control-label">{!! Form::label('Complemento:') !!}</label>
+        <div class="col-sm-2">{!! Form::text('complementocobranca', null, ['class'=> 'form-control', 'id'=>'complementocobranca']) !!}</div>
+    </div>
+    <div class="form-group">
+        <label for="bairrocobranca" class="col-sm-2 control-label">{!! Form::label('Bairro:') !!}</label>
+        <div class="col-sm-2">{!! Form::text('bairrocobranca', null, ['class'=> 'form-control', 'id'=>'bairrocobranca']) !!}</div>
+    </div>
+    <div class="form-group">
+        <label for="codcidadecobranca" class="col-sm-2 control-label">{!! Form::label('Cidade:') !!}</label>
+        <div class="col-sm-3">{!! Form::text('codcidadecobranca', null, ['class'=> 'form-control', 'id'=>'codcidadecobranca']) !!}</div>
+    </div>    
+</div>
+<div class="form-group">
+    <label for="telefone1" class="col-sm-2 control-label">{!! Form::label('Telefone 1:') !!}</label>
+    <div class="col-sm-2">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
+            {!! Form::text('telefone1', null, ['class'=> 'form-control', 'id'=>'telefone1']) !!}
+        </div>
+    </div>
+</div>  
+<div class="form-group">
+    <label for="telefone2" class="col-sm-2 control-label">{!! Form::label('Telefone 2:') !!}</label>
+    <div class="col-sm-2">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
+            {!! Form::text('telefone2', null, ['class'=> 'form-control', 'id'=>'telefone2']) !!}
+        </div>
+    </div>
+</div>  
+<div class="form-group">
+    <label for="telefone3" class="col-sm-2 control-label">{!! Form::label('Telefone 3:') !!}</label>
+    <div class="col-sm-2">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
+            {!! Form::text('telefone3', null, ['class'=> 'form-control', 'id'=>'telefone3']) !!}
+        </div>
+    </div>
+</div>  
+<div class="form-group">
+    <label for="email" class="col-sm-2 control-label">{!! Form::label('Email:') !!}</label>
+    <div class="col-sm-3">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+            {!! Form::text('email', null, ['class'=> 'form-control', 'id'=>'email']) !!}
+        </div>
+    </div>
+</div>  
+<div class="form-group">
+    <label for="emailnfe" class="col-sm-2 control-label">{!! Form::label('Email para NFe:') !!}</label>
+    <div class="col-sm-3">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>  
+            {!! Form::text('emailnfe', null, ['class'=> 'form-control', 'id'=>'emailnfe']) !!}
+        </div>
+    </div>
+</div>  
+<div class="form-group">
+    <label for="emailcobranca" class="col-sm-2 control-label">{!! Form::label('Email para Cobrança:') !!}</label>
+    <div class="col-sm-3">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>        
+            {!! Form::text('emailcobranca', null, ['class'=> 'form-control', 'id'=>'emailcobranca']) !!}
+        </div>    
+    </div>
+</div>  
+<div class="form-group">
+    <label for="observacoes" class="col-sm-2 control-label">{!! Form::label('Observações:') !!}</label>
+    <div class="col-sm-5">{!! Form::textarea('observacoes', null, ['class'=> 'form-control', 'id'=>'observacoes']) !!}</div>
+</div>  
+<div class="form-group">
+    <label for="fornecedor" class="col-sm-2 control-label">{!! Form::label('Fornecedor:') !!}</label>
+    <div class="col-sm-10">{!! Form::checkbox('fornecedor', null, null, ['id'=>'fornecedor', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+</div>  
+<div class="form-group">
+    <label for="vendedor" class="col-sm-2 control-label">{!! Form::label('Vendedor:') !!}</label>
+    <div class="col-sm-10">{!! Form::checkbox('vendedor', null, null, ['id'=>'vendedor', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+</div>  
+<div class="form-group">
+    <label for="inativo" class="col-sm-2 control-label">{!! Form::label('Inativo desde:') !!}</label>
+    <div class="col-sm-3">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+            {!! Form::text('inativo', null, ['class'=> 'form-control text-center', 'id'=>'inativo']) !!}
+        </div>
+    </div> 
+</div>  
 <hr>
 <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
@@ -101,6 +248,7 @@ $(document).ready(function() {
             }
         });
     });
+    $('#fantasia, #pessoa, #codcidade, #cep, #endereco, #numero, #bairro, #telefone1, #email').prop('required', true);
     $('#codcidade').select2({
         minimumInputLength: 3,
         allowClear: true,
@@ -146,8 +294,43 @@ $(document).ready(function() {
         },
         width:'resolve'
     });      
+    
     $('#fisica').bootstrapSwitch('state', <?php echo ($model->fisica == 1 ? 'true' : 'false'); ?>);
+    $('input[name="fisica"]').on('switchChange.bootstrapSwitch', function(event, state) {
+        if (state === true) {
+            $("#pessoa-fisica").slideDown( "slow" );
+        } else {
+            $("#pessoa-fisica").slideUp( "slow" );
+        }
+    });
+    
     $('#cliente').bootstrapSwitch('state', <?php echo ($model->cliente == 1 ? 'true' : 'false'); ?>);
+    $('input[name="cliente"]').on('switchChange.bootstrapSwitch', function(event, state) {
+        if (state === true) {
+            $('#dados-cliente').slideDown('slow');
+        } else {
+            $('#dados-cliente').slideUp('slow');
+        }
+    });
+    
+    $('#cobrancanomesmoendereco').bootstrapSwitch('state', <?php echo ($model->enderecocobranca == 1 ? 'true' : 'false'); ?>);
+    $('input[name="cobrancanomesmoendereco"]').on('switchChange.bootstrapSwitch', function(event, state) {
+        if (state === true) {
+            $('#endereco-cobranca').slideUp('slow');
+        } else {
+            $('#endereco-cobranca').slideDown('slow');
+            $('#cepcobranca, #enderecocobranca, #numerocobranca, #codcidadecobranca, #bairrocobranca').prop('required', true);
+        }
+    });
+    
+    $('#vendedor').bootstrapSwitch('state', <?php echo ($model->vendedor == 1 ? 'true' : 'false'); ?>);
+    $('#fornecedor').bootstrapSwitch('state', <?php echo ($model->fornecedor == 1 ? 'true' : 'false'); ?>);
+    $('#consumidor').bootstrapSwitch('state', <?php echo ($model->consumidor == 1 ? 'true' : 'false'); ?>);
+    $('#creditobloqueado').bootstrapSwitch('state', <?php echo ($model->creditobloqueado == 1 ? 'true' : 'false'); ?>);
+    $('#inativo').datetimepicker({
+        locale: 'pt-br',
+        format: 'DD/MM/YYYY HH:mm:ss'
+    });    
     
     $('#codsexo').select2({
         placeholder: 'Sexo',
@@ -161,8 +344,38 @@ $(document).ready(function() {
         closeOnSelect: true
     })<?php echo (isset($model->codestadocivil) ? ".select2('val', $model->codestadocivil);" : ';');?>
     
+    $('#codgrupocliente').select2({
+        placeholder: 'Grupo Cliente',
+        allowClear: true,
+        closeOnSelect: true
+    })<?php echo (isset($model->codgrupocliente) ? ".select2('val', $model->codgrupocliente);" : ';');?>
     
+    $('#codformapagamento').select2({
+        placeholder: 'Forma de Pagamento',
+        allowClear: true,
+        closeOnSelect: true
+    })<?php echo (isset($model->codformapagamento) ? ".select2('val', $model->codformapagamento);" : ';');?>
     
+    $("#fantasia").Setcase();
+    $("#pessoa").Setcase();
+    $("#contato").Setcase();
+    $("#conjuge").Setcase();
+
+    $("#endereco").Setcase();
+    $("#numero").Setcase();
+    $("#complemento").Setcase();
+    $("#bairro").Setcase();
+
+    $("#enderecocobranca").Setcase();
+    $("#numerocobranca").Setcase();
+    $("#complementocobranca").Setcase();
+    $("#bairrocobranca").Setcase();
+
+    $('#credito').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
+    $('#toleranciaatraso').autoNumeric('init', {aSep:'', aDec:',', altDec:'.', mDec:0 });
+    $('#desconto').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.' });    
+    
+    //$('#preco').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });    
 });
 </script>
 @endsection
