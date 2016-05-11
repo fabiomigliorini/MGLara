@@ -2,6 +2,8 @@
 
 namespace MGLara\Models;
 
+use DB;
+use Carbon\Carbon;
 
 /**
  * Campos
@@ -278,6 +280,55 @@ class Pessoa extends MGModel
         return $this->hasMany(Usuario::class, 'codpessoa', 'codpessoa');
     }    
      
+    public static function getNotaFiscalOpcoes()
+    {
+        return array(
+            self::NOTAFISCAL_TRATAMENTOPADRAO => "Tratamento Padrão",
+            self::NOTAFISCAL_SEMPRE => "Sempre",
+            self::NOTAFISCAL_SOMENTE_FECHAMENTO => "Somente no Fechamento",
+            self::NOTAFISCAL_NUNCA => "Nunca Emitir",
+        );
+    }
+
+    public function getNotaFiscalRange()
+    {
+        return array(
+            self::NOTAFISCAL_TRATAMENTOPADRAO,
+            self::NOTAFISCAL_SEMPRE,
+            self::NOTAFISCAL_SOMENTE_FECHAMENTO,
+            self::NOTAFISCAL_NUNCA,
+        );
+    }
+    
+    public function getNotaFiscalDescricao()
+    {
+        $opcoes = $this->getNotaFiscalOpcoes();
+        if (!isset($this->notafiscal))
+            return null;
+
+        return isset($opcoes[$this->notafiscal]) ? $opcoes[$this->notafiscal] : "Tipo Desconhecido ({$this->notafiscal})";
+    }    
+	
+    public function totalTitulos()
+    {
+        $query = DB::select('
+                SELECT SUM(saldo) AS saldo, MIN(vencimento) AS vencimento 
+                FROM tbltitulo 
+                WHERE codpessoa = :codpessoa AND saldo != 0', 
+                ['codpessoa' => $this->codpessoa]
+        )[0];
+
+        $query->vencimentodias = 0;
+
+        if ($venc = Carbon::createFromFormat("Y-m-d", $query->vencimento))
+        {
+            $hoje = Carbon::now();
+            $query->vencimentodias = $dif = $hoje->diffInDays($venc, false);
+        }
+
+        return $query;
+    }
+
     // Buscas 
     public static function filterAndPaginate($id, $pessoa, $cnpj, $email, $telefone, $inativo, $codcidade, $codgrupocliente)
     {

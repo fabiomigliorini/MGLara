@@ -4,11 +4,13 @@
     use MGLara\Models\Sexo;
     use MGLara\Models\GrupoCliente;
     use MGLara\Models\FormaPagamento;
+    use MGLara\Models\Pessoa;
 
     $sexos              = [''=>''] + Sexo::lists('sexo', 'codsexo')->all();
     $estadoscivil       = [''=>''] + EstadoCivil::lists('estadocivil', 'codestadocivil')->all();
     $grupos             = [''=>''] + GrupoCliente::lists('grupocliente', 'codgrupocliente')->all();
     $formaspagamento    = [''=>''] + FormaPagamento::lists('formapagamento', 'codformapagamento')->all();
+    $notafiscal         = [''=>''] + Pessoa::getNotaFiscalOpcoes();
 
 ?>
 <div class="form-group">
@@ -75,28 +77,45 @@
     </div>
     <div class="form-group">
         <label for="creditobloqueado" class="col-sm-2 control-label">{!! Form::label('Credito Bloqueado:') !!}</label>
-        <div class="col-sm-10">{!! Form::checkbox('creditobloqueado', null, null, ['id'=>'creditobloqueado', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+        <div class="col-sm-10">
+            {!! Form::checkbox('creditobloqueado', null, null, ['id'=>'creditobloqueado', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}
+        </div>
     </div>
     <div class="form-group">
         <label for="credito" class="col-sm-2 control-label">{!! Form::label('Limite de Credito:') !!}</label>
-        <div class="col-sm-2">{!! Form::text('credito', null, ['class'=> 'form-control', 'id'=>'credito']) !!}</div>
+        <div class="col-sm-2">
+            <div class="input-group">
+                <span class="input-group-addon">R$</span>  
+                {!! Form::text('credito', null, ['class'=> 'form-control text-right', 'id'=>'credito']) !!}
+            </div>
+        </div>
     </div>
     <div class="form-group">
         <label for="toleranciaatraso" class="col-sm-2 control-label">{!! Form::label('Tolerância de Atraso:') !!}</label>
-        <div class="col-sm-2">{!! Form::text('toleranciaatraso', null, ['class'=> 'form-control', 'id'=>'toleranciaatraso']) !!}</div>
+        <div class="col-sm-2">
+            <div class="input-group">
+                {!! Form::text('toleranciaatraso', null, ['class'=> 'form-control text-right', 'id'=>'toleranciaatraso']) !!}
+                <span class="input-group-addon">Dias</span>  
+            </div>
+        </div>
     </div>
     <div class="form-group">
         <label for="mensagemvenda" class="col-sm-2 control-label">{!! Form::label('Mensagem de Venda:') !!}</label>
-        <div class="col-sm-2">{!! Form::text('mensagemvenda', null, ['class'=> 'form-control', 'id'=>'mensagemvenda']) !!}</div>
+        <div class="col-sm-5">{!! Form::textarea('mensagemvenda', null, ['class'=> 'form-control', 'id'=>'mensagemvenda']) !!}</div>
     </div>
     <div class="form-group">
         <label for="desconto" class="col-sm-2 control-label">{!! Form::label('Desconto:') !!}</label>
-        <div class="col-sm-2">{!! Form::text('desconto', null, ['class'=> 'form-control', 'id'=>'desconto']) !!}</div>
+        <div class="col-sm-2">
+            <div class="input-group">
+                {!! Form::text('desconto', null, ['class'=> 'form-control', 'id'=>'desconto']) !!}
+                <span class="input-group-addon">%</span>              
+            </div>
+        </div>
     </div>
     <div class="form-group">
         <label for="notafiscal" class="col-sm-2 control-label">{!! Form::label('Nota Fiscal:') !!}</label>
-        <div class="col-sm-2">{!! Form::text('notafiscal', null, ['class'=> 'form-control', 'id'=>'notafiscal']) !!}</div>
-    </div>    
+        <div class="col-sm-3">{!! Form::select('notafiscal', $notafiscal, ['class'=> 'form-control'], ['id'=>'notafiscal', 'style'=>'width:100%']) !!}</div>
+    </div>
 </div>
 <div class="form-group">
     <label for="cep" class="col-sm-2 control-label">{!! Form::label('CEP:') !!}</label>
@@ -106,11 +125,10 @@
     <label for="codcidade" class="col-sm-2 control-label">{!! Form::label('Cidade:') !!}</label>
     <div class="col-sm-3">{!! Form::text('codcidade', null, ['class'=> 'form-control', 'id'=>'codcidade']) !!}</div>
 </div>
-
 <div class="form-group">
     <label for="endereco" class="col-sm-2 control-label">{!! Form::label('Endereço:') !!}</label>
     <div class="col-sm-3">{!! Form::text('endereco', null, ['class'=> 'form-control', 'id'=>'endereco']) !!}</div>
-</div>  
+</div>
 <div class="form-group">
     <label for="numero" class="col-sm-2 control-label">{!! Form::label('Número:') !!}</label>
     <div class="col-sm-1">{!! Form::text('numero', null, ['class'=> 'form-control', 'id'=>'numero']) !!}</div>
@@ -249,7 +267,7 @@ $(document).ready(function() {
         });
     });
     $('#fantasia, #pessoa, #codcidade, #cep, #endereco, #numero, #bairro, #telefone1, #email').prop('required', true);
-    $('#codcidade').select2({
+    $('#codcidade, #codcidadecobranca').select2({
         minimumInputLength: 3,
         allowClear: true,
         closeOnSelect: true,
@@ -355,6 +373,12 @@ $(document).ready(function() {
         allowClear: true,
         closeOnSelect: true
     })<?php echo (isset($model->codformapagamento) ? ".select2('val', $model->codformapagamento);" : ';');?>
+    
+    $('#notafiscal').select2({
+        placeholder: 'Nota Fiscal',
+        allowClear: true,
+        closeOnSelect: true
+    })<?php echo (isset($model->notafiscal) ? ".select2('val', $model->notafiscal);" : ';');?>
     
     $("#fantasia").Setcase();
     $("#pessoa").Setcase();
