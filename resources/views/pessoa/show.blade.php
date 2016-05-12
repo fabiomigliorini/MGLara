@@ -56,10 +56,42 @@
                     <th>Endereço</th> 
                     <td>{!! formataEndereco($model->endereco, $model->numero, $model->complemento, $model->bairro, $model->Cidade->cidade, $model->Cidade->Estado->sigla, $model->cep) !!}</td> 
                 </tr>
+                @if($model->email) 
                 <tr> 
                     <th>Email</th> 
-                    <td>{{ $model->codpessoa }}</td> 
+                    <td>{{ $model->email }}</td> 
                 </tr>
+                @endif
+                @if($model->emailnfe) 
+                <tr> 
+                    <th>Email NFE</th> 
+                    <td>{{ $model->emailnfe }}</td> 
+                </tr>
+                @endif
+                @if($model->emailcobranca) 
+                <tr> 
+                    <th>Email cobrança</th> 
+                    <td>{{ $model->emailcobranca }}</td> 
+                </tr>
+                @endif
+                @if($model->fisica)
+                <tr> 
+                    <th>RG</th> 
+                    <td>{{ $model->rg}}</td> 
+                </tr>                
+                <tr> 
+                    <th>Sexo</th> 
+                    <td>{{ $model->Sexo->sexo or ''}}</td> 
+                </tr>
+                <tr> 
+                    <th>Estado civil</th> 
+                    <td>{{ $model->EstadoCivil->estadocivil or '' }}</td> 
+                </tr>                
+                <tr> 
+                    <th>Conjuge</th> 
+                    <td>{{ $model->conjuge}}</td> 
+                </tr>                
+                @endif
             </tbody> 
         </table>
     </div>    
@@ -142,6 +174,24 @@
     </div>    
 
 </div>
-<hr>
 @include('includes.autor')
+<hr>
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#cobranca" aria-controls="cobranca" role="tab" data-toggle="tab">Histórico de Cobrança</a>
+        </li>
+        <li role="presentation">
+            <a href="#spc" aria-controls="spc" role="tab" data-toggle="tab">Registro SPC</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="cobranca">
+            @include('pessoa.cobranca')
+        </div>
+        <div role="tabpanel" class="tab-pane" id="spc">
+            @include('pessoa.spc')
+        </div>
+    </div>
+</div>
 @stop

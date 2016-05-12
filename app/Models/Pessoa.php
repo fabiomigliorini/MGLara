@@ -320,8 +320,8 @@ class Pessoa extends MGModel
 
         $query->vencimentodias = 0;
 
-        if ($venc = Carbon::createFromFormat("Y-m-d", $query->vencimento))
-        {
+        if ($query->vencimento) {
+            $venc = Carbon::createFromFormat("Y-m-d", $query->vencimento);
             $hoje = Carbon::now();
             $query->vencimentodias = $dif = $hoje->diffInDays($venc, false);
         }
@@ -424,5 +424,10 @@ class Pessoa extends MGModel
             return;
         
         $query->where('codgrupocliente', $codgrupocliente);
-    }    
+    }
+    
+    public function scopeCobrancaHistorico($query)
+    {
+        
+    }
 }

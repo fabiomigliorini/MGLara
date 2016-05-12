@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Pessoa;
+use MGLara\Models\CobrancaHistorico;
+use MGLara\Models\RegistroSpc;
 
 class PessoaController extends Controller
 {
@@ -70,7 +72,9 @@ class PessoaController extends Controller
     public function show(Request $request, $id)
     {
         $model = Pessoa::find($id);
-        return view('pessoa.show', compact('model', 'estados'));
+        $cobrancas = CobrancaHistorico::byPessoa($id)->paginate(10);
+        $spcs = RegistroSpc::byPessoa($id)->paginate(10);
+        return view('pessoa.show', compact('model', 'estados', 'cobrancas', 'spcs'));
     }
 
     /**
