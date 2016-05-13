@@ -1,4 +1,9 @@
-<h3>Histórico de Cobrança</h3>
+<h3>
+    Histórico de cobranças
+    <span class="btn-novo-titulo">
+        <a class="btn btn-sm btn-default" href="{{ url("cobranca-historico/create") }}"><i class="glyphicon glyphicon-plus"></i> Nova</a>
+    </span>
+</h3>
 <div id="cobrancas">
   <div class="list-group" id="items">
     @foreach($cobrancas as $cobranca)

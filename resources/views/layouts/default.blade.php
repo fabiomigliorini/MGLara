@@ -30,6 +30,7 @@
     <script src="{{ URL::asset('public/vendor/autoNumeric/autoNumeric-min.js') }}"></script>
     <script src="{{ URL::asset('public/vendor/teamdf/jquery.number.min.js') }}"></script>
     <script src="{{ URL::asset('public/vendor/infinite-scroll/infinite-scroll.js') }}"></script>
+    <script src="{{ URL::asset('public/vendor/maskedinput/jquery.maskedinput.min.js') }}"></script>
     <script src="{{ URL::asset('public/js/configs.js') }}"></script>
     <script src="{{ URL::asset('public/js/mgsis.js') }}"></script>
     <script src="{{ URL::asset('public/js/set-case.js') }}"></script>

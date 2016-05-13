@@ -266,7 +266,7 @@ $(document).ready(function() {
             }
         });
     });
-    $('#fantasia, #pessoa, #codcidade, #cep, #endereco, #numero, #bairro, #telefone1, #email').prop('required', true);
+    //$('#toleranciaatraso, #numero, #email, #codcidade, #endereco, #bairro, #cep, #codcidadecobranca, #enderecocobranca, #numerocobranca, #bairrocobranca, #cepcobranca, #pessoa, #fantasia, #notafiscal, #telefone1').prop('required', true);
     $('#codcidade, #codcidadecobranca').select2({
         minimumInputLength: 3,
         allowClear: true,
@@ -313,12 +313,15 @@ $(document).ready(function() {
         width:'resolve'
     });      
     
+    $("#cnpj").mask("99.999.999/9999-99");
     $('#fisica').bootstrapSwitch('state', <?php echo ($model->fisica == 1 ? 'true' : 'false'); ?>);
     $('input[name="fisica"]').on('switchChange.bootstrapSwitch', function(event, state) {
         if (state === true) {
             $("#pessoa-fisica").slideDown( "slow" );
+            $("#cnpj").mask("999.999.999-99");
         } else {
             $("#pessoa-fisica").slideUp( "slow" );
+            $("#cnpj").mask("99.999.999/9999-99");
         }
     });
     
@@ -337,7 +340,7 @@ $(document).ready(function() {
             $('#endereco-cobranca').slideUp('slow');
         } else {
             $('#endereco-cobranca').slideDown('slow');
-            $('#cepcobranca, #enderecocobranca, #numerocobranca, #codcidadecobranca, #bairrocobranca').prop('required', true);
+            //$('#cepcobranca, #enderecocobranca, #numerocobranca, #codcidadecobranca, #bairrocobranca').prop('required', true);
         }
     });
     
@@ -399,7 +402,7 @@ $(document).ready(function() {
     $('#toleranciaatraso').autoNumeric('init', {aSep:'', aDec:',', altDec:'.', mDec:0 });
     $('#desconto').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.' });    
     
-    //$('#preco').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });    
+    $("#cep, #cepcobranca").mask("99.999-999");
 });
 </script>
 @endsection

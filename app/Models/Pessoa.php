@@ -157,9 +157,39 @@ class Pessoa extends MGModel
     }    
     
     public function validate() {
-        
+        dd($this);
         $this->_regrasValidacao = [
-            'pessoa' => 'required|min:3', 
+            'pessoa' => 'required|min:5|max:100', 
+            'fantasia' => 'required|min:5|max:50', 
+            'contato' => 'max:100',
+            'codgrupocliente' => 'required_if:cliente,true',
+            'ie' => 'max:20',
+            'rg' => 'max:30',
+            'conjuge' => 'max:100',
+            'numero' => 'required|max:10', 
+            'email' => 'required|email|max:100', 
+            'telefone1' => 'required|max:50', 
+            'telefone2' => 'max:50', 
+            'telefone3' => 'max:50', 
+            'codcidade' => 'required', 
+            'endereco' => 'required|max:100', 
+            'bairro' => 'required|max:50', 
+            'cep' => 'required|max:10',
+            'complemento'=> 'max:50',
+            'codcidadecobranca' => 'required', 
+            'enderecocobranca' => 'required|max:100', 
+            'numerocobranca' => 'required|max:10', 
+            'bairrocobranca' => 'required', 
+            'complementocobranca'=> 'max:50',
+            'cepcobranca' => 'required|max:10',
+            'emailcobranca' => 'email|max:100',
+            'notafiscal' => 'required|numeric',
+            'emailnfe' => 'email|max:100',
+            'toleranciaatraso' => 'required|numeric',
+            'observacoes' => 'max:10',
+            'mensagemvenda' => 'max:500',
+            'desconto' => 'numeric|max:50',
+            'credito' => 'numeric|max:14',
         ];
     
         $this->_mensagensErro = [
