@@ -120,20 +120,21 @@ class ProdutoController extends Controller
         $this->converteDatas(['inativo' => $request->input('inativo')], 'd/m/Y');
         $this->converteNumericos(['preco' => $request->input('preco')]);
         
-        //dd($request->input('importado'));
-        
         $model = Produto::findOrFail($id);
         $model->fill($request->all());
-        if($request->input('importado') == 1)
+        
+        if ($request->input('importado') == 1) {
             $model->importado = TRUE;
-        else
+        } else {
             $model->importado = FALSE;
-        
-        if($request->input('site') == 1)
+        }
+
+        if ($request->input('site') == 1) {
             $model->site = TRUE;
-        else
+        } else {
             $model->site = FALSE;
-        
+        }
+
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         $model->save();

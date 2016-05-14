@@ -118,7 +118,7 @@
     </div>
 </div>
 <div class="form-group">
-    <label for="cep" class="col-sm-2 control-label">{!! Form::label('CEP:') !!}</label>
+    <label for="cep" class="col-sm-2 control-label">{!! Form::label('cep', 'CEP') !!}</label>
     <div class="col-sm-2">{!! Form::text('cep', null, ['class'=> 'form-control', 'id'=>'cep']) !!}</div>
 </div>  
 <div class="form-group">

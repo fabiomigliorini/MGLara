@@ -17,6 +17,7 @@ abstract class Controller extends BaseController
     
     protected $datas;
     protected $numericos;
+    protected $booleans;
 
 //    public static function store(Request $request)
 //    {
@@ -49,4 +50,17 @@ abstract class Controller extends BaseController
         }
     }
     
+    /*
+    public static function converteBooleans(array $booleans)
+    {
+        foreach ($booleans as $key => $value)
+        {
+            if($value == 1) {
+                $model->$key = TRUE;
+            } else {
+                $model->$key = FALSE;            
+            }
+        }
+    }
+    */
 }

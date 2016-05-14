@@ -141,6 +141,7 @@ class Pessoa extends MGModel
         'criacao',
     ];
     
+    
     public function getCobrancanomesmoenderecoAttribute()
     {
         if (
@@ -156,13 +157,18 @@ class Pessoa extends MGModel
             return true;
     }    
     
+    
+    
     public function validate() {
-        dd($this);
+        //dd($this);
+        $this->attributes = [
+            'cep' => 'CEP'
+        ];
         $this->_regrasValidacao = [
             'pessoa' => 'required|min:5|max:100', 
             'fantasia' => 'required|min:5|max:50', 
             'contato' => 'max:100',
-            'codgrupocliente' => 'required_if:cliente,true',
+            'codgrupocliente' => 'required_if:cliente,on',
             'ie' => 'max:20',
             'rg' => 'max:30',
             'conjuge' => 'max:100',
@@ -193,7 +199,11 @@ class Pessoa extends MGModel
         ];
     
         $this->_mensagensErro = [
-            'pessoa.required' => 'Preencha o campo pessoa',
+            'fantasia.required' => 'O campo Nome Fantasia é obrigatório.',
+            'pessoa.required' => 'O campo Razão Social é obrigatório.',
+            
+            
+            'codgrupocliente.required_if' => 'Grupo do Cliente obrigatório',
         ];
         
         return parent::validate();

@@ -104,6 +104,42 @@ class PessoaController extends Controller
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
 
+        if ($request->input('cliente') == 1) {
+            $model->cliente = TRUE;
+        } else {
+            $model->cliente = FALSE;
+        }        
+
+        if ($request->input('fornecedor') == 1) {
+            $model->fornecedor = TRUE;
+        } else {
+            $model->fornecedor = FALSE;
+        }        
+
+        if ($request->input('fisica') == 1) {
+            $model->fisica = TRUE;
+        } else {
+            $model->fisica = FALSE;
+        }        
+
+        if ($request->input('consumidor') == 1) {
+            $model->consumidor = TRUE;
+        } else {
+            $model->consumidor = FALSE;
+        }        
+
+        if ($request->input('creditobloqueado') == 1) {
+            $model->creditobloqueado = TRUE;
+        } else {
+            $model->creditobloqueado = FALSE;
+        }        
+
+        if ($request->input('vendedor') == 1) {
+            $model->vendedor = TRUE;
+        } else {
+            $model->vendedor = FALSE;
+        }        
+        
         $model->save();
         
         Session::flash('flash_update', 'Registro atualizado.');
