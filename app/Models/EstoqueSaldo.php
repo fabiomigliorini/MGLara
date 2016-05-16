@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\DB;
  * @property  Produto                        $Produto                       
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
- * @property  EstoqueLocal                   $EstoqueLocal                  
+ * @property  EstoqueLocalProduto            $EstoqueLocalProduto
  *
  * Tabelas Filhas
  * @property  EstoqueMes[]                   $EstoqueMesS
@@ -40,12 +40,11 @@ class EstoqueSaldo extends MGModel
     protected $table = 'tblestoquesaldo';
     protected $primaryKey = 'codestoquesaldo';
     protected $fillable = [
-        'codproduto',
         'fiscal',
         'saldoquantidade',
         'saldovalor',
         'customedio',
-        'codestoquelocal',
+        'codestoquelocalproduto',
     ];
     protected $dates = [
         'alteracao',
@@ -53,33 +52,27 @@ class EstoqueSaldo extends MGModel
     ];
     
     // Chaves Estrangeiras
-    public function Produto()
-    {
-        return $this->belongsTo(Produto::class, 'codproduto', 'codproduto');
-    }
-
     public function UsuarioAlteracao()
     {
-        return $this->belongsTo(Usuario::class, 'codusuarioalteracao', 'codusuario');
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuarioalteracao');
     }
 
     public function UsuarioCriacao()
     {
-        return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
+        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
     }
 
-    public function EstoqueLocal()
+    public function EstoqueLocalProduto()
     {
-        return $this->belongsTo(EstoqueLocal::class, 'codestoquelocal', 'codestoquelocal');
+        return $this->belongsTo(EstoqueLocalProduto::class, 'codestoquelocalproduto', 'codestoquelocalproduto');
     }
 
 
     // Tabelas Filhas
     public function EstoqueMesS()
     {
-        return $this->hasMany(EstoqueMes::class, 'codestoquesaldo', 'codestoquesaldo')->orderBy('mes');
+        return $this->hasMany(EstoqueMes::class, 'codestoquesaldo', 'codestoquesaldo');
     }
-    
     
     public static function buscaOuCria($codproduto, $codestoquelocal, $fiscal)
     {
