@@ -87,7 +87,29 @@ class EstoqueSaldo extends MGModel
         }
         return $es;
     }
-    
+/*    
+    public static function saldoPorGrupoProduto()
+    {
+        
+        $res = DB::select('
+            select 
+                  tblsubgrupoproduto.codgrupoproduto
+                , tblestoquesaldo.codestoquelocal
+                , tblestoquesaldo.fiscal
+                , sum(tblestoquesaldo.saldoquantidade) as saldoquantidade
+                , sum(tblestoquesaldo.saldovalor) as saldovalor
+            from tblestoquesaldo
+            left join tblproduto on (tblproduto.codproduto = tblestoquesaldo.codproduto)
+            left join tblsubgrupoproduto on (tblsubgrupoproduto.codsubgrupoproduto = tblproduto.codsubgrupoproduto)
+            group by 
+                  tblsubgrupoproduto.codgrupoproduto
+                , tblestoquesaldo.fiscal
+                , tblestoquesaldo.codestoquelocal
+        ');
+
+        return $res;
+    }
+*/    
     public static function saldoPorGrupoProduto()
     {
         
@@ -110,6 +132,7 @@ class EstoqueSaldo extends MGModel
         return $res;
     }
     
+/*    
     public static function saldoPorMarca()
     {
         
@@ -127,6 +150,29 @@ class EstoqueSaldo extends MGModel
                   tblmarca.codmarca
                 , tblestoquesaldo.fiscal
                 , tblestoquesaldo.codestoquelocal
+        ');
+
+        return $res;
+    }
+*/    
+    public static function saldoPorMarca()
+    {
+        
+        $res = DB::select('
+        select 
+              tblmarca.codmarca
+            , tblestoquelocalproduto.codestoquelocal
+            , tblestoquesaldo.fiscal
+            , sum(tblestoquesaldo.saldoquantidade) as saldoquantidade
+            , sum(tblestoquesaldo.saldovalor) as saldovalor
+        from tblestoquelocalproduto
+        left join tblproduto on (tblproduto.codproduto = tblestoquelocalproduto.codproduto)
+        left join tblmarca on (tblmarca.codmarca = tblproduto.codmarca)
+        left join tblestoquesaldo on (tblestoquesaldo.codestoquelocalproduto = tblestoquelocalproduto.codestoquelocalproduto)
+        group by 
+              tblmarca.codmarca
+            , tblestoquesaldo.fiscal
+            , tblestoquelocalproduto.codestoquelocal
         ');
 
         return $res;
@@ -176,7 +222,7 @@ class EstoqueSaldo extends MGModel
 
         return $res;
     }
-
+/*
     public static function saldoPorProdutoMarca($codmarca)
     {
         
@@ -194,6 +240,29 @@ class EstoqueSaldo extends MGModel
                   tblproduto.codproduto
                 , tblestoquesaldo.fiscal
                 , tblestoquesaldo.codestoquelocal
+        ");
+
+        return $res;
+    }
+*/
+    public static function saldoPorProdutoMarca($codmarca)
+    {
+        
+        $res = DB::select("
+            select 
+                  tblproduto.codproduto
+                , tblestoquelocalproduto.codestoquelocal
+                , tblestoquesaldo.fiscal
+                , sum(tblestoquesaldo.saldoquantidade) as saldoquantidade
+                , sum(tblestoquesaldo.saldovalor) as saldovalor
+            from tblestoquelocalproduto
+            left join tblproduto on (tblproduto.codproduto = tblestoquelocalproduto.codproduto)
+            left join tblestoquesaldo on (tblproduto.codproduto = tblestoquelocalproduto.codproduto)
+            where tblproduto.codmarca = $codmarca
+            group by 
+                  tblproduto.codproduto
+                , tblestoquesaldo.fiscal
+                , tblestoquelocalproduto.codestoquelocal        
         ");
 
         return $res;
