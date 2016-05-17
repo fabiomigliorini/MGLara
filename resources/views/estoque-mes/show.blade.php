@@ -11,30 +11,30 @@
 </nav>
 
 <h1 class="header">
-    <a href='{{ url("grupo-produto/{$model->EstoqueSaldo->Produto->SubGrupoProduto->codgrupoproduto}") }}'>
-        {{$model->EstoqueSaldo->Produto->SubGrupoProduto->GrupoProduto->grupoproduto}}
+    <a href='{{ url("grupo-produto/{$model->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->codgrupoproduto}") }}'>
+        {{ $model->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->GrupoProduto->grupoproduto }}
     </a> 
     ›
-    <a href='{{ url("sub-grupo-produto/{$model->EstoqueSaldo->Produto->codsubgrupoproduto}") }}'>
-        {{$model->EstoqueSaldo->Produto->SubGrupoProduto->subgrupoproduto}}
+    <a href='{{ url("sub-grupo-produto/{$model->EstoqueSaldo->EstoqueLocalProduto->Produto->codsubgrupoproduto}") }}'>
+        {{ $model->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->subgrupoproduto }}
     </a>
     ›
     <a href='{{ url("produto/{$model->EstoqueSaldo->codproduto}") }}'>
-        {{ $model->EstoqueSaldo->Produto->produto }}     
+        {{ $model->EstoqueSaldo->EstoqueLocalProduto->Produto->produto }}     
     </a>
 </h1>
 
 <div class="row row-fluid" id="estoque-mes-filtro">
     <div class="col-sm-1">
-        {{ $model->EstoqueSaldo->EstoqueLocal->estoquelocal }}
+        {{ $model->EstoqueSaldo->EstoqueLocalProduto->EstoqueLocal->estoquelocal }}
     </div> 
     <div class="col-sm-1">
         {{ ($model->EstoqueSaldo->fiscal)?"Fiscal":"Fisico" }}
     </div> 
     <div class="col-sm-1">
-        @if (isset($model->EstoqueSaldo->Produto->codmarca))
-            <a href="{{ url("marca/{$model->EstoqueSaldo->Produto->Marca->codmarca}") }}">
-                {{ $model->EstoqueSaldo->Produto->Marca->marca }}
+        @if (isset($model->EstoqueSaldo->EstoqueLocalProduto->Produto->codmarca))
+            <a href="{{ url("marca/{$model->EstoqueSaldo->EstoqueLocalProduto->Produto->Marca->codmarca}") }}">
+                {{ $model->EstoqueSaldo->EstoqueLocalProduto->Produto->Marca->marca }}
             </a>
         @endif
     </div> 
@@ -44,7 +44,7 @@
         </a>
     </div> 
     <div class="col-sm-1">
-        {{ formataNumero($model->EstoqueSaldo->Produto->preco, 2) }}
+        {{ formataNumero($model->EstoqueSaldo->EstoqueLocalProduto->Produto->preco, 2) }}
     </div>
     <div class="col-sm-2">
     {!! Form::model(Request::all(), ['url' => "estoque-mes/$model->codestoquemes", 'method' => 'GET', 'class' => 'form-inline', 'id' => 'estoque-mes-search', 'role' => 'search', 'autocomplete' => 'off'])!!}        
@@ -81,12 +81,10 @@
 
 <?php
 
-$proximos = $model->buscaProximos(8);
-
-$anteriores = $model->buscaAnteriores(16 - sizeof($proximos));
-
-if (sizeof($anteriores) < 8)
-    $proximos = $model->buscaProximos(16 - sizeof($anteriores));
+    $proximos = $model->buscaProximos(8);
+    $anteriores = $model->buscaAnteriores(16 - sizeof($proximos));
+    if (sizeof($anteriores) < 8)
+        $proximos = $model->buscaProximos(16 - sizeof($anteriores));
 
 ?>
 
@@ -121,9 +119,9 @@ if (sizeof($anteriores) < 8)
     </thead>
     <tbody>
         <?php
-        $saldoquantidade = $model->inicialquantidade;
-        $saldovalor = $model->inicialvalor;
-        $customedio = ($saldoquantidade != 0)?$saldovalor/$saldoquantidade:0;
+            $saldoquantidade = $model->inicialquantidade;
+            $saldovalor = $model->inicialvalor;
+            $customedio = ($saldoquantidade != 0)?$saldovalor/$saldoquantidade:0;
         ?>
         <tr>
             <td></td>

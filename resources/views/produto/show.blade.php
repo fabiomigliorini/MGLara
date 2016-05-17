@@ -183,73 +183,63 @@
                 </div>
             </div>
         </div>        
- 
 	<?php
-
-	$arr_saldos = [];
-        $arr_totais = [true => 0, false => 0];
-	foreach ($model->EstoqueSaldoS as $es)
-	{
-            $arr_saldos[$es->EstoqueLocal->estoquelocal][$es->fiscal] = array(
-                "saldoquantidade" => $es->saldoquantidade,
-                "codestoquesaldo" => $es->codestoquesaldo,
-            );
-            $arr_totais[$es->fiscal] += $es->saldoquantidade;
+            $arr_saldos = [];
+            $arr_totais = [false => 0, true => 0];
+            foreach ($model->EstoqueLocalProdutoS as $es)
+            {
+                $arr_totais[$es->EstoqueSaldoS->first()->fiscal] += $es->EstoqueSaldoS->first()->saldoquantidade;
+                $arr_saldos[] = $es;
             }
 	?>
-        
         <div class='panel panel-info'>
             <div class="panel-heading">
-                    <div class="row item">
-                        <div class="col-md-6">Estoque</div>
-                        <div class="col-md-3 text-right">Físico</div>
-                        <div class="col-md-3 text-right">Fiscal</div>
-                    </div>
+                <div class="row item">
+                    <div class="col-md-6">Estoque</div>
+                    <div class="col-md-2 text-right">Local</div>
+                    <div class="col-md-2 text-right">Físico</div>
+                    <div class="col-md-2 text-right">Fiscal</div>
+                </div>
             </div>            
             <ul class="list-group bg-infoo">
-            @foreach($arr_saldos as $estoquelocal => $saldo)
+                @foreach($arr_saldos as $saldo)
                 <li class="list-group-item">
                     <div class="row item">            
                         <div class="col-md-6">
-                            {{ $estoquelocal }}
+                            {{ $saldo->EstoqueLocal->estoquelocal }}
                         </div>
-
-                        <div class="col-md-3 text-right">
-                            @if(isset($saldo[false]))
-                            <a href='{{ url("estoque-saldo/{$saldo[false]['codestoquesaldo']}") }}'>
-                                {{ formataNumero($saldo[false]['saldoquantidade'], 0) }}
-                            </a>
-                            @endif
+                        <div class="col-md-2 text-right">
+                            {{ formataLocalEstoque($saldo->corredor, $saldo->prateleira, $saldo->coluna, $saldo->bloco) }}
                         </div>
-                
-                        <div class="col-md-3 text-right">
-                            @if(isset($saldo[true]))
-                            <a href='{{ url("estoque-saldo/{$saldo[true]['codestoquesaldo']}") }}'>
-                                {{ formataNumero($saldo[true]['saldoquantidade'], 0) }}
+                        <div class="col-md-2 text-right">
+                            <a href='{{ url("estoque-saldo/{$saldo->EstoqueSaldoS->first()->codestoquesaldo}") }}'>
+                                {{ ($saldo->EstoqueSaldoS->first()->fiscal) ? '' : formataNumero($saldo->EstoqueSaldoS->first()->saldoquantidade, 0) }}
                             </a>
-                            @endif
+                        </div>
+                        <div class="col-md-2 text-right">
+                            <a href='{{ url("estoque-saldo/{$saldo->EstoqueSaldoS->first()->codestoquesaldo}") }}'>
+                                {{ ($saldo->EstoqueSaldoS->first()->fiscal) ? formataNumero($saldo->EstoqueSaldoS->first()->saldoquantidade, 0) : '' }}
+                            </a>
                         </div>
                     </div>            
                 </li>
-            @endforeach    
+                @endforeach    
                 <li class="list-group-item">
                     <div class="row item">            
                         <div class="col-md-6">
-                            Total
+                            <strong>Total</strong>
                         </div>
-
-                        <div class="col-md-3 text-right">
-                            {{ formataNumero($arr_totais[false], 0) }}
+                        <div class="col-md-2 text-right"></div>
+                        <div class="col-md-2 text-right">
+                            <strong>{{ formataNumero($arr_totais[false], 0) }}</strong>
                         </div>
-                
-                        <div class="col-md-3 text-right">
-                            {{ formataNumero($arr_totais[true], 0) }}
+                        <div class="col-md-2 text-right">
+                            <strong>{{ formataNumero($arr_totais[true], 0) }}</strong>
                         </div>
                     </div>            
                 </li>
             </ul>
         </div>
-        
     </div>    
 </div>
 <hr>

@@ -252,3 +252,10 @@ if(!function_exists('formataCep')) {
         return formataPorMascara($string, "##.###-###");
     }
 }
+
+if(!function_exists('formataLocalEstoque')) {
+    function formataLocalEstoque ($corredor, $prateleira, $coluna, $bloco)
+    {
+        return $corredor.'.'.$prateleira.'.'.$coluna.'.'.$bloco;
+    }
+}

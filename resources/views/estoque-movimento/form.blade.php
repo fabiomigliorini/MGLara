@@ -106,16 +106,16 @@ foreach ($options as $option)
 if(isset($model)) {
     //$datainicial = $model->data;
     if (!empty($model->codestoquemovimentoorigem)) {
-        $estoquelocal = $model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocal->codestoquelocal;
-        $produto = $model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->Produto->codproduto;
+        $estoquelocal = $model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->EstoqueLocal->codestoquelocal;
+        $produto = $model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->Produto->codproduto;
     } else {
-        $estoquelocal = $model->EstoqueMes->EstoqueSaldo->EstoqueLocal->codestoquelocal;
-        $produto = $model->EstoqueMes->EstoqueSaldo->Produto->codproduto;
+        $estoquelocal = $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->EstoqueLocal->codestoquelocal;
+        $produto = $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->Produto->codproduto;
     }
 } else {
     //$datainicial = $model->EstoqueMes->mes->year.'-'.$model->EstoqueMes->mes->month.'-'. date("t", mktime(0,0,0,$model->EstoqueMes->mes->month,'01',$model->EstoqueMes->mes->year));
-    $estoquelocal = $model->EstoqueMes->EstoqueSaldo->EstoqueLocal->codestoquelocal;
-    $produto = $model->EstoqueMes->EstoqueSaldo->Produto->codproduto;
+    $estoquelocal = $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->EstoqueLocal->codestoquelocal;
+    $produto = $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->Produto->codproduto;
 }
 ?>
 
@@ -266,7 +266,7 @@ $(document).ready(function() {
         $("#saldoEstoqueLocalContent").empty();
         var codproduto = $('#codproduto').val();
         var codestoquelocal = $('#codestoquelocal').val();
-        var fiscal = <?php echo $model->EstoqueMes->EstoqueSaldo->fiscal; ?>;
+        var fiscal = <?php echo $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->fiscal; ?>;
         estoqueSaldo(codproduto, codestoquelocal, fiscal);
     }
     
@@ -274,7 +274,7 @@ $(document).ready(function() {
         $("#saldoEstoqueLocalContent").empty();
         var codproduto = $('#codproduto').val();
         var codestoquelocal = $('#codestoquelocal').val();
-        var fiscal = <?php echo $model->EstoqueMes->EstoqueSaldo->fiscal; ?>;
+        var fiscal = <?php echo $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->fiscal; ?>;
         estoqueSaldo(codproduto, codestoquelocal, fiscal);
     });
     

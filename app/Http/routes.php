@@ -141,12 +141,12 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('nota-fiscal','NotaFiscalController');           
     
     /* Estoque Movimento */
-    #Route::resource('estoque-movimento','EstoqueMovimentoController');
-    #Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');     
+    Route::resource('estoque-movimento','EstoqueMovimentoController');
+    Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');     
     
     /* Gerador de Codigo */
-    Route::get('gerador-codigo/model/{tabela}','GeradorCodigoController@model');       
-    Route::resource('gerador-codigo','GeradorCodigoController');       
+    #Route::get('gerador-codigo/model/{tabela}','GeradorCodigoController@model');       
+    #Route::resource('gerador-codigo','GeradorCodigoController');       
       
     
     /* Auxiliares */
