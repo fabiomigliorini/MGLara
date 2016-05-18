@@ -8,7 +8,7 @@ $tipos = [''=>''] + EstoqueMovimentoTipo::lists('descricao', 'codestoquemoviment
 $options = EstoqueMovimentoTipo::all();
 
 $disabled = 0;
-if(isset($model->EstoqueMovimentoTipo)){
+if(isset($model->EstoqueMovimentoTipo)) {
     if($model->EstoqueMovimentoTipo->preco == 1) {
         $disabled = 1;
     } elseif ($model->EstoqueMovimentoTipo->preco == 2) {
@@ -20,14 +20,13 @@ if(isset($model->EstoqueMovimentoTipo)){
 ?>
 
 <div class="form-group">
-  <label for="data" class="col-sm-2 control-label">
-    {!! Form::label('Data:') !!}
-  </label>
-  <div class="col-md-2 col-xs-4">
-    {!! Form::text('data', null, ['class'=> 'form-control text-center', 'id'=>'data', 'required'=>'required']) !!}
-  </div>
+    <label for="data" class="col-sm-2 control-label">
+        {!! Form::label('Data:') !!}
+    </label>
+    <div class="col-md-2 col-xs-4">
+        {!! Form::text('data', null, ['class'=> 'form-control text-center', 'id'=>'data', 'required'=>'required']) !!}
+    </div>
 </div>
-
 
 <div class="form-group">
   <label for="codestoquemovimentotipo" class="col-sm-2 control-label">
@@ -37,8 +36,6 @@ if(isset($model->EstoqueMovimentoTipo)){
     {!! Form::select('codestoquemovimentotipo', $tipos, ['class'=> 'form-control', 'required'=>'required'], ['id'=>'codestoquemovimentotipo']) !!}
   </div>
 </div>
-
-
 
 <div id="origens" class="hide">
     <div class="form-group">
@@ -118,7 +115,6 @@ if(isset($model)) {
     $produto = $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->Produto->codproduto;
 }
 ?>
-
 @section('inscript')
 <style type="text/css">
     #saldoEstoqueLocal {
@@ -138,7 +134,6 @@ if(isset($model)) {
     }    
 </style>
 <script type="text/javascript">
- 
 $(document).ready(function() {
     
     $('#estoqueMovimento').on("submit", function(e){
@@ -259,14 +254,11 @@ $(document).ready(function() {
         width:'resolve'
     })<?php echo (isset($produto) ? ".select2('val', $produto);" : ';');?>
 
-    
-  
-
     if($('#codestoquelocal').val()) {
         $("#saldoEstoqueLocalContent").empty();
         var codproduto = $('#codproduto').val();
         var codestoquelocal = $('#codestoquelocal').val();
-        var fiscal = <?php echo $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->fiscal; ?>;
+        var fiscal = <?php echo $model->EstoqueMes->EstoqueSaldo->fiscal; ?>;
         estoqueSaldo(codproduto, codestoquelocal, fiscal);
     }
     
@@ -274,10 +266,9 @@ $(document).ready(function() {
         $("#saldoEstoqueLocalContent").empty();
         var codproduto = $('#codproduto').val();
         var codestoquelocal = $('#codestoquelocal').val();
-        var fiscal = <?php echo $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->fiscal; ?>;
+        var fiscal = <?php echo $model->EstoqueMes->EstoqueSaldo->fiscal; ?>;
         estoqueSaldo(codproduto, codestoquelocal, fiscal);
     });
-    
     
     function estoqueSaldo(codproduto, codestoquelocal, fiscal) {
         $.getJSON(baseUrl + '/produto/estoque-saldo?codproduto='+codproduto+'&codestoquelocal='+codestoquelocal+'&fiscal='+fiscal)

@@ -155,13 +155,13 @@
                 
                 @if (isset($row->codestoquemovimentoorigem))
                     <a href="{{ url("estoque-mes/" . $row->EstoqueMovimentoOrigem->codestoquemes) }}">
-                       {{ $row->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocal->estoquelocal }}
+                       {{ $row->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->EstoqueLocal->estoquelocal }}
                     </a>
                 @endif
                 
                 @foreach ($row->EstoqueMovimentoS as $em)
                     <a href="{{ url("estoque-mes/" . $em->codestoquemes) }}">
-                       {{ $em->EstoqueMes->EstoqueSaldo->EstoqueLocal->estoquelocal }}
+                       {{ $em->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->EstoqueLocal->estoquelocal }}
                     </a>
                 @endforeach
                 

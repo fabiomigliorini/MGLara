@@ -55,23 +55,23 @@
 <?php
 foreach($model->ProdutoS as $prod)
 {
-    foreach ($prod->EstoqueSaldoS as $es)
+    foreach ($prod->EstoqueLocalProdutoS as $es)
     {
-        $arr_saldos[$prod->codproduto][$es->codestoquelocal][$es->fiscal] = [
-            'codestoquesaldo' => $es->codestoquesaldo,
-            'saldoquantidade' => $es->saldoquantidade,
-            'saldovalor' => $es->saldovalor,
-            'customedio' => $es->customedio,
+        $arr_saldos[$prod->codproduto][$es->codestoquelocal][$es->EstoqueSaldoS->first()->fiscal] = [
+            'codestoquesaldo'   => $es->EstoqueSaldoS->first()->codestoquesaldo,
+            'saldoquantidade'   => $es->EstoqueSaldoS->first()->saldoquantidade,
+            'saldovalor'        => $es->EstoqueSaldoS->first()->saldovalor,
+            'customedio'        => $es->EstoqueSaldoS->first()->customedio,
         ];
         
-        if (!isset($arr_totais[$es->codestoquelocal][$es->fiscal]))
-            $arr_totais[$es->codestoquelocal][$es->fiscal] = [
-                'saldoquantidade' => 0,
-                'saldovalor' => 0
+        if (!isset($arr_totais[$es->codestoquelocal][$es->EstoqueSaldoS->first()->fiscal]))
+            $arr_totais[$es->codestoquelocal][$es->EstoqueSaldoS->first()->fiscal] = [
+                'saldoquantidade'   => 0,
+                'saldovalor'        => 0
             ];
 
-        $arr_totais[$es->codestoquelocal][$es->fiscal]['saldoquantidade'] += $es->saldoquantidade;
-        $arr_totais[$es->codestoquelocal][$es->fiscal]['saldovalor'] += $es->saldovalor;
+        $arr_totais[$es->codestoquelocal][$es->EstoqueSaldoS->first()->fiscal]['saldoquantidade'] += $es->EstoqueSaldoS->first()->saldoquantidade;
+        $arr_totais[$es->codestoquelocal][$es->EstoqueSaldoS->first()->fiscal]['saldovalor'] += $es->EstoqueSaldoS->first()->saldovalor;
     }
 }
 ?>

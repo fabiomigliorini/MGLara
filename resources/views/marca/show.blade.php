@@ -75,7 +75,6 @@ foreach($model->ProdutoS as $prod)
         $arr_totais[$es->codestoquelocal][$es->EstoqueSaldoS->first()->fiscal]['saldoquantidade'] += $es->EstoqueSaldoS->first()->saldoquantidade;
         $arr_totais[$es->codestoquelocal][$es->EstoqueSaldoS->first()->fiscal]['saldovalor'] += $es->EstoqueSaldoS->first()->saldovalor;
     }
-   
 }
 ?>
 

@@ -372,22 +372,21 @@ class ProdutoController extends Controller
             }
         }
         
-        public function estoqueSaldo(Request $request) 
-        {
-            $query = DB::table('tblestoquesaldo')
-                    ->where('codproduto', '=', $request->get('codproduto'))
-                    ->select('customedio', 'saldovalor', 'saldoquantidade');
-            
-            if($request->get('codestoquelocal')) $query->where('codestoquelocal', '=', $request->get('codestoquelocal'));
-            if($request->get('fiscal')==1) 
-                $query->where('fiscal', '=', true);
-            else 
-                $query->where('fiscal', '=', false);
-            $resultado = $query->get();
-            
-            return response()->json($resultado);
-            
-        }
+    public function estoqueSaldo(Request $request) 
+    {
+        $query = DB::table('tblestoquesaldo')
+            ->join('tblestoquelocalproduto', 'tblestoquelocalproduto.codestoquelocalproduto', '=', 'tblestoquesaldo.codestoquelocalproduto')
+            ->where('codproduto', '=', $request->get('codproduto'))
+            ->select('customedio', 'saldovalor', 'saldoquantidade');
 
+        if($request->get('codestoquelocal')) $query->where('tblestoquelocalproduto.codestoquelocal', '=', $request->get('codestoquelocal'));
+        if($request->get('fiscal') == 1) 
+            $query->where('fiscal', '=', true);
+        else 
+            $query->where('fiscal', '=', false);
+        $resultado = $query->get();
+
+        return response()->json($resultado);
+    }
         
 }

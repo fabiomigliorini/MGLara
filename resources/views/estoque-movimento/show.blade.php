@@ -68,7 +68,7 @@ $(document).ready(function() {
             }
         }); 
     });
-}
+});
 </script>
 @endsection
 @stop
