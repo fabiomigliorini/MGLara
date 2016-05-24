@@ -34,6 +34,7 @@
     <script src="{{ URL::asset('public/js/configs.js') }}"></script>
     <script src="{{ URL::asset('public/js/mgsis.js') }}"></script>
     <script src="{{ URL::asset('public/js/set-case.js') }}"></script>
+    <script src="{{ URL::asset('public/vendor/yii/yiiactiveform.js') }}"></script>
         @yield('inscript')
   </head>
 

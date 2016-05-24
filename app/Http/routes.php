@@ -86,12 +86,12 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto/busca-barras','ProdutoController@buscaPorBarras');
     Route::resource('produto/ajax','ProdutoController@ajaxProduto');
     Route::resource('produto/estoque-saldo','ProdutoController@estoqueSaldo');
-    Route::resource('produto','ProdutoController');
+    Route::resource('produto/inativo','ProdutoController@inativo');
     Route::resource('produto/{id}/recalcula-movimento-estoque','ProdutoController@recalculaMovimentoEstoque');
     Route::resource('produto/{id}/recalcula-custo-medio','ProdutoController@recalculaCustoMedio');           
     Route::resource('produto/{id}/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');
-    
     Route::resource('produto-barra','ProdutoBarraController');
+    Route::resource('produto','ProdutoController');
     
     /* Pais */
     Route::resource('pais','PaisController');
@@ -141,8 +141,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('nota-fiscal','NotaFiscalController');           
     
     /* Estoque Movimento */
+    Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');
     Route::resource('estoque-movimento','EstoqueMovimentoController');
-    Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');     
     
     /* Gerador de Codigo */
     #Route::get('gerador-codigo/model/{tabela}','GeradorCodigoController@model');       

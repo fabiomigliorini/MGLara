@@ -9,6 +9,17 @@
             <li><a href="<?php echo url("produto/$model->codproduto/juntar-barras");?>"><span class="glyphicon glyphicon-resize-small"></span> Juntar códigosde barra</a></li> 
             <li><a href="<?php echo url("produto/$model->codproduto/transferir-barras");?>"><span class="glyphicon glyphicon-transfer"></span> Transferir códigos de barra</a></li> 
             <li>
+                @if(empty($model->inativo))
+                <a href="" id="inativar-produto">
+                    <span class="glyphicon glyphicon-ban-circle"></span> Inativar
+                </a>
+                @else
+                <a href="" id="inativar-produto">
+                    <span class="glyphicon glyphicon-ok-sign"></span> Ativar
+                </a>
+                @endif
+            </li> 
+            <li>
                 {!! Form::open(['method' => 'DELETE', 'route' => ['produto.destroy', $model->codproduto]]) !!}
                 <span class="glyphicon glyphicon-trash"></span>
                 {!! Form::submit('Excluir') !!}
@@ -17,7 +28,10 @@
         </ul>
     </div>
 </nav>
-
+@if(!empty($model->inativo))
+    <br>
+    <div class="alert alert-danger" role="alert">Inativado em {{formataData($model->inativo, 'L')}}</div>
+@endif
 <br>
 <div class="row">
     <div class="col-md-5">
@@ -346,6 +360,31 @@ $(document).ready(function() {
             }
         }).fail(function() {
             alert( "Erro ao procurar produto" );
+        });
+    });
+    
+    $('#inativar-produto').on("click", function(e) {
+        e.preventDefault();
+        var codproduto = {{ $model->codproduto }};
+        var token = '{{ csrf_token() }}';
+        var inativo = '{{ $model->inativo }}';
+        if(inativo.length === 0) {
+            acao = 'inativar';
+        } else {
+            acao = 'ativar';
+        }        
+        bootbox.confirm("Tem certeza que deseja "+acao+"?", function(result) {
+            if(result) {
+                $.post(baseUrl + '/produto/inativo', {
+                    codproduto: codproduto,
+                    acao: acao,
+                    _token: token
+                }).done(function (data) {
+                    location.reload();
+                }).fail(function (error){
+                  location.reload();          
+              });
+            }  
         });
     });
     

@@ -23,12 +23,12 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 
 <div class="form-group">
     <label for="codunidademedida" class="col-sm-2 control-label">{!! Form::label('Unidade Medida:') !!}</label>
-    <div class="col-sm-2">{!! Form::select('codunidademedida', $medidas, ['class'=> 'form-control'], ['id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
+    <div class="col-sm-2">{!! Form::select('codunidademedida', $medidas, $model->codunidademedida, ['class'=> 'form-control', 'id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
 </div>
 
 <div class="form-group">
     <label for="codsubgrupoproduto" class="col-sm-2 control-label">{!! Form::label('Grupo:') !!}</label>
-    <div class="col-sm-3">{!! Form::select('codsubgrupoproduto', $grupos, ['class'=> 'form-control'], ['id'=>'codsubgrupoproduto', 'style'=>'width:100%']) !!}</div>
+    <div class="col-sm-3">{!! Form::select('codsubgrupoproduto', $grupos, $model->codsubgrupoproduto, ['class'=> 'form-control', 'id'=>'codsubgrupoproduto', 'style'=>'width:100%']) !!}</div>
 </div>
 
 <div class="form-group">
@@ -56,7 +56,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 
 <div class="form-group">
     <label for="codtributacao" class="col-sm-2 control-label">{!! Form::label('Tributação:') !!}</label>
-    <div class="col-sm-2">{!! Form::select('codtributacao', $tributacoes, ['class'=> 'form-control'], ['id'=>'codtributacao', 'style'=>'width:100%'], ['data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+    <div class="col-sm-2">{!! Form::select('codtributacao', $tributacoes, $model->codtributacao, ['class'=> 'form-control', 'id'=>'codtributacao', 'style'=>'width:100%'], ['data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
 </div>
 
 <div class="form-group">
@@ -66,7 +66,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 
 <div class="form-group">
     <label for="codtipoproduto" class="col-sm-2 control-label">{!! Form::label('Tipo:') !!}</label>
-    <div class="col-sm-3">{!! Form::select('codtipoproduto', $tipos, ['class'=> 'form-control'], ['id' => 'codtipoproduto', 'style'=>'width:100%']) !!}</div>
+    <div class="col-sm-3">{!! Form::select('codtipoproduto', $tipos, $model->codtipoproduto, ['class'=> 'form-control', 'id' => 'codtipoproduto', 'style'=>'width:100%']) !!}</div>
 </div>
 
 <div class="form-group">
@@ -79,10 +79,6 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
     <div class="col-sm-6">{!! Form::textarea('descricaosite', null, ['class'=> 'form-control', 'id'=>'descricaosite']) !!}</div>
 </div>
 
-<div class="form-group">
-    <label for="inativo" class="col-sm-2 control-label">{!! Form::label('Inativo desde:') !!}</label>
-    <div class="col-sm-2">{!! Form::text('inativo', null, ['class'=> 'form-control', 'id'=>'inativo']) !!}</div>
-</div>
 <hr>
 <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
@@ -123,24 +119,6 @@ $(document).ready(function() {
         }
         $('#importado').val(valor);
     });
-    $('#codtributacao').select2({
-        placeholder: 'Tributação'
-    })<?php echo (isset($model->codtributacao) ? ".select2('val', $model->codtributacao);" : ';');?>
-    $('#codtipoproduto').select2({
-        placeholder: 'Tipo',
-        allowClear: true,
-        closeOnSelect: true
-    })<?php echo (isset($model->codtipoproduto) ? ".select2('val', $model->codtipoproduto);" : ';');?>
-    $('#codsubgrupoproduto').select2({
-        placeholder: 'Grupo',
-        allowClear: true,
-        closeOnSelect: true
-    })<?php echo (isset($model->codsubgrupoproduto) ? ".select2('val', $model->codsubgrupoproduto);" : ';');?>
-    $('#codunidademedida').select2({
-        placeholder: 'Unidade Medida',
-        allowClear: true,
-        closeOnSelect: true
-    })<?php echo (isset($model->codunidademedida) ? ".select2('val', $model->codunidademedida);" : ';');?>
     $('#inativo').datetimepicker({
         locale: 'pt-br',
         format: 'DD/MM/YYYY'
@@ -179,13 +157,14 @@ $(document).ready(function() {
             $.ajax({
               type: "GET",
               url: baseUrl + "/marca/ajax",
-              data: "id="+<?php echo (isset($model->codmarca) ? $model->codmarca : "$('#codmarca').val()");?>,
+              data: "id="+$('#codmarca').val(),
               dataType: "json",
               success: function(result) { callback(result); }
               });
         },
         width: 'resolve'
-    });     
+    }); 
+    
     $('#codncm').select2({
         minimumInputLength:1,
         allowClear:true,
@@ -216,29 +195,30 @@ $(document).ready(function() {
             $.ajax({
                 type: "GET",
                 url: baseUrl+"/ncm/ajax",
-                data: "id="+<?php echo (isset($model->codncm) ? $model->codncm : "$('#codncm').val()");?>,
+                data: "id="+$('#codncm').val(),
                 dataType: "json",
                 success: function(result) { callback(result); }
             });
         },
         width:'resolve'
-    });      
+    });
+    
     $('#codcest').select2({
         minimumInputLength:0,
         allowClear:true,
         closeOnSelect:true,
         placeholder:'CEST',
-            formatResult: function(item) {
-                    var markup = "";
-                    markup    += "<b>" + item.ncm + "</b>/";
-                    markup    += "<b>" + item.cest + "</b>&nbsp;";
-                    markup    += "<span>" + item.descricao + "</span>";
-                    return markup;
-            },
-            formatSelection: function(item) { 
-                    return item.ncm + "/" + item.cest + "&nbsp;" + item.descricao; 
-            },
-            ajax:{
+        formatResult: function(item) {
+            var markup = "";
+            markup    += "<b>" + item.ncm + "</b>/";
+            markup    += "<b>" + item.cest + "</b>&nbsp;";
+            markup    += "<span>" + item.descricao + "</span>";
+            return markup;
+        },
+        formatSelection: function(item) { 
+                return item.ncm + "/" + item.cest + "&nbsp;" + item.descricao; 
+        },
+        ajax:{
             url:baseUrl+"/cest/ajax",
             dataType:'json',
             quietMillis:500,
@@ -254,13 +234,37 @@ $(document).ready(function() {
             $.ajax({
                 type: "GET",
                 url: baseUrl+"/cest/ajax",
-                data: "id="+<?php echo (isset($model->codcest) ? $model->codcest : "$('#codcest').val()");?>,
+                data: "id="+$('#codcest').val(),
                 dataType: "json",
                 success: function(result) { callback(result); }
             });
         },
         width:'resolve'
     });      
+    
+    $('#codunidademedida').select2({
+        placeholder: 'Unidade Medida',
+        allowClear: true,
+        closeOnSelect: true
+    });
+    $('#codtributacao').select2({
+        placeholder: 'Tributação',
+        allowClear: true,
+        closeOnSelect: true
+    });
+
+    $('#codtipoproduto').select2({
+        placeholder: 'Tipo',
+        allowClear: true,
+        closeOnSelect: true
+    });
+
+    $('#codsubgrupoproduto').select2({
+        placeholder: 'Grupo',
+        allowClear: true,
+        closeOnSelect: true
+    });
+    
 });
 </script>
 @endsection

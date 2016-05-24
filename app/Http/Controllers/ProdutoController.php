@@ -371,6 +371,18 @@ class ProdutoController extends Controller
                 return response()->json($query);
             }
         }
+
+    public function inativo(Request $request)
+    {
+        $model = Produto::find($request->get('codproduto'));
+        if($request->get('acao') == 'ativar')
+            $model->inativo = null;
+        else
+            $model->inativo = Carbon::now();
+        
+        $model->save();
+    }    
+        
         
     public function estoqueSaldo(Request $request) 
     {
