@@ -56,20 +56,27 @@ class ValidatorServiceProvider extends ServiceProvider
 	 *  se existe pede para colocar como SUBSTITUICAO
 	 *  se não, não deixa marcar como SUBSTITUICAO
 	 */
-        $this->app['validator']->extend('validaTributacao', function ($attribute, $value, $parameters)
+        $this->app['validator']->extend('validaTributacaoSubstituicao', function ($attribute, $value, $parameters)
         {
             $ncm = Ncm::find($parameters)->first();
             $regs = $ncm->regulamentoIcmsStMtsDisponiveis();
-                
-            if (sizeof($regs) > 0) {
-                if ($value != Tributacao::SUBSTITUICAO)
-                    return false;
-            } else {
+            if(empty($regs)) {
                 if ($value == Tributacao::SUBSTITUICAO)
                     return false;
             }
             return true;
-        });    
+        });  
+
+        $this->app['validator']->extend('validaTributacao', function ($attribute, $value, $parameters)
+        {
+            $ncm = Ncm::find($parameters)->first();
+            $regs = $ncm->regulamentoIcmsStMtsDisponiveis();
+            if (sizeof($regs) > 0) {
+                if ($value != Tributacao::SUBSTITUICAO)
+                    return false;
+            }
+            return true;
+        });  
         
         $this->app['validator']->extend('validaMarca', function ($attribute, $value, $parameters)
         {
