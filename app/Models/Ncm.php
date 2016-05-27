@@ -186,18 +186,30 @@ class Ncm extends MGModel
     
     public static function select2($q)
     {
-        $sql = Ncm::q($q)
+        $sql = Ncm::buscancm($q)
             ->select('codncm as id', 'ncm', 'descricao')
             ->orderBy('ncm', 'ASC')
             ->paginate(10);
-        return response()->json($sql);
+        
+        $itens = [];
+        foreach ($sql as $ncm)
+        {
+            $itens[] = [
+                'id' => $ncm->id,
+                'ncm' => formataNcm($ncm->ncm),
+                'descricao' => $ncm->descricao
+            ];
+        }
+        
+        return response()->json(['data' => $itens]);
     }    
     
-    public function scopeQ($query, $q)
+    public function scopeBuscaNcm($query, $q)
     {
         if (trim($q) === '')
             return;
 
-        $query->where('descricao', 'ILIKE', "%$q%");
+        $query->where('descricao', 'ILIKE', "%$q%")
+                ->orWhere('ncm', 'ILIKE', "%$q%");
     }   
 }

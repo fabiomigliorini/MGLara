@@ -98,9 +98,9 @@ class CestController extends Controller
             {
                 foreach ($cest as $value) {
                     $resultados[] = array(
-                        'id' => $value->codcest,
-                        'ncm' => formataNcm($value->Ncm->ncm),
-                        'cest' => formataCest($value->cest),
+                        'id'        => $value->codcest,
+                        'ncm'       => formataNcm($value->Ncm->ncm),
+                        'cest'      => formataCest($value->cest),
                         'descricao' => $value->descricao,
                     );
                 }
@@ -109,7 +109,12 @@ class CestController extends Controller
             
         } elseif($request->get('id')) {
             $model = Cest::find($request->get('id'));
-            return response()->json($model);
+            return response()->json([
+                'id'        => $model->codcest,
+                'ncm'       => formataNcm($model->Ncm->ncm),
+                'cest'      => formataNcm($model->cest),
+                'descricao' => $model->descricao
+            ]);
         }
     }
 }

@@ -6,7 +6,7 @@ use MGLara\Models\Tributacao;
 use MGLara\Models\TipoProduto;
 
 $medidas        = [''=>''] + UnidadeMedida::lists('unidademedida', 'codunidademedida')->all();
-$grupos         = [''=>''] + SubGrupoProduto::lists('subgrupoproduto', 'codsubgrupoproduto')->all();
+$grupos         = [''=>''] + SubGrupoProduto::select2();
 $tributacoes    = [''=>''] + Tributacao::lists('tributacao', 'codtributacao')->all();
 $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')->all();
 
@@ -28,7 +28,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 
 <div class="form-group">
     <label for="codsubgrupoproduto" class="col-sm-2 control-label">{!! Form::label('Grupo:') !!}</label>
-    <div class="col-sm-3">{!! Form::select('codsubgrupoproduto', $grupos, $model->codsubgrupoproduto, ['class'=> 'form-control', 'id'=>'codsubgrupoproduto', 'style'=>'width:100%']) !!}</div>
+    <div class="col-sm-6">{!! Form::select('codsubgrupoproduto', $grupos, $model->codsubgrupoproduto, ['class'=> 'form-control', 'id'=>'codsubgrupoproduto', 'style'=>'width:100%']) !!}</div>
 </div>
 
 <div class="form-group">

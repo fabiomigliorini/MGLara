@@ -92,7 +92,11 @@ class NcmController extends Controller
             return Ncm::select2($request->get('q'));
         } elseif($request->get('id')) {
             $ncm = Ncm::find($request->get('id'));
-            return response()->json($ncm);
+            return response()->json([
+                'id' => $ncm->codncm,
+                'ncm' => formataNcm($ncm->ncm),
+                'descricao' => $ncm->descricao
+            ]);
         }
     } 
     
