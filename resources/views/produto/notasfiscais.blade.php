@@ -20,7 +20,7 @@
 <br>
 <div id="registros">
   <div class="list-group" id="items">
-    @foreach($model->notasFiscais() as $data)
+    @foreach($notas as $data)
       <div class="list-group-item">
         <div class="row item">
             <div class="col-md-3">
@@ -35,9 +35,9 @@
         </div>
       </div>    
     @endforeach
-    @if (count($model->notasFiscais()) === 0)
+    @if (count($notas) === 0)
         <h3>Nenhum registro encontrado!</h3>
     @endif    
   </div>
-  <?php echo $model->notasFiscais()->appends(Request::all())->render();?>
+  {!! $notas->appends(Request::all())->render() !!}
 </div>

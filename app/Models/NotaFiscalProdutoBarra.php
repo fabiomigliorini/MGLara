@@ -140,6 +140,19 @@ class NotaFiscalProdutoBarra extends MGModel
         return $this->hasMany(EstoqueMovimento::class, 'codnotafiscalprodutobarra', 'codnotafiscalprodutobarra');
     }
 
+    // Buscas
+    public static function search($id)
+    {
+        return NotaFiscalProdutoBarra::id($id)
+            ->paginate(15);
+    }
+    
+    public function scopeId($query, $id)
+    {
+        return $query->whereHas('ProdutoBarra', function($q) use ($id) {
+            $q->where('codproduto', $id);
+        });        
+    }      
     
     
     public function quantidadeUnitaria()

@@ -106,5 +106,16 @@ class NegocioProdutoBarra extends MGModel
         return $this->hasMany(NegocioProdutoBarra::class, 'codnegocioprodutobarradevolucao', 'codnegocioprodutobarra');
     }
     
+    public static function search($id)
+    {
+        return NegocioProdutoBarra::id($id)
+            ->paginate(15);
+    }
     
+    public function scopeId($query, $id)
+    {
+        return $query->whereHas('ProdutoBarra', function($q) use ($id) {
+            $q->where('codproduto', $id);
+        });        
+    }    
 }

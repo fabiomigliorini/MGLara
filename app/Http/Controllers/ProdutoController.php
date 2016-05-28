@@ -99,7 +99,9 @@ class ProdutoController extends Controller
     public function show($id)
     {
         $model = Produto::find($id);
-        return view('produto.show', compact('model'));
+        $negocios = NegocioProdutoBarra::search($id);
+        $notas = NotaFiscalProdutoBarra::search($id);
+        return view('produto.show', compact('model', 'negocios','notas'));
     }
 
 
