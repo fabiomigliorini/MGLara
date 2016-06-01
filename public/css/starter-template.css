@@ -168,6 +168,15 @@ h1.header {
     padding: 10px 0;
 }
 
+#produto-search .form-group, 
+#produto-npb-search .form-group {
+    margin-bottom: 5px;
+    position: relative;
+}
+.between {
+    width: 82px !important;
+}
+
 /* Marcas */
 .marcas-pagination {
     margin: 0;

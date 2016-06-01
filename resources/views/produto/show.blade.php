@@ -1,5 +1,13 @@
 @extends('layouts.default')
 @section('content')
+<?php
+    use MGLara\Models\Filial;
+    use MGLara\Models\NaturezaOperacao;
+    
+    $filiais    = [''=>''] + Filial::lists('filial', 'codfilial')->all();
+    $naturezaop = [''=>''] + NaturezaOperacao::lists('naturezaoperacao', 'codnaturezaoperacao')->all();
+
+?>
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
@@ -387,6 +395,56 @@ $(document).ready(function() {
             }  
         });
     });
+    
+    
+    // Notas fiscais e Negócios
+    $('.pagination').removeClass('hide');
+    
+    /*
+    $(document).on('click','.pagination a', function(e){
+        e.preventDefault();
+        var page = $(this).attr('href').split('page=')[1];
+         getProducts(page);
+        //location.hash = page;
+    });
+    function getProducts(page){
+        $.ajax({
+            url: '?page=' + page
+        }).done(function(data){
+            $('#npbs').html(data);
+        });
+    }    
+    */
+    
+    $('#nfpb_saida_de, #nfpb_saida_ate, #npb_saida_de, #npb_saida_ate').datetimepicker({
+        useCurrent: false,
+        showClear: true,
+        locale: 'pt-br',
+        format: 'DD/MM/YY'
+    });
+    $(document).on('dp.change', '#saida_de, #saida_ate', function() {
+        $('#produto-npb-search').submit();
+    });
+    
+    $('#nfpb_codfilial').select2({
+        allowClear:true,
+        closeOnSelect:true
+    })<?php echo (app('request')->input('nfpb_codfilial') ? ".select2('val'," .app('request')->input('nfpb_codfilial').");" : ';'); ?>
+    
+    $('#npb_codfilial').select2({
+        allowClear:true,
+        closeOnSelect:true
+    })<?php echo (app('request')->input('npb_codfilial') ? ".select2('val'," .app('request')->input('npb_codfilial').");" : ';'); ?>
+    
+    $('#nfpb_codnaturezaoperacao').select2({
+        allowClear:true,
+        closeOnSelect:true
+    })<?php echo (app('request')->input('nfpb_codnaturezaoperacao') ? ".select2('val'," .app('request')->input('nfpb_codnaturezaoperacao').");" : ';'); ?>
+    
+    $('#npb_codnaturezaoperacao').select2({
+        allowClear:true,
+        closeOnSelect:true
+    })<?php echo (app('request')->input('npb_codnaturezaoperacao') ? ".select2('val'," .app('request')->input('npb_codnaturezaoperacao').");" : ';'); ?>
     
 });
 </script>

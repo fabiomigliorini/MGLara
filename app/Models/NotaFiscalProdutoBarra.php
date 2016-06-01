@@ -1,7 +1,7 @@
 <?php
 
 namespace MGLara\Models;
-
+use Carbon\Carbon;
 /**
  * Campos
  * @property  bigint                         $codnotafiscalprodutobarra          NOT NULL DEFAULT nextval('tblnotafiscalprodutobarra_codnotafiscalprodutobarra_seq'::regclass)
@@ -141,10 +141,12 @@ class NotaFiscalProdutoBarra extends MGModel
     }
 
     // Buscas
-    public static function search($id)
+    public static function search($id, $saida_de, $saida_ate)
     {
         return NotaFiscalProdutoBarra::id($id)
-            ->paginate(15);
+            ->saidaDe($saida_de)
+            ->saidaAte($saida_ate)
+            ->paginate(2);
     }
     
     public function scopeId($query, $id)
@@ -154,8 +156,33 @@ class NotaFiscalProdutoBarra extends MGModel
         });        
     }      
     
+    public function scopeSaidaDe($query, $saida_de)
+    {
+        if (trim($saida_de) === '')
+            return;
+        
+        if(!empty($saida_de))
+            $saida_de = Carbon::createFromFormat('d/m/y', $saida_de)->format('Y-m-d').' 23:59:59.9';        
+        
+        return $query->whereHas('NotaFiscal', function($q) use ($saida_de) {
+            $q->where('saida','>=', $saida_de);
+        });           
+    }
     
-    public function quantidadeUnitaria()
+    public function scopeSaidaAte($query, $saida_ate)
+    {
+        if (trim($saida_ate) === '')
+            return;
+        
+        if(!empty($saida_ate))
+            $saida_ate = Carbon::createFromFormat('d/m/y', $saida_ate)->format('Y-m-d').' 23:59:59.9';        
+        
+        return $query->whereHas('NotaFiscal', function($q) use ($saida_ate) {
+            $q->where('saida','<=', $saida_ate);
+        });           
+    }
+
+        public function quantidadeUnitaria()
     {
         return $this->ProdutoBarra->converteQuantidade($this->quantidade);
     }

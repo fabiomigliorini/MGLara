@@ -1,21 +1,24 @@
 <h4>Negócios ({{ count($negocios) }})</h4>
 <hr>
 <div class="search-bar">
-{!! Form::model(Request::all(), ['route' => 'produto.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+{!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-npb-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+    <strong>Lançamento</strong>
     <div class="form-group">
-        <select placeholder="Filial" class="form-control" name="notas_codfilial" id="notas_codfilial" style="width: 70px;">
-            <option value=""></option>
-        </select>
+        {!! Form::text('npb_saida_de', null, ['class' => 'form-control between', 'id' => 'npb_saida_de', 'placeholder' => 'De']) !!}
+        {!! Form::text('npb_saida_ate', null, ['class' => 'form-control between', 'id' => 'npb_saida_ate', 'placeholder' => 'Até']) !!}
     </div>
     <div class="form-group">
-        <select placeholder="Natureza" class="form-control" name="notas_codnaturezaoperacao" id="notas_codnaturezaoperacao" style="width: 70px;">
-            <option value=""></option>
-        </select>
-    </div>
+        {!! Form::select('npb_codfilial', $filiais, ['style'=>'width:100px'], ['id'=>'npb_codfilial']) !!}
+    </div>  
+    <div class="form-group">
+        {!! Form::select('npb_codnaturezaoperacao', $naturezaop, ['style'=>'width:100px'], ['id' => 'npb_codnaturezaoperacao']) !!}
+    </div>  
+
+
 {!! Form::close() !!}
 </div>
 <br>
-<div class="list-group" id="items">
+<div class="list-group" id="npbs">
   @foreach($negocios as $negocio)
     <div class="list-group-item">
         <div class="row item">

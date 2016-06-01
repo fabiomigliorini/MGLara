@@ -237,8 +237,6 @@ if(!function_exists('formataEndereco')) {
 
         $q = urlencode($q);
 
-        //$retorno =  html_entity_decode($retorno);
-
         if ($multilinha)
             $retorno = str_replace (" - ", "<br>", $retorno);
         
@@ -257,5 +255,19 @@ if(!function_exists('formataLocalEstoque')) {
     function formataLocalEstoque ($corredor, $prateleira, $coluna, $bloco)
     {
         return $corredor.'.'.$prateleira.'.'.$coluna.'.'.$bloco;
+    }
+}
+
+if(!function_exists('formataNumeroNota')) {
+    function formataNumeroNota ($emitida, $serie, $numero, $modelo)
+    {
+        return (($emitida)?"N-":"T-") . $serie . "-" . (!empty($modelo)?$modelo . "-":"") . formataPorMascara($numero, "########");
+    }
+}
+
+if(!function_exists('formataChaveNfe')) {	
+    function formataChaveNfe ($chave)
+    {
+        return self::formataPorMascara($chave, "#### #### #### #### #### #### #### #### #### #### ####");
     }
 }

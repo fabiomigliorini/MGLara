@@ -109,7 +109,7 @@ class NegocioProdutoBarra extends MGModel
     public static function search($id)
     {
         return NegocioProdutoBarra::id($id)
-            ->paginate(15);
+            ->paginate(2);
     }
     
     public function scopeId($query, $id)
