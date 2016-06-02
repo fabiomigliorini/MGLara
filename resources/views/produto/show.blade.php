@@ -198,10 +198,154 @@
                     @include('produto.fiscal')
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-produto-notasfiscais">
-                    @include('produto.notasfiscais')
+                    <h4>Notas fiscais</h4>
+                    <div class="pull-right">{!! $nfpbs->appends(Request::all())->render() !!}</div>
+                    <div class="search-bar">
+                    {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-nfpb-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+                        <strong>Lançamento</strong>
+                        <div class="form-group">
+                            {!! Form::text('nfpb_saida_de', null, ['class' => 'form-control between', 'id' => 'nfpb_saida_de', 'placeholder' => 'De']) !!}
+                            {!! Form::text('nfpb_saida_ate', null, ['class' => 'form-control between', 'id' => 'nfpb_saida_ate', 'placeholder' => 'Até']) !!}
+                        </div>
+                        <div class="form-group">
+                            {!! Form::select('nfpb_codfilial', $filiais, ['style'=>'width:100px'], ['id'=>'nfpb_codfilial']) !!}
+                        </div>  
+                        <div class="form-group">
+                            {!! Form::select('nfpb_codnaturezaoperacao', $naturezaop, ['style'=>'width:100px'], ['id' => 'nfpb_codnaturezaoperacao']) !!}
+                        </div>  
+                    {!! Form::close() !!}
+                    </div>
+                    <br>                    
+                    
+                    
+                    
+                    
+                    
+                    
+<div class="list-group" id="nfpbs">
+  @foreach($nfpbs as $nfpb)
+    <div class="list-group-item">
+      <div class="row item">
+          <div class="col-md-4">
+              {{ formataData($nfpb->NotaFiscal->saida) }}
+              {{ $nfpb->NotaFiscal->Filial->filial }} <br>
+              {{ $nfpb->NotaFiscal->NaturezaOperacao->naturezaoperacao }} <br>
+              <a href="{{ url("pessoa/{$nfpb->NotaFiscal->Pessoa->codpessoa}") }}">{{ $nfpb->NotaFiscal->Pessoa->fantasia }}</a>
+          </div>                            
+          <div class="col-md-4">
+              {{ formataNumero($nfpb->quantidade) }}
+              <?php
+              $precounitario = ($nfpb->valortotal + $nfpb->icmsstvalor + $nfpb->ipivalor);
+              if ($nfpb->quantidade > 0)
+                  $precounitario = $precounitario/$nfpb->quantidade;
+              $ipi = '';
+              $icmsst = '';
+              if ($nfpb->valortotal > 0)
+              {
+                  $ipi = $nfpb->ipivalor/$nfpb->valortotal;
+                  $icmsst = $nfpb->icmsstvalor/$nfpb->valortotal;
+              }
+              echo $nfpb->ProdutoBarra->Produto->UnidadeMedida->sigla;
+              if (isset($nfpb->ProdutoBarra->ProdutoEmbalagem))
+              {
+                  echo " C/" . formatNumero($nfpb->ProdutoBarra->ProdutoEmbalagem->quantidade, 0);
+                  $precounitario /=$nfpb->ProdutoBarra->ProdutoEmbalagem->quantidade;
+              }
+              ?> <br>
+              {{ formataNumero($nfpb->valorunitario) }} <br>
+
+              @if($ipi > 0)
+                  {{ formataNumero($ipi * 100, 0) }}  % IPI
+              @endif
+              <br>
+              @if($icmsst > 0)
+                  {{ formataNumero($icmsst * 100, 0) }}  % ST
+              @endif
+          </div>
+          <div class="col-md-4">
+              {{ formataNumero($precounitario) }} <br>
+              <a href="{{ url("nota-fiscal/{$nfpb->NotaFiscal->codnotafiscal}") }}">{{ formataNumeroNota($nfpb->NotaFiscal->emitida, $nfpb->NotaFiscal->serie, $nfpb->NotaFiscal->numero, $nfpb->NotaFiscal->modelo) }}</a> <br>
+              {{ $nfpb->ProdutoBarra->barras }}
+          </div>
+      </div>
+    </div>    
+  @endforeach
+  @if (count($nfpbs) === 0)
+      <h4>Nenhum registro encontrado!</h4>
+  @endif    
+</div>                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-produto-negocios">
-                    @include('produto.negocios')
+                    <h4>Negócios</h4>
+                    <div class="pull-right">{!! $npbs->appends(Request::all())->render() !!}</div>
+                    <div class="search-bar">
+                    {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-npb-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+                        <strong>Lançamento</strong>
+                        <div class="form-group">
+                            {!! Form::text('npb_saida_de', null, ['class' => 'form-control between', 'id' => 'npb_saida_de', 'placeholder' => 'De']) !!}
+                            {!! Form::text('npb_saida_ate', null, ['class' => 'form-control between', 'id' => 'npb_saida_ate', 'placeholder' => 'Até']) !!}
+                        </div>
+                        <div class="form-group">
+                            {!! Form::select('npb_codfilial', $filiais, ['style'=>'width:100px'], ['id'=>'npb_codfilial']) !!}
+                        </div>  
+                        <div class="form-group">
+                            {!! Form::select('npb_codnaturezaoperacao', $naturezaop, ['style'=>'width:100px'], ['id' => 'npb_codnaturezaoperacao']) !!}
+                        </div>  
+
+
+                    {!! Form::close() !!}
+                    </div>
+                    <br>
+                    
+                    
+                    
+                    
+<div class="list-group" id="npbs">
+  @foreach($npbs as $npb)
+    <div class="list-group-item">
+        <div class="row item">
+            <div class="col-md-4">
+                {{ formataData($npb->Negocio->lancamento, 'L') }}
+                {{ $npb->Negocio->Filial->filial }} <br>
+                {{ $npb->Negocio->NaturezaOperacao->naturezaoperacao }} <br>
+                <a href="{{ url("pessoa/{$npb->Negocio->Pessoa->codpessoa}") }}">{{ $npb->Negocio->Pessoa->fantasia }}</a>
+            </div>                            
+            <div class="col-md-4">
+                {{ formataNumero($npb->quantidade) }} <br>
+                <?php $precounitario = ($npb->valortotal)/$npb->quantidade; ?>
+                {{ $npb->ProdutoBarra->Produto->UnidadeMedida->sigla }}
+                @if(!empty($npb->ProdutoBarra->ProdutoEmbalagem))
+                    C/ {{ formataNumero($npb->ProdutoBarra->ProdutoEmbalagem->quantidade, 0) }}
+                    <?php $precounitario /=$npb->ProdutoBarra->ProdutoEmbalagem->quantidade;?>
+                @endif
+                <br>
+                {{ $npb->valorunitario }}
+            </div>
+            <div class="col-md-4">
+                {{ formataNumero($precounitario) }} <br>
+                {{ $npb->codprodutobarra }} <br>
+                {{ $npb->ProdutoBarra->barras }} <br>
+                <a href="{{ url("negocio/{$npb->Negocio->codnegocio}") }}">{{ formataCodigo($npb->Negocio->codnegocio) }}</a>
+            </div>
+        </div>
+    </div>    
+  @endforeach
+  @if (count($npbs) === 0)
+      <h3>Nenhum registro encontrado!</h3>
+  @endif    
+</div>                    
+                    
+                    
+                    
+                    
                 </div>
             </div>
         </div>        
@@ -400,21 +544,65 @@ $(document).ready(function() {
     // Notas fiscais e Negócios
     $('.pagination').removeClass('hide');
     
-    /*
-    $(document).on('click','.pagination a', function(e){
+
+    $(document).on('click','#tab-produto-notasfiscais .pagination a', function(e){
         e.preventDefault();
         var page = $(this).attr('href').split('page=')[1];
-         getProducts(page);
-        //location.hash = page;
+        getNfpbs(page);
     });
-    function getProducts(page){
+    
+    $(document).on('click','#tab-produto-negocios .pagination a', function(e){
+        e.preventDefault();
+        var page = $(this).attr('href').split('page=')[1];
+        getNpbs(page);
+    });
+    
+    function getNpbs(page){
         $.ajax({
-            url: '?page=' + page
+            url: baseUrl + '/produto/<?php echo $model->codproduto;?>?page=' + page
         }).done(function(data){
             $('#npbs').html(data);
         });
     }    
-    */
+    
+    function getNfpbs(page){
+        $.ajax({
+            url: baseUrl + '/produto/<?php echo $model->codproduto;?>?page=' + page
+        }).done(function(data){
+            $('#nfpbs').html(data);
+        });
+    }    
+    
+    /***
+    $(window).on('hashchange', function() {
+        if (window.location.hash) {
+            var page = window.location.hash.replace('#', '');
+            if (page == Number.NaN || page <= 0) {
+                return false;
+            } else {
+                getPosts(page);
+            }
+        }
+    });
+    $(document).ready(function() {
+        $(document).on('click', '.pagination a', function (e) {
+            getPosts($(this).attr('href').split('page=')[1]);
+            e.preventDefault();
+        });
+    });
+    function getPosts(page) {
+        $.ajax({
+            url : '?page=' + page,
+            dataType: 'json',
+        }).done(function (data) {
+            $('#nfpbs').html(data);
+            location.hash = page;
+        }).fail(function () {
+            alert('Posts could not be loaded.');
+        });
+    }
+    ***/
+    
     
     $('#nfpb_saida_de, #nfpb_saida_ate, #npb_saida_de, #npb_saida_ate').datetimepicker({
         useCurrent: false,

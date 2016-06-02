@@ -99,13 +99,17 @@ class ProdutoController extends Controller
     public function show(Request $request, $id)
     {
         $model = Produto::find($id);
-        $negocios = NegocioProdutoBarra::search($id);
-        $notas = NotaFiscalProdutoBarra::search(
+        $npbs = NegocioProdutoBarra::search(
             $id,
-            $request->get('saida_de'),                
-            $request->get('saida_ate')
+            $request->get('npb_saida_de'),                
+            $request->get('npb_saida_ate')                
         );
-        return view('produto.show', compact('model', 'negocios','notas'));
+        $nfpbs = NotaFiscalProdutoBarra::search(
+            $id,
+            $request->get('nfpb_saida_de'),                
+            $request->get('nfpb_saida_ate')
+        );
+        return view('produto.show', compact('model', 'nfpbs', 'npbs'));
     }
 
 

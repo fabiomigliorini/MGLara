@@ -5,13 +5,11 @@ namespace MGLara\Http\Controllers;
 use Illuminate\Http\Request;
 
 use MGLara\Http\Requests;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
 
-use MGLara\Models\NotaFiscalProdutoBarra;
+use MGLara\Models\NegocioProdutoBarra;
 
-class NotaFiscalProdutoBarraController extends Controller
+class NegocioProdutoBarraController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,13 +19,13 @@ class NotaFiscalProdutoBarraController extends Controller
     public function index(Request $request)
     {
         /*
-        $nfpbs = NotaFiscalProdutoBarra::search(
+        $npbs = NegocioProdutoBarra::search(
             $request->get('id'),
             $request->get('saida_de'),
             $request->get('saida_ate')
         );
         */
-        return view('nota-fiscal-produto-barra.index');
+        return view('negocio-produto-barra.index');
     }
 
     /**

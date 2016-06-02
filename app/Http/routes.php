@@ -124,6 +124,12 @@ Route::group(['middleware' => 'auth'], function() {
     /* Histórico de preços */
     Route::resource('produto-historico-preco', 'ProdutoHistoricoPrecoController');
     
+    /* Nota fiscal produto barra */
+    Route::resource('nota-fiscal-produto-barra', 'NotaFiscalProdutoBarraController');
+    
+    /* Negócio produto barra */
+    Route::resource('negocio-produto-barra', 'NegocioProdutoBarraController');
+    
     
     Route::resource('produto-embalagem','ProdutoEmbalagemController');
 
