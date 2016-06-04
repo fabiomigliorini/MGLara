@@ -20,14 +20,15 @@ class NotaFiscalProdutoBarraController extends Controller
      */
     public function index(Request $request)
     {
-        /*
+
         $nfpbs = NotaFiscalProdutoBarra::search(
             $request->get('id'),
             $request->get('saida_de'),
             $request->get('saida_ate')
         );
-        */
-        return view('nota-fiscal-produto-barra.index');
+        
+        return response()->json($nfpbs);
+        //return view('nota-fiscal-produto-barra.index');
     }
 
     /**

@@ -18,14 +18,15 @@ class NegocioProdutoBarraController extends Controller
      */
     public function index(Request $request)
     {
-        /*
+
         $npbs = NegocioProdutoBarra::search(
             $request->get('id'),
             $request->get('saida_de'),
             $request->get('saida_ate')
         );
-        */
-        return view('negocio-produto-barra.index');
+
+        return response()->json($npbs);
+        //return view('negocio-produto-barra.index');
     }
 
     /**
