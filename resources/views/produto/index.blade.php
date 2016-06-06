@@ -1,11 +1,11 @@
 @extends('layouts.default')
 @section('content')
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
-    <div class="container-fluid"> 
+    <div class="container-fluid">
         <ul class="nav navbar-nav">
             <li>
-                <a href="<?php echo url('produto/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a>
-            </li> 
+                <a href="<?php echo url('produto/create'); ?>"><span class="glyphicon glyphicon-plus"></span> Novo</a>
+            </li>
         </ul>
     </div>
 </nav>
@@ -13,18 +13,16 @@
 <hr>
 <?php
 use MGLara\Models\SecaoProduto;
-use MGLara\Models\ProdutoVariacao;
 $filtro = Request::session()->get('produto.index');
-
 ?>
 <div class="search-bar">
-{!! Form::model($filtro, 
+{!! Form::model($filtro,
 [
-    'route' => 'produto.index', 
-    'method' => 'GET', 
-    'class' => 'form-inline', 
-    'id' => 'produto-search', 
-    'role' => 'search', 
+    'route' => 'produto.index',
+    'method' => 'GET',
+    'class' => 'form-inline',
+    'id' => 'produto-search',
+    'role' => 'search',
     'autocomplete' => 'off'
 ])!!}
     <div class="form-group">
@@ -73,7 +71,7 @@ $filtro = Request::session()->get('produto.index');
 
     <div class="form-group">
         {!! Form::select('site', ['' => '', 'true' => 'No Site', 'false' => 'Fora do Site'], null, ['style' => 'width: 120px', 'id'=>'site']) !!}
-    </div>      
+    </div>
 
     <div class="form-group">
         {!! Form::select2Ncm('codncm', null, ['class' => 'form-control','id'=>'codncm', 'style'=>'width:450px', 'placeholder' => 'NCM']) !!}
@@ -121,9 +119,9 @@ $filtro = Request::session()->get('produto.index');
                     <a href="{{ url("ncm/$row->codncm") }}">
                         {{ formataNcm($row->Ncm->ncm) }}
                     </a>
-                </div>    
+                </div>
                 @endif
-            </div>                            
+            </div>
             <div class="col-md-4">
                 <a href="{{ url("produto/$row->codproduto") }}">
                     <strong>{!! listagemTitulo($row->produto, $row->inativo) !!}</strong>
@@ -151,7 +149,7 @@ $filtro = Request::session()->get('produto.index');
                     </a>
                     »
                     <span class="text-muted">{{ $row->referencia }}</span>
-                </div>    
+                </div>
                 @endif
             </div>
             <div class="col-md-2">
@@ -163,7 +161,7 @@ $filtro = Request::session()->get('produto.index');
                         {{ $row->UnidadeMedida->sigla }}
                     </div>
                 </div>
-                
+
                 @foreach($row->ProdutoEmbalagemS()->orderBy(DB::raw('coalesce(quantidade, 0)'))->get() as $pe)
                     <div class="row">
                         @if (empty($pe->preco))
@@ -172,7 +170,7 @@ $filtro = Request::session()->get('produto.index');
                             </i>
                         @else
                             <strong class="col-md-6 text-right">
-                                {{ formataNumero($pe->preco) }}                            
+                                {{ formataNumero($pe->preco) }}
                             </strong>
                         @endif
                         <div class="col-md-6 text-left">
@@ -184,8 +182,8 @@ $filtro = Request::session()->get('produto.index');
             <div class="col-md-5 small text-muted" >
                 {!! inativo($row->inativo) !!}
                 <?php
-                $pvs = $row->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
-                ?>
+$pvs = $row->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
+?>
                 <table class="table table-striped table-condensed table-hover" style="margin-bottom: 1px">
                 @foreach ($pvs as $pv)
                     <tr>
@@ -206,10 +204,10 @@ $filtro = Request::session()->get('produto.index');
                         </td>
                         <td class="col-md-6">
                             <?php
-                            $pbs = $pv->ProdutoBarraS()->leftJoin('tblprodutoembalagem as pe', 'pe.codprodutoembalagem', '=', 'tblprodutobarra.codprodutoembalagem')
-                               ->orderBy(DB::raw('coalesce(pe.quantidade, 0)'), 'ASC')
-                               ->with('ProdutoEmbalagem')->get();
-                            ?>
+$pbs = $pv->ProdutoBarraS()->leftJoin('tblprodutoembalagem as pe', 'pe.codprodutoembalagem', '=', 'tblprodutobarra.codprodutoembalagem')
+    ->orderBy(DB::raw('coalesce(pe.quantidade, 0)'), 'ASC')
+    ->with('ProdutoEmbalagem')->get();
+?>
                             @foreach ($pbs as $pb)
                                 <div class="row">
                                     <div class="col-md-7 text-right">
@@ -229,14 +227,14 @@ $filtro = Request::session()->get('produto.index');
                 @endforeach
                 </table>
             </div>
-        </div>    
+        </div>
       </div>
     @endforeach
     @if (count($model) === 0)
         <h3>Nenhum registro encontrado!</h3>
-    @endif    
+    @endif
   </div>
-  <?php echo $model->appends(Request::all())->render();?>
+  <?php echo $model->appends(Request::all())->render(); ?>
 </div>
 @section('inscript')
 <style type="text/css">
@@ -264,34 +262,34 @@ function atualizaFiltro()
         data: frmValues
     })
     .done(function (data) {
-        $('#items').html(jQuery(data).find('#items').html()); 
+        $('#items').html(jQuery(data).find('#items').html());
     })
     .fail(function () {
         console.log('Erro no filtro');
     });
-    event.preventDefault(); 
-    
+    event.preventDefault();
+
 }
-    
+
 $(document).ready(function() {
     //$('ul.pagination').removeClass('hide');
-    
+
     $("#produto-search").on("change", function (event) {
         atualizaFiltro();
     });
-    
+
     /*$(document).on('dp.change', '#criacao_de, #criacao_ate, #alteracao_de, #alteracao_ate', function() {
         atualizaFiltro();
     });*/
-    
+
     $('#site').select2({
         placeholder: 'Site',
         allowClear:true,
         closeOnSelect:true
     });
-    
+
     $('#preco_de, #preco_ate').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.' });
-    
+
     /*
     $('#criacao_de, #criacao_ate, #alteracao_de, #alteracao_ate').datetimepicker({
         useCurrent: false,
