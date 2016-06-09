@@ -146,7 +146,7 @@ class NotaFiscalProdutoBarra extends MGModel
         return NotaFiscalProdutoBarra::id($id)
             ->saidaDe($saida_de)
             ->saidaAte($saida_ate)
-            ->paginate(10);
+            ->paginate(5);
     }
     
     public function scopeId($query, $id)

@@ -217,87 +217,117 @@
                     </div>
                     <br>                    
                     
-                    
-                    
-                    
-                    
-                    
-<div class="list-group" id="nfpbs">
-    @foreach($nfpbs as $nfpb)
-    <div class="list-group-item">
-        <div class="row item">
-            <div class="col-md-4">
-                {{ formataData($nfpb->NotaFiscal->saida) }}
-                {{ $nfpb->NotaFiscal->Filial->filial }} <br>
-                {{ $nfpb->NotaFiscal->NaturezaOperacao->naturezaoperacao }} <br>
-                <a href="{{ url("pessoa/{$nfpb->NotaFiscal->Pessoa->codpessoa}") }}">{{ $nfpb->NotaFiscal->Pessoa->fantasia }}</a>
-            </div>                            
-            <div class="col-md-4">
-                {{ formataNumero($nfpb->quantidade) }}
-                <?php
-                $precounitario = ($nfpb->valortotal + $nfpb->icmsstvalor + $nfpb->ipivalor);
-                if ($nfpb->quantidade > 0)
-                    $precounitario = $precounitario/$nfpb->quantidade;
-                $ipi = '';
-                $icmsst = '';
-                if ($nfpb->valortotal > 0)
-                {
-                    $ipi = $nfpb->ipivalor/$nfpb->valortotal;
-                    $icmsst = $nfpb->icmsstvalor/$nfpb->valortotal;
-                }
-                echo $nfpb->ProdutoBarra->Produto->UnidadeMedida->sigla;
-                if (isset($nfpb->ProdutoBarra->ProdutoEmbalagem))
-                {
-                    echo " C/" . formatNumero($nfpb->ProdutoBarra->ProdutoEmbalagem->quantidade, 0);
-                    $precounitario /=$nfpb->ProdutoBarra->ProdutoEmbalagem->quantidade;
-                }
-                ?> <br>
-                {{ formataNumero($nfpb->valorunitario) }} <br>
+                    <div class="list-group" id="nfpbs">
+                        @foreach($nfpbs as $nfpb)
+                        <div class="list-group-item">
+                            <div class="row item">
+                                <div class="col-md-4">
+                                    {{ formataData($nfpb->NotaFiscal->saida) }}
+                                    {{ $nfpb->NotaFiscal->Filial->filial }} <br>
+                                    {{ $nfpb->NotaFiscal->NaturezaOperacao->naturezaoperacao }} <br>
+                                    <a href="{{ url("pessoa/{$nfpb->NotaFiscal->Pessoa->codpessoa}") }}">{{ $nfpb->NotaFiscal->Pessoa->fantasia }}</a>
+                                </div>                            
+                                <div class="col-md-4">
+                                    {{ formataNumero($nfpb->quantidade) }}
+                                    <?php
+                                    $precounitario = ($nfpb->valortotal + $nfpb->icmsstvalor + $nfpb->ipivalor);
+                                    if ($nfpb->quantidade > 0)
+                                        $precounitario = $precounitario/$nfpb->quantidade;
+                                    $ipi = '';
+                                    $icmsst = '';
+                                    if ($nfpb->valortotal > 0)
+                                    {
+                                        $ipi = $nfpb->ipivalor/$nfpb->valortotal;
+                                        $icmsst = $nfpb->icmsstvalor/$nfpb->valortotal;
+                                    }
+                                    echo $nfpb->ProdutoBarra->Produto->UnidadeMedida->sigla;
+                                    if (isset($nfpb->ProdutoBarra->ProdutoEmbalagem))
+                                    {
+                                        echo " C/" . formatNumero($nfpb->ProdutoBarra->ProdutoEmbalagem->quantidade, 0);
+                                        $precounitario /=$nfpb->ProdutoBarra->ProdutoEmbalagem->quantidade;
+                                    }
+                                    ?> <br>
+                                    {{ formataNumero($nfpb->valorunitario) }} <br>
 
-                @if($ipi > 0)
-                    {{ formataNumero($ipi * 100, 0) }}  % IPI
-                @endif
-                <br>
-                @if($icmsst > 0)
-                    {{ formataNumero($icmsst * 100, 0) }}  % ST
-                @endif
-            </div>
-            <div class="col-md-4">
-                {{ formataNumero($precounitario) }} <br>
-                <a href="{{ url("nota-fiscal/{$nfpb->NotaFiscal->codnotafiscal}") }}">{{ formataNumeroNota($nfpb->NotaFiscal->emitida, $nfpb->NotaFiscal->serie, $nfpb->NotaFiscal->numero, $nfpb->NotaFiscal->modelo) }}</a> <br>
-                {{ $nfpb->ProdutoBarra->barras }}
-            </div>
-        </div>
-    </div>    
-@endforeach
-@if (count($nfpbs) === 0)
-    <h4>Nenhum registro encontrado!</h4>
-@endif    
-</div>                    
+                                    @if($ipi > 0)
+                                        {{ formataNumero($ipi * 100, 0) }}  % IPI
+                                    @endif
+                                    <br>
+                                    @if($icmsst > 0)
+                                        {{ formataNumero($icmsst * 100, 0) }}  % ST
+                                    @endif
+                                </div>
+                                <div class="col-md-4">
+                                    {{ formataNumero($precounitario) }} <br>
+                                    <a href="{{ url("nota-fiscal/{$nfpb->NotaFiscal->codnotafiscal}") }}">{{ formataNumeroNota($nfpb->NotaFiscal->emitida, $nfpb->NotaFiscal->serie, $nfpb->NotaFiscal->numero, $nfpb->NotaFiscal->modelo) }}</a> <br>
+                                    {{ $nfpb->ProdutoBarra->barras }}
+                                </div>
+                            </div>
+                        </div>    
+                    @endforeach
+                    @if (count($nfpbs) === 0)
+                        <h4>Nenhum registro encontrado!</h4>
+                    @endif    
+                    </div>                    
                     
                     
                 </div>
                 
                 <div role="tabpanel" class="tab-pane fade" id="tab-produto-negocios">
+
                     <h4>Negócios</h4>
-                    <div ng-app="kettle">                    
-                        <div ng-controller="postController" ng-init="getPosts()">
-                            <div class="list-group-item" ng-repeat="npb in posts">
-                                <div class="row item">
-                                    <div class="col-md-4">
-                                        [[ npb.codnegocio ]]
-                                    </div>
-                                    <div class="col-md-4"></div>
-                                    <div class="col-md-4"></div>
+                    <div class="pull-right">{!! $npbs->appends(Request::all())->render() !!}</div>
+                    <div class="search-bar">
+                    {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-npb-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+                        <strong>Lançamento</strong>
+                        <div class="form-group">
+                            {!! Form::text('npb_saida_de', null, ['class' => 'form-control between', 'id' => 'npb_saida_de', 'placeholder' => 'De']) !!}
+                            {!! Form::text('npb_saida_ate', null, ['class' => 'form-control between', 'id' => 'npb_saida_ate', 'placeholder' => 'Até']) !!}
+                        </div>
+                        <div class="form-group">
+                            {!! Form::select('npb_codfilial', $filiais, ['style'=>'width:100px'], ['id'=>'npb_codfilial']) !!}
+                        </div>  
+                        <div class="form-group">
+                            {!! Form::select('npb_codnaturezaoperacao', $naturezaop, ['style'=>'width:100px'], ['id' => 'npb_codnaturezaoperacao']) !!}
+                        </div>  
+                    {!! Form::close() !!}
+                    </div>
+                    <br>
+                    <div class="list-group" id="npbs">
+                      @foreach($npbs as $npb)
+                        <div class="list-group-item">
+                            <div class="row item">
+                                <div class="col-md-4">
+                                    {{ formataData($npb->Negocio->lancamento, 'L') }}
+                                    {{ $npb->Negocio->Filial->filial }} <br>
+                                    {{ $npb->Negocio->NaturezaOperacao->naturezaoperacao }} <br>
+                                    <a href="{{ url("pessoa/{$npb->Negocio->Pessoa->codpessoa}") }}">{{ $npb->Negocio->Pessoa->fantasia }}</a>
+                                </div>                            
+                                <div class="col-md-4">
+                                    {{ formataNumero($npb->quantidade) }} <br>
+                                    <?php $precounitario = ($npb->valortotal)/$npb->quantidade; ?>
+                                    {{ $npb->ProdutoBarra->Produto->UnidadeMedida->sigla }}
+                                    @if(!empty($npb->ProdutoBarra->ProdutoEmbalagem))
+                                        C/ {{ formataNumero($npb->ProdutoBarra->ProdutoEmbalagem->quantidade, 0) }}
+                                        <?php $precounitario /=$npb->ProdutoBarra->ProdutoEmbalagem->quantidade;?>
+                                    @endif
+                                    <br>
+                                    {{ $npb->valorunitario }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ formataNumero($precounitario) }} <br>
+                                    {{ $npb->codprodutobarra }} <br>
+                                    {{ $npb->ProdutoBarra->barras }} <br>
+                                    <a href="{{ url("negocio/{$npb->Negocio->codnegocio}") }}">{{ formataCodigo($npb->Negocio->codnegocio) }}</a>
                                 </div>
                             </div>
-                            <div>
-                                <posts-pagination></posts-pagination>
-                            </div>                   
-                        </div>                   
-                    </div>                   
+                        </div>    
+                      @endforeach
+                      @if (count($npbs) === 0)
+                          <h3>Nenhum registro encontrado!</h3>
+                      @endif    
+                    </div>                    
                 </div>
-                
             </div>
         </div>        
 	<?php

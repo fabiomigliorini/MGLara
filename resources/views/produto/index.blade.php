@@ -180,12 +180,34 @@ ul.pagination {
     margin-right: 5px;
 }
 </style>
+<script type="text/javascript" src="http://localhost/MGsis/assets/10416f08/listview/jquery.yiilistview.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $('ul.pagination').removeClass('hide');
+    
+        
     $('#produto-search').change(function() {
         this.submit();
+    });
+    
+    /*
+    // aqui implementar mesmo recurso da paginação jquery
+    $('#produto-search').change(function() {
+        var ajaxRequest = $("#produto-search").serialize();
+        
+        //$.fn.yiiListView.update(
+        //'registros',
+        //    {data: ajaxRequest}
+        //);
+        $.ajax({
+            url: baseUrl+'/produto', {param:ajaxRequest}
+        }).done(function(data){
+            $('#registros').html(data);
+        });        
+
     });    
+    */
+    
     $('#inativo').select2({
         allowClear:true,
         closeOnSelect:true
