@@ -180,15 +180,34 @@ ul.pagination {
     margin-right: 5px;
 }
 </style>
-<script type="text/javascript" src="http://localhost/MGsis/assets/10416f08/listview/jquery.yiilistview.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $('ul.pagination').removeClass('hide');
     
         
-    $('#produto-search').change(function() {
-        this.submit();
-    });
+    //$('#produto-search').change(function() {
+    //    this.submit();
+    //});
+    
+    $("#produto-search").on("change", function (event) {
+        var $this = $(this);
+        var frmValues = $this.serialize();
+        $.ajax({
+            type: 'GET',
+            url: baseUrl+'/produto',
+            data: frmValues
+        })
+        .done(function (data) {
+            var dados = data.find('#items');
+            $("#items").html(data);
+            //console.log(data);
+        })
+        .fail(function () {
+            console.log('Erro no filtro');
+        });
+        event.preventDefault(); 
+    });    
+    
     
     /*
     // aqui implementar mesmo recurso da paginação jquery
