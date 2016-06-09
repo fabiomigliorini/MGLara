@@ -42,6 +42,7 @@ return [
             'expire' => 60,
         ],
 
+        /*
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host'   => 'localhost',
@@ -72,6 +73,8 @@ return [
             'queue'  => 'default',
             'expire' => 60,
         ],
+         * 
+         */
 
     ],
 
@@ -87,7 +90,8 @@ return [
     */
 
     'failed' => [
-        'database' => 'mysql', 'table' => 'failed_jobs',
+        'database' => 'pgsql', 
+        'table' => 'tbljobsfailed',
     ],
 
 ];
