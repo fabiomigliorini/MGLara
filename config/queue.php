@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_DRIVER', 'sync'),
+    'default' => env('QUEUE_DRIVER', 'database'),
 
     /*
     |--------------------------------------------------------------------------
@@ -37,11 +37,12 @@ return [
 
         'database' => [
             'driver' => 'database',
-            'table' => 'jobs',
+            'table' => 'tbljobs',
             'queue' => 'default',
             'expire' => 60,
         ],
 
+        /*
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host'   => 'localhost',
@@ -72,6 +73,8 @@ return [
             'queue'  => 'default',
             'expire' => 60,
         ],
+         * 
+         */
 
     ],
 
@@ -87,7 +90,8 @@ return [
     */
 
     'failed' => [
-        'database' => 'mysql', 'table' => 'failed_jobs',
+        'database' => 'pgsql', 
+        'table' => 'tbljobsfailed',
     ],
 
 ];

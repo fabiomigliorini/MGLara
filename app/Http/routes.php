@@ -19,11 +19,16 @@ Route::get('auth/login', 'Auth\AuthController@getLogin');
 Route::post('auth/login', 'Auth\AuthController@postLogin');
 Route::get('auth/logout', 'Auth\AuthController@getLogout');
 
+/* Estoque */
+Route::get('estoque/calcula-custo-medio/{id}','EstoqueController@calculaCustoMedio');
+
+
+
 Route::group(['middleware' => 'auth'], function() {
     /* Página inicial */
     Route::resource('home','DashboardController');  
     Route::resource('/','DashboardController');  
-
+    
     /* Integracao Dominio */
     Route::get('dominio/estoque','DominioController@estoque');               
     Route::resource('dominio','DominioController');           
@@ -153,7 +158,7 @@ Route::group(['middleware' => 'auth'], function() {
     /* Gerador de Codigo */
     #Route::get('gerador-codigo/model/{tabela}','GeradorCodigoController@model');       
     #Route::resource('gerador-codigo','GeradorCodigoController');       
-      
+    
     
     /* Auxiliares */
     Route::resource('printers','UsuarioController@printers');
