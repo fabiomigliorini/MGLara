@@ -268,6 +268,6 @@ if(!function_exists('formataNumeroNota')) {
 if(!function_exists('formataChaveNfe')) {	
     function formataChaveNfe ($chave)
     {
-        return self::formataPorMascara($chave, "#### #### #### #### #### #### #### #### #### #### ####");
+        return formataPorMascara($chave, "#### #### #### #### #### #### #### #### #### #### ####");
     }
 }
