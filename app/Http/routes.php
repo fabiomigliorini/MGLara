@@ -21,6 +21,7 @@ Route::get('auth/logout', 'Auth\AuthController@getLogout');
 
 /* Estoque */
 Route::get('estoque/calcula-custo-medio/{id}','EstoqueController@calculaCustoMedio');
+Route::get('estoque/gera-movimento-negocio-produto-barra/{id}','EstoqueController@geraMovimentoNegocioProdutoBarra');
 
 
 
@@ -152,12 +153,12 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('nota-fiscal','NotaFiscalController');           
     
     /* Estoque Movimento */
-    Route::resource('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');
+    Route::post('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');
     Route::resource('estoque-movimento','EstoqueMovimentoController');
     
     /* Gerador de Codigo */
-    #Route::get('gerador-codigo/model/{tabela}','GeradorCodigoController@model');       
-    #Route::resource('gerador-codigo','GeradorCodigoController');       
+    Route::get('gerador-codigo/model/{tabela}','GeradorCodigoController@model');       
+    //Route::resource('gerador-codigo','GeradorCodigoController');       
     
     
     /* Auxiliares */

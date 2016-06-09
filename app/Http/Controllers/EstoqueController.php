@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use MGLara\Http\Requests;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Jobs\EstoqueCalculaCustoMedio;
+use MGLara\Jobs\EstoqueGeraMovimentoNegocioProdutoBarra;
+
 use MGLara\Models\EstoqueMes;
+use MGLara\Models\NegocioProdutoBarra;
 
 class EstoqueController extends Controller
 {
@@ -23,6 +26,13 @@ class EstoqueController extends Controller
     {
         $em = EstoqueMes::findOrFail($id);
         $this->dispatch(new EstoqueCalculaCustoMedio($em));
+        return response()->json(['response' => 'Agendado']);
+    }
+    
+    public function geraMovimentoNegocioProdutoBarra(Request $request, $id)
+    {
+        $npb = NegocioProdutoBarra::findOrFail($id);
+        $this->dispatch(new EstoqueGeraMovimentoNegocioProdutoBarra($npb));
         return response()->json(['response' => 'Agendado']);
     }
 
