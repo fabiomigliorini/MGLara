@@ -12,28 +12,27 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use MGLara\Models\EstoqueMes;
 
 /**
- * @property $em EstoqueMes
+ * @property $EstoqueMes EstoqueMes
  */
 
 class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
 {
     
-    use DispatchesJobs;
+    use InteractsWithQueue, SerializesModels, DispatchesJobs;
     
-    protected $em;
+    protected $EstoqueMes;
     protected $tentativa;
 
 
-    use InteractsWithQueue, SerializesModels;
     
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(EstoqueMes $em, $tentativa = 0)
+    public function __construct(EstoqueMes $EstoqueMes, $tentativa = 0)
     {
-        $this->em = $em;
+        $this->EstoqueMes = $EstoqueMes;
         $this->tentativa = $tentativa;
     }
 
@@ -44,12 +43,14 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
      */
     public function handle()
     {
-        file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . ' - EstoqueCalculaCustoMedio' . " - {$this->tentativa} - {$this->em->codestoquemes}\n", FILE_APPEND);
-        
+        file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . ' - EstoqueCalculaCustoMedio' . " - {$this->tentativa} - {$this->EstoqueMes->codestoquemes}\n", FILE_APPEND);
+        /*
         if ($this->tentativa < 10)
         {
-            $em = EstoqueMes::findOrFail($this->em->codestoquemes+1);
-            $this->dispatch(new EstoqueCalculaCustoMedio($em, $this->tentativa + 1));
+            $EstoqueMes = EstoqueMes::findOrFail($this->EstoqueMes->codestoquemes+1);
+            $this->dispatch(new EstoqueCalculaCustoMedio($EstoqueMes, $this->tentativa + 1));
         }
+         * 
+         */
     }
 }

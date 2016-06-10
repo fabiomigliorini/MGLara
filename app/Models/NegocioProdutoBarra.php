@@ -91,6 +91,10 @@ class NegocioProdutoBarra extends MGModel
         return $this->hasMany(CupomFiscalProdutoBarra::class, 'codnegocioprodutobarra', 'codnegocioprodutobarra');
     }
 
+    /**
+     * 
+     * @return EstoqueMovimento[]
+     */
     public function EstoqueMovimentoS()
     {
         return $this->hasMany(EstoqueMovimento::class, 'codnegocioprodutobarra', 'codnegocioprodutobarra');
@@ -117,5 +121,5 @@ class NegocioProdutoBarra extends MGModel
         return $query->whereHas('ProdutoBarra', function($q) use ($id) {
             $q->where('codproduto', $id);
         });        
-    }    
+    }   
 }
