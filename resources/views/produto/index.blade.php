@@ -183,54 +183,41 @@ ul.pagination {
 <script type="text/javascript">
 $(document).ready(function() {
     $('ul.pagination').removeClass('hide');
-    
-        
     //$('#produto-search').change(function() {
     //    this.submit();
     //});
-    
     $("#produto-search").on("change", function (event) {
         var $this = $(this);
         var frmValues = $this.serialize();
+        console.log(frmValues);
         $.ajax({
             type: 'GET',
-            url: baseUrl+'/produto',
+            url: baseUrl + '/produto',
             data: frmValues
         })
         .done(function (data) {
-            var dados = data.find('#items');
-            $("#items").html(data);
-            //console.log(data);
+            $('#items').html(jQuery(data).find('#items').html()); 
         })
         .fail(function () {
             console.log('Erro no filtro');
         });
         event.preventDefault(); 
-    });    
-    
-    
-    /*
-    // aqui implementar mesmo recurso da paginação jquery
-    $('#produto-search').change(function() {
-        var ajaxRequest = $("#produto-search").serialize();
-        
-        //$.fn.yiiListView.update(
-        //'registros',
-        //    {data: ajaxRequest}
-        //);
-        $.ajax({
-            url: baseUrl+'/produto', {param:ajaxRequest}
-        }).done(function(data){
-            $('#registros').html(data);
-        });        
+    });
+    $('#items').infinitescroll({
+        pathParse: function (path, currentPage) {
+  // Parse out the URL into chunks here
 
+  // `chunkedUrl` should be `["/path/to/resource?page=", "&foo=bar&dynamic=CA735B#!random-hashbang"]`
+  return chunkedUrl;
+}
     });    
-    */
     
     $('#inativo').select2({
-        allowClear:true,
-        closeOnSelect:true
-    })<?php echo (app('request')->input('inativo') ? ".select2('val'," .app('request')->input('inativo').");" : ';'); ?>
+        placeholder: 'Inativo',
+        allowClear: true,
+        closeOnSelect: true
+    });
+    
     $('#codtributacao').select2({
         allowClear:true,
         closeOnSelect:true
