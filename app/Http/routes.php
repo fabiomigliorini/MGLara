@@ -22,6 +22,8 @@ Route::get('auth/logout', 'Auth\AuthController@getLogout');
 /* Estoque */
 Route::get('estoque/calcula-custo-medio/{id}','EstoqueController@calculaCustoMedio');
 Route::get('estoque/gera-movimento-negocio-produto-barra/{id}','EstoqueController@geraMovimentoNegocioProdutoBarra');
+Route::get('estoque/gera-movimento-negocio/{id}','EstoqueController@geraMovimentoNegocio');
+Route::get('estoque/gera-movimento-produto/{id}','EstoqueController@geraMovimentoProduto');
 
 
 

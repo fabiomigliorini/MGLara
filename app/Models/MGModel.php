@@ -58,12 +58,14 @@ abstract class MGModel extends Model {
 
         static::creating(function($model)
         {
-            $model->attributes['codusuariocriacao'] = Auth::user()->codusuario;
+            if (Auth::user() !== NULL)
+                $model->attributes['codusuariocriacao'] = Auth::user()->codusuario;
         });
         
         static::updating(function($model)
         {
-            $model->attributes['codusuarioalteracao'] = Auth::user()->codusuario;
+            if (Auth::user() !== NULL)
+                $model->attributes['codusuarioalteracao'] = Auth::user()->codusuario;
         });
         
         static::saving(function($model)

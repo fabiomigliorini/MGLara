@@ -71,6 +71,19 @@ class EstoqueLocalProduto extends MGModel
     {
         return $this->hasMany(EstoqueSaldo::class, 'codestoquelocalproduto', 'codestoquelocalproduto');
     }
+    
+    public static function buscaOuCria($codproduto, $codestoquelocal)
+    {
+        $elp = self::where('codproduto', $codproduto)->where('codestoquelocal', $codestoquelocal)->first();
+        if ($elp == false)
+        {
+            $elp = new EstoqueLocalProduto;
+            $elp->codproduto = $codproduto;
+            $elp->codestoquelocal = $codestoquelocal;
+            $elp->save();
+        }
+        return $elp;
+    }
 
 
 }

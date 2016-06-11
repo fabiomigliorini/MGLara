@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 /**
  * Campos
  * @property  bigint                         $codestoquesaldo                    NOT NULL DEFAULT nextval('tblestoquesaldo_codestoquesaldo_seq'::regclass)
- * @property  bigint                         $codproduto                         NOT NULL
+ * @property  bigint                         $codestoquelocalproduto             NOT NULL
  * @property  boolean                        $fiscal                             NOT NULL
  * @property  numeric(14,3)                  $saldoquantidade                    
  * @property  numeric(14,2)                  $saldovalor                         
@@ -76,12 +76,13 @@ class EstoqueSaldo extends MGModel
     
     public static function buscaOuCria($codproduto, $codestoquelocal, $fiscal)
     {
-        $es = self::where('codproduto', $codproduto)->where('codestoquelocal', $codestoquelocal)->where('fiscal', $fiscal)->first();
+        $elp = EstoqueLocalProduto::buscaOuCria($codproduto, $codestoquelocal);
+
+        $es = self::where('codestoquelocalproduto', $elp->codestoquelocalproduto)->where('fiscal', $fiscal)->first();
         if ($es == false)
         {
             $es = new EstoqueSaldo;
-            $es->codproduto = $codproduto;
-            $es->codestoquelocal = $codestoquelocal;
+            $es->codestoquelocalproduto = $elp->codestoquelocalproduto;
             $es->fiscal = $fiscal;
             $es->save();
         }
@@ -206,6 +207,7 @@ class EstoqueSaldo extends MGModel
     
     public function recalculaCustoMedio()
     {
+        /*
         $inicialquantidade = 0;
         $inicialvalor = 0;
         foreach ($this->EstoqueMesS as $mes)
@@ -292,6 +294,8 @@ class EstoqueSaldo extends MGModel
         $this->saldovalor = $saldovalor;
         $this->customedio = $customedio;
         $this->save();
+         * 
+         */
         
         return true;
     }
