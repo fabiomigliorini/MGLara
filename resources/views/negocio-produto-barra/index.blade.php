@@ -11,19 +11,17 @@
             <div class="col-md-4">
                 {{ formataNumero($npb->quantidade) }} <br>
                 <?php $precounitario = ($npb->valortotal)/$npb->quantidade; ?>
-                {{ $npb->ProdutoBarra->Produto->UnidadeMedida->sigla }}
-                @if(!empty($npb->ProdutoBarra->ProdutoEmbalagem))
-                    C/ {{ formataNumero($npb->ProdutoBarra->ProdutoEmbalagem->quantidade, 0) }}
-                    <?php $precounitario /=$npb->ProdutoBarra->ProdutoEmbalagem->quantidade;?>
-                @endif
+                
+                
                 <br>
                 {{ $npb->valorunitario }}
             </div>
             <div class="col-md-4">
                 {{ formataNumero($precounitario) }} <br>
                 {{ $npb->codprodutobarra }} <br>
-                {{ $npb->ProdutoBarra->barras }} <br>
-                <a href="{{ url("negocio/{$npb->Negocio->codnegocio}") }}">{{ formataCodigo($npb->Negocio->codnegocio) }}</a>
+                
+                
+                
             </div>
         </div>
     </div>    

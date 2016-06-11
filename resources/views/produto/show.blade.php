@@ -163,7 +163,7 @@
                                 <span class="pull-right"><a href="{{ url("produto-embalagem/create?codproduto={$model->codproduto}") }}"><i class="glyphicon glyphicon-plus"></i> Novo</a></span>
                             </li>
                             @foreach($model->ProdutoEmbalagemS as $pe)
-                            <li class="list-group-item">
+                            <li class="list-group-item" id="pe{{ $pe->codprodutoembalagem }}">
                                 <div class="row item">            
                                     <div class="col-md-4">
                                         {{ $pe->descricao }}
@@ -184,7 +184,7 @@
                                             <span class="pull-right">
                                                 <a href="{{ url("produto-embalagem/$pe->codprodutoembalagem/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
                                                 &nbsp;&nbsp;
-                                                <a href=""><i class="glyphicon glyphicon-trash"></i></a>
+                                                <a href="" class="delete-barra" data-pe="pe{{ $pe->codprodutoembalagem }}"><i class="glyphicon glyphicon-trash"></i></a>
                                             </span>                                                                                
                                         </div>
                                     </div>      
@@ -216,58 +216,9 @@
                     {!! Form::close() !!}
                     </div>
                     <br>                    
-                    
+                  
                     <div class="list-group" id="nfpbs">
-                        @foreach($nfpbs as $nfpb)
-                        <div class="list-group-item">
-                            <div class="row item">
-                                <div class="col-md-4">
-                                    {{ formataData($nfpb->NotaFiscal->saida) }}
-                                    {{ $nfpb->NotaFiscal->Filial->filial }} <br>
-                                    {{ $nfpb->NotaFiscal->NaturezaOperacao->naturezaoperacao }} <br>
-                                    <a href="{{ url("pessoa/{$nfpb->NotaFiscal->Pessoa->codpessoa}") }}">{{ $nfpb->NotaFiscal->Pessoa->fantasia }}</a>
-                                </div>                            
-                                <div class="col-md-4">
-                                    {{ formataNumero($nfpb->quantidade) }}
-                                    <?php
-                                    $precounitario = ($nfpb->valortotal + $nfpb->icmsstvalor + $nfpb->ipivalor);
-                                    if ($nfpb->quantidade > 0)
-                                        $precounitario = $precounitario/$nfpb->quantidade;
-                                    $ipi = '';
-                                    $icmsst = '';
-                                    if ($nfpb->valortotal > 0)
-                                    {
-                                        $ipi = $nfpb->ipivalor/$nfpb->valortotal;
-                                        $icmsst = $nfpb->icmsstvalor/$nfpb->valortotal;
-                                    }
-                                    echo $nfpb->ProdutoBarra->Produto->UnidadeMedida->sigla;
-                                    if (isset($nfpb->ProdutoBarra->ProdutoEmbalagem))
-                                    {
-                                        echo " C/" . formatNumero($nfpb->ProdutoBarra->ProdutoEmbalagem->quantidade, 0);
-                                        $precounitario /=$nfpb->ProdutoBarra->ProdutoEmbalagem->quantidade;
-                                    }
-                                    ?> <br>
-                                    {{ formataNumero($nfpb->valorunitario) }} <br>
-
-                                    @if($ipi > 0)
-                                        {{ formataNumero($ipi * 100, 0) }}  % IPI
-                                    @endif
-                                    <br>
-                                    @if($icmsst > 0)
-                                        {{ formataNumero($icmsst * 100, 0) }}  % ST
-                                    @endif
-                                </div>
-                                <div class="col-md-4">
-                                    {{ formataNumero($precounitario) }} <br>
-                                    <a href="{{ url("nota-fiscal/{$nfpb->NotaFiscal->codnotafiscal}") }}">{{ formataNumeroNota($nfpb->NotaFiscal->emitida, $nfpb->NotaFiscal->serie, $nfpb->NotaFiscal->numero, $nfpb->NotaFiscal->modelo) }}</a> <br>
-                                    {{ $nfpb->ProdutoBarra->barras }}
-                                </div>
-                            </div>
-                        </div>    
-                    @endforeach
-                    @if (count($nfpbs) === 0)
-                        <h4>Nenhum registro encontrado!</h4>
-                    @endif    
+                        @include('negocio-produto-barra.index')
                     </div>                    
                     
                     
@@ -294,38 +245,7 @@
                     </div>
                     <br>
                     <div class="list-group" id="npbs">
-                      @foreach($npbs as $npb)
-                        <div class="list-group-item">
-                            <div class="row item">
-                                <div class="col-md-4">
-                                    {{ formataData($npb->Negocio->lancamento, 'L') }}
-                                    {{ $npb->Negocio->Filial->filial }} <br>
-                                    {{ $npb->Negocio->NaturezaOperacao->naturezaoperacao }} <br>
-                                    <a href="{{ url("pessoa/{$npb->Negocio->Pessoa->codpessoa}") }}">{{ $npb->Negocio->Pessoa->fantasia }}</a>
-                                </div>                            
-                                <div class="col-md-4">
-                                    {{ formataNumero($npb->quantidade) }} <br>
-                                    <?php $precounitario = ($npb->valortotal)/$npb->quantidade; ?>
-                                    {{ $npb->ProdutoBarra->Produto->UnidadeMedida->sigla }}
-                                    @if(!empty($npb->ProdutoBarra->ProdutoEmbalagem))
-                                        C/ {{ formataNumero($npb->ProdutoBarra->ProdutoEmbalagem->quantidade, 0) }}
-                                        <?php $precounitario /=$npb->ProdutoBarra->ProdutoEmbalagem->quantidade;?>
-                                    @endif
-                                    <br>
-                                    {{ $npb->valorunitario }}
-                                </div>
-                                <div class="col-md-4">
-                                    {{ formataNumero($precounitario) }} <br>
-                                    {{ $npb->codprodutobarra }} <br>
-                                    {{ $npb->ProdutoBarra->barras }} <br>
-                                    <a href="{{ url("negocio/{$npb->Negocio->codnegocio}") }}">{{ formataCodigo($npb->Negocio->codnegocio) }}</a>
-                                </div>
-                            </div>
-                        </div>    
-                      @endforeach
-                      @if (count($npbs) === 0)
-                          <h3>Nenhum registro encontrado!</h3>
-                      @endif    
+                        @include('nota-fiscal-produto-barra.index')
                     </div>                    
                 </div>
             </div>
@@ -395,9 +315,6 @@
 <br>
 @section('inscript')
 <script type="text/javascript">var codproduto = {{ $model->codproduto }}</script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>  
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-resource.min.js"></script>
-<script src="{{ URL::asset('public/js/produto/npb.js') }}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $('#codproduto').change(function (){
@@ -558,6 +475,59 @@ $(document).ready(function() {
         allowClear:true,
         closeOnSelect:true
     })<?php echo (app('request')->input('npb_codnaturezaoperacao') ? ".select2('val'," .app('request')->input('npb_codnaturezaoperacao').");" : ';'); ?>
+    
+    
+    
+    // botão delete da embalagem
+	$('delete-barra').click(function(e) {
+		e.preventDefault();
+        var codprodutoembalagem = this.dataset.pe;
+		// pega url para delete
+		//var url = jQuery(this).attr('href');
+		//pede confirmacao
+		bootbox.confirm("Excluir este Código de Barras?", function(result) {
+			if (result) {
+				$.ajax({
+					type: 'POST',
+					url: baseUrl + '/produto-embalagem/' + codprodutoembalagem + '/destroy',
+					success: function() {
+                        $('#'+codprodutoembalagem).remove();
+					},
+					error: function (XHR, textStatus) {
+						var err;
+						if (XHR.readyState === 0 || XHR.status === 0) {
+							return;
+						}
+						//tipos de erro
+						switch (textStatus) {
+							case 'timeout':
+								err = 'O servidor não responde (timed out)!';
+								break;
+							case 'parsererror':
+								err = 'Erro de parâmetros (Parser error)!';
+								break;
+							case 'error':
+								if (XHR.status && !/^\s*$/.test(XHR.status)) {
+									err = 'Erro ' + XHR.status;
+								} else {
+									err = 'Erro';
+								}
+								if (XHR.responseText && !/^\s*$/.test(XHR.responseText)) {
+									err = err + ': ' + XHR.responseText;
+								}
+								break;
+						}
+						if (err) {
+							bootbox.alert(err);
+						}
+					}
+				});
+			}	
+		});
+	});	
+	    
+    
+    
     
 });
 </script>

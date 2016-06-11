@@ -607,12 +607,9 @@ class Produto extends MGModel
         if (trim($barras) === '')
             return;
         
-        //$query->where('barras', $barras);
         $query->whereHas('ProdutoBarraS', function($q) use ($barras) {
             $q->where('barras', $barras);
         });        
-        
-        
     }
     
     public function scopeProduto($query, $produto)
