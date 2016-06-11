@@ -25,6 +25,7 @@ class NegocioProdutoBarraController extends Controller
             $request->get('saida_ate')
         );
         
+        /*
         $dados = [];
         foreach ($npbs as $npb) {
             $dados[] = [
@@ -46,9 +47,10 @@ class NegocioProdutoBarraController extends Controller
         
         array_merge([$npbs], $dados);
         dd($npbs);
+        */
         
         //return response()->json($npbs);
-        //return view('negocio-produto-barra.index');
+        return view('negocio-produto-barra.index', compact('npbs'));
     }
 
     /**

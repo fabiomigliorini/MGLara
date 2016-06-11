@@ -119,6 +119,13 @@ class ProdutoEmbalagemController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+            ProdutoEmbalagem::find($id)->delete();
+            Session::flash('flash_delete', 'Registro deletado!');
+            //return Redirect::route('');
+        }
+        catch(\Exception $e){
+            return view('errors.fk');
+        }     
     }
 }

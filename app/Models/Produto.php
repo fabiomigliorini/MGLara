@@ -3,6 +3,7 @@
 namespace MGLara\Models;
 use Illuminate\Support\Facades\DB;
 use MGLara\Models\EstoqueSaldo;
+use MGLara\Models\ProdutoBarra;
 use Carbon\Carbon;
 
 /**
@@ -606,7 +607,9 @@ class Produto extends MGModel
         if (trim($barras) === '')
             return;
         
-        $query->where('barras', $barras);
+        $query->whereHas('ProdutoBarraS', function($q) use ($barras) {
+            $q->where('barras', $barras);
+        });        
     }
     
     public function scopeProduto($query, $produto)

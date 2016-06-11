@@ -1,8 +1,7 @@
 <?php
 
-use MGLara\Models\UnidadeMedida;
-
-$medidas        = [''=>''] + UnidadeMedida::lists('unidademedida', 'codunidademedida')->all();
+    use MGLara\Models\ProdutoEmbalagem;
+    $medidas        = ['UN-'=>'UN-'] + ProdutoEmbalagem::unidadesMedida($request->codproduto);
 
 ?>
 
