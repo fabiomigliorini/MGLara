@@ -33,16 +33,10 @@ class ProdutoServiceProvider extends ServiceProvider
         ProdutoEmbalagem::created(function ($pe) {
             $pb = new ProdutoBarra();
             $pb->codproduto = $pe->codproduto;
-            $pb->barras = 
-                    str_pad($pe->codproduto, 6, '0', STR_PAD_LEFT)
-                    . '-' .
-                    $pe->quantidade
-                    ;
+            $pb->barras = str_pad($pe->codproduto, 6, "0", STR_PAD_LEFT).'-'.(int)$pe->quantidade;
             $pb->codprodutoembalagem = $pe->codprodutoembalagem;
-            
             try {
                 $pb->save();
-                
                 return true;
             } catch (Exception $ex) {
                 return false;
