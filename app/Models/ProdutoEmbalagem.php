@@ -128,4 +128,14 @@ class ProdutoEmbalagem extends MGModel
         return $query;
     }
     
+    public static function unidadesMedida($codproduto)
+    {
+        $unidades = ProdutoEmbalagem::where('codproduto', $codproduto)->get();
+        $resultado = [];
+        foreach ($unidades as $unidade)
+        {
+            $resultado[$unidade->codprodutoembalagem] = $unidade->getDescricaoAttribute();
+        }
+        return $resultado;
+    }
 }

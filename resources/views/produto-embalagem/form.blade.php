@@ -1,10 +1,10 @@
 <?php
 
-use MGLara\Models\UnidadeMedida;
-
-$medidas        = [''=>''] + UnidadeMedida::lists('unidademedida', 'codunidademedida')->all();
+    use MGLara\Models\UnidadeMedida;
+    $medidas        = [''=>''] + UnidadeMedida::lists('unidademedida', 'codunidademedida')->all();
 
 ?>
+
 <div class="form-group">
     <label for="codunidademedida" class="col-sm-2 control-label">{!! Form::label('Unidade Medida:') !!}</label>
     <div class="col-sm-2">{!! Form::select('codunidademedida', $medidas, ['class'=> 'form-control'], ['id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
