@@ -189,7 +189,7 @@ $(document).ready(function() {
     $("#produto-search").on("change", function (event) {
         var $this = $(this);
         var frmValues = $this.serialize();
-        console.log(frmValues);
+        //console.log(frmValues);
         $.ajax({
             type: 'GET',
             url: baseUrl + '/produto',
