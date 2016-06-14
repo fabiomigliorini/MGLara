@@ -118,14 +118,10 @@ class NegocioProdutoBarra extends MGModel
     
     public function scopeId($query, $id)
     {
-        /*
-        return $query->with('ProdutoBarra', function($q) use ($id) {
-            $q->where('codproduto', $id);
-        });        
-        */
-        return $query->with(['ProdutoBarra' => function ($query) {
-            $query->where('codproduto', 215);
-        }]);        
-
-    }   
+        if (trim($id) === '')
+            return;
+        
+        $query->join('tblprodutobarra', 'tblprodutobarra.codprodutobarra', '=', 'tblnegocioprodutobarra.codprodutobarra')
+            ->where('tblprodutobarra.codproduto', $id);
+    }     
 }

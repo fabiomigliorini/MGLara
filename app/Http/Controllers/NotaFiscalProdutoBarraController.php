@@ -5,8 +5,6 @@ namespace MGLara\Http\Controllers;
 use Illuminate\Http\Request;
 
 use MGLara\Http\Requests;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
 
 use MGLara\Models\NotaFiscalProdutoBarra;
@@ -27,8 +25,8 @@ class NotaFiscalProdutoBarraController extends Controller
             $request->get('saida_ate')
         );
         
-        return response()->json($nfpbs);
-        //return view('nota-fiscal-produto-barra.index');
+        //return response()->json($nfpbs);
+        return view('nota-fiscal-produto-barra.index', compact('nfpbs'));
     }
 
     /**

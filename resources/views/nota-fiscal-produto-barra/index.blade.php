@@ -1,12 +1,30 @@
+<h4>Notas fiscais</h4>
+<div class="search-bar">
+{!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-nfpb-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+    <strong>Lançamento</strong>
+    <div class="form-group">
+        {!! Form::text('nfpb_saida_de', null, ['class' => 'form-control between', 'id' => 'nfpb_saida_de', 'placeholder' => 'De']) !!}
+        {!! Form::text('nfpb_saida_ate', null, ['class' => 'form-control between', 'id' => 'nfpb_saida_ate', 'placeholder' => 'Até']) !!}
+    </div>
+    <div class="form-group">
+        {!! Form::select('nfpb_codfilial', $filiais, ['style'=>'width:100px'], ['id'=>'nfpb_codfilial']) !!}
+    </div>  
+    <div class="form-group">
+        {!! Form::select('nfpb_codnaturezaoperacao', $naturezaop, ['style'=>'width:100px'], ['id' => 'nfpb_codnaturezaoperacao']) !!}
+    </div>  
+{!! Form::close() !!}
+</div>
+<div>{!! $nfpbs->appends(Request::all())->render() !!}</div>
+<br>
 <div class="list-group" id="nfpbs">
   @foreach($nfpbs as $nfpb)
     <div class="list-group-item">
       <div class="row item">
           <div class="col-md-4">
-              {{ formataData($nfpb->NotaFiscal->saida) }}
-              {{ $nfpb->NotaFiscal->Filial->filial }} <br>
-              {{ $nfpb->NotaFiscal->NaturezaOperacao->naturezaoperacao }} <br>
-              <a href="{{ url("pessoa/{$nfpb->NotaFiscal->Pessoa->codpessoa}") }}">{{ $nfpb->NotaFiscal->Pessoa->fantasia }}</a>
+                {{ formataData($nfpb->NotaFiscal->saida) }}
+                {{ $nfpb->NotaFiscal->Filial->filial }} <br>
+                {{ $nfpb->NotaFiscal->NaturezaOperacao->naturezaoperacao }} <br>
+                <a href="{{ url("pessoa/{$nfpb->NotaFiscal->Pessoa->codpessoa}") }}">{{ $nfpb->NotaFiscal->Pessoa->fantasia }}</a>
           </div>                            
           <div class="col-md-4">
               {{ formataNumero($nfpb->quantidade) }}

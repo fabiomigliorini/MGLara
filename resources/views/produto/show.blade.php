@@ -88,7 +88,8 @@
                     </div>
                 </div>
             </div>
-        </div>        
+        </div>
+        <!--FOTOS -->
         <div class="panel panel-info produtos-detalhe-carousel">
             <div class="pull-right carousel-menu">
                 <a class="btn btn-default" href="{{ url("/imagem/produto/$model->codproduto") }}">
@@ -111,7 +112,8 @@
                     @include('produto.carousel')
                 @endif
             </div>
-        </div>        
+        </div>
+        <!--/ FOTOS -->
     </div>
     <div class="col-md-5">
         <div class="panel panel-success">
@@ -122,191 +124,31 @@
         </div> 
         <div id="produto-detalhes">
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#tab-produto-combinacoes" aria-controls="home" role="tab" data-toggle="tab">Combinações</a></li>
-                <li role="presentation"><a href="#tab-produto-fiscal" aria-controls="profile" role="tab" data-toggle="tab">Fiscal</a></li>
-                <li role="presentation"><a href="#tab-produto-notasfiscais" aria-controls="messages" role="tab" data-toggle="tab">Notas fiscais</a></li>
-                <li role="presentation"><a href="#tab-produto-negocios" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
+                <li role="presentation" class="active"><a href="#tab-combinacoes" aria-controls="home" role="tab" data-toggle="tab">Combinações</a></li>
+                <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">Fiscal</a></li>
+                <li role="presentation"><a href="#tab-npb" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
+                <li role="presentation"><a href="#tab-nfpb" aria-controls="messages" role="tab" data-toggle="tab">Notas fiscais</a></li>
             </ul>
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="tab-produto-combinacoes">
-                    <div class="panel panel-info combinacoes">
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                <strong>Códigos de barra</strong>
-                                <span class="pull-right"><a href="{{ url("produto-barra/create?codproduto={$model->codproduto}") }}"><i class="glyphicon glyphicon-plus"></i> Novo</a></span>
-                            </li>
-                            @foreach($model->ProdutoBarraS as $pb)
-                            <li class="list-group-item">
-                                <div class="row item">
-                                    <div class="col-md-2">
-                                        {{ $pb->ProdutoEmbalagem->UnidadeMedida->sigla or $pb->Produto->UnidadeMedida->sigla}}
-                                    </div>
-                                    <div class="col-md-4">
-                                        {{ $pb->barras }}
-                                    </div>
-                                    <div class="col-md-3">
-                                        {{ $pb->variacao }}
-                                    </div>
-                                    <div class="col-md-3">
-                                        <span class="pull-right">
-                                            <a href="{{ url("produto-barra/$pb->codprodutobarra/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
-                                            &nbsp;&nbsp;
-                                            <a href=""><i class="glyphicon glyphicon-trash"></i></a>
-                                        </span>                                          
-                                    </div>
-                                </div>
-                            </li>
-                            @endforeach
-
-                            <li class="list-group-item">
-                                <strong>Embalagens</strong>
-                                <span class="pull-right"><a href="{{ url("produto-embalagem/create?codproduto={$model->codproduto}") }}"><i class="glyphicon glyphicon-plus"></i> Novo</a></span>
-                            </li>
-                            @foreach($model->ProdutoEmbalagemS as $pe)
-                            <li class="list-group-item" id="pe{{ $pe->codprodutoembalagem }}">
-                                <div class="row item">            
-                                    <div class="col-md-4">
-                                        {{ $pe->descricao }}
-                                    </div>                            
-                                    <div class="col-md-4">
-                                    @if (empty($pe->preco))
-                                        <div class="text-right text-muted">
-                                            {{ formataNumero($pe->preco_calculado) }}
-                                        </div>
-                                    @else
-                                        <div class="text-right text-success">
-                                            {{ formataNumero($pe->preco_calculado) }}
-                                        </div>	
-                                    @endif
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="row-fluid">
-                                            <span class="pull-right">
-                                                <a href="{{ url("produto-embalagem/$pe->codprodutoembalagem/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
-                                                &nbsp;&nbsp;
-                                                <a href="" class="delete-barra" data-pe="pe{{ $pe->codprodutoembalagem }}"><i class="glyphicon glyphicon-trash"></i></a>
-                                            </span>                                                                                
-                                        </div>
-                                    </div>      
-                                </div>    
-                            </li>            
-                            @endforeach        
-                        </ul>                
-                    </div>            
+                <div role="tabpanel" class="tab-pane fade in active" id="tab-combinacoes">
+                    @include('produto.combinacoes')
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab-produto-fiscal">
+                <div role="tabpanel" class="tab-pane fade" id="tab-fiscal">
                     @include('produto.fiscal')
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab-produto-notasfiscais">
-                    <h4>Notas fiscais</h4>
-                    <div class="pull-right">{!! $nfpbs->appends(Request::all())->render() !!}</div>
-                    <div class="search-bar">
-                    {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-nfpb-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
-                        <strong>Lançamento</strong>
-                        <div class="form-group">
-                            {!! Form::text('nfpb_saida_de', null, ['class' => 'form-control between', 'id' => 'nfpb_saida_de', 'placeholder' => 'De']) !!}
-                            {!! Form::text('nfpb_saida_ate', null, ['class' => 'form-control between', 'id' => 'nfpb_saida_ate', 'placeholder' => 'Até']) !!}
-                        </div>
-                        <div class="form-group">
-                            {!! Form::select('nfpb_codfilial', $filiais, ['style'=>'width:100px'], ['id'=>'nfpb_codfilial']) !!}
-                        </div>  
-                        <div class="form-group">
-                            {!! Form::select('nfpb_codnaturezaoperacao', $naturezaop, ['style'=>'width:100px'], ['id' => 'nfpb_codnaturezaoperacao']) !!}
-                        </div>  
-                    {!! Form::close() !!}
-                    </div>
-                    <br>                    
-                  
-                    <div class="list-group" id="nfpbs">
-                        @include('negocio-produto-barra.index')
-                    </div>                    
-                    
-                    
+                <div role="tabpanel" class="tab-pane fade" id="tab-npb">
+                    @include('negocio-produto-barra.index')
                 </div>
-                
-                <div role="tabpanel" class="tab-pane fade" id="tab-produto-negocios">
-
-                    <h4>Negócios</h4>
-                    <div class="pull-right">{!! $npbs->appends(Request::all())->render() !!}</div>
-                    <div class="search-bar">
-                    {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-npb-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
-                        <strong>Lançamento</strong>
-                        <div class="form-group">
-                            {!! Form::text('npb_saida_de', null, ['class' => 'form-control between', 'id' => 'npb_saida_de', 'placeholder' => 'De']) !!}
-                            {!! Form::text('npb_saida_ate', null, ['class' => 'form-control between', 'id' => 'npb_saida_ate', 'placeholder' => 'Até']) !!}
-                        </div>
-                        <div class="form-group">
-                            {!! Form::select('npb_codfilial', $filiais, ['style'=>'width:100px'], ['id'=>'npb_codfilial']) !!}
-                        </div>  
-                        <div class="form-group">
-                            {!! Form::select('npb_codnaturezaoperacao', $naturezaop, ['style'=>'width:100px'], ['id' => 'npb_codnaturezaoperacao']) !!}
-                        </div>  
-                    {!! Form::close() !!}
-                    </div>
-                    <br>
-                    <div class="list-group" id="npbs">
-                        @include('nota-fiscal-produto-barra.index')
-                    </div>                    
+                <div role="tabpanel" class="tab-pane fade" id="tab-nfpb">
+                    @include('nota-fiscal-produto-barra.index')
                 </div>
             </div>
-        </div>        
-	<?php
-            $arr_saldos = [];
-            $arr_totais = [false => 0, true => 0];
-            foreach ($model->EstoqueLocalProdutoS as $es)
-            {
-                $arr_totais[$es->EstoqueSaldoS->first()->fiscal] += $es->EstoqueSaldoS->first()->saldoquantidade;
-                $arr_saldos[] = $es;
-            }
-	?>
-        <div class='panel panel-info'>
-            <div class="panel-heading">
-                <div class="row item">
-                    <div class="col-md-6">Estoque</div>
-                    <div class="col-md-2 text-right">Local</div>
-                    <div class="col-md-2 text-right">Físico</div>
-                    <div class="col-md-2 text-right">Fiscal</div>
-                </div>
-            </div>            
-            <ul class="list-group bg-infoo">
-                @foreach($arr_saldos as $saldo)
-                <li class="list-group-item">
-                    <div class="row item">            
-                        <div class="col-md-6">
-                            {{ $saldo->EstoqueLocal->estoquelocal }}
-                        </div>
-                        <div class="col-md-2 text-right">
-                            {{ formataLocalEstoque($saldo->corredor, $saldo->prateleira, $saldo->coluna, $saldo->bloco) }}
-                        </div>
-                        <div class="col-md-2 text-right">
-                            <a href='{{ url("estoque-saldo/{$saldo->EstoqueSaldoS->first()->codestoquesaldo}") }}'>
-                                {{ ($saldo->EstoqueSaldoS->first()->fiscal) ? '' : formataNumero($saldo->EstoqueSaldoS->first()->saldoquantidade, 0) }}
-                            </a>
-                        </div>
-                        <div class="col-md-2 text-right">
-                            <a href='{{ url("estoque-saldo/{$saldo->EstoqueSaldoS->first()->codestoquesaldo}") }}'>
-                                {{ ($saldo->EstoqueSaldoS->first()->fiscal) ? formataNumero($saldo->EstoqueSaldoS->first()->saldoquantidade, 0) : '' }}
-                            </a>
-                        </div>
-                    </div>            
-                </li>
-                @endforeach    
-                <li class="list-group-item">
-                    <div class="row item">            
-                        <div class="col-md-6">
-                            <strong>Total</strong>
-                        </div>
-                        <div class="col-md-2 text-right"></div>
-                        <div class="col-md-2 text-right">
-                            <strong>{{ formataNumero($arr_totais[false], 0) }}</strong>
-                        </div>
-                        <div class="col-md-2 text-right">
-                            <strong>{{ formataNumero($arr_totais[true], 0) }}</strong>
-                        </div>
-                    </div>            
-                </li>
-            </ul>
         </div>
+
+        <!-- ESTOQUE -->
+        @include('produto.estoque')
+        <!-- ./ESTOQUE -->
+        
     </div>    
 </div>
 <hr>

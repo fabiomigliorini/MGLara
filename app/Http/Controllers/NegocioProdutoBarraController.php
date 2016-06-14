@@ -18,7 +18,6 @@ class NegocioProdutoBarraController extends Controller
      */
     public function index(Request $request)
     {
-        //$npbs = [];
         $npbs = NegocioProdutoBarra::search(
             $request->get('id'),
             $request->get('saida_de'),

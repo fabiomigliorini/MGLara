@@ -151,10 +151,13 @@ class NotaFiscalProdutoBarra extends MGModel
     
     public function scopeId($query, $id)
     {
-        return $query->whereHas('ProdutoBarra', function($q) use ($id) {
-            $q->where('codproduto', $id);
-        });        
-    }      
+        if (trim($id) === '')
+            return;
+        
+        $query->join('tblprodutobarra', 'tblprodutobarra.codprodutobarra', '=', 'tblnotafiscalprodutobarra.codprodutobarra')
+            ->where('tblprodutobarra.codproduto', $id);
+    }     
+  
     
     public function scopeSaidaDe($query, $saida_de)
     {
