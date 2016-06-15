@@ -141,51 +141,74 @@ class NotaFiscalProdutoBarra extends MGModel
     }
 
     // Buscas
-    public static function search($id, $saida_de, $saida_ate)
+    public static function search($id, $de, $ate, $codfilial, $operacao, $codpessoa)
     {
         return NotaFiscalProdutoBarra::id($id)
-            ->saidaDe($saida_de)
-            ->saidaAte($saida_ate)
+            ->saidaDe($de)
+            ->saidaAte($ate)
+            ->filial($codfilial)
+            ->operacao($operacao)
+            ->pessoa($codpessoa)
             ->paginate(5);
     }
-    
+
     public function scopeId($query, $id)
     {
         if (trim($id) === '')
             return;
         
         $query->join('tblprodutobarra', 'tblprodutobarra.codprodutobarra', '=', 'tblnotafiscalprodutobarra.codprodutobarra')
+            ->join('tblnotafiscal', 'tblnotafiscal.codnotafiscal', '=', 'tblnotafiscalprodutobarra.codnotafiscal')
             ->where('tblprodutobarra.codproduto', $id);
-    }     
-  
-    
-    public function scopeSaidaDe($query, $saida_de)
-    {
-        if (trim($saida_de) === '')
-            return;
-        
-        if(!empty($saida_de))
-            $saida_de = Carbon::createFromFormat('d/m/y', $saida_de)->format('Y-m-d').' 23:59:59.9';        
-        
-        return $query->whereHas('NotaFiscal', function($q) use ($saida_de) {
-            $q->where('saida','>=', $saida_de);
-        });           
     }
     
-    public function scopeSaidaAte($query, $saida_ate)
+    public function scopeSaidaDe($query, $de)
     {
-        if (trim($saida_ate) === '')
+        if (trim($de) === '')
             return;
         
-        if(!empty($saida_ate))
-            $saida_ate = Carbon::createFromFormat('d/m/y', $saida_ate)->format('Y-m-d').' 23:59:59.9';        
+        if(!empty($de))
+            $de = Carbon::createFromFormat('d/m/y', $de)->format('Y-m-d').' 23:59:59.9';        
         
-        return $query->whereHas('NotaFiscal', function($q) use ($saida_ate) {
-            $q->where('saida','<=', $saida_ate);
-        });           
+        $query->where('tblnotafiscal.saida', '>=', $de);
     }
 
-        public function quantidadeUnitaria()
+    public function scopeSaidaAte($query, $ate)
+    {
+        if (trim($ate) === '')
+            return;
+
+        if(!empty($ate))
+            $ate = Carbon::createFromFormat('d/m/y', $ate)->format('Y-m-d').' 23:59:59.9';        
+        
+        $query->where('tblnotafiscal.saida', '<=', $ate);
+    }
+
+    public function scopeFilial($query, $codfilial)
+    {
+        if (trim($codfilial) === '')
+            return;
+        
+        $query->where('tblnotafiscal.codfilial', $codfilial);
+    }
+
+    public function scopeOperacao($query, $operacao)
+    {
+        if (trim($operacao) === '')
+            return;
+        
+        $query->where('tblnotafiscal.codnaturezaoperacao', $operacao);
+    }
+    
+    public function scopePessoa($query, $codpessoa)
+    {
+        if (trim($codpessoa) === '')
+            return;
+        
+        $query->where('tblnotafiscal.codpessoa', $codpessoa);
+    }
+
+    public function quantidadeUnitaria()
     {
         return $this->ProdutoBarra->converteQuantidade($this->quantidade);
     }

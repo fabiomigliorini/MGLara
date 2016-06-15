@@ -101,13 +101,19 @@ class ProdutoController extends Controller
         $model = Produto::find($id);
         $npbs = NegocioProdutoBarra::search(
             $id,
-            $request->get('npb_saida_de'),                
-            $request->get('npb_saida_ate')                
+            $request->get('npb_lancamento_de'),
+            $request->get('npb_lancamento_ate'),
+            $request->get('npb_codfilial'),
+            $request->get('npb_codnaturezaoperacao'),
+            $request->get('npb_codpessoa')
         );
         $nfpbs = NotaFiscalProdutoBarra::search(
             $id,
-            $request->get('nfpb_saida_de'),                
-            $request->get('nfpb_saida_ate')
+            $request->get('nfpb_saida_de'),
+            $request->get('nfpb_saida_ate'),
+            $request->get('nfpb_codfilial'),
+            $request->get('nfpb_codnaturezaoperacao'),
+            $request->get('nfpb_codpessoa')
         );
         return view('produto.show', compact('model', 'nfpbs', 'npbs'));
     }

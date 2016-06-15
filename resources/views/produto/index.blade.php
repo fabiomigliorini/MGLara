@@ -189,7 +189,6 @@ $(document).ready(function() {
     $("#produto-search").on("change", function (event) {
         var $this = $(this);
         var frmValues = $this.serialize();
-        //console.log(frmValues);
         $.ajax({
             type: 'GET',
             url: baseUrl + '/produto',
@@ -203,6 +202,7 @@ $(document).ready(function() {
         });
         event.preventDefault(); 
     });
+    /*
     $('#items').infinitescroll({
         pathParse: function (path, currentPage) {
   // Parse out the URL into chunks here
@@ -210,7 +210,7 @@ $(document).ready(function() {
   // `chunkedUrl` should be `["/path/to/resource?page=", "&foo=bar&dynamic=CA735B#!random-hashbang"]`
   return chunkedUrl;
 }
-    });    
+    });    */
     
     $('#inativo').select2({
         placeholder: 'Inativo',

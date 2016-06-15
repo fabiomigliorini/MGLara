@@ -20,7 +20,7 @@
                     <span class="pull-right">
                         <a href="{{ url("produto-barra/$pb->codprodutobarra/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
                         &nbsp;&nbsp;
-                        <a href=""><i class="glyphicon glyphicon-trash"></i></a>
+                        <a class="delete-barra" href="" data-pe="{{$pb->codprodutobarra}}"><i class="glyphicon glyphicon-trash"></i></a>
                     </span>                                          
                 </div>
             </div>

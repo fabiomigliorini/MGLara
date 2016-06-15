@@ -11,11 +11,14 @@
     </div>  
     <div class="form-group">
         {!! Form::select('nfpb_codnaturezaoperacao', $naturezaop, ['style'=>'width:100px'], ['id' => 'nfpb_codnaturezaoperacao']) !!}
-    </div>  
+    </div>
+    <div class="form-group">
+        <input type="text" name="nfpb_codpessoa" id="nfpb_codpessoa" class="form-control search-pessoa" />
+    </div>     
+    <input name="page" type="hidden" value="1" id="nfpb_page">
 {!! Form::close() !!}
 </div>
-<div>{!! $nfpbs->appends(Request::all())->render() !!}</div>
-<br>
+<div id="nfpb_paginacao">{!! $nfpbs->appends(Request::all())->render() !!}</div>    
 <div class="list-group" id="nfpbs">
   @foreach($nfpbs as $nfpb)
     <div class="list-group-item">
