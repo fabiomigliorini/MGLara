@@ -53,6 +53,8 @@
             <li role="separator" class="divider"></li>
             <li><a href="{{ url('produto-historico-preco') }}">Histórico de Preços</a></li>
             <li role="separator" class="divider"></li>
+            <li><a href="{{ url('secao-produto') }}">Seções de produto</a><li> 
+            <li role="separator" class="divider"></li>
             <li><a href="{{ url('grupo-produto') }}">Grupos de Produtos</a><li> 
             <li><a href="{{ url('marca') }}">Marcas</a><li> 
             <!-- <li><a href="#">NCM</a></li> -->

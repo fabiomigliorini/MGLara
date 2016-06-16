@@ -18,7 +18,7 @@ namespace MGLara\Models;
  * @property  Usuario                        $UsuarioCriacao
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Imagem                         $Imagem                        
- * @property  Secaoproduto                   $Secaoproduto                  
+ * @property  SecaoProduto                   $SecaoProduto                  
  *
  * Tabelas Filhas
  * @property  Grupoproduto[]                 $GrupoprodutoS
@@ -50,7 +50,7 @@ class FamiliaProduto extends MGModel
         
         $this->_regrasValidacao = [
             'codsecaoproduto' => 'required', 
-            'familiaproduto' => 'required|min:3', 
+            'familiaproduto' => "required|min:3|$unique_familiaproduto", 
         ];    
         $this->_mensagensErro = [
             'codsecaoproduto.required'  => 'Selecione uma Seção de produto.',
@@ -80,7 +80,7 @@ class FamiliaProduto extends MGModel
 
     public function SecaoProduto()
     {
-        return $this->belongsTo(Secaoproduto::class, 'codsecaoproduto', 'codsecaoproduto');
+        return $this->belongsTo(SecaoProduto::class, 'codsecaoproduto', 'codsecaoproduto');
     }
 
 
@@ -98,7 +98,7 @@ class FamiliaProduto extends MGModel
             ->familiaproduto($familiaproduto)
             ->inativo($inativo)
             ->orderBy('familiaproduto', 'ASC')
-            ->paginate(20);
+            ->paginate(5);
     }
     
     public function scopeId($query, $id)

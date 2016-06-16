@@ -86,7 +86,7 @@ class SecaoProduto extends MGModel
             ->secaoproduto($secaoproduto)
             ->inativo($inativo)
             ->orderBy('secaoproduto', 'ASC')
-            ->paginate(20);
+            ->paginate(2);
     }
     
     public function scopeId($query, $id)

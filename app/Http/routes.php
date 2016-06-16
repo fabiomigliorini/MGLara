@@ -144,8 +144,13 @@ Route::group(['middleware' => 'auth'], function() {
     /* Negócio produto barra */
     Route::resource('negocio-produto-barra', 'NegocioProdutoBarraController');
         
-    /* Seções */
-    Route::resource('secao','SecaoController');
+    /* Seção Produto */
+    Route::post('secao-produto/inativo','SecaoProdutoController@inativo');
+    Route::resource('secao-produto','SecaoProdutoController');
+        
+    /* Família Produto */
+    Route::post('familia-produto/inativo','FamiliaProdutoController@inativo');
+    Route::resource('familia-produto','FamiliaProdutoController');
     
 
 
