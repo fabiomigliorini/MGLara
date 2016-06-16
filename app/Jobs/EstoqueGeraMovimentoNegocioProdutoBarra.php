@@ -70,10 +70,19 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
             $mov->manual = false;
             $mov->data = $this->NegocioProdutoBarra->Negocio->lancamento;
             
+            $quantidade = $this->NegocioProdutoBarra->quantidade;
+            
+            if (!empty($this->NegocioProdutoBarra->ProdutoBarra->codprodutoembalagem))
+                $quantidade *= $this->NegocioProdutoBarra->ProdutoBarra->ProdutoEmbalagem->quantidade;
+            
+            $valor = $this->NegocioProdutoBarra->valortotal;
+            if ($this->NegocioProdutoBarra->Negocio->valordesconto > 0 && $this->NegocioProdutoBarra->Negocio->valorprodutos > 0)
+                $valor *= 1 - ($this->NegocioProdutoBarra->Negocio->valordesconto / $this->NegocioProdutoBarra->Negocio->valorprodutos);
+            
             if ($this->NegocioProdutoBarra->Negocio->NaturezaOperacao->codoperacao == Operacao::ENTRADA)
             {
-                $mov->entradaquantidade = $this->NegocioProdutoBarra->quantidade;
-                $mov->entradavalor = $this->NegocioProdutoBarra->valortotal;
+                $mov->entradaquantidade = $quantidade;
+                $mov->entradavalor = $valor;
                 $mov->saidaquantidade = null;
                 $mov->saidavalor = null;
             }
@@ -81,8 +90,8 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
             {
                 $mov->entradaquantidade = null;
                 $mov->entradavalor = null;
-                $mov->saidaquantidade = $this->NegocioProdutoBarra->quantidade;
-                $mov->saidavalor = $this->NegocioProdutoBarra->valortotal;
+                $mov->saidaquantidade = $quantidade;
+                $mov->saidavalor = $valor;
             }
             
             $mov->codnotafiscalprodutobarra = null;
@@ -115,6 +124,6 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
         foreach($mesRecalcular as $mes)
             $this->dispatch(new EstoqueCalculaCustoMedio($mes));
         
-        file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . ' - EstoqueGeraMovimentoNegocioProdutoBarra' . "\n", FILE_APPEND);                
+        file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . " - EstoqueGeraMovimentoNegocioProdutoBarra {$this->NegocioProdutoBarra->codnegocio} - {$this->NegocioProdutoBarra->codnegocioprodutobarra} \n", FILE_APPEND);                
     }
 }

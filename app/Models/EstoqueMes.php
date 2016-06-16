@@ -109,7 +109,7 @@ class EstoqueMes extends MGModel
         $mes = $data;
         $mes->day = 1;
         //Antes de 2015, cria somente um registro de mes por ano, em dezembro
-        if ($mes->year <= 2015)
+        if ($mes->year <= 2016)
             $mes->month = 12;
         $em = self::where('codestoquesaldo', $es->codestoquesaldo)->where('mes', $mes)->first();
         if ($em == false)

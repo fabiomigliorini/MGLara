@@ -24,6 +24,7 @@ Route::get('estoque/calcula-custo-medio/{id}','EstoqueController@calculaCustoMed
 Route::get('estoque/gera-movimento-negocio-produto-barra/{id}','EstoqueController@geraMovimentoNegocioProdutoBarra');
 Route::get('estoque/gera-movimento-negocio/{id}','EstoqueController@geraMovimentoNegocio');
 Route::get('estoque/gera-movimento-produto/{id}','EstoqueController@geraMovimentoProduto');
+Route::get('estoque/gera-movimento-periodo','EstoqueController@geraMovimentoPeriodo');
 
 
 
