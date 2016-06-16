@@ -19,6 +19,14 @@
     <div class="form-group">
         {!! Form::text('secaoproduto', null, ['class' => 'form-control', 'placeholder' => 'Seção']) !!}
     </div>
+    <div class="form-group">
+        <select class="form-control" name="inativo" id="inativo">
+            <option value=""></option>
+            <option value="0">Todos</option>
+            <option value="1" selected="selected">Ativos</option>
+            <option value="2">Inativos</option>
+        </select>
+    </div>      
     <button type="submit" class="btn btn-default">Buscar</button>
 {!! Form::close() !!}
 </div>
@@ -31,12 +39,16 @@
         <div class="row item">
             <div class="col-md-4">
             <a href="{{ url("secao-produto/$row->codsecaoproduto") }}">{{ formataCodigo($row->codsecaoproduto)}}</a>
+                @if(!empty($row->inativo))
+                <br>
+                <span class="label label-danger">Inativado em {{ formataData($row->inativo, 'L')}} </span>
+                @endif            
             </div>                            
             <div class="col-md-4">
             <a href="{{ url("secao-produto/$row->codsecaoproduto") }}">{{ $row->secaoproduto }}</a>
             </div>                            
             <div class="col-md-4">
-            <a href="{{ url("secao-produto/$row->codsecaoproduto") }}">{{ $row->sigla }}</a>
+            
             </div>                            
         </div>
       </div>    

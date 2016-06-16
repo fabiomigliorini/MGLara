@@ -6,6 +6,18 @@
             <li>
                 <a href="{{ url('imagem') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a>
             </li>
+            <li>
+                @if(empty($model->inativo))
+                <a href="" id="inativo-secao-produto">
+                    <span class="glyphicon glyphicon-ban-circle"></span> Inativar
+                </a>
+                @else
+                <a href="" id="inativo-secao-produto">
+                    <span class="glyphicon glyphicon-ok-sign"></span> Ativar
+                </a>
+                @endif
+            </li> 
+            
             @if($model->inativo)
             <li>
                 {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['imagem.destroy', $model->codimagem]]) !!}
@@ -28,16 +40,19 @@
             <strong>Grupo:</strong> <a href="{{ url("grupo-produto/{$grupo->codgrupoproduto}") }}">{{ $grupo->grupoproduto }}</a>
         </p>
         @endforeach
+        
         @foreach($model->MarcaS as $marca)
         <p>
             <strong>Marca:</strong> <a href="{{ url("marca/{$marca->codmarca}") }}">{{ $marca->marca }}</a>
         </p>
         @endforeach
-        @foreach($model->ProdutoS as $produto)
+
+        @foreach($model->SecaoProdutoS as $secao)
         <p>
-            <strong>Produto:</strong> <a href="{{ url("produto/{$produto->codproduto}") }}">{{ $produto->produto }}</a>
+            <strong>Seçao Produto:</strong> <a href="{{ url("secao-produto/{$secao->codsecaoproduto}") }}">{{ $secao->secaoproduto }}</a>
         </p>
         @endforeach
+       
         @foreach($model->SubGrupoProdutoS as $subgrupo)
         <p>
             <strong>Sub Grupo:</strong> <a href="{{ url("sub-grupo-produto/{$subgrupo->codsubgrupoproduto}") }}">{{ $subgrupo->subgrupoproduto }}</a>

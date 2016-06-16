@@ -41,7 +41,9 @@
                  Carregar imagem
             </a>
         @else
-        <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
+        <a href="{{ url("imagem/{$model->Imagem->codimagem}") }}">
+            <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
+        </a>
         <span class="caption simple-caption">
             <a href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
         </span>        
@@ -78,6 +80,14 @@
     <div class="form-group">
         {!! Form::text('familiaproduto', null, ['class' => 'form-control', 'placeholder' => 'Família']) !!}
     </div>
+    <div class="form-group">
+        <select class="form-control" name="inativo" id="inativo" placeholder="Ativos">
+            <option value=""></option>
+            <option value="0">Todos</option>
+            <option value="1" selected="selected">Ativos</option>
+            <option value="2">Inativos</option>
+        </select>
+    </div>      
     <button type="submit" class="btn btn-default">Buscar</button>
 {!! Form::close() !!}
 </div>
