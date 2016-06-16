@@ -288,15 +288,6 @@ $(document).ready(function() {
     // Notas fiscais e Negócios
     $('.pagination').removeClass('hide');
     
-    $('#nfpb_saida_de, #nfpb_saida_ate, #npb_saida_de, #npb_saida_ate').datetimepicker({
-        useCurrent: false,
-        showClear: true,
-        locale: 'pt-br',
-        format: 'DD/MM/YY'
-    });
-    $(document).on('dp.change', '#saida_de, #saida_ate', function() {
-        $('#produto-npb-search').submit();
-    });
     
     $('#nfpb_codfilial').select2({
         allowClear:true,
@@ -322,16 +313,18 @@ $(document).ready(function() {
     
     // botão delete da embalagem
 	$('delete-barra').click(function(e) {
-		e.preventDefault();
-        var codprodutoembalagem = this.dataset.pe;
+            console.log('Ola, clicaram aqui!!');
+            e.preventDefault();
+            var codprodutoembalagem = this.dataset.pe;
 		// pega url para delete
-		//var url = jQuery(this).attr('href');
+            var url = $(this).attr('href');
 		//pede confirmacao
 		bootbox.confirm("Excluir este Código de Barras?", function(result) {
 			if (result) {
 				$.ajax({
 					type: 'POST',
-					url: baseUrl + '/produto-embalagem/' + codprodutoembalagem + '/destroy',
+					//url: baseUrl + '/produto-embalagem/' + codprodutoembalagem + '/destroy',
+					url: url,
 					success: function() {
                         $('#'+codprodutoembalagem).remove();
 					},
@@ -367,9 +360,198 @@ $(document).ready(function() {
 			}	
 		});
 	});	
-	    
+        
+        
+        // PAGINAÇÃO NEGÓCIOS PRODUTO BARRA
+        $("#produto-npb-search").on("change", function (event) {
+            var $this = $(this);
+            var frmValues = $this.serialize();
+            $.ajax({
+                type: 'GET',
+                url: baseUrl + '/produto/' + {{ $model->codproduto }},
+                data: frmValues
+            })
+            .done(function (data) {
+                $('#npbs').html(jQuery(data).find('#npbs').html()); 
+            })
+            .fail(function () {
+                console.log('Erro no filtro');
+            });
+            event.preventDefault(); 
+        });
     
+        $('#npb_paginacao .pagination a').on('click', function (e) {
+            var page = $(this).attr('href').split('page=')[1];
+            $("#npb_page").val(page);
+            $('#produto-npb-search').change();
+            $('#npb_paginacao .pagination .active').removeClass('active');
+            $(this).parent().addClass('active');
+            e.preventDefault();
+        });   	    
+        
+        $('#nfpb_saida_de, #nfpb_saida_ate, #npb_lancamento_de, #npb_lancamento_ate').datetimepicker({
+            useCurrent: false,
+            showClear: true,
+            locale: 'pt-br',
+            format: 'DD/MM/YY'
+        });
+        
+        $(document).on('dp.change', '#npb_lancamento_de, #npb_lancamento_de, #npb_codpessoa', function() {
+            $('#produto-npb-search').change();
+        });
+        
+        $('#npb_codpessoa').select2({
+            'minimumInputLength':3,
+            'allowClear':true,
+            'closeOnSelect':true,
+            'placeholder':'Pessoa',
+            'formatResult':function(item) {
+                var css = "div-combo-pessoa";
+                if (item.inativo)
+                    var css = "text-error";
+
+                var css_titulo = "";
+                var css_detalhes = "text-muted";
+                if (item.inativo){
+                    css_titulo = "text-error";
+                    css_detalhes = "text-error";
+                }
+
+                var nome = item.fantasia;
+                var markup = "";
+                markup    += "<strong class='" + css_titulo + "'>" + nome + "</strong>";
+                markup    += "<small class='pull-right " + css_detalhes + "'>#" + formataCodigo(item.id) + "</small>";
+                markup    += "<br>";
+                markup    += "<small class='" + css_detalhes + "'>" + item.pessoa + "</small>";
+                markup    += "<small class='pull-right " + css_detalhes + "'>" + formataCnpjCpf(item.cnpj) + "</small>";
+                return markup;
+            },
+            'formatSelection':function(item) { 
+                return item.fantasia; 
+            },
+            'ajax':{
+                'url':baseUrl+'/pessoa-ajax',
+                'dataType':'json',
+                'quietMillis':500,
+                'data':function(term, current_page) { 
+                    return {
+                        q: term, 
+                        per_page: 10, 
+                        current_page: current_page
+                    }; 
+                },
+                'results':function(data,page) {
+                    //var more = (current_page * 20) < data.total;
+                    return {
+                        results: data.data, 
+                        //more: data.mais
+                    };
+                }
+            },
+            'initSelection':function (element, callback) {
+                $.ajax({
+                    type: "GET",
+                    url: baseUrl+'/pessoa-ajax',
+                    data: "id=<?php if(isset($_GET['codpessoa'])){echo $_GET['codpessoa'];}?>",
+                    dataType: "json",
+                    success: function(result) { 
+                        callback(result); 
+                    }
+                });
+            },'width':'resolve'
+        });
+
+        // PAGINAÇÃO NOTAS FISCAIS PRODUTO BARRA
+        $("#produto-nfpb-search").on("change", function (event) {
+            var $this = $(this);
+            var frmValues = $this.serialize();
+            $.ajax({
+                type: 'GET',
+                url: baseUrl + '/produto/' + {{ $model->codproduto }},
+                data: frmValues
+            })
+            .done(function (data) {
+                $('#nfpbs').html(jQuery(data).find('#nfpbs').html()); 
+            })
+            .fail(function () {
+                console.log('Erro no filtro');
+            });
+            event.preventDefault(); 
+        });
     
+        $('#nfpb_paginacao .pagination a').on('click', function (e) {
+            var page = $(this).attr('href').split('page=')[1];
+            $("#nfpb_page").val(page);
+            $('#produto-nfpb-search').change();
+            $('#nfpb_paginacao .pagination .active').removeClass('active');
+            $(this).parent().addClass('active');
+            e.preventDefault();
+        });   	    
+        
+        $(document).on('dp.change', '#nfpb_saida_de, #nfpb_saida_ate', function() {
+            $('#produto-nfpb-search').change();
+        });
+    
+        $('#nfpb_codpessoa').select2({
+            'minimumInputLength':3,
+            'allowClear':true,
+            'closeOnSelect':true,
+            'placeholder':'Pessoa',
+            'formatResult':function(item) {
+                var css = "div-combo-pessoa";
+                if (item.inativo)
+                    var css = "text-error";
+
+                var css_titulo = "";
+                var css_detalhes = "text-muted";
+                if (item.inativo){
+                    css_titulo = "text-error";
+                    css_detalhes = "text-error";
+                }
+
+                var nome = item.fantasia;
+                var markup = "";
+                markup    += "<strong class='" + css_titulo + "'>" + nome + "</strong>";
+                markup    += "<small class='pull-right " + css_detalhes + "'>#" + formataCodigo(item.id) + "</small>";
+                markup    += "<br>";
+                markup    += "<small class='" + css_detalhes + "'>" + item.pessoa + "</small>";
+                markup    += "<small class='pull-right " + css_detalhes + "'>" + formataCnpjCpf(item.cnpj) + "</small>";
+                return markup;
+            },
+            'formatSelection':function(item) { 
+                return item.fantasia; 
+            },
+            'ajax':{
+                'url':baseUrl+'/pessoa-ajax',
+                'dataType':'json',
+                'quietMillis':500,
+                'data':function(term, current_page) { 
+                    return {
+                        q: term, 
+                        per_page: 10, 
+                        current_page: current_page
+                    }; 
+                },
+                'results':function(data,page) {
+                    //var more = (current_page * 20) < data.total;
+                    return {
+                        results: data.data, 
+                        //more: data.mais
+                    };
+                }
+            },
+            'initSelection':function (element, callback) {
+                $.ajax({
+                    type: "GET",
+                    url: baseUrl+'/pessoa-ajax',
+                    data: "id=<?php if(isset($_GET['codpessoa'])){echo $_GET['codpessoa'];}?>",
+                    dataType: "json",
+                    success: function(result) { 
+                        callback(result); 
+                    }
+                });
+            },'width':'resolve'
+        });
     
 });
 </script>

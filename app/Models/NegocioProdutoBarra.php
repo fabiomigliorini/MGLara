@@ -1,6 +1,7 @@
 <?php
 
 namespace MGLara\Models;
+use Carbon\Carbon;
 
 /**
  * Campos
@@ -110,9 +111,14 @@ class NegocioProdutoBarra extends MGModel
         return $this->hasMany(NegocioProdutoBarra::class, 'codnegocioprodutobarradevolucao', 'codnegocioprodutobarra');
     }
     
-    public static function search($id)
+    public static function search($id, $de, $ate, $codfilial, $operacao, $codpessoa)
     {
         return NegocioProdutoBarra::id($id)
+            ->lancamentoDe($de)
+            ->lancamentoAte($ate)
+            ->filial($codfilial)
+            ->operacao($operacao)
+            ->pessoa($codpessoa)
             ->paginate(5);
     }
     
@@ -122,6 +128,54 @@ class NegocioProdutoBarra extends MGModel
             return;
         
         $query->join('tblprodutobarra', 'tblprodutobarra.codprodutobarra', '=', 'tblnegocioprodutobarra.codprodutobarra')
+            ->join('tblnegocio', 'tblnegocio.codnegocio', '=', 'tblnegocioprodutobarra.codnegocio')
             ->where('tblprodutobarra.codproduto', $id);
-    }     
+    }
+    
+    public function scopeLancamentoDe($query, $de)
+    {
+        if (trim($de) === '')
+            return;
+        
+        if(!empty($de))
+            $de = Carbon::createFromFormat('d/m/y', $de)->format('Y-m-d').' 23:59:59.9';        
+        
+        $query->where('tblnegocio.lancamento', '>=', $de);
+    }
+
+    public function scopeLancamentoAte($query, $ate)
+    {
+        if (trim($ate) === '')
+            return;
+
+        if(!empty($ate))
+            $ate = Carbon::createFromFormat('d/m/y', $ate)->format('Y-m-d').' 23:59:59.9';        
+        
+        $query->where('tblnegocio.lancamento', '<=', $ate);
+    }
+
+    public function scopeFilial($query, $codfilial)
+    {
+        if (trim($codfilial) === '')
+            return;
+        
+        $query->where('tblnegocio.codfilial', $codfilial);
+    }
+
+    public function scopeOperacao($query, $operacao)
+    {
+        if (trim($operacao) === '')
+            return;
+        
+        $query->where('tblnegocio.codnaturezaoperacao', $operacao);
+    }
+    
+    public function scopePessoa($query, $codpessoa)
+    {
+        if (trim($codpessoa) === '')
+            return;
+        
+        $query->where('tblnegocio.codpessoa', $codpessoa);
+    }
+    
 }

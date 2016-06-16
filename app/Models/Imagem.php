@@ -15,9 +15,11 @@ namespace MGLara\Models;
  * Chaves Estrangeiras
  *
  * Tabelas Filhas
+ * @property  FamiliaProduto[]               $FamiliaProdutoS
  * @property  GrupoProduto[]                 $GrupoProdutoS
  * @property  Marca[]                        $MarcaS
  * @property  ProdutoImagem[]                $ProdutoImagemS
+ * @property  SecaoProduto[]                 $SecaoProdutoS
  * @property  SubGrupoProduto[]              $SubGrupoProdutoS
  */
 
@@ -39,6 +41,11 @@ class Imagem extends MGModel
     // Chaves Estrangeiras
 
     // Tabelas Filhas
+    public function FamiliaProdutoS()
+    {
+        return $this->hasMany(FamiliaProduto::class, 'codimagem', 'codimagem');
+    }
+
     public function GrupoProdutoS()
     {
         return $this->hasMany(GrupoProduto::class, 'codimagem', 'codimagem');
@@ -49,15 +56,21 @@ class Imagem extends MGModel
         return $this->hasMany(Marca::class, 'codimagem', 'codimagem');
     }
 
-    public function ProdutoS()
+    public function ProdutoImagemS()
     {
-        return $this->belongsToMany(Produto::class, 'tblprodutoimagem', 'codimagem', 'codproduto');
+        return $this->hasMany(ProdutoImagem::class, 'codimagem', 'codimagem');
+    }
+
+    public function SecaoProdutoS()
+    {
+        return $this->hasMany(SecaoProduto::class, 'codimagem', 'codimagem');
     }
 
     public function SubGrupoProdutoS()
     {
         return $this->hasMany(SubGrupoProduto::class, 'codimagem', 'codimagem');
-    }   
+    }
+
     
     // Buscas 
     public static function filterAndPaginate($inativo)
