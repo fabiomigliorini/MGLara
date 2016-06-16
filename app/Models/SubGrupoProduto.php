@@ -16,6 +16,7 @@ namespace MGLara\Models;
  * @property  GrupoProduto                   $GrupoProduto                  
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
+ * @property  Imagem                         $Imagem  
  *
  * Tabelas Filhas
  * @property  Produto[]                      $ProdutoS

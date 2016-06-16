@@ -14,6 +14,8 @@ namespace MGLara\Models;
  * Chaves Estrangeiras
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
+ * @property  FamiliaProduto                 $FamiliaProduto                
+ * @property  Imagem                         $Imagem     
  *
  * Tabelas Filhas
  * @property  SubGrupoProduto[]              $SubGrupoProdutoS
@@ -55,6 +57,12 @@ class GrupoProduto extends MGModel
     {
         return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
     }
+
+    public function FamiliaProduto()
+    {
+        return $this->belongsTo(FamiliaProduto::class, 'codfamiliaproduto', 'codfamiliaproduto');
+    }
+
     public function Imagem()
     {
         return $this->belongsTo(Imagem::class, 'codimagem', 'codimagem');
