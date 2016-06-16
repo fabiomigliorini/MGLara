@@ -26,71 +26,56 @@
         </ul>
     </div>
 </nav>
-@if(!empty($model->inativo))
-    <br>
-    <div class="alert alert-danger" role="alert">Inativado em {{formataData($model->inativo, 'L')}}</div>
-@endif
-<div class="row">
-    <div class="col-md-6">
-        <h1 class="header">{{ $model->secaoproduto }}</h1>
-    </div>
-    <div class="pull-right foto-item-unico">
-        @if(empty($model->codimagem))
-            <a class="btn btn-default carregar" href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}">
-                <i class="glyphicon glyphicon-picture"></i>
-                 Carregar imagem
-            </a>
-        @else
-        <a href="{{ url("imagem/{$model->Imagem->codimagem}") }}">
-            <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
+
+<div class="pull-right foto-item-unico">
+    @if(empty($model->codimagem))
+        <a class="btn btn-default carregar" href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}">
+            <i class="glyphicon glyphicon-picture"></i>
+             Carregar imagem
         </a>
-        <span class="caption simple-caption">
-            <a href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-        </span>        
-        @endif
-    </div>
+    @else
+    <a href="{{ url("imagem/{$model->Imagem->codimagem}") }}">
+        <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
+    </a>
+    <span class="caption simple-caption">
+        <a href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+    </span>        
+    @endif
 </div>
-<hr>
-<div class="row">
-  <div class="col-lg-12">
-      <table class="detail-view table table-striped table-condensed"> 
-        <tbody>  
-          <tr> 
-            <th class="col-md-2">#</th> 
-            <td class="col-md-10">{{ formataCodigo($model->codsecaoproduto) }}</td> 
-          </tr>
-          <tr> 
-            <th>Seção</th> 
-            <td>{{ $model->secaoproduto }}</td> 
-          </tr>
-        </tbody> 
-      </table>
-  </div>    
-</div>
-<hr>
+
+<h1 class="header">
+    @if(!empty($model->inativo))
+        <del>
+    @endif
+    <small>
+        {{ formataCodigo($model->codsecaoproduto) }}
+    </small>
+    {{ $model->secaoproduto }}
+    @if(!empty($model->inativo))
+        </del>
+    @endif
+    @if(!empty($model->inativo))
+        <small class="text-danger" >Inativo desde {{formataData($model->inativo, 'L')}}!</small>
+    @endif
+
+
+</h1>
 @include('includes.autor')
 <hr>
-<h2>Famílias de produto  <span class="titulo-btn-novo"><!-- <a class="btn btn-default" href="{{ url("familia-produto/create?codsecaoproduto=$model->codsecaoproduto") }}"><i class=" glyphicon glyphicon-plus"></i> Novo</a> --><a class="btn btn-default" href=""><i class=" glyphicon glyphicon-plus"></i> Novo</a></span></h2>
-<hr>
-<div class="search-bar">
-{!! Form::model(Request::all(), ['method' => 'GET', 'class' => 'form-inline', 'id' => 'familia-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+    {!! Form::model(Request::all(), ['method' => 'GET', 'class' => 'form-inline', 'id' => 'familia-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
     <div class="form-group">
-        {!! Form::text('codfamiliaproduto', null, ['class' => 'form-control search-cod', 'placeholder' => '#']) !!}
-    </div>
-    <div class="form-group">
-        {!! Form::text('familiaproduto', null, ['class' => 'form-control', 'placeholder' => 'Família']) !!}
+        {!! Form::text('familiaproduto', null, ['id'=>'familiaproduto', 'class' => 'form-control', 'placeholder' => 'Família']) !!}
     </div>
     <div class="form-group">
         <select class="form-control" name="inativo" id="inativo" placeholder="Ativos">
-            <option value=""></option>
-            <option value="0">Todos</option>
-            <option value="1" selected="selected">Ativos</option>
-            <option value="2">Inativos</option>
+            <option value="0">Todas</option>
+            <option value="1" selected="selected">Ativas</option>
+            <option value="2">Inativas</option>
         </select>
     </div>      
-    <button type="submit" class="btn btn-default">Buscar</button>
+    <button type="submit" class="btn btn-default"><i class=" glyphicon glyphicon-search"></i> Buscar</button>
+    <a class="btn btn-default" href=""><i class=" glyphicon glyphicon-plus"></i> Nova Familia</a>
 {!! Form::close() !!}
-</div>
 <br>
 <div id="registros">
   <div class="list-group" id="items">
@@ -115,7 +100,7 @@
       </div>    
     @endforeach
     @if (count($familias) === 0)
-        <h3>Nenhum registro encontrado!</h3>
+        <h3>Nenhuma Familia encontrada!</h3>
     @endif    
   </div>
   {!! $familias->appends(Request::all())->render() !!}

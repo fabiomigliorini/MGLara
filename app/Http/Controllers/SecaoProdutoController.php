@@ -53,7 +53,7 @@ class SecaoProdutoController extends Controller
             $this->throwValidationException($request, $model->_validator);
         
         $model->save();
-        Session::flash('flash_create', 'Registro inserido.');
+        Session::flash('flash_success', 'Seção Criada!');
         return redirect("secao-produto/$model->codsecaoproduto");    
     }
 
@@ -104,7 +104,7 @@ class SecaoProdutoController extends Controller
 
         $model->save();
         
-        Session::flash('flash_update', 'Registro atualizado.');
+        Session::flash('flash_success', "Seção '{$model->secaoproduto}' Atualizada!");
         return redirect("secao-produto/$model->codsecaoproduto"); 
     }
 
@@ -117,12 +117,15 @@ class SecaoProdutoController extends Controller
     public function destroy($id)
     {
         try{
-            SecaoProduto::find($id)->delete();
-            Session::flash('flash_delete', 'Registro deletado!');
+            $model = SecaoProduto::find($id);
+            $model->delete();
+            Session::flash('flash_success', "Seção '{$model->secaoproduto}' Excluida!");
             return Redirect::route('secao-produto.index');
         }
         catch(\Exception $e){
-            return view('errors.fk');
+            Session::flash('flash_danger', "Impossível Excluir!");
+            Session::flash('flash_danger_detail', $e->getMessage());
+            return redirect("secao-produto/$id"); 
         }     
     }
     
@@ -130,11 +133,18 @@ class SecaoProdutoController extends Controller
     {
         $model = SecaoProduto::find($request->get('codsecaoproduto'));
         if($request->get('acao') == 'ativar')
+        {
             $model->inativo = null;
+            $msg = "Seção '{$model->secaoproduto}' Reativada!";
+        }
         else
+        {
             $model->inativo = Carbon::now();
+            $msg = "Seção '{$model->secaoproduto}' Inativada!";
+        }
         
         $model->save();
+        Session::flash('flash_success', $msg);
     }    
     
 }

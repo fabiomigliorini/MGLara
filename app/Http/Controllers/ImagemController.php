@@ -213,4 +213,7 @@ class ImagemController extends Controller
         }     
     }
     
+    
+    
+    
 }
