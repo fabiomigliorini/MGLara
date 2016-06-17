@@ -25,7 +25,7 @@ $(document).ready(function() {
         });
     });
     $('#secaoproduto').prop('required', true);
-    $("#secaoproduto").Setcase();
+    $('#secaoproduto').Setcase();
 });
 </script>
 @endsection

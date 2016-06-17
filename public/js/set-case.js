@@ -1,4 +1,5 @@
-$(document).ready(function() {
+(function($) {
+
     $.fn.RemoveAcentos = function(settings) {
         this.each(function() {
             $(this).blur(function() {
@@ -55,10 +56,30 @@ $(document).ready(function() {
             //blur event		
             $(this).blur(function() {
 
-                $(this).RemoveAcentos();
-
+                //$(this).RemoveAcentos(); <-- AQUI QUE NÃO ESTÁ CARREGANDO
                 var currVal = $(this).val();
 
+                /* REMOVENDO TODOS OS ACENTOS */
+                    currVal = currVal.replace(/"/g, " ");
+                    currVal = currVal.replace(/'/g, " ");
+                    currVal = currVal.trim();
+                    currVal = currVal.replace(/\s{2,}/g, ' ');
+                    currVal = currVal.replace(/(\-)\1+/gi, "-");
+                    currVal = currVal.replace(/[á|ã|â|à|ª]/g, "a");
+                    currVal = currVal.replace(/[Á|Ã|Â|À]/g, "A");
+                    currVal = currVal.replace(/[é|ẽ|ê|è]/g, "e");
+                    currVal = currVal.replace(/[É|Ẽ|Ê|È]/g, "E");
+                    currVal = currVal.replace(/[í|ĩ|î|ì]/g, "i");
+                    currVal = currVal.replace(/[Í|Ĩ|Î|Ì]/g, "I");
+                    currVal = currVal.replace(/[ó|õ|ô|ò|º]/g, "o");
+                    currVal = currVal.replace(/[Ó|Õ|Ô|Ò]/g, "O");
+                    currVal = currVal.replace(/[ú|ũ|û|ù]/g, "u");
+                    currVal = currVal.replace(/[Ú|Ũ|Û|Ù]/g, "U");
+                    currVal = currVal.replace(/[ĉ|ç]/g, "c");
+                    currVal = currVal.replace(/[Ĉ|Ç]/g, "C");
+                    currVal = currVal.replace(/[ń|ñ|ǹ]/gi, "n");
+                    currVal = currVal.replace(/[Ń|Ñ|Ǹ]/gi, "N");
+                /* --------------- */
 
                 //monta o case conforme o parametro recebido
                 if(config.caseValue == "upper")
@@ -104,4 +125,5 @@ $(document).ready(function() {
             });
         });
     };
-});
+
+})(jQuery);
