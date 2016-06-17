@@ -34,7 +34,7 @@
 <div id="registros">
   <div class="list-group group-list-striped group-list-hover" id="items">
     @foreach($model as $row)
-      <div class="list-group-item">
+      <div class="list-group-item @if(!empty($row->inativo)) bg-danger @endif">
         <div class="row item">
             <div class="col-md-4">
             <a href="{{ url("secao-produto/$row->codsecaoproduto") }}">{{ formataCodigo($row->codsecaoproduto)}}</a>

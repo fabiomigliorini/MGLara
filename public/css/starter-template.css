@@ -26,6 +26,9 @@ h1.header {
 .navbar-inverse .navbar-nav > li > a {
     color: #eee;
 }
+.bg-danger {
+    background-color: #f2dede !important;
+}
 .controls .delete {
   margin-left: 5px;
 }

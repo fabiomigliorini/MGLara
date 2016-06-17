@@ -31,7 +31,7 @@
     @if(empty($model->codimagem))
         <a class="btn btn-default carregar" href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}">
             <i class="glyphicon glyphicon-picture"></i>
-             Carregar imagem
+            Carregar imagem
         </a>
     @else
     <a href="{{ url("imagem/{$model->Imagem->codimagem}") }}">
@@ -57,12 +57,10 @@
     @if(!empty($model->inativo))
         <small class="text-danger" >Inativo desde {{formataData($model->inativo, 'L')}}!</small>
     @endif
-
-
 </h1>
 @include('includes.autor')
 <hr>
-    {!! Form::model(Request::all(), ['method' => 'GET', 'class' => 'form-inline', 'id' => 'familia-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+{!! Form::model(Request::all(), ['method' => 'GET', 'class' => 'form-inline', 'id' => 'familia-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
     <div class="form-group">
         {!! Form::text('familiaproduto', null, ['id'=>'familiaproduto', 'class' => 'form-control', 'placeholder' => 'Família']) !!}
     </div>
@@ -74,21 +72,19 @@
         </select>
     </div>      
     <button type="submit" class="btn btn-default"><i class=" glyphicon glyphicon-search"></i> Buscar</button>
-    <a class="btn btn-default" href=""><i class=" glyphicon glyphicon-plus"></i> Nova Familia</a>
+    <a class="btn btn-default" href="{{ url("familia-produto/create?codsecaoproduto=$model->codsecaoproduto") }}"><i class=" glyphicon glyphicon-plus"></i> Nova Familia</a>
 {!! Form::close() !!}
 <br>
 <div id="registros">
   <div class="list-group group-list-striped group-list-hover" id="items">
     @foreach($familias as $row)
-      <div class="list-group-item">
+      <div class="list-group-item @if(!empty($row->inativo)) bg-danger @endif">
         <div class="row item">
             <div class="col-md-2">
-                <!-- <a href="{{ url("familia-produto/$row->codfamiliaproduto") }}">{{ formataCodigo($row->codfamiliaproduto) }}</a> -->
-                <a href="">{{ formataCodigo($row->codfamiliaproduto) }}</a>
+                <a href="{{ url("familia-produto/$row->codfamiliaproduto") }}">{{ formataCodigo($row->codfamiliaproduto) }}</a>
             </div>                            
             <div class="col-md-4">
-                <!-- <a href="{{ url("familia-produto/$row->codfamiliaproduto") }}">{{ $row->familiaproduto }}</a> -->
-                <a href="">{{ $row->familiaproduto }}</a>
+                <a href="{{ url("familia-produto/$row->codfamiliaproduto") }}">{{ $row->familiaproduto }}</a>
             </div>
             <div class="col-md-3">
 
