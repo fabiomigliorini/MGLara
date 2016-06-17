@@ -52,7 +52,7 @@
 
 <br>
 <div id="registros">
-  <div class="list-group" id="items">
+  <div class="list-group group-list-striped group-list-hover" id="items">
     @foreach($model as $row)
       <div class="list-group-item" @if(!empty($row->inativo)) style="background:#f2dede" @endif>
         <div class="row item">

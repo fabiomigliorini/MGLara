@@ -21,7 +21,6 @@
     </div>
     <div class="form-group">
         <select class="form-control" name="inativo" id="inativo">
-            <option value=""></option>
             <option value="0">Todos</option>
             <option value="1" selected="selected">Ativos</option>
             <option value="2">Inativos</option>
@@ -33,7 +32,7 @@
 
 <br>
 <div id="registros">
-  <div class="list-group" id="items">
+  <div class="list-group group-list-striped group-list-hover" id="items">
     @foreach($model as $row)
       <div class="list-group-item">
         <div class="row item">

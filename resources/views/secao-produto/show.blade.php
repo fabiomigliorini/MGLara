@@ -78,7 +78,7 @@
 {!! Form::close() !!}
 <br>
 <div id="registros">
-  <div class="list-group" id="items">
+  <div class="list-group group-list-striped group-list-hover" id="items">
     @foreach($familias as $row)
       <div class="list-group-item">
         <div class="row item">

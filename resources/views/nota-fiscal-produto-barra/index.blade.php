@@ -19,7 +19,7 @@
 {!! Form::close() !!}
 </div>
 <div id="nfpb_paginacao">{!! $nfpbs->appends(Request::all())->render() !!}</div>    
-<div class="list-group" id="nfpbs">
+<div class="list-group group-list-striped group-list-hover" id="nfpbs">
   @foreach($nfpbs as $nfpb)
     <div class="list-group-item">
       <div class="row item">
