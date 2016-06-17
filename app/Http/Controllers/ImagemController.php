@@ -158,14 +158,17 @@ class ImagemController extends Controller
         $diretorio = './public/imagens';
         $arquivo = $imagem->codimagem.'.'.$extensao;       
         
-        $codimagem->move($diretorio, $arquivo);    
-        
-        $model->codimagem = $imagem->codimagem;
-        
-        $model->save();
-        Session::flash('flash_update', 'Registro atualizado.');
-        
-        return redirect(modelUrl($request->get('model')).'/'.$id);  
+        try {
+            $codimagem->move($diretorio, $arquivo);
+            $model->codimagem = $imagem->codimagem;
+            $model->save();
+            Session::flash('flash_update', 'Registro atualizado.');
+            return redirect(modelUrl($request->get('model')).'/'.$id);  
+        } catch (\Symfony\Component\HttpFoundation\File\Exception\FileException $e) {
+            Session::flash('flash_danger', "Não foi possível cadastrar essa imagem!");
+            Session::flash('flash_danger_detail', $e->getMessage());
+            return redirect(modelUrl($request->get('model')).'/'.$id);  
+        }
     }
 
     public function lixeira()
