@@ -62,7 +62,7 @@
 <hr>
 {!! Form::model(Request::all(), ['method' => 'GET', 'class' => 'form-inline', 'id' => 'familia-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
     <div class="form-group">
-        {!! Form::text('familiaproduto', null, ['id'=>'familiaproduto', 'class' => 'form-control', 'placeholder' => 'Família']) !!}
+        <input type="text" name="familiaproduto" id="familiaproduto" placeholder="Família" class="form-control">
     </div>
     <div class="form-group">
         <select class="form-control" name="inativo" id="inativo" placeholder="Ativos">
@@ -107,6 +107,7 @@ $(document).ready(function() {
     $("#familia-produto-search").on("change", function (event) {
         var $this = $(this);
         var frmValues = $this.serialize();
+        console.log(frmValues);
         $.ajax({
             type: 'GET',
             url: baseUrl + '/secao-produto/'+ {{$model->codsecaoproduto}},

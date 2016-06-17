@@ -1,5 +1,5 @@
 <?php
-    //...
+    //
 ?>
 <div class="form-group">
     <label for="produto" class="col-sm-2 control-label">{!! Form::label('Família de produto:') !!}</label>

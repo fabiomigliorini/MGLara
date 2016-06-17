@@ -17,7 +17,6 @@
                 </a>
                 @endif
             </li> 
-            
             <li>
                 {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['familia-produto.destroy', $model->codfamiliaproduto]]) !!}
                 <span class="glyphicon glyphicon-trash"></span>
@@ -42,7 +41,6 @@
     </span>        
     @endif
 </div>
-
 <h1 class="header">
     @if(!empty($model->inativo))
         <del>
@@ -50,6 +48,7 @@
     <small>
         {{ formataCodigo($model->codfamiliaproduto) }}
     </small>
+    <a href="{{ url("secao-produto/{$model->codsecaoproduto}") }}">{{ $model->SecaoProduto->secaoproduto }}</a> »
     {{ $model->familiaproduto }}
     @if(!empty($model->inativo))
         </del>
@@ -59,21 +58,7 @@
     @endif
 </h1>
 @include('includes.autor')
-
-<div class="row">
-  <div class="col-lg-12">
-      <table class="detail-view table table-striped table-condensed"> 
-        <tbody>  
-          <tr> 
-            <th class="col-md-2">Seção</th> 
-            <td class="col-md-10">
-                <a href="{{ url("secao-produto/{$model->codsecaoproduto}") }}">{{ $model->SecaoProduto->secaoproduto }}</a>
-            </td> 
-          </tr>
-        </tbody> 
-      </table>
-  </div>    
-</div>
+<hr>
 {!! Form::model(Request::all(), ['method' => 'GET', 'class' => 'form-inline', 'id' => 'grupo-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
     <div class="form-group">
         {!! Form::text('grupoproduto', null, ['class' => 'form-control', 'placeholder' => 'Grupo']) !!}
@@ -91,7 +76,6 @@
         <i class=" glyphicon glyphicon-plus"></i> Novo Grupo
     </a>
 {!! Form::close() !!}
-<br>
 <div id="registros">
   <div class="list-group group-list-striped group-list-hover" id="items">
     @foreach($grupos as $row)

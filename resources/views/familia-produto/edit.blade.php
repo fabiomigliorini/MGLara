@@ -9,7 +9,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Alterar família: {{$model->familiaproduto}}</h1>
+<h1 class="header"><a href="{{ url("secao-produto/{$model->codsecaoproduto}") }}">{{ $model->SecaoProduto->secaoproduto }}</a> » Alterar família: {{$model->familiaproduto}}</h1>
 <hr>
 <br>
 {!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'id' => 'form-familia-produto', 'action' => ['FamiliaProdutoController@update', $model->codfamiliaproduto] ]) !!}

@@ -8,6 +8,7 @@ use MGLara\Http\Requests;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
+use MGLara\Models\SecaoProduto;
 use MGLara\Models\FamiliaProduto;
 use MGLara\Models\GrupoProduto;
 use Carbon\Carbon;
@@ -32,7 +33,8 @@ class FamiliaProdutoController extends Controller
     public function create(Request $request)
     {
         $model = new FamiliaProduto();
-        return view('familia-produto.create', compact('model', 'request'));
+        $parent = SecaoProduto::findOrFail($request->get('codsecaoproduto'));
+        return view('familia-produto.create', compact('model', 'request', 'parent'));
     }
 
 
