@@ -9,7 +9,14 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Alterar seção: {{$model->secaoproduto}}</h1>
+<h1 class="header">
+{!! 
+    breadcrumb(
+        null,
+        ['id' => $model->codsecaoproduto, 'label' => "Alterar Seção: $model->secaoproduto"]
+    ) 
+!!}     
+</h1>
 <hr>
 <br>
 {!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'id' => 'form-secao-produto', 'action' => ['SecaoProdutoController@update', $model->codsecaoproduto] ]) !!}

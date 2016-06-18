@@ -7,7 +7,16 @@
         </ul>
     </div>
 </nav>
-<h1 class="header"><a href="{{ url("secao-produto/{$parent->codsecaoproduto}") }}">{{ $parent->secaoproduto }}</a> » Nova Família</h1>
+<h1 class="header">
+    {!! 
+        breadcrumb(
+            [
+                ['rota' => "secao-produto/$parent->codsecaoproduto", 'id'=> $parent->codsecaoproduto, 'label' => $parent->secaoproduto]
+            ],
+            ['id' => null, 'label' => "Nova Família"]
+        ) 
+    !!}      
+</h1>
 <hr>
 <br>
 {!! Form::model($model, ['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form-familia-produto', 'route' => ['familia-produto.store', 'codsecaoproduto'=> $request->codsecaoproduto]]) !!}

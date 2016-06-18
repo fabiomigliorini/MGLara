@@ -9,7 +9,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Seções de produto</h1>
+<h1 class="header">Seções de Produto</h1>
 <hr>
 <div class="search-bar">
 {!! Form::model(Request::all(), ['route' => 'secao-produto.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'secao-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}

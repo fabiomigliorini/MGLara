@@ -320,7 +320,8 @@ if(!function_exists('breadcrumb')) {
             }
         }
         
-        $itemHtml .= "<small>". formataCodigo($item['id']) ."</small> ";
+        if($item['id'])
+            $itemHtml .= "<small>". formataCodigo($item['id']) ."</small> ";
         $itemHtml .= $item['label'];
         
         $resultado = $parentHtml . $itemHtml;
