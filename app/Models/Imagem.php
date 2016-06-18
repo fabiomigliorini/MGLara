@@ -1,6 +1,7 @@
 <?php
 
 namespace MGLara\Models;
+use DB;
 
 /**
  * Campos
@@ -40,7 +41,14 @@ class Imagem extends MGModel
 
     // Chaves Estrangeiras
 
+    
     // Tabelas Filhas
+    public function ProdutoS()
+    {
+        return $this->belongsToMany(Produto::class, 'tblprodutoimagem', 'codimagem', 'codproduto');
+    }
+
+
     public function FamiliaProdutoS()
     {
         return $this->hasMany(FamiliaProduto::class, 'codimagem', 'codimagem');
@@ -54,11 +62,6 @@ class Imagem extends MGModel
     public function MarcaS()
     {
         return $this->hasMany(Marca::class, 'codimagem', 'codimagem');
-    }
-
-    public function ProdutoImagemS()
-    {
-        return $this->hasMany(ProdutoImagem::class, 'codimagem', 'codimagem');
     }
 
     public function SecaoProdutoS()
@@ -90,5 +93,41 @@ class Imagem extends MGModel
 
         if($inativo == 2)
             $query->whereNotNull('inativo');
-    }    
+    }
+
+    public static function relacionamentos($id)
+    {
+        $sql = "
+            SELECT
+                  tc.table_name AS table_name
+                --, kcu.column_name AS foreign_column_name 
+                --, ccu.column_name 
+            FROM 
+                information_schema.table_constraints AS tc 
+                JOIN information_schema.key_column_usage AS kcu
+                  ON tc.constraint_name = kcu.constraint_name
+                JOIN information_schema.constraint_column_usage AS ccu
+                  ON ccu.constraint_name = tc.constraint_name
+            WHERE constraint_type = 'FOREIGN KEY' 
+            AND ccu.table_name='tblimagem';
+        ";
+            
+        $query = DB::select($sql);
+        
+        foreach ($query as $rel)
+        {
+            $table_name = DB::select("SELECT * FROM $rel->table_name WHERE codimagem = $id");
+            if(!empty($table_name)) {
+                $classe = str_replace('tbl', '', $rel->table_name);
+                $classe = str_replace('produto', 'Produto', $classe);
+                $classe = str_replace('grupo', 'Grupo', $classe);
+                $classe = str_pad(ucfirst($classe), 30, ' ');
+                $classe = trim($classe);
+                
+                $Model = "\MGLara\Models\\$classe";
+            }
+        }
+        
+        return $Model;
+    }
 }

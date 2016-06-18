@@ -86,7 +86,7 @@ class SecaoProduto extends MGModel
             ->secaoproduto($secaoproduto)
             ->inativo($inativo)
             ->orderBy('secaoproduto', 'ASC')
-            ->paginate(2);
+            ->paginate(20);
     }
     
     public function scopeId($query, $id)
@@ -102,7 +102,7 @@ class SecaoProduto extends MGModel
         if (trim($secaoproduto) === '')
             return;
         
-        $secaoproduto = explode(' ', $secaoproduto);
+        $secaoproduto = explode(' ', removeAcentos($secaoproduto));
         foreach ($secaoproduto as $str)
             $query->where('secaoproduto', 'ILIKE', "%$str%");
     }

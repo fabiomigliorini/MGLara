@@ -114,7 +114,7 @@ class FamiliaProduto extends MGModel
         if (trim($familiaproduto) === '')
             return;
         
-        $familiaproduto = explode(' ', $familiaproduto);
+        $familiaproduto = explode(' ', removeAcentos($familiaproduto));
         foreach ($familiaproduto as $str)
             $query->where('familiaproduto', 'ILIKE', "%$str%");
     }    

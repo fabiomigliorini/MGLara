@@ -75,21 +75,22 @@ class GrupoProduto extends MGModel
     }
 
     // Buscas 
-    public static function filterAndPaginate($codgrupoproduto, $grupoproduto, $inativo)
+    public static function filterAndPaginate($id, $codfamiliaproduto, $grupoproduto, $inativo)
     {
-        return GrupoProduto::codgrupoproduto(numeroLimpo($codgrupoproduto))
+        return GrupoProduto::id(numeroLimpo($id))
+            ->where('codfamiliaproduto', $codfamiliaproduto)
             ->grupoproduto($grupoproduto)
             ->inativo($inativo)
             ->orderBy('grupoproduto', 'ASC')
             ->paginate(20);
     }
     
-    public function scopeCodgrupoproduto($query, $codgrupoproduto)
+    public function scopeId($query, $id)
     {
-        if (trim($codgrupoproduto) === '')
+        if (trim($id) === '')
             return;
         
-        $query->where('codgrupoproduto', $codgrupoproduto);
+        $query->where('codgrupoproduto', $id);
     }
     
     public function scopeGrupoproduto($query, $grupoproduto)

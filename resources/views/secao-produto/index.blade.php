@@ -9,7 +9,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Seções de produto</h1>
+<h1 class="header">Seções de Produto</h1>
 <hr>
 <div class="search-bar">
 {!! Form::model(Request::all(), ['route' => 'secao-produto.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'secao-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
@@ -19,24 +19,39 @@
     <div class="form-group">
         {!! Form::text('secaoproduto', null, ['class' => 'form-control', 'placeholder' => 'Seção']) !!}
     </div>
+    <div class="form-group">
+        <select class="form-control" name="inativo" id="inativo">
+            <option value="0">Todos</option>
+            <option value="1" selected="selected">Ativos</option>
+            <option value="2">Inativos</option>
+        </select>
+    </div>      
     <button type="submit" class="btn btn-default">Buscar</button>
 {!! Form::close() !!}
 </div>
 
 <br>
 <div id="registros">
-  <div class="list-group" id="items">
+  <div class="list-group group-list-striped group-list-hover" id="items">
     @foreach($model as $row)
-      <div class="list-group-item">
+      <div class="list-group-item @if(!empty($row->inativo)) bg-danger @endif">
         <div class="row item">
-            <div class="col-md-4">
-            <a href="{{ url("secao-produto/$row->codsecaoproduto") }}">{{ formataCodigo($row->codsecaoproduto)}}</a>
+            <div class="col-md-1">
+                <a class="small text-muted" href="{{ url("secao-produto/$row->codsecaoproduto") }}">{{ formataCodigo($row->codsecaoproduto)}}</a>
+                @if(!empty($row->inativo))
+                <br>
+                <span class="label label-danger">Inativado em {{ formataData($row->inativo, 'L')}} </span>
+                @endif            
             </div>                            
-            <div class="col-md-4">
+            <div class="col-md-5">
             <a href="{{ url("secao-produto/$row->codsecaoproduto") }}">{{ $row->secaoproduto }}</a>
             </div>                            
-            <div class="col-md-4">
-            <a href="{{ url("secao-produto/$row->codsecaoproduto") }}">{{ $row->sigla }}</a>
+            <div class="col-md-6">
+            @if(!empty($row->codimagem))
+                <div class="pull-right foto-item-listagem">
+                    <img class="img-responsive pull-right" alt="{{$row->secaoproduto}}" title="{{$row->secaoproduto}}" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>
+                </div>
+            @endif             
             </div>                            
         </div>
       </div>    

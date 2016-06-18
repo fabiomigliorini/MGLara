@@ -271,3 +271,61 @@ if(!function_exists('formataChaveNfe')) {
         return formataPorMascara($chave, "#### #### #### #### #### #### #### #### #### #### ####");
     }
 }
+
+if(!function_exists('removeAcentos')) {
+    function removeAcentos($string) 
+    {
+        $map = [
+            'á' => 'a',
+            'à' => 'a',
+            'ã' => 'a',
+            'â' => 'a',
+            'é' => 'e',
+            'ê' => 'e',
+            'í' => 'i',
+            'ó' => 'o',
+            'ô' => 'o',
+            'õ' => 'o',
+            'ú' => 'u',
+            'ü' => 'u',
+            'ç' => 'c',
+            'Á' => 'A',
+            'À' => 'A',
+            'Ã' => 'A',
+            'Â' => 'A',
+            'É' => 'E',
+            'Ê' => 'E',
+            'Í' => 'I',
+            'Ó' => 'O',
+            'Ô' => 'O',
+            'Õ' => 'O',
+            'Ú' => 'U',
+            'Ü' => 'U',
+            'Ç' => 'C'
+        ];
+        return strtr($string, $map);
+    }
+}
+
+if(!function_exists('breadcrumb')) {
+    function breadcrumb ($parent, $item)
+    {
+        $parentHtml = '';
+        $itemHtml = '';
+        
+        if($parent) {
+            foreach ($parent as $value)
+            {
+                $parentHtml .= "<small>". formataCodigo($value['id']) . "</small> <a href=" .  url($value['rota']) . ">". $value['label'] . "</a> » ";
+            }
+        }
+        
+        if($item['id'])
+            $itemHtml .= "<small>". formataCodigo($item['id']) ."</small> ";
+        $itemHtml .= $item['label'];
+        
+        $resultado = $parentHtml . $itemHtml;
+        
+        return $resultado;
+    }
+}

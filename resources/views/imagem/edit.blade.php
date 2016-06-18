@@ -19,8 +19,7 @@ $id = 'cod'.strtolower($request->model);
         {!! Form::label('Imagem: ') !!}
     </label>    
     <div class="col-md-3 col-xs-4">
-        
-        {!! Form::file('codimagem',null, ['id'=>'codimagem', 'accept'=>'image/*'] ) !!}
+        <input type="file" name="codimagem" id="codimagem" accept="image/*">
     </div>
 </div>
 <div class="form-group">

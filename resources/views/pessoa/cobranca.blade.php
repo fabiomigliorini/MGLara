@@ -5,7 +5,7 @@
     </span>
 </h3>
 <div id="cobrancas">
-  <div class="list-group" id="items">
+  <div class="list-group group-list-striped group-list-hover" id="items">
     @foreach($cobrancas as $cobranca)
       <div class="list-group-item">
         <div class="row item">

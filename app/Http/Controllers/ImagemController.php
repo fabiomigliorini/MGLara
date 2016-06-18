@@ -158,14 +158,17 @@ class ImagemController extends Controller
         $diretorio = './public/imagens';
         $arquivo = $imagem->codimagem.'.'.$extensao;       
         
-        $codimagem->move($diretorio, $arquivo);    
-        
-        $model->codimagem = $imagem->codimagem;
-        
-        $model->save();
-        Session::flash('flash_update', 'Registro atualizado.');
-        
-        return redirect(modelUrl($request->get('model')).'/'.$id);  
+        try {
+            $codimagem->move($diretorio, $arquivo);
+            $model->codimagem = $imagem->codimagem;
+            $model->save();
+            Session::flash('flash_update', 'Registro atualizado.');
+            return redirect(modelUrl($request->get('model')).'/'.$id);  
+        } catch (\Symfony\Component\HttpFoundation\File\Exception\FileException $e) {
+            Session::flash('flash_danger', "Não foi possível cadastrar essa imagem!");
+            Session::flash('flash_danger_detail', $e->getMessage());
+            return redirect(modelUrl($request->get('model')).'/'.$id);  
+        }
     }
 
     public function lixeira()
@@ -201,16 +204,32 @@ class ImagemController extends Controller
     public function destroy($id)
     {
         try{
-            $imagem = Imagem::find($id);
-            $imagem->delete();
-            unlink('./public/imagens/'.$imagem->observacoes);
-            
-            Session::flash('flash_delete', 'Imagem excluida!');
+            $model = Imagem::find($id);
+            $model->delete();
+            unlink('./public/imagens/'.$model->observacoes);
+            Session::flash('flash_success', "Imagem '{$model->codimagem}' Excluida!");
             return Redirect::route('imagem.index');
         }
         catch(\Exception $e){
-            return view('errors.fk');
+            Session::flash('flash_danger', "Impossível Excluir!");
+            Session::flash('flash_danger_detail', $e->getMessage());
+            return redirect("imagem/$id"); 
         }     
     }
     
+    
+    public function inativo(Request $request)
+    {
+        $imagem = Imagem::find($request->get('codimagem'));
+        $Model = Imagem::relacionamentos($request->get('codimagem'));
+        $model = $Model::where('codimagem', $request->get('codimagem'))->first();
+
+        $model->codimagem = null;
+        $imagem->inativo = Carbon::now();
+        $msg = "Imagem '{$imagem->codimagem}' Inativada!";
+
+        $model->save();
+        $imagem->save();
+        Session::flash('flash_success', $msg);
+    }    
 }

@@ -26,86 +26,79 @@
         </ul>
     </div>
 </nav>
-@if(!empty($model->inativo))
-    <br>
-    <div class="alert alert-danger" role="alert">Inativado em {{formataData($model->inativo, 'L')}}</div>
-@endif
-<div class="row">
-    <div class="col-md-6">
-        <h1 class="header">{{ $model->secaoproduto }}</h1>
-    </div>
-    <div class="pull-right foto-item-unico">
-        @if(empty($model->codimagem))
-            <a class="btn btn-default carregar" href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}">
-                <i class="glyphicon glyphicon-picture"></i>
-                 Carregar imagem
-            </a>
-        @else
+<div class="pull-right foto-item-unico">
+    @if(empty($model->codimagem))
+        <a class="btn btn-default carregar" href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}">
+            <i class="glyphicon glyphicon-picture"></i>
+            Carregar imagem
+        </a>
+    @else
+    <a href="{{ url("imagem/{$model->Imagem->codimagem}") }}">
         <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
-        <span class="caption simple-caption">
-            <a href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-        </span>        
-        @endif
-    </div>
+    </a>
+    <span class="caption simple-caption">
+        <a href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+    </span>        
+    @endif
 </div>
-<hr>
-<div class="row">
-  <div class="col-lg-12">
-      <table class="detail-view table table-striped table-condensed"> 
-        <tbody>  
-          <tr> 
-            <th class="col-md-2">#</th> 
-            <td class="col-md-10">{{ formataCodigo($model->codsecaoproduto) }}</td> 
-          </tr>
-          <tr> 
-            <th>Seção</th> 
-            <td>{{ $model->secaoproduto }}</td> 
-          </tr>
-        </tbody> 
-      </table>
-  </div>    
-</div>
-<hr>
+
+<h1 class="header">
+    @if(!empty($model->inativo))
+        <del>
+    @endif
+    {!! 
+        breadcrumb(
+            null,
+            ['id' => $model->codsecaoproduto, 'label' => $model->secaoproduto]
+        ) 
+    !!}    
+    @if(!empty($model->inativo))
+        </del>
+    @endif
+    @if(!empty($model->inativo))
+        <small class="text-danger" >Inativo desde {{formataData($model->inativo, 'L')}}!</small>
+    @endif
+</h1>
 @include('includes.autor')
 <hr>
-<h2>Famílias de produto  <span class="titulo-btn-novo"><!-- <a class="btn btn-default" href="{{ url("familia-produto/create?codsecaoproduto=$model->codsecaoproduto") }}"><i class=" glyphicon glyphicon-plus"></i> Novo</a> --><a class="btn btn-default" href=""><i class=" glyphicon glyphicon-plus"></i> Novo</a></span></h2>
-<hr>
-<div class="search-bar">
 {!! Form::model(Request::all(), ['method' => 'GET', 'class' => 'form-inline', 'id' => 'familia-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
     <div class="form-group">
-        {!! Form::text('codfamiliaproduto', null, ['class' => 'form-control search-cod', 'placeholder' => '#']) !!}
+        <input type="text" name="familiaproduto" id="familiaproduto" placeholder="Família" class="form-control">
     </div>
     <div class="form-group">
-        {!! Form::text('familiaproduto', null, ['class' => 'form-control', 'placeholder' => 'Família']) !!}
-    </div>
-    <button type="submit" class="btn btn-default">Buscar</button>
+        <select class="form-control" name="inativo" id="inativo" placeholder="Ativos">
+            <option value="0">Todas</option>
+            <option value="1" selected="selected">Ativas</option>
+            <option value="2">Inativas</option>
+        </select>
+    </div>      
+    <button type="submit" class="btn btn-default"><i class=" glyphicon glyphicon-search"></i> Buscar</button>
+    <a class="btn btn-default" href="{{ url("familia-produto/create?codsecaoproduto=$model->codsecaoproduto") }}"><i class=" glyphicon glyphicon-plus"></i> Nova Familia</a>
 {!! Form::close() !!}
-</div>
 <br>
 <div id="registros">
-  <div class="list-group" id="items">
+  <div class="list-group group-list-striped group-list-hover" id="items">
     @foreach($familias as $row)
-      <div class="list-group-item">
+      <div class="list-group-item @if(!empty($row->inativo)) bg-danger @endif">
         <div class="row item">
-            <div class="col-md-2">
-                <!-- <a href="{{ url("familia-produto/$row->codfamiliaproduto") }}">{{ formataCodigo($row->codfamiliaproduto) }}</a> -->
-                <a href="">{{ formataCodigo($row->codfamiliaproduto) }}</a>
+            <div class="col-md-1">
+                <a class="small text-muted" href="{{ url("familia-produto/$row->codfamiliaproduto") }}">{{ formataCodigo($row->codfamiliaproduto) }}</a>
             </div>                            
             <div class="col-md-4">
-                <!-- <a href="{{ url("familia-produto/$row->codfamiliaproduto") }}">{{ $row->familiaproduto }}</a> -->
-                <a href="">{{ $row->familiaproduto }}</a>
+                <a href="{{ url("familia-produto/$row->codfamiliaproduto") }}">{{ $row->familiaproduto }}</a>
             </div>
-            <div class="col-md-3">
-
-            </div>
-            <div class="col-md-3">
-                
+            <div class="col-md-6">
+            @if(!empty($row->codimagem))
+                <div class="pull-right foto-item-listagem">
+                    <img class="img-responsive pull-right" alt="{{$row->familiaproduto}}" title="{{$row->familiaproduto}}" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>
+                </div>
+            @endif                 
             </div>
         </div>
       </div>    
     @endforeach
     @if (count($familias) === 0)
-        <h3>Nenhum registro encontrado!</h3>
+        <h3>Nenhuma Familia encontrada!</h3>
     @endif    
   </div>
   {!! $familias->appends(Request::all())->render() !!}
@@ -116,6 +109,7 @@ $(document).ready(function() {
     $("#familia-produto-search").on("change", function (event) {
         var $this = $(this);
         var frmValues = $this.serialize();
+        console.log(frmValues);
         $.ajax({
             type: 'GET',
             url: baseUrl + '/secao-produto/'+ {{$model->codsecaoproduto}},

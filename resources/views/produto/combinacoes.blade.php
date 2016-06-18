@@ -1,5 +1,5 @@
 <div class="panel panel-info combinacoes">
-    <ul class="list-group">
+    <ul class="list-group group-list-striped group-list-hover">
         <li class="list-group-item">
             <strong>Códigos de barra</strong>
             <span class="pull-right"><a href="{{ url("produto-barra/create?codproduto={$model->codproduto}") }}"><i class="glyphicon glyphicon-plus"></i> Novo</a></span>

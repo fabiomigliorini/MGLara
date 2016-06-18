@@ -10,34 +10,33 @@ use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\SecaoProduto;
 use MGLara\Models\FamiliaProduto;
+use MGLara\Models\GrupoProduto;
 use Carbon\Carbon;
 
-class SecaoProdutoController extends Controller
+class FamiliaProdutoController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) {
-        $model = SecaoProduto::filterAndPaginate(
-            $request->get('codsecaoproduto'),
-            $request->get('secaoproduto'),
-            $request->get('inativo')
-        );
-        
-        return view('secao-produto.index', compact('model'));
+    public function index()
+    {
+        //
     }
+
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        $model = new SecaoProduto();
-        return view('secao-produto.create', compact('model'));
+        $model = new FamiliaProduto();
+        $parent = SecaoProduto::findOrFail($request->get('codsecaoproduto'));
+        return view('familia-produto.create', compact('model', 'request', 'parent'));
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -47,14 +46,15 @@ class SecaoProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        $model = new SecaoProduto($request->all());
+        $model = new FamiliaProduto($request->all());
         
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         
+        $model->codsecaoproduto = $request->get('codsecaoproduto');
         $model->save();
-        Session::flash('flash_success', 'Seção Criada!');
-        return redirect("secao-produto/$model->codsecaoproduto");    
+        Session::flash('flash_success', 'Família Criada!');
+        return redirect("familia-produto/$model->codfamiliaproduto");    
     }
 
     /**
@@ -65,14 +65,14 @@ class SecaoProdutoController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $model = SecaoProduto::find($id);
-        $familias = FamiliaProduto::filterAndPaginate(
-            $request->get('codfamiliaproduto'),
+        $model = FamiliaProduto::find($id);
+        $grupos = GrupoProduto::filterAndPaginate(
+            $request->get('codgrupoproduto'),
             $id,
-            $request->get('familiaproduto'), 
+            $request->get('grupoproduto'),
             $request->get('inativo')
         );
-        return view('secao-produto.show', compact('model', 'familias'));
+        return view('familia-produto.show', compact('model', 'grupos'));
     }
 
     /**
@@ -83,8 +83,8 @@ class SecaoProdutoController extends Controller
      */
     public function edit($id)
     {
-        $model = SecaoProduto::findOrFail($id);
-        return view('secao-produto.edit',  compact('model'));
+        $model = FamiliaProduto::findOrFail($id);
+        return view('familia-produto.edit',  compact('model'));
     }
 
     /**
@@ -96,7 +96,7 @@ class SecaoProdutoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $model = SecaoProduto::findOrFail($id);
+        $model = FamiliaProduto::findOrFail($id);
         $model->fill($request->all());
 
         if (!$model->validate())
@@ -104,8 +104,8 @@ class SecaoProdutoController extends Controller
 
         $model->save();
         
-        Session::flash('flash_success', "Seção '{$model->secaoproduto}' Atualizada!");
-        return redirect("secao-produto/$model->codsecaoproduto"); 
+        Session::flash('flash_success', "Família '{$model->familiaproduto}' Atualizada!");
+        return redirect("familia-produto/$model->codfamiliaproduto"); 
     }
 
     /**
@@ -117,10 +117,10 @@ class SecaoProdutoController extends Controller
     public function destroy($id)
     {
         try{
-            $model = SecaoProduto::find($id);
+            $model = FamiliaProduto::find($id);
             $model->delete();
-            Session::flash('flash_success', "Seção '{$model->secaoproduto}' Excluida!");
-            return Redirect::route('secao-produto.index');
+            Session::flash('flash_success', "Família '{$model->familiaproduto}' Excluida!");
+            return redirect("secao-produto/$model->codsecaoproduto");
         }
         catch(\Exception $e){
             Session::flash('flash_danger', "Impossível Excluir!");
@@ -131,16 +131,16 @@ class SecaoProdutoController extends Controller
     
     public function inativo(Request $request)
     {
-        $model = SecaoProduto::find($request->get('codsecaoproduto'));
+        $model = FamiliaProduto::find($request->get('codfamiliaproduto'));
         if($request->get('acao') == 'ativar')
         {
             $model->inativo = null;
-            $msg = "Seção '{$model->secaoproduto}' Reativada!";
+            $msg = "Família '{$model->familiaproduto}' Reativada!";
         }
         else
         {
             $model->inativo = Carbon::now();
-            $msg = "Seção '{$model->secaoproduto}' Inativada!";
+            $msg = "Família '{$model->familiaproduto}' Inativada!";
         }
         
         $model->save();

@@ -1,4 +1,4 @@
-<small>
+<small class="text-muted">
     <?php if (isset($model->criacao) || isset($model->codusuariocriacao)): ?>
             Criado
             <?php echo isset($model->criacao) ? 'em ' . formataData($model->criacao, 'L') : '' ;?>
