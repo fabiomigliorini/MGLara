@@ -45,11 +45,14 @@
     @if(!empty($model->inativo))
         <del>
     @endif
-    <small>
-        {{ formataCodigo($model->codfamiliaproduto) }}
-    </small>
-    <a href="{{ url("secao-produto/{$model->codsecaoproduto}") }}">{{ $model->SecaoProduto->secaoproduto }}</a> »
-    {{ $model->familiaproduto }}
+    {!! 
+        breadcrumb(
+            [
+                ['rota' => "secao-produto/$model->codsecaoproduto", 'id'=> $model->codsecaoproduto, 'label' => $model->SecaoProduto->secaoproduto],
+            ],
+            ['id' => $model->codfamiliaproduto, 'label' => $model->familiaproduto]
+        ) 
+    !!}
     @if(!empty($model->inativo))
         </del>
     @endif
@@ -82,11 +85,11 @@
     @foreach($grupos as $row)
         <div class="list-group-item @if(!empty($row->inativo)) bg-danger @endif"">
             <div class="row item">
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <!-- <a href="{{ url("grupo-produto/$row->codfamiliaproduto") }}">{{ formataCodigo($row->codfamiliaproduto) }}</a> -->
-                    <a href="">{{ formataCodigo($row->codfamiliaproduto) }}</a>
+                    <a class="small text-muted" href="">{{ formataCodigo($row->codfamiliaproduto) }}</a>
                 </div>                            
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <!-- <a href="{{ url("grupo-produto/$row->codfamiliaproduto") }}">{{ $row->grupoproduto }}</a> -->
                     <a href="">{{ $row->grupoproduto }}</a>
                 </div>

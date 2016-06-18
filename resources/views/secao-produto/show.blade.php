@@ -46,10 +46,12 @@
     @if(!empty($model->inativo))
         <del>
     @endif
-    <small>
-        {{ formataCodigo($model->codsecaoproduto) }}
-    </small>
-    {{ $model->secaoproduto }}
+    {!! 
+        breadcrumb(
+            null,
+            ['id' => $model->codsecaoproduto, 'label' => $model->secaoproduto]
+        ) 
+    !!}    
     @if(!empty($model->inativo))
         </del>
     @endif
@@ -79,8 +81,8 @@
     @foreach($familias as $row)
       <div class="list-group-item @if(!empty($row->inativo)) bg-danger @endif">
         <div class="row item">
-            <div class="col-md-2">
-                <a href="{{ url("familia-produto/$row->codfamiliaproduto") }}">{{ formataCodigo($row->codfamiliaproduto) }}</a>
+            <div class="col-md-1">
+                <a class="small text-muted" href="{{ url("familia-produto/$row->codfamiliaproduto") }}">{{ formataCodigo($row->codfamiliaproduto) }}</a>
             </div>                            
             <div class="col-md-4">
                 <a href="{{ url("familia-produto/$row->codfamiliaproduto") }}">{{ $row->familiaproduto }}</a>

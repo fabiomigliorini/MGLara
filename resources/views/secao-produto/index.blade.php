@@ -36,17 +36,17 @@
     @foreach($model as $row)
       <div class="list-group-item @if(!empty($row->inativo)) bg-danger @endif">
         <div class="row item">
-            <div class="col-md-4">
-            <a href="{{ url("secao-produto/$row->codsecaoproduto") }}">{{ formataCodigo($row->codsecaoproduto)}}</a>
+            <div class="col-md-1">
+                <a class="small text-muted" href="{{ url("secao-produto/$row->codsecaoproduto") }}">{{ formataCodigo($row->codsecaoproduto)}}</a>
                 @if(!empty($row->inativo))
                 <br>
                 <span class="label label-danger">Inativado em {{ formataData($row->inativo, 'L')}} </span>
                 @endif            
             </div>                            
-            <div class="col-md-4">
+            <div class="col-md-5">
             <a href="{{ url("secao-produto/$row->codsecaoproduto") }}">{{ $row->secaoproduto }}</a>
             </div>                            
-            <div class="col-md-4">
+            <div class="col-md-6">
             @if(!empty($row->codimagem))
                 <div class="pull-right foto-item-listagem">
                     <img class="img-responsive pull-right" alt="{{$row->secaoproduto}}" title="{{$row->secaoproduto}}" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>

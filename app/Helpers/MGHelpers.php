@@ -306,3 +306,25 @@ if(!function_exists('removeAcentos')) {
         return strtr($string, $map);
     }
 }
+
+if(!function_exists('breadcrumb')) {
+    function breadcrumb ($parent, $item)
+    {
+        $parentHtml = '';
+        $itemHtml = '';
+        
+        if($parent) {
+            foreach ($parent as $value)
+            {
+                $parentHtml .= "<small>". formataCodigo($value['id']) . "</small> <a href=" .  url($value['rota']) . ">". $value['label'] . "</a> » ";
+            }
+        }
+        
+        $itemHtml .= "<small>". formataCodigo($item['id']) ."</small> ";
+        $itemHtml .= $item['label'];
+        
+        $resultado = $parentHtml . $itemHtml;
+        
+        return $resultado;
+    }
+}
