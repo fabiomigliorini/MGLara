@@ -32,6 +32,9 @@ use Carbon\Carbon;
 
 class EstoqueMes extends MGModel
 {
+    const CORTE_FISICO = '2016-04-01 00:00:00';
+    const CORTE_FISCAL = '2015-01-01 00:00:00';
+    
     protected $table = 'tblestoquemes';
     protected $primaryKey = 'codestoquemes';
     protected $fillable = [

@@ -45,6 +45,9 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
      */
     public function handle()
     {
+        if ($this->tentativa > 10)
+            return;
+        
         $mes = $this->EstoqueMes;
         
         $sql = "
@@ -62,7 +65,15 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         $mov = $mov[0];
 
         $inicialquantidade = 0;
-        $inicialvalor = 0;        
+        $inicialvalor = 0;
+        
+        $anterior = $this->EstoqueMes->buscaAnteriores(1);
+        if (isset($anterior[0]))
+        {
+            $inicialquantidade = $anterior[0]->saldoquantidade;
+            $inicialvalor = $anterior[0]->saldovalor;
+        }
+            
         $entradaquantidade = $mov->entradaquantidade;
         $entradavalor = $mov->entradavalor;
         $saidaquantidade = $mov->saidaquantidade;
@@ -82,6 +93,7 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
 
             $mov->entradavalor = (!empty($mov->entradaquantidade))?round($mov->entradaquantidade * $customedio, 2):null;
             $mov->saidavalor = (!empty($mov->saidaquantidade))?round($mov->saidaquantidade * $customedio, 2):null;
+            //dd($mov);
             $mov->save();
 
             $entradaquantidade += $mov->entradaquantidade;
@@ -93,10 +105,31 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
             {
                 if ($movfilho->EstoqueMovimentoTipo->preco != EstoqueMovimentoTipo::PRECO_ORIGEM)
                     continue;
+                
+                $customediofilho = 0;
+                if (!empty($movfilho->entradaquantidade))
+                    $customediofilho = $movfilho->entradavalor / $movfilho->entradaquantidade;
+                if (!empty($movfilho->saidaquantidade))
+                    $customediofilho = $movfilho->saidavalor / $movfilho->saidaquantidade;
+                
+                $customediovariacao = 100;
+                if ($customediofilho > 0)
+                    $customediovariacao = abs(1 - ($customedio / $customediofilho)) * 100;
+                
+                //Se variacao for menor que 2% não ajusta destino
+                if ($customediovariacao < 1)
+                    continue;
 
+                $valor_original = $movfilho->entradavalor;
+                
                 $movfilho->entradavalor = (!empty($movfilho->entradaquantidade))?round($movfilho->entradaquantidade * $customedio, 2):null;
                 $movfilho->saidavalor = (!empty($movfilho->saidaquantidade))?round($movfilho->saidaquantidade * $customedio, 2):null;
+                
                 $movfilho->save();
+                
+                
+                if ($valor_original != $movfilho->entradavalor)
+                    $this->dispatch(new EstoqueCalculaCustoMedio($movfilho->EstoqueMes, $this->tentativa +1));
             }
         }
 
@@ -122,9 +155,17 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
 
         $mes->save();
 
-        $inicialquantidade = $saldoquantidade;
-        $inicialvalor = $saldovalor;
-
+        
+        $proximo = $this->EstoqueMes->buscaProximos(1);
+        
+        if (isset($proximo[0]))
+            $this->dispatch(new EstoqueCalculaCustoMedio($proximo[0]), $this->tentativa +1);
+        else
+        {
+            $this->EstoqueMes->EstoqueSaldo->saldoquantidade = $saldoquantidade;
+            $this->EstoqueMes->EstoqueSaldo->saldovalor = $saldovalor;
+            $this->EstoqueMes->EstoqueSaldo->save();
+        }
         
         //$this->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
         file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . ' - EstoqueCalculaCustoMedio' . " - {$this->tentativa} - {$this->EstoqueMes->codestoquemes}\n", FILE_APPEND);

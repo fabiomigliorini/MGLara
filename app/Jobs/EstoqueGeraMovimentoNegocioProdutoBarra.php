@@ -8,12 +8,15 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Carbon\Carbon;
 
 use MGLara\Models\NegocioProdutoBarra;
 use MGLara\Models\NegocioStatus;
 use MGLara\Models\EstoqueMes;
 use MGLara\Models\EstoqueMovimento;
+use MGLara\Models\EstoqueLocal;
 use MGLara\Models\Operacao;
+use MGLara\Models\Filial;
 
 /**
  * @property NegocioProdutoBarra $NegocioProdutoBarra
@@ -47,14 +50,17 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
         $mesRecalcular = [];
         $codestoquemovimentoGerado = [];
         
-        if ($this->NegocioProdutoBarra->Negocio->codnegociostatus == NegocioStatus::FECHADO)
+        $corte = Carbon::createFromFormat('Y-m-d H:i:s', EstoqueMes::CORTE_FISICO);
+        
+        if ($this->NegocioProdutoBarra->Negocio->codnegociostatus == NegocioStatus::FECHADO
+                && $this->NegocioProdutoBarra->Negocio->NaturezaOperacao->estoque == TRUE
+                && $this->NegocioProdutoBarra->Negocio->lancamento->gte($corte)
+                )
         {
             $mov = EstoqueMovimento::where('codnegocioprodutobarra', $this->NegocioProdutoBarra->codnegocioprodutobarra)->where('codestoquemovimentoorigem', null)->first();
 
             if ($mov == false)
-            {
                 $mov = new EstoqueMovimento;
-            }
             
             $mes = EstoqueMes::buscaOuCria(
                     $this->NegocioProdutoBarra->ProdutoBarra->codproduto,
@@ -64,8 +70,10 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                     );
             
             $mesRecalcular[] = $mes;
-            
+            if (!empty($mov->codestoquemes) && $mov->codestoquemes != $mes->codestoquemes)
+                $mesRecalcular[] = $mov->EstoqueMes;
             $mov->codestoquemes = $mes->codestoquemes;
+
             $mov->codestoquemovimentotipo = $this->NegocioProdutoBarra->Negocio->NaturezaOperacao->codestoquemovimentotipo;
             $mov->manual = false;
             $mov->data = $this->NegocioProdutoBarra->Negocio->lancamento;
@@ -105,6 +113,56 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
             $mov->save();
             
             $codestoquemovimentoGerado[] = $mov->codestoquemovimento;
+
+            //caso intercompany, gera movimento destino
+            $localDest = EstoqueLocal::whereHas('Filial', function($iq){
+                    $iq->where('codpessoa', $this->NegocioProdutoBarra->Negocio->codpessoa);
+                })->first();
+            
+            $tipoDest = NULL;
+            if ($localDest != NULL)
+                $tipoDest = $mov->EstoqueMovimentoTipo->EstoqueMovimentoTipoS->first();
+            
+            if ($tipoDest != NULL)
+            {               
+                $movDest = EstoqueMovimento::where('codnegocioprodutobarra', $this->NegocioProdutoBarra->codnegocioprodutobarra)->where('codestoquemovimentoorigem', $mov->codestoquemovimento)->first();
+                
+                if ($movDest == false)
+                    $movDest = new EstoqueMovimento;
+
+                $mesDest = EstoqueMes::buscaOuCria(
+                        $this->NegocioProdutoBarra->ProdutoBarra->codproduto,
+                        $localDest->codestoquelocal,
+                        false, 
+                        $this->NegocioProdutoBarra->Negocio->lancamento
+                        );
+
+                $mesRecalcular[] = $mesDest;
+                if (!empty($movDest->codestoquemes) && $movDest->codestoquemes != $mesDest->codestoquemes)
+                    $mesRecalcular[] = $movDest->EstoqueMes;
+
+                $movDest->codestoquemes = $mesDest->codestoquemes;
+                $movDest->codestoquemovimentoorigem = $mov->codestoquemovimento;
+                $movDest->codestoquemovimentotipo = $tipoDest->codestoquemovimentotipo;
+                $movDest->manual = false;
+                $movDest->data = $mov->data;
+                $movDest->entradaquantidade = $mov->saidaquantidade;
+                $movDest->entradavalor = $mov->saidavalor;
+                $movDest->saidaquantidade = $mov->entradaquantidade;
+                $movDest->saidavalor = $mov->entradavalor;
+                $movDest->codnotafiscalprodutobarra = null;
+                $movDest->codnegocioprodutobarra = $mov->codnegocioprodutobarra;
+
+                $movDest->alteracao = $mov->alteracao;
+                $movDest->codusuarioalteracao = $mov->codusuarioalteracao;
+                $movDest->criacao = $mov->criacao;
+                $movDest->codusuariocriacao = $mov->codusuariocriacao;
+
+                $movDest->save();
+
+                $codestoquemovimentoGerado[] = $movDest->codestoquemovimento;
+                
+            }
             
         }
 
@@ -117,6 +175,11 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
         foreach ($movExcedente as $mov)
         {
             $mesRecalcular[] = $mov->EstoqueMes;
+            foreach ($mov->EstoqueMovimentoS as $movDest)
+            {
+                $movDest->codestoquemovimentoorigem = null;
+                $movDest->save();
+            }
             $mov->delete();
         }
                 

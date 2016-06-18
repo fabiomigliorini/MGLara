@@ -19,7 +19,7 @@
         {{ $model->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->subgrupoproduto }}
     </a>
     ›
-    <a href='{{ url("produto/{$model->EstoqueSaldo->codproduto}") }}'>
+    <a href='{{ url("produto/{$model->EstoqueSaldo->EstoqueLocalProduto->codproduto}") }}'>
         {{ $model->EstoqueSaldo->EstoqueLocalProduto->Produto->produto }}     
     </a>
 </h1>
