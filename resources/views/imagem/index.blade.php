@@ -15,7 +15,6 @@
 {!! Form::model(Request::all(), ['route' => 'imagem.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'imagem-search', 'role' => 'search'])!!}
     <div class="form-group">
         <select class="form-control" name="inativo" id="inativo">
-            <option value=""></option>
             <option value="0">Todos</option>
             <option value="1" selected="selected">Ativos</option>
             <option value="2">Inativos</option>
@@ -36,7 +35,7 @@
         </div>          
     @endforeach
     @if (count($model) === 0)
-        <h3>Nenhum registro encontrado!</h3>
+        <h3>Nenhuma imagem encontrada!</h3>
     @endif    
   </div>
   <?php echo $model->appends(Request::all())->render();?>
@@ -52,18 +51,22 @@
 </style>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('.pagination').addClass('hide');
-    var loading_options = {
-        finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
-        msgText: "<div class='center'>Carregando mais itens...</div>",
-        img: 'public/img/ajax-loader.gif'
-    };
-    $('#imagens').infinitescroll({
-        loading : loading_options,
-        navSelector : "#registros .pagination",
-        nextSelector : "#registros .pagination li.active + li a",
-        itemSelector : "#imagens div.imagem-grid-item"
-    });    
+    $("#imagem-search").on("change", function (event) {
+        var $this = $(this);
+        var frmValues = $this.serialize();
+        $.ajax({
+            type: 'GET',
+            url: baseUrl + '/imagem/',
+            data: frmValues
+        })
+        .done(function (data) {
+            $('#imagens').html(jQuery(data).find('#imagens').html()); 
+        })
+        .fail(function () {
+            console.log('Erro no filtro');
+        });
+        event.preventDefault(); 
+    });
 });  
 </script>
 @endsection

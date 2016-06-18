@@ -26,7 +26,6 @@
         </ul>
     </div>
 </nav>
-
 <div class="pull-right foto-item-unico">
     @if(empty($model->codimagem))
         <a class="btn btn-default carregar" href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}">

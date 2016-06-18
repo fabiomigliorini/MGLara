@@ -76,6 +76,7 @@
         <i class=" glyphicon glyphicon-plus"></i> Novo Grupo
     </a>
 {!! Form::close() !!}
+<br>
 <div id="registros">
   <div class="list-group group-list-striped group-list-hover" id="items">
     @foreach($grupos as $row)

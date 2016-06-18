@@ -43,7 +43,9 @@
                  Carregar imagem
             </a>
         @else
-        <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
+        <a href="{{ url("imagem/$model->codimagem") }}">
+            <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
+        </a>
         <span class="caption simple-caption">
             <a href="" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
         </span>            
