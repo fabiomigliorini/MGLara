@@ -85,11 +85,12 @@
             <div class="col-md-4">
                 <a href="{{ url("familia-produto/$row->codfamiliaproduto") }}">{{ $row->familiaproduto }}</a>
             </div>
-            <div class="col-md-3">
-
-            </div>
-            <div class="col-md-3">
-                
+            <div class="col-md-6">
+            @if(!empty($row->codimagem))
+                <div class="pull-right foto-item-listagem">
+                    <img class="img-responsive pull-right" alt="{{$row->familiaproduto}}" title="{{$row->familiaproduto}}" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>
+                </div>
+            @endif                 
             </div>
         </div>
       </div>    

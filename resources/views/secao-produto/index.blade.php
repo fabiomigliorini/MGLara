@@ -47,7 +47,11 @@
             <a href="{{ url("secao-produto/$row->codsecaoproduto") }}">{{ $row->secaoproduto }}</a>
             </div>                            
             <div class="col-md-4">
-            
+            @if(!empty($row->codimagem))
+                <div class="pull-right foto-item-listagem">
+                    <img class="img-responsive pull-right" alt="{{$row->secaoproduto}}" title="{{$row->secaoproduto}}" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>
+                </div>
+            @endif             
             </div>                            
         </div>
       </div>    
