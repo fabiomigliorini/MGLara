@@ -318,7 +318,7 @@ if(!function_exists('titulo')) {
             $htmlCodigo .= "<del>";
         
         if(!empty($codigo))
-            $htmlCodigo .= "<small>". formataCodigo($codigo) ."</small> »";
+            $htmlCodigo .= "<small>". formataCodigo($codigo) ."</small> ";
         
         foreach ($descricao as $key => $value)
         {

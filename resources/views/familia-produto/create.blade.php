@@ -10,7 +10,7 @@
 <h1 class="header">
 {!! 
     titulo(
-        null,
+        $parent->codsecaoproduto,
         [
             ['url' => "secao-produto/$parent->codsecaoproduto", 'descricao' => $parent->secaoproduto],
             ['id' => null, 'descricao' => "Nova Família"]
