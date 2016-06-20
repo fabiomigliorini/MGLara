@@ -13,7 +13,8 @@
 {!! 
     breadcrumb(
         null,
-        ['id' => $model->codsecaoproduto, 'label' => "Alterar Seção: $model->secaoproduto"]
+        ['id' => $model->codsecaoproduto, 'label' => $model->secaoproduto],
+        'edit'
     ) 
 !!}     
 </h1>

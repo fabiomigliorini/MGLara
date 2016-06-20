@@ -13,9 +13,10 @@
 {!! 
     breadcrumb(
         [
-            ['rota' => "secao-produto/$model->codsecaoproduto", 'id'=> $model->codsecaoproduto, 'label' => $model->SecaoProduto->secaoproduto]
+            ['rota' => "secao-produto/$model->codsecaoproduto", 'id'=> $model->codsecaoproduto, 'label' => $model->SecaoProduto->secaoproduto],
         ],
-        ['id' => $model->codfamiliaproduto, 'label' => "Alterar Família: $model->familiaproduto"]
+        ['id' => $model->codfamiliaproduto, 'label' => $model->familiaproduto],
+        'edit'
     ) 
 !!}    
 </h1>

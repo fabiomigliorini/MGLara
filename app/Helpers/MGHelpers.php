@@ -308,7 +308,7 @@ if(!function_exists('removeAcentos')) {
 }
 
 if(!function_exists('breadcrumb')) {
-    function breadcrumb ($parent, $item)
+    function breadcrumb ($parent, $item, $view = 'show')
     {
         $parentHtml = '';
         $itemHtml = '';
@@ -316,13 +316,22 @@ if(!function_exists('breadcrumb')) {
         if($parent) {
             foreach ($parent as $value)
             {
-                $parentHtml .= "<small>". formataCodigo($value['id']) . "</small> <a href=" .  url($value['rota']) . ">". $value['label'] . "</a> » ";
+                if($view == 'edit') {
+                    $parentHtml .= "<a href=" .  url($value['rota']) . ">". $value['label'] . "</a> » ";
+                } else {
+                    $parentHtml .= "<small>". formataCodigo($value['id']) . "</small> <a href=" .  url($value['rota']) . ">". $value['label'] . "</a> » ";
+                }
             }
         }
         
         if($item['id'])
             $itemHtml .= "<small>". formataCodigo($item['id']) ."</small> ";
+        
         $itemHtml .= $item['label'];
+
+        if($view == 'edit') {
+            $itemHtml .= " - Alterar";
+        }
         
         $resultado = $parentHtml . $itemHtml;
         
