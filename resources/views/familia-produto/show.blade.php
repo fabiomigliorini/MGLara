@@ -42,23 +42,16 @@
     @endif
 </div>
 <h1 class="header">
-    @if(!empty($model->inativo))
-        <del>
-    @endif
-    {!! 
-        breadcrumb(
-            [
-                ['rota' => "secao-produto/$model->codsecaoproduto", 'id'=> $model->codsecaoproduto, 'label' => $model->SecaoProduto->secaoproduto],
-            ],
-            ['id' => $model->codfamiliaproduto, 'label' => $model->familiaproduto]
-        ) 
-    !!}
-    @if(!empty($model->inativo))
-        </del>
-    @endif
-    @if(!empty($model->inativo))
-        <small class="text-danger" >Inativo desde {{formataData($model->inativo, 'L')}}!</small>
-    @endif
+{!! 
+    titulo(
+        $model->codfamiliaproduto,
+        [
+            ['url' => "secao-produto/$model->codsecaoproduto", 'descricao' => $model->SecaoProduto->secaoproduto],
+            ['url' => null, 'descricao' => $model->familiaproduto]
+        ],
+        $model->inativo
+    ) 
+!!}
 </h1>
 @include('includes.autor')
 <hr>

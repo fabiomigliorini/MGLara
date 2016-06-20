@@ -43,21 +43,15 @@
 </div>
 
 <h1 class="header">
-    @if(!empty($model->inativo))
-        <del>
-    @endif
-    {!! 
-        breadcrumb(
-            null,
-            ['id' => $model->codsecaoproduto, 'label' => $model->secaoproduto]
-        ) 
-    !!}    
-    @if(!empty($model->inativo))
-        </del>
-    @endif
-    @if(!empty($model->inativo))
-        <small class="text-danger" >Inativo desde {{formataData($model->inativo, 'L')}}!</small>
-    @endif
+{!! 
+    titulo(
+        $model->codsecaoproduto,
+        [
+            ['url' => null, 'descricao' => $model->secaoproduto],
+        ],
+        $model->inativo
+    ) 
+!!} 
 </h1>
 @include('includes.autor')
 <hr>

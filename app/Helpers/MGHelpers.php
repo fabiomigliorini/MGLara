@@ -307,34 +307,38 @@ if(!function_exists('removeAcentos')) {
     }
 }
 
-if(!function_exists('breadcrumb')) {
-    function breadcrumb ($parent, $item, $view = 'show')
+if(!function_exists('titulo')) {
+    function titulo ($codigo, $descricao, $inativo) 
     {
-        $parentHtml = '';
-        $itemHtml = '';
+        $htmlCodigo     = '';
+        $htmlDescricao  = '';
+        $htmlInativo    = '';
         
-        if($parent) {
-            foreach ($parent as $value)
-            {
-                if($view == 'edit') {
-                    $parentHtml .= "<a href=" .  url($value['rota']) . ">". $value['label'] . "</a> » ";
-                } else {
-                    $parentHtml .= "<small>". formataCodigo($value['id']) . "</small> <a href=" .  url($value['rota']) . ">". $value['label'] . "</a> » ";
-                }
-            }
+        if(!empty($inativo))
+            $htmlCodigo .= "<del>";
+        
+        if(!empty($codigo))
+            $htmlCodigo .= "<small>". formataCodigo($codigo) ."</small> »";
+        
+        foreach ($descricao as $key => $value)
+        {
+            if($key > 0)
+                $htmlDescricao .= " » ";
+            
+            if(!empty($value['url']))   
+                $htmlDescricao .= "<a href=" .  url($value['url']) . ">";
+            
+            $htmlDescricao .= $value['descricao'];
+            
+            if(!empty($value['url']))
+                $htmlDescricao .= "</a> ";
         }
         
-        if($item['id'])
-            $itemHtml .= "<small>". formataCodigo($item['id']) ."</small> ";
+        if(!empty($inativo))
+            $htmlInativo .= " <small class='text-danger' >Inativo desde ".formataData($inativo, 'L') . "!</small><del>";
         
-        $itemHtml .= $item['label'];
+        $resultado = $htmlCodigo . $htmlDescricao . $htmlInativo;
 
-        if($view == 'edit') {
-            $itemHtml .= " - Alterar";
-        }
-        
-        $resultado = $parentHtml . $itemHtml;
-        
         return $resultado;
     }
 }

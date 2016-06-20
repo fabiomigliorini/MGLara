@@ -8,14 +8,16 @@
     </div>
 </nav>
 <h1 class="header">
-    {!! 
-        breadcrumb(
-            [
-                ['rota' => "secao-produto/$parent->codsecaoproduto", 'id'=> $parent->codsecaoproduto, 'label' => $parent->secaoproduto]
-            ],
-            ['id' => null, 'label' => "Nova Família"]
-        ) 
-    !!}      
+{!! 
+    titulo(
+        null,
+        [
+            ['url' => "secao-produto/$parent->codsecaoproduto", 'descricao' => $parent->secaoproduto],
+            ['id' => null, 'descricao' => "Nova Família"]
+        ],
+        null
+    ) 
+!!}      
 </h1>
 <hr>
 <br>
