@@ -125,7 +125,7 @@ class FamiliaProdutoController extends Controller
         catch(\Exception $e){
             Session::flash('flash_danger', "Impossível Excluir!");
             Session::flash('flash_danger_detail', $e->getMessage());
-            return redirect("secao-produto/$id"); 
+            return redirect("familia-produto/$id"); 
         }     
     }
     

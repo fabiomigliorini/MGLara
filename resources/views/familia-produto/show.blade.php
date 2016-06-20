@@ -4,7 +4,7 @@
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="{{ url("secao-produto/$model->codsecaoproduto") }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="{{ url("familia-produto/create?codsecaoproduto=$model->codsecaoproduto") }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
+            <li><a href="{{ url("familia-produto/create?codsecaoproduto=$model->codsecaoproduto") }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>
             <li><a href="{{ url("familia-produto/$model->codfamiliaproduto/edit") }}"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li>
                 @if(empty($model->inativo))
@@ -67,8 +67,7 @@
         </select>
     </div>      
     <button type="submit" class="btn btn-default"><i class=" glyphicon glyphicon-search"></i> Buscar</button>
-    <!-- <a class="btn btn-default" href="{{ url("grupo-produto/create?codfamiliaproduto=$model->codfamiliaproduto") }}"> -->
-    <a class="btn btn-default" href="">
+    <a class="btn btn-default" href="{{ url("grupo-produto/create?codfamiliaproduto=$model->codfamiliaproduto") }}">
         <i class=" glyphicon glyphicon-plus"></i> Novo Grupo
     </a>
 {!! Form::close() !!}
@@ -79,12 +78,10 @@
         <div class="list-group-item @if(!empty($row->inativo)) bg-danger @endif"">
             <div class="row item">
                 <div class="col-md-1">
-                    <!-- <a href="{{ url("grupo-produto/$row->codfamiliaproduto") }}">{{ formataCodigo($row->codfamiliaproduto) }}</a> -->
-                    <a class="small text-muted" href="">{{ formataCodigo($row->codfamiliaproduto) }}</a>
+                    <a class="small text-muted" href="{{ url("grupo-produto/$row->codgrupoproduto") }}">{{ formataCodigo($row->codgrupoproduto) }}</a>
                 </div>                            
                 <div class="col-md-5">
-                    <!-- <a href="{{ url("grupo-produto/$row->codfamiliaproduto") }}">{{ $row->grupoproduto }}</a> -->
-                    <a href="">{{ $row->grupoproduto }}</a>
+                    <a href="{{ url("grupo-produto/$row->codgrupoproduto") }}">{{ $row->grupoproduto }}</a>
                 </div>
                 <div class="col-md-6">
                 @if(!empty($row->codimagem))

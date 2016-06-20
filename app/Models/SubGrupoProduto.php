@@ -89,9 +89,9 @@ class SubGrupoProduto extends MGModel
     }
 
         // Buscas 
-    public static function filterAndPaginate($codgrupoproduto, $codsubgrupoproduto, $subgrupoproduto, $inativo)
+    public static function filterAndPaginate($id, $codgrupoproduto, $subgrupoproduto, $inativo)
     {
-        return SubGrupoProduto::codsubgrupoproduto(numeroLimpo($codsubgrupoproduto))
+        return SubGrupoProduto::id(numeroLimpo($id))
             ->where('codgrupoproduto', $codgrupoproduto)  
             ->subgrupoproduto($subgrupoproduto)
             ->inativo($inativo)
@@ -99,12 +99,12 @@ class SubGrupoProduto extends MGModel
             ->paginate(20);
     }
     
-    public function scopeCodsubgrupoproduto($query, $codsubgrupoproduto)
+    public function scopeId($query, $id)
     {
-        if (trim($codsubgrupoproduto) === '')
+        if (trim($id) === '')
             return;
         
-        $query->where('codsubgrupoproduto', $codsubgrupoproduto);
+        $query->where('codsubgrupoproduto', $id);
     }
     
     public function scopeSubgrupoproduto($query, $subgrupoproduto)

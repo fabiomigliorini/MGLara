@@ -8,8 +8,7 @@ use MGLara\Http\Requests;
 use MGLara\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use MGLara\Models\SubGrupoProduto;
-use MGLara\Models\EstoqueSaldo;
-use MGLara\Models\EstoqueLocal;
+use MGLara\Models\Produto;
 use Carbon\Carbon;
 
 class SubGrupoProdutoController extends Controller
@@ -19,14 +18,9 @@ class SubGrupoProdutoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        /*
-        $model = SubGrupoProduto::filterAndPaginate(
-            $request->get('codsubgrupoproduto'),
-            $request->get('subgrupoproduto')    
-        );
-        */
+        //
     }
 
     /**
@@ -36,7 +30,7 @@ class SubGrupoProdutoController extends Controller
      */
     public function create(Request $request)
     {
-        $model = SubGrupoProduto::class;
+        $model = new SubGrupoProduto();
         
         return view('sub-grupo-produto.create', compact('model','request'));
     }
@@ -50,11 +44,14 @@ class SubGrupoProdutoController extends Controller
     public function store(Request $request)
     {
         $model = new SubGrupoProduto($request->all());
+        
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
+        
         $model->codgrupoproduto = $request->get('codgrupoproduto');
         $model->save();
-        Session::flash('flash_create', 'Registro inserido.');
+        
+        Session::flash('flash_success', 'Sub Grupo Criada!');
         return redirect("sub-grupo-produto/$model->codsubgrupoproduto");
     }
 
@@ -67,9 +64,8 @@ class SubGrupoProdutoController extends Controller
     public function show($id)
     {
         $model = SubGrupoProduto::findOrFail($id);
-        $ess = EstoqueSaldo::saldoPorProduto($model->codsubgrupoproduto);
-        $els = EstoqueLocal::where('inativo', null)->orderBy('codestoquelocal')->get();
-        return view('sub-grupo-produto.show', compact('model', 'ess', 'els'));
+        $produtos = Produto::where('codsubgrupoproduto', 10005)->paginate(10);
+        return view('sub-grupo-produto.show', compact('model', 'produtos'));
     }
 
     /**
@@ -97,9 +93,11 @@ class SubGrupoProdutoController extends Controller
         $model->fill($request->all());
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
+        
         $model->save();
-        Session::flash('flash_update', 'Registro atualizado.');
-        return redirect("sub-grupo-produto/$id");
+        
+        Session::flash('flash_success', "Sub Grupo '{$model->subgrupoproduto}' Atualizado!");
+        return redirect("sub-grupo-produto/$model->codsubgrupoproduto");         
     }
 
     /**
@@ -113,32 +111,32 @@ class SubGrupoProdutoController extends Controller
         try{
             $model = SubGrupoProduto::find($id);
             $model->delete();
-            Session::flash('flash_delete', 'Registro deletado!');
+            Session::flash('flash_success', "Sub Grupo '{$model->subgrupoproduto}' Excluido!");
             return redirect("grupo-produto/$model->codgrupoproduto");
-
         }
         catch(\Exception $e){
-            return view('errors.fk');
+            Session::flash('flash_danger', "Impossível Excluir!");
+            Session::flash('flash_danger_detail', $e->getMessage());
+            return redirect("sub-grupo-produto/$id"); 
         }     
     }
     
-    public function buscaCodProduto($id)
-    {
-        $model = SubGrupoProduto::findOrFail($id);
-        foreach ($model->ProdutoS as $prod)
-            $arr_codproduto[] = $prod->codproduto;
-        echo json_encode($arr_codproduto);        
-    }
-
     public function inativo(Request $request)
     {
         $model = SubGrupoProduto::find($request->get('codsubgrupoproduto'));
         if($request->get('acao') == 'ativar')
+        {
             $model->inativo = null;
+            $msg = "Sub Grupo '{$model->subgrupoproduto}' Reativado!";
+        }
         else
+        {
             $model->inativo = Carbon::now();
+            $msg = "Sub Grupo '{$model->subgrupoproduto}' Inativado!";
+        }
         
         $model->save();
-    }      
-    
+        Session::flash('flash_success', $msg);
+    }    
+
 }
