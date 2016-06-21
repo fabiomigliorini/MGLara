@@ -49,11 +49,11 @@ class GrupoProdutoController extends Controller
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         
-        $model->codfamilia = $request->get('codfamilia');
+        $model->codfamiliaproduto = $request->get('codfamiliaproduto');
         $model->save();
         
         Session::flash('flash_success', 'Grupo Criado!');
-        return redirect("grupo-produto/$model->codgrupoproduto");
+        return redirect("familia-produto/$model->codfamiliaproduto");
     }
 
     /**

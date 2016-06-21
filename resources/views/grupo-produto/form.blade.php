@@ -23,7 +23,8 @@ $(document).ready(function() {
                 currentForm.submit();
             }
         });
-    });     
+    });
+    $('#grupoproduto').Setcase();     
 });
 </script>
 @endsection

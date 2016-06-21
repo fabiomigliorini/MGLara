@@ -27,7 +27,7 @@
 </h1>
 <hr>
 <br>
-{!! Form::model($model, ['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form-sub-grupo-produto', 'route' => ['sub-grupo-produto.store', 'codgrupoproduto' => $request->codgrupoproduto] ]) !!}
+{!! Form::model($model, ['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form-sub-grupo-produto', 'route' => ['sub-grupo-produto.store', 'codgrupoproduto' => $request->codgrupoproduto ]]) !!}
     @include('errors.form_error')
     @include('sub-grupo-produto.form', ['submitTextButton' => 'Salvar'])
  {!! Form::close() !!}   

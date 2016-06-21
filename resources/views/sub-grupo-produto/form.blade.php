@@ -23,7 +23,9 @@ $(document).ready(function() {
                 currentForm.submit();
             }
         });
-    });     
+    });
+
+    $('#subgrupoproduto').Setcase();  
 });
 </script>
 @endsection
