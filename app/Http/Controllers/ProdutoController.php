@@ -33,6 +33,7 @@ class ProdutoController extends Controller
     public function index(Request $request) {
         $model = Produto::filterAndPaginate(
             $request->get('codproduto'),
+            $request->get('codsubgrupoproduto'),
             $request->get('barras'),
             $request->get('produto'),
             $request->get('codmarca'),

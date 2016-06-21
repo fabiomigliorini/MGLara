@@ -76,9 +76,6 @@
         </select>
     </div>      
     <button type="submit" class="btn btn-default"><i class=" glyphicon glyphicon-search"></i> Buscar</button>
-    <a class="btn btn-default" href="{{ url("produto/create?codsubgrupoproduto=$model->codsubgrupoproduto") }}">
-        <i class=" glyphicon glyphicon-plus"></i> Novo Produto
-    </a>
 {!! Form::close() !!}
 <br>
 <div id="registros">
@@ -89,11 +86,13 @@
             <div class="col-md-1">
                 <a class="small text-muted" href="{{ url("produto/$row->codproduto") }}">{{ formataCodigo($row->codproduto) }}</a>
             </div>                            
-            <div class="col-md-4">
-                <a href="{{ url("produto/$row->codproduto") }}">{{ $row->produto }}</a>
+            <div class="col-md-9">
+                <a href="{{ url("produto/$row->codproduto") }}">
+                    {!! listagemTitulo($row->produto, $row->inativo) !!}
+                </a>
             </div>
-            <div class="col-md-6">
-
+            <div class="col-md-2">
+                {!! inativo($row->inativo) !!}
             </div>
         </div>
       </div>    

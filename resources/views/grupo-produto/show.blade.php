@@ -83,10 +83,15 @@
             <div class="col-md-1">
                 <a class="small text-muted" href="{{ url("sub-grupo-produto/$row->codsubgrupoproduto") }}">{{ formataCodigo($row->codsubgrupoproduto) }}</a>
             </div>                            
-            <div class="col-md-4">
-                <a href="{{ url("sub-grupo-produto/$row->codsubgrupoproduto") }}">{{ $row->subgrupoproduto }}</a>
+            <div class="col-md-7">
+                <a href="{{ url("sub-grupo-produto/$row->codsubgrupoproduto") }}">
+                    {!! listagemTitulo($row->subgrupoproduto, $row->inativo) !!}
+                </a>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-2">
+                {!! inativo($row->inativo) !!}
+            </div>
+            <div class="col-md-2">
             @if(!empty($row->codimagem))
                 <div class="pull-right foto-item-listagem">
                     <img class="img-responsive pull-right" alt="{{$row->subgrupoproduto}}" title="{{$row->subgrupoproduto}}" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>

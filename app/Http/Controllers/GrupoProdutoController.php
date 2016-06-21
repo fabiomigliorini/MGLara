@@ -53,7 +53,7 @@ class GrupoProdutoController extends Controller
         $model->save();
         
         Session::flash('flash_success', 'Grupo Criado!');
-        return redirect("familia-produto/$model->codfamiliaproduto");
+        return redirect("grupo-produto/$model->codgrupoproduto");
     }
 
     /**

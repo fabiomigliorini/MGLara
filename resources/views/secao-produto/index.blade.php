@@ -9,7 +9,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Seções de Produto</h1>
+<h1 class="header">{!! titulo(null, [ ['url' => null, 'descricao' => 'Seções de Produto'] ], null) !!}  </h1>
 <hr>
 <div class="search-bar">
 {!! Form::model(Request::all(), ['route' => 'secao-produto.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'secao-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
@@ -37,16 +37,19 @@
       <div class="list-group-item @if(!empty($row->inativo)) bg-danger @endif">
         <div class="row item">
             <div class="col-md-1">
-                <a class="small text-muted" href="{{ url("secao-produto/$row->codsecaoproduto") }}">{{ formataCodigo($row->codsecaoproduto)}}</a>
-                @if(!empty($row->inativo))
-                <br>
-                <span class="label label-danger">Inativado em {{ formataData($row->inativo, 'L')}} </span>
-                @endif            
+                <a class="small text-muted" href="{{ url("secao-produto/$row->codsecaoproduto") }}">
+                {{ formataCodigo($row->codsecaoproduto)}}
+                </a>          
             </div>                            
-            <div class="col-md-5">
-            <a href="{{ url("secao-produto/$row->codsecaoproduto") }}">{{ $row->secaoproduto }}</a>
+            <div class="col-md-7">
+            <a href="{{ url("secao-produto/$row->codsecaoproduto") }}">
+                {!! listagemTitulo($row->secaoproduto, $row->inativo) !!}
+            </a>
             </div>                            
-            <div class="col-md-6">
+            <div class="col-md-2">
+                {!! inativo($row->inativo) !!}
+            </div>
+            <div class="col-md-2">
             @if(!empty($row->codimagem))
                 <div class="pull-right foto-item-listagem">
                     <img class="img-responsive pull-right" alt="{{$row->secaoproduto}}" title="{{$row->secaoproduto}}" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>

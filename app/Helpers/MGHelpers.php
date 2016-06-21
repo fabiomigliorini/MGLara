@@ -314,11 +314,11 @@ if(!function_exists('titulo')) {
         $htmlDescricao  = '';
         $htmlInativo    = '';
         
-        if(!empty($inativo))
-            $htmlCodigo .= "<del>";
-        
         if(!empty($codigo))
             $htmlCodigo .= "<small>". formataCodigo($codigo) ."</small> ";
+        
+        if(!empty($inativo))
+            $htmlCodigo .= "<del>";
         
         foreach ($descricao as $key => $value)
         {
@@ -335,10 +335,28 @@ if(!function_exists('titulo')) {
         }
         
         if(!empty($inativo))
-            $htmlInativo .= " <small class='text-danger' >Inativo desde ".formataData($inativo, 'L') . "!</small><del>";
+            $htmlInativo .= "</del> <small class='text-danger'> Inativo desde ".formataData($inativo, 'L') . "!</small>";
         
         $resultado = $htmlCodigo . $htmlDescricao . $htmlInativo;
 
         return $resultado;
+    }
+}
+
+if(!function_exists('inativo')) {
+    function inativo ($inativo) 
+    {
+        if(!empty($inativo))
+            return "<span class='label label-danger'>Inativo desde ". formataData($inativo, 'L'). "</span>";
+    }
+}
+
+if(!function_exists('listagemTitulo')) {
+    function listagemTitulo ($titulo, $inativo) 
+    {
+        if(!empty($inativo))
+            return "<del>$titulo</del>";
+        else 
+            return $titulo;
     }
 }
