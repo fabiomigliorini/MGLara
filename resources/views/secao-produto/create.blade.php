@@ -12,7 +12,7 @@
     titulo(
         null,
         [
-            ['url' => "secao-produto", 'descricao' => 'Listagem'],
+            ['url' => "secao-produto", 'descricao' => 'Seções de Produto'],
             ['url' => null, 'descricao' => 'Nova Seção'],
         ],
         $model->inativo
