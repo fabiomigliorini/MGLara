@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use MGLara\Http\Requests;
 use MGLara\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
+use MGLara\Models\GrupoProduto;
 use MGLara\Models\SubGrupoProduto;
 use MGLara\Models\Produto;
 use Carbon\Carbon;
@@ -31,8 +32,8 @@ class SubGrupoProdutoController extends Controller
     public function create(Request $request)
     {
         $model = new SubGrupoProduto();
-        
-        return view('sub-grupo-produto.create', compact('model','request'));
+        $parent = GrupoProduto::findOrFail($request->get('codgrupoproduto'));
+        return view('sub-grupo-produto.create', compact('model','parent', 'request'));
     }
 
     /**
@@ -51,7 +52,7 @@ class SubGrupoProdutoController extends Controller
         $model->codgrupoproduto = $request->get('codgrupoproduto');
         $model->save();
         
-        Session::flash('flash_success', 'Sub Grupo Criada!');
+        Session::flash('flash_success', 'Sub Grupo Criado!');
         return redirect("sub-grupo-produto/$model->codsubgrupoproduto");
     }
 
@@ -61,10 +62,27 @@ class SubGrupoProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $model = SubGrupoProduto::findOrFail($id);
-        $produtos = Produto::where('codsubgrupoproduto', 10005)->paginate(10);
+        $produtos = Produto::filterAndPaginate(
+            $request->get('codproduto'),
+            $id,
+            $request->get('barras'),
+            $request->get('produto'),
+            $request->get('codmarca'),
+            $request->get('referencia'),
+            $request->get('codtributacao'),
+            $request->get('site'),
+            $request->get('codncm'),
+            $request->get('preco_de'),
+            $request->get('preco_ate'),
+            $request->get('criacao_de'),
+            $request->get('criacao_ate'),
+            $request->get('alteracao_de'),
+            $request->get('alteracao_ate'),
+            $request->get('inativo')
+        );
         return view('sub-grupo-produto.show', compact('model', 'produtos'));
     }
 

@@ -3,7 +3,7 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
-            <li><a href="{{ url("grupo-produto") }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
+            <li><a href="{{ url("familia-produto/{$model->FamiliaProduto->codfamiliaproduto}") }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
             <li><a href="{{ url("grupo-produto/create?codfamiliaproduto={$model->FamiliaProduto->codfamiliaproduto}") }}><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
             <li><a href="{{ url("grupo-produto/$model->codgrupoproduto") }}"><span class="glyphicon glyphicon-eye-open"></span> Detalhes</a></li>  
         </ul>

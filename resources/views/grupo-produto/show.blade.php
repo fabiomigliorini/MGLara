@@ -66,9 +66,9 @@
     </div>
     <div class="form-group">
         <select class="form-control" name="inativo" id="inativo" placeholder="Ativos">
-            <option value="0">Todas</option>
-            <option value="1" selected="selected">Ativas</option>
-            <option value="2">Inativas</option>
+            <option value="0">Todos</option>
+            <option value="1" selected="selected">Ativos</option>
+            <option value="2">Inativos</option>
         </select>
     </div>      
     <button type="submit" class="btn btn-default"><i class=" glyphicon glyphicon-search"></i> Buscar</button>

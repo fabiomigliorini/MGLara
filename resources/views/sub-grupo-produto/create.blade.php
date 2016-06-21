@@ -7,7 +7,24 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Novo Sub Grupo Produto</h1>
+<h1 class="header">
+{!! 
+    titulo(
+        $parent->FamiliaProduto->SecaoProduto->codsecaoproduto,
+        [
+            [
+            	'url' => "secao-produto/{$parent->FamiliaProduto->SecaoProduto->codsecaoproduto}", 
+            	'descricao' => $parent->FamiliaProduto->SecaoProduto->secaoproduto
+        	],
+            ['url' => "familia-produto/{$parent->FamiliaProduto->codfamiliaproduto}", 'descricao' => $parent->FamiliaProduto->familiaproduto],
+            ['url' => "grupo-produto/{$parent->codgrupoproduto}", 'descricao' => $parent->grupoproduto],
+            ['id' => null, 'descricao' => 'Novo Sub Grupo Produto']
+        ],
+        null
+    ) 
+!!} 
+
+</h1>
 <hr>
 <br>
 {!! Form::model($model, ['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form-sub-grupo-produto', 'route' => ['sub-grupo-produto.store', 'codgrupoproduto' => $request->codgrupoproduto] ]) !!}
