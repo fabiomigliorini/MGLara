@@ -75,9 +75,16 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         }
 
         //calcula custo medio
+        $valor = $mov->entradavalor;
+        $quantidade = $mov->entradaquantidade;
+        if ($inicialquantidade > 0 && $inicialvalor > 0)
+        {
+            $valor += $inicialvalor;
+            $quantidade += $inicialquantidade;
+        }
         $customedio = 0;
-        if (($mov->entradaquantidade + $inicialquantidade) != 0)
-            $customedio = abs(($mov->entradavalor + $inicialvalor)/($mov->entradaquantidade + $inicialquantidade));
+        if ($quantidade != 0)
+            $customedio = abs($valor/$quantidade);
         
         //recalcula valor movimentacao com base custo medio
         $sql = "
