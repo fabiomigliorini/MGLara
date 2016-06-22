@@ -31,29 +31,25 @@ class EstoqueController extends Controller
      */
     public function calculaCustoMedio(Request $request, $id)
     {
-        $em = EstoqueMes::findOrFail($id);
-        $this->dispatch(new EstoqueCalculaCustoMedio($em));
+        $this->dispatch((new EstoqueCalculaCustoMedio($id))->onQueue('urgent'));
         return response()->json(['response' => 'Agendado']);
     }
     
     public function geraMovimentoNegocioProdutoBarra(Request $request, $id)
     {
-        $npb = NegocioProdutoBarra::findOrFail($id);
-        $this->dispatch(new EstoqueGeraMovimentoNegocioProdutoBarra($npb));
+        $this->dispatch((new EstoqueGeraMovimentoNegocioProdutoBarra($id))->onQueue('high'));
         return response()->json(['response' => 'Agendado']);
     }
 
     public function geraMovimentoNegocio(Request $request, $id)
     {
-        $npb = Negocio::findOrFail($id);
-        $this->dispatch(new EstoqueGeraMovimentoNegocio($npb));
+        $this->dispatch((new EstoqueGeraMovimentoNegocio($id))->onQueue('medium'));
         return response()->json(['response' => 'Agendado']);
     }
     
     public function geraMovimentoProduto(Request $request, $id)
     {
-        $prod = Produto::findOrFail($id);
-        $this->dispatch(new EstoqueGeraMovimentoProduto($prod));
+        $this->dispatch((new EstoqueGeraMovimentoProduto($id))->onQueue('low'));
         return response()->json(['response' => 'Agendado']);
     }
     
@@ -63,8 +59,8 @@ class EstoqueController extends Controller
         
         $inicial = Carbon::createFromFormat('d/m/Y H:i:s', $request->inicial); // 1975-05-21 22:00:00
         $final = Carbon::createFromFormat('d/m/Y H:i:s', $request->final); // 1975-05-21 22:00:00
-        
-        $this->dispatch(new EstoqueGeraMovimentoPeriodo($inicial, $final));
+
+        $this->dispatch((new EstoqueGeraMovimentoPeriodo($inicial, $final))->onQueue('low'));
         
         return response()->json(['response' => 'Agendado']);
         

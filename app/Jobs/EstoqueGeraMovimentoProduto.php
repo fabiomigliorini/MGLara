@@ -9,25 +9,24 @@ use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
-use MGLara\Models\Produto;
 use MGLara\Models\EstoqueMes;
-use MGLara\Models\NegocioProdutoBarra;
 
 class EstoqueGeraMovimentoProduto extends Job implements SelfHandling, ShouldQueue
 {
     use InteractsWithQueue, SerializesModels, DispatchesJobs;
     
-    protected $Produto;
+    protected $codproduto;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Produto $Produto)
+    public function __construct($codproduto)
     {
-        $this->Produto = $Produto;
+        $this->codproduto = $codproduto;
         //
     }
 
@@ -39,18 +38,22 @@ class EstoqueGeraMovimentoProduto extends Job implements SelfHandling, ShouldQue
     public function handle()
     {
         
-        foreach ($this->Produto->ProdutoBarraS as $pb)
-        {
-            $npbs = NegocioProdutoBarra::where('codprodutobarra', $pb->codprodutobarra)->whereHas('Negocio', function($iq){
-                $corte = Carbon::createFromFormat('Y-m-d H:i:s', EstoqueMes::CORTE_FISICO);
-                    $iq->where('lancamento', '>=', $corte);
-                })->get();
-                
+        $corte = Carbon::createFromFormat('Y-m-d H:i:s', EstoqueMes::CORTE_FISICO);
+        
+        $sql = "select npb.codnegocioprodutobarra
+            from tblprodutobarra pb
+            inner join tblnegocioprodutobarra npb on (npb.codprodutobarra = pb.codprodutobarra)
+            inner join tblnegocio n on (n.codnegocio = npb.codnegocio)
+            where pb.codproduto = {$this->codproduto}
+            and n.lancamento >= '" . $corte->format('Y-m-d H:i:s') . "'
+            order by npb.codnegocioprodutobarra
+            ";
             
-            foreach ($npbs as $npb)
-                $this->dispatch(new EstoqueGeraMovimentoNegocioProdutoBarra($npb));
-        }
-                
+        $rows = DB::select($sql);
+        
+        foreach ($rows as $row)
+            $this->dispatch((new EstoqueGeraMovimentoNegocioProdutoBarra($row->codnegocioprodutobarra))->onQueue('medium'));
+        
         //
         file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . ' - EstoqueGeraMovimentoProduto' . "\n", FILE_APPEND);
     }

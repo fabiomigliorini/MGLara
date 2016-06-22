@@ -8,27 +8,27 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Facades\DB;
 
-use MGLara\Models\Negocio;
 
 /**
- * @property Negocio $Negocio
+ * @property bigint $codnegocio
  */
 
 class EstoqueGeraMovimentoNegocio extends Job implements SelfHandling, ShouldQueue
 {
     use InteractsWithQueue, SerializesModels, DispatchesJobs;
     
-    protected $Negocio;
+    protected $codnegocio;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Negocio $Negocio)
+    public function __construct($codnegocio)
     {
-        $this->Negocio = $Negocio;
+        $this->codnegocio = $codnegocio;
         //
     }
 
@@ -39,12 +39,14 @@ class EstoqueGeraMovimentoNegocio extends Job implements SelfHandling, ShouldQue
      */
     public function handle()
     {
-        //
-        
+
         //Agenda Calculo de todos os itens do negocio
-        foreach($this->Negocio->NegocioProdutoBarraS as $item)
-            $this->dispatch(new EstoqueGeraMovimentoNegocioProdutoBarra($item));
+        $sql = "select codnegocioprodutobarra from tblnegocioprodutobarra where codnegocio = {$this->codnegocio} order by codnegocioprodutobarra";
+        $rows = DB::select($sql);
         
-        file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . " - EstoqueGeraMovimentoNegocio {$this->Negocio->codnegocio} \n", FILE_APPEND);        
+        foreach ($rows as $row)
+            $this->dispatch((new EstoqueGeraMovimentoNegocioProdutoBarra($row->codnegocioprodutobarra))->onQueue('high'));
+        
+        file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . " - EstoqueGeraMovimentoNegocio {$this->codnegocio} \n", FILE_APPEND);        
     }
 }

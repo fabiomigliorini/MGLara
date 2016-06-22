@@ -56,3 +56,41 @@ Dentro da tag </VirtualHost>
 
 ```
 
+---
+
+Configuração Supervisor para as filas
+
+```
+sudo apt-get install supervisor
+sudo update-rc.d supervisor defaults
+sudo vi /etc/supervisor/conf.d/laravel-worker.conf
+```
+
+Colocar dentro deste arquivo:
+
+```
+[program:laravel-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/MGLara/artisan queue:work database --queue=urgent,high,medium,'',low --daemon
+autostart=true
+autorestart=true
+user=www-data
+numprocs=8
+redirect_stderr=true
+stdout_logfile=/var/log/supervisor/laravel-worker.log
+```
+
+```
+
+sudo supervisorctl reread
+
+sudo supervisorctl update
+
+sudo supervisorctl start laravel-worker:*
+
+```
+
+Para carregar mudanças no queue
+```
+php artisan queue:restart
+```
