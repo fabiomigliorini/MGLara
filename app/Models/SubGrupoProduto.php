@@ -38,11 +38,19 @@ class SubGrupoProduto extends MGModel
 
     public function validate() {
 
+        if ($this->codsubgrupoproduto) {
+            $unique_subgrupoproduto = 'unique:tblsubgrupoproduto,subgrupoproduto,'.$this->codsubgrupoproduto.',codsubgrupoproduto';
+        } else {
+            $unique_subgrupoproduto = 'unique:tblsubgrupoproduto,subgrupoproduto';
+        }
+
         $this->_regrasValidacao = [
-            'subgrupoproduto' => 'required|min:5', 
+            'codgrupoproduto' => "required|numeric", 
+            'subgrupoproduto' => "required|min:5|$unique_subgrupoproduto", 
         ];    
         $this->_mensagensErro = [
             'subgrupoproduto.required' => 'Sub grupo de produto nao pode ser vazio.',
+            'subgrupoproduto.unique' => 'Este Sub grupo de produto já esta cadastrado.',
             'subgrupoproduto.min' => 'Sub grupo de produto nao pode ter menos de 5 caracteres.',
         ];
         return parent::validate();
@@ -89,9 +97,9 @@ class SubGrupoProduto extends MGModel
     }
 
         // Buscas 
-    public static function filterAndPaginate($codgrupoproduto, $codsubgrupoproduto, $subgrupoproduto, $inativo)
+    public static function filterAndPaginate($id, $codgrupoproduto, $subgrupoproduto, $inativo)
     {
-        return SubGrupoProduto::codsubgrupoproduto(numeroLimpo($codsubgrupoproduto))
+        return SubGrupoProduto::id(numeroLimpo($id))
             ->where('codgrupoproduto', $codgrupoproduto)  
             ->subgrupoproduto($subgrupoproduto)
             ->inativo($inativo)
@@ -99,12 +107,12 @@ class SubGrupoProduto extends MGModel
             ->paginate(20);
     }
     
-    public function scopeCodsubgrupoproduto($query, $codsubgrupoproduto)
+    public function scopeId($query, $id)
     {
-        if (trim($codsubgrupoproduto) === '')
+        if (trim($id) === '')
             return;
         
-        $query->where('codsubgrupoproduto', $codsubgrupoproduto);
+        $query->where('codsubgrupoproduto', $id);
     }
     
     public function scopeSubgrupoproduto($query, $subgrupoproduto)

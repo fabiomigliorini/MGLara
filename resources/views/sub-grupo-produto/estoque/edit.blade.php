@@ -9,24 +9,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">
-{!! 
-    titulo(
-        $model->codsubgrupoproduto,
-        [
-            [
-            	'url' => "secao-produto/{$model->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto}", 
-            	'descricao' => $model->GrupoProduto->FamiliaProduto->SecaoProduto->secaoproduto
-        	],
-            ['url' => "familia-produto/{$model->GrupoProduto->FamiliaProduto->codfamiliaproduto}", 	'descricao' => $model->GrupoProduto->FamiliaProduto->familiaproduto],
-            ['url' => "grupo-produto/{$model->GrupoProduto->codgrupoproduto}", 			'descricao' => $model->GrupoProduto->grupoproduto],
-            ['url' => "sub-grupo-produto/$model->codsubgrupoproduto", 					'descricao' => $model->subgrupoproduto],
-            ['url' => null, 'descricao' => 'Alterar']
-        ],
-        $model->inativo
-    ) 
-!!} 
-</h1>
+<h1 class="header">Alterar Sub Grupo Produto: {{$model->subgrupoproduto}}</h1>
 <hr>
 <br>
 {!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'id' => 'form-sub-grupo-produto', 'action' => ['SubGrupoProdutoController@update', $model->codsubgrupoproduto] ]) !!}

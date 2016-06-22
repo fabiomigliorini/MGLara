@@ -4,7 +4,7 @@
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="{{ url("secao-produto/$model->codsecaoproduto") }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="{{ url("familia-produto/create?codsecaoproduto=$model->codsecaoproduto") }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
+            <li><a href="{{ url("familia-produto/create?codsecaoproduto=$model->codsecaoproduto") }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>
             <li><a href="{{ url("familia-produto/$model->codfamiliaproduto/edit") }}"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li>
                 @if(empty($model->inativo))
@@ -42,23 +42,16 @@
     @endif
 </div>
 <h1 class="header">
-    @if(!empty($model->inativo))
-        <del>
-    @endif
-    {!! 
-        breadcrumb(
-            [
-                ['rota' => "secao-produto/$model->codsecaoproduto", 'id'=> $model->codsecaoproduto, 'label' => $model->SecaoProduto->secaoproduto],
-            ],
-            ['id' => $model->codfamiliaproduto, 'label' => $model->familiaproduto]
-        ) 
-    !!}
-    @if(!empty($model->inativo))
-        </del>
-    @endif
-    @if(!empty($model->inativo))
-        <small class="text-danger" >Inativo desde {{formataData($model->inativo, 'L')}}!</small>
-    @endif
+{!! 
+    titulo(
+        $model->codfamiliaproduto,
+        [
+            ['url' => "secao-produto/$model->codsecaoproduto", 'descricao' => $model->SecaoProduto->secaoproduto],
+            ['url' => null, 'descricao' => $model->familiaproduto]
+        ],
+        $model->inativo
+    ) 
+!!}
 </h1>
 @include('includes.autor')
 <hr>
@@ -68,14 +61,13 @@
     </div>
     <div class="form-group">
         <select class="form-control" name="inativo" id="inativo" placeholder="Ativos">
-            <option value="0">Todas</option>
-            <option value="1" selected="selected">Ativas</option>
-            <option value="2">Inativas</option>
+            <option value="0">Todos</option>
+            <option value="1" selected="selected">Ativos</option>
+            <option value="2">Inativos</option>
         </select>
     </div>      
     <button type="submit" class="btn btn-default"><i class=" glyphicon glyphicon-search"></i> Buscar</button>
-    <!-- <a class="btn btn-default" href="{{ url("grupo-produto/create?codfamiliaproduto=$model->codfamiliaproduto") }}"> -->
-    <a class="btn btn-default" href="">
+    <a class="btn btn-default" href="{{ url("grupo-produto/create?codfamiliaproduto=$model->codfamiliaproduto") }}">
         <i class=" glyphicon glyphicon-plus"></i> Novo Grupo
     </a>
 {!! Form::close() !!}
@@ -86,14 +78,17 @@
         <div class="list-group-item @if(!empty($row->inativo)) bg-danger @endif"">
             <div class="row item">
                 <div class="col-md-1">
-                    <!-- <a href="{{ url("grupo-produto/$row->codfamiliaproduto") }}">{{ formataCodigo($row->codfamiliaproduto) }}</a> -->
-                    <a class="small text-muted" href="">{{ formataCodigo($row->codfamiliaproduto) }}</a>
+                    <a class="small text-muted" href="{{ url("grupo-produto/$row->codgrupoproduto") }}">{{ formataCodigo($row->codgrupoproduto) }}</a>
                 </div>                            
-                <div class="col-md-5">
-                    <!-- <a href="{{ url("grupo-produto/$row->codfamiliaproduto") }}">{{ $row->grupoproduto }}</a> -->
-                    <a href="">{{ $row->grupoproduto }}</a>
+                <div class="col-md-7">
+                    <a href="{{ url("grupo-produto/$row->codgrupoproduto") }}">
+                        {!! listagemTitulo($row->grupoproduto, $row->inativo) !!}
+                    </a>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-2">
+                    {!! inativo($row->inativo) !!}
+                </div>
+                <div class="col-md-2">
                 @if(!empty($row->codimagem))
                     <div class="pull-right foto-item-listagem">
                         <img class="img-responsive pull-right" alt="{{$row->grupoproduto}}" title="{{$row->grupoproduto}}" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>

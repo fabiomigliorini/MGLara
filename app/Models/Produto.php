@@ -561,7 +561,8 @@ class Produto extends MGModel
     
     // Buscas 
     public static function filterAndPaginate(
-            $codproduto, 
+            $id, 
+            $codsubgrupoproduto, 
             $barras, 
             $produto, 
             $codmarca, 
@@ -577,7 +578,8 @@ class Produto extends MGModel
             $alteracao_ate,  
             $inativo)
     {
-        return Produto::codproduto(numeroLimpo($codproduto))
+        return Produto::id(numeroLimpo($id))
+            ->codsubgrupoproduto($codsubgrupoproduto)
             ->barras($barras)
             ->produto($produto)
             ->codmarca($codmarca)
@@ -594,12 +596,20 @@ class Produto extends MGModel
             ->paginate(20);
     }
     
-    public function scopeCodproduto($query, $codproduto)
+    public function scopeId($query, $id)
     {
-        if (trim($codproduto) === '')
+        if (trim($id) === '')
             return;
         
-        $query->where('codproduto', $codproduto);
+        $query->where('codproduto', $id);
+    }
+
+    public function scopeCodsubgrupoproduto($query, $codsubgrupoproduto)
+    {
+        if (trim($codsubgrupoproduto) === '')
+            return;
+        
+        $query->where('codsubgrupoproduto', $codsubgrupoproduto);
     }
        
     public function scopeBarras($query, $barras)

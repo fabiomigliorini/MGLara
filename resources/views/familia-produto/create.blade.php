@@ -8,18 +8,20 @@
     </div>
 </nav>
 <h1 class="header">
-    {!! 
-        breadcrumb(
-            [
-                ['rota' => "secao-produto/$parent->codsecaoproduto", 'id'=> $parent->codsecaoproduto, 'label' => $parent->secaoproduto]
-            ],
-            ['id' => null, 'label' => "Nova Família"]
-        ) 
-    !!}      
+{!! 
+    titulo(
+        $parent->codsecaoproduto,
+        [
+            ['url' => "secao-produto/$parent->codsecaoproduto", 'descricao' => $parent->secaoproduto],
+            ['id' => null, 'descricao' => "Nova Família"]
+        ],
+        null
+    ) 
+!!}      
 </h1>
 <hr>
 <br>
-{!! Form::model($model, ['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form-familia-produto', 'route' => ['familia-produto.store', 'codsecaoproduto'=> $request->codsecaoproduto]]) !!}
+{!! Form::model($model, ['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form-familia-produto', 'route' => ['familia-produto.store', 'codsecaoproduto'=> $request->codsecaoproduto ]]) !!}
     @include('errors.form_error')
     @include('familia-produto.form', ['submitTextButton' => 'Salvar'])
 {!! Form::close() !!}   

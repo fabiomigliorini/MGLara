@@ -11,13 +11,16 @@
 </nav>
 <h1 class="header">
 {!! 
-    breadcrumb(
+    titulo(
+        $model->codfamiliaproduto,
         [
-            ['rota' => "secao-produto/$model->codsecaoproduto", 'id'=> $model->codsecaoproduto, 'label' => $model->SecaoProduto->secaoproduto]
+            ['url' => "secao-produto/$model->codsecaoproduto", 'descricao' => $model->SecaoProduto->secaoproduto],
+            ['url' => "familia-produto/$model->codfamiliaproduto", 'descricao' => $model->familiaproduto],
+            ['url' => null, 'descricao' => 'Alterar']
         ],
-        ['id' => $model->codfamiliaproduto, 'label' => "Alterar Família: $model->familiaproduto"]
+        $model->inativo
     ) 
-!!}    
+!!}  
 </h1>
 <hr>
 <br>

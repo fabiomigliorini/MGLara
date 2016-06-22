@@ -11,9 +11,13 @@
 </nav>
 <h1 class="header">
 {!! 
-    breadcrumb(
-        null,
-        ['id' => $model->codsecaoproduto, 'label' => "Alterar Seção: $model->secaoproduto"]
+    titulo(
+        $model->codsecaoproduto,
+        [
+            ['url' => "secao-produto/$model->codsecaoproduto", 'descricao' => $model->secaoproduto],
+            ['url' => null, 'descricao' => 'Alterar'],
+        ],
+        $model->inativo
     ) 
 !!}     
 </h1>

@@ -7,23 +7,28 @@ use Illuminate\Http\Request;
 use MGLara\Http\Requests;
 use MGLara\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Redirect;
-use MGLara\Models\FamiliaProduto;
-use MGLara\Models\GrupoProduto;
 use MGLara\Models\SubGrupoProduto;
+use MGLara\Models\EstoqueSaldo;
+use MGLara\Models\EstoqueLocal;
 use Carbon\Carbon;
 
-class GrupoProdutoController extends Controller
+class SubGrupoProdutoController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        /*
+        $model = SubGrupoProduto::filterAndPaginate(
+            $request->get('codsubgrupoproduto'),
+            $request->get('subgrupoproduto')    
+        );
+        */
     }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -31,9 +36,9 @@ class GrupoProdutoController extends Controller
      */
     public function create(Request $request)
     {
-        $model = new GrupoProduto();
-        $parent = FamiliaProduto::findOrFail($request->get('codfamiliaproduto'));
-        return view('grupo-produto.create', compact('model', 'parent'));
+        $model = SubGrupoProduto::class;
+        
+        return view('sub-grupo-produto.create', compact('model','request'));
     }
 
     /**
@@ -44,16 +49,13 @@ class GrupoProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        $model = new GrupoProduto($request->all());
-        
+        $model = new SubGrupoProduto($request->all());
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
-        
-        $model->codfamiliaproduto = $request->get('codfamiliaproduto');
+        $model->codgrupoproduto = $request->get('codgrupoproduto');
         $model->save();
-        
-        Session::flash('flash_success', 'Grupo Criado!');
-        return redirect("grupo-produto/$model->codgrupoproduto");
+        Session::flash('flash_create', 'Registro inserido.');
+        return redirect("sub-grupo-produto/$model->codsubgrupoproduto");
     }
 
     /**
@@ -62,16 +64,12 @@ class GrupoProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $model = GrupoProduto::findOrFail($id);
-        $subgrupos = SubGrupoProduto::filterAndPaginate(
-            $request->get('codsubgrupoproduto'),
-            $id,    
-            $request->get('subgrupoproduto'),    
-            $request->get('inativo')  
-        );
-        return view('grupo-produto.show', compact('model','subgrupos'));
+        $model = SubGrupoProduto::findOrFail($id);
+        $ess = EstoqueSaldo::saldoPorProduto($model->codsubgrupoproduto);
+        $els = EstoqueLocal::where('inativo', null)->orderBy('codestoquelocal')->get();
+        return view('sub-grupo-produto.show', compact('model', 'ess', 'els'));
     }
 
     /**
@@ -82,8 +80,8 @@ class GrupoProdutoController extends Controller
      */
     public function edit($id)
     {
-        $model = GrupoProduto::findOrFail($id);
-        return view('grupo-produto.edit',  compact('model'));
+        $model = SubGrupoProduto::findOrFail($id);
+        return view('sub-grupo-produto.edit',  compact('model'));
     }
 
     /**
@@ -95,22 +93,19 @@ class GrupoProdutoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $model = GrupoProduto::findOrFail($id);
+        $model = SubGrupoProduto::findOrFail($id);
         $model->fill($request->all());
-        
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
-        
         $model->save();
-        
-        Session::flash('flash_success', "Grupo '{$model->grupoproduto}' Atualizado!");
-        return redirect("grupo-produto/$id");   
+        Session::flash('flash_update', 'Registro atualizado.');
+        return redirect("sub-grupo-produto/$id");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $i
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -118,32 +113,32 @@ class GrupoProdutoController extends Controller
         try{
             $model = SubGrupoProduto::find($id);
             $model->delete();
-            Session::flash('flash_success', "Sub Grupo '{$model->subgrupoproduto}' Excluido!");
-            return redirect("familia-produto/$model->codfamiliaproduto");
+            Session::flash('flash_delete', 'Registro deletado!');
+            return redirect("grupo-produto/$model->codgrupoproduto");
+
         }
         catch(\Exception $e){
-            Session::flash('flash_danger', "Impossível Excluir!");
-            Session::flash('flash_danger_detail', $e->getMessage());
-            return redirect("grupo-produto/$id"); 
+            return view('errors.fk');
         }     
     }
     
+    public function buscaCodProduto($id)
+    {
+        $model = SubGrupoProduto::findOrFail($id);
+        foreach ($model->ProdutoS as $prod)
+            $arr_codproduto[] = $prod->codproduto;
+        echo json_encode($arr_codproduto);        
+    }
+
     public function inativo(Request $request)
     {
-        $model = GrupoProduto::find($request->get('codgrupoproduto'));
+        $model = SubGrupoProduto::find($request->get('codsubgrupoproduto'));
         if($request->get('acao') == 'ativar')
-        {
             $model->inativo = null;
-            $msg = "Grupo '{$model->grupoproduto}' Reativado!";
-        }
         else
-        {
             $model->inativo = Carbon::now();
-            $msg = "Grupo '{$model->grupoproduto}' Inativado!";
-        }
         
         $model->save();
-        Session::flash('flash_success', $msg);
-    }    
+    }      
     
 }

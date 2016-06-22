@@ -1,9 +1,9 @@
 <div class="form-group">
     <label for="usuario" class="col-sm-2 control-label">
-        {!! Form::label('Grupo de Produtos', 'Grupo de Produtos:') !!}
+        {!! Form::label('Grupo de Produtos', 'Sub Grupo de Produtos:') !!}
     </label>
-    <div class="col-md-4 col-xs-4">
-        {!! Form::text('grupoproduto', null, ['class'=> 'form-control', 'id'=>'grupoproduto', 'required'=>'required']) !!}
+    <div class="col-md-2 col-xs-4">
+        {!! Form::text('subgrupoproduto', null, ['class'=> 'form-control', 'id'=>'subgrupoproduto', 'required'=>'required']) !!}
     </div>
 </div>
 <div class="form-group">
@@ -15,7 +15,7 @@
 @section('inscript')
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#form-grupo-produto').on("submit", function(e){
+    $('#form-sub-grupo-produto').on("submit", function(e){
         var currentForm = this;
         e.preventDefault();
         bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
@@ -23,8 +23,7 @@ $(document).ready(function() {
                 currentForm.submit();
             }
         });
-    });
-    $('#grupoproduto').Setcase();     
+    });     
 });
 </script>
 @endsection

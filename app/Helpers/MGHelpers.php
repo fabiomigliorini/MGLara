@@ -307,25 +307,56 @@ if(!function_exists('removeAcentos')) {
     }
 }
 
-if(!function_exists('breadcrumb')) {
-    function breadcrumb ($parent, $item)
+if(!function_exists('titulo')) {
+    function titulo ($codigo, $descricao, $inativo) 
     {
-        $parentHtml = '';
-        $itemHtml = '';
+        $htmlCodigo     = '';
+        $htmlDescricao  = '';
+        $htmlInativo    = '';
         
-        if($parent) {
-            foreach ($parent as $value)
-            {
-                $parentHtml .= "<small>". formataCodigo($value['id']) . "</small> <a href=" .  url($value['rota']) . ">". $value['label'] . "</a> » ";
-            }
+        if(!empty($codigo))
+            $htmlCodigo .= "<small>". formataCodigo($codigo) ."</small> ";
+        
+        if(!empty($inativo))
+            $htmlCodigo .= "<del>";
+        
+        foreach ($descricao as $key => $value)
+        {
+            if($key > 0)
+                $htmlDescricao .= " » ";
+            
+            if(!empty($value['url']))   
+                $htmlDescricao .= "<a href=" .  url($value['url']) . ">";
+            
+            $htmlDescricao .= $value['descricao'];
+            
+            if(!empty($value['url']))
+                $htmlDescricao .= "</a> ";
         }
         
-        if($item['id'])
-            $itemHtml .= "<small>". formataCodigo($item['id']) ."</small> ";
-        $itemHtml .= $item['label'];
+        if(!empty($inativo))
+            $htmlInativo .= "</del> <small class='text-danger'> Inativo desde ".formataData($inativo, 'L') . "!</small>";
         
-        $resultado = $parentHtml . $itemHtml;
-        
+        $resultado = $htmlCodigo . $htmlDescricao . $htmlInativo;
+
         return $resultado;
+    }
+}
+
+if(!function_exists('inativo')) {
+    function inativo ($inativo) 
+    {
+        if(!empty($inativo))
+            return "<span class='label label-danger'>Inativo desde ". formataData($inativo, 'L'). "</span>";
+    }
+}
+
+if(!function_exists('listagemTitulo')) {
+    function listagemTitulo ($titulo, $inativo) 
+    {
+        if(!empty($inativo))
+            return "<del>$titulo</del>";
+        else 
+            return $titulo;
     }
 }
