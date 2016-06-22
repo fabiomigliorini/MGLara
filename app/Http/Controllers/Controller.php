@@ -9,7 +9,6 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 abstract class Controller extends BaseController
 {
@@ -18,13 +17,6 @@ abstract class Controller extends BaseController
     protected $datas;
     protected $numericos;
     protected $booleans;
-
-//    public static function store(Request $request)
-//    {
-//        $this->converteDatas(['data' => $request->input('data')]);
-//        
-//    }
-
 
     public static function converteDatas($datas, $formato = 'd/m/Y H:i:s')
     {
@@ -50,17 +42,4 @@ abstract class Controller extends BaseController
         }
     }
     
-    /*
-    public static function converteBooleans(array $booleans)
-    {
-        foreach ($booleans as $key => $value)
-        {
-            if($value == 1) {
-                $model->$key = TRUE;
-            } else {
-                $model->$key = FALSE;            
-            }
-        }
-    }
-    */
 }
