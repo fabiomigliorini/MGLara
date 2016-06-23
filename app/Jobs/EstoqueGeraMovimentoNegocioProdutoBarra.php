@@ -131,11 +131,6 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
             
             if ($mov->isDirty())
             {
-                /*
-                $alteracao = $mov->getDirty();
-                dd($mov);
-                file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . " - isDirty 1 $alteracao \n", FILE_APPEND);                
-                */
                 $mesRecalcular[] = $mes->codestoquemes;
 
                 $mov->alteracao = $this->NegocioProdutoBarra->alteracao;
@@ -188,10 +183,6 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
 
                 if ($movDest->isDirty())
                 {
-                    /*
-                    $alteracao = $movDest->getDirty();
-                    file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . " - isDirty 2 - $alteracao \n", FILE_APPEND);                
-                    */
                     $mesRecalcular[] = $mesDest->codestoquemes;
                 
                     $movDest->alteracao = $mov->alteracao;

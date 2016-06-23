@@ -56,7 +56,5 @@ class EstoqueGeraMovimentoProduto extends Job implements SelfHandling, ShouldQue
         foreach ($rows as $row)
             $this->dispatch((new EstoqueGeraMovimentoNegocioProdutoBarra($row->codnegocioprodutobarra))->onQueue('medium'));
         
-        //
-        file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . ' - EstoqueGeraMovimentoProduto' . "\n", FILE_APPEND);
     }
 }
