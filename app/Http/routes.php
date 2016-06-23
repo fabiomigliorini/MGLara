@@ -28,7 +28,7 @@ Route::get('estoque/gera-movimento-periodo','EstoqueController@geraMovimentoPeri
 
 
 
-Route::group(['middleware' => ['auth', 'parametros']], function() {
+Route::group(['middleware' => 'auth'], function() {
     /* Página inicial */
     Route::resource('home','DashboardController');  
     Route::resource('/','DashboardController');  

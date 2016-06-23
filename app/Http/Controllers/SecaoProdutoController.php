@@ -14,6 +14,10 @@ use Carbon\Carbon;
 
 class SecaoProdutoController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('parametros', ['only' => ['index']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -22,15 +26,6 @@ class SecaoProdutoController extends Controller
     public function index(Request $request) {
         
         $model = SecaoProduto::search($request->session()->get('secao-produto'));
-        
-        /*
-        $model = SecaoProduto::filterAndPaginate(
-            $request->session()->get('secao-produto')['codsecaoproduto'],
-            $request->session()->get('secao-produto')['secaoproduto'],
-            $request->session()->get('secao-produto')['inativo']
-        );
-        */
-        
         return view('secao-produto.index', compact('model'));
     }
     /**
