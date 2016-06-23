@@ -43,7 +43,8 @@ class EstoqueController extends Controller
 
     public function geraMovimentoNegocio(Request $request, $id)
     {
-        $this->dispatch((new EstoqueGeraMovimentoNegocio($id))->onQueue('medium'));
+        //Delay de 2 segundos pra aguardar transação do Yii
+        $this->dispatch((new EstoqueGeraMovimentoNegocio($id))->onQueue('medium')->delay(2));
         return response()->json(['response' => 'Agendado']);
     }
     
