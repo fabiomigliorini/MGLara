@@ -8,6 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Facades\Log;
 
 use MGLara\Models\EstoqueMes;
 use MGLara\Models\EstoqueMovimentoTipo;
@@ -44,7 +45,8 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
      */
     public function handle()
     {
-        file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . ' - EstoqueCalculaCustoMedio' . " - {$this->ciclo} - {$this->codestoquemes}\n", FILE_APPEND);
+        
+        Log::info('EstoqueCalculaCustoMedio', ['codestoquemes' => $this->codestoquemes, 'ciclo' => $this->ciclo]);
         
         if ($this->ciclo > 10)
             return;

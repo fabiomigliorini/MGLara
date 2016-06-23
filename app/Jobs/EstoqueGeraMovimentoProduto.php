@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 use MGLara\Models\EstoqueMes;
 
@@ -37,6 +38,7 @@ class EstoqueGeraMovimentoProduto extends Job implements SelfHandling, ShouldQue
      */
     public function handle()
     {
+        Log::info('EstoqueGeraMovimentoProduto', ['codproduto' => $this->codproduto]);
         
         $corte = Carbon::createFromFormat('Y-m-d H:i:s', EstoqueMes::CORTE_FISICO);
         

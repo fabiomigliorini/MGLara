@@ -9,6 +9,7 @@ use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 use MGLara\Models\NegocioProdutoBarra;
 use MGLara\Models\NegocioStatus;
@@ -49,6 +50,7 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
      */
     public function handle()
     {
+        Log::info('EstoqueGeraMovimentoNegocioProdutoBarra', ['codnegocioprodutobarra' => $this->codnegocioprodutobarra]);
 
         $this->NegocioProdutoBarra = NegocioProdutoBarra::findOrFail($this->codnegocioprodutobarra);
         
@@ -226,6 +228,5 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
         foreach($mesRecalcular as $mes)
             $this->dispatch((new EstoqueCalculaCustoMedio($mes))->onQueue('urgent'));
         
-        file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . " - EstoqueGeraMovimentoNegocioProdutoBarra {$this->NegocioProdutoBarra->codnegocio} - {$this->NegocioProdutoBarra->codnegocioprodutobarra} \n", FILE_APPEND);                
     }
 }

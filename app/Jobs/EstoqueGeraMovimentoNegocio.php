@@ -9,6 +9,7 @@ use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log; 
 
 
 /**
@@ -40,6 +41,8 @@ class EstoqueGeraMovimentoNegocio extends Job implements SelfHandling, ShouldQue
     public function handle()
     {
 
+        Log::info('EstoqueGeraMovimentoNegocio', ['codnegocio' => $this->codnegocio]);
+        
         //Agenda Calculo de todos os itens do negocio
         $sql = "select codnegocioprodutobarra from tblnegocioprodutobarra where codnegocio = {$this->codnegocio} order by codnegocioprodutobarra";
         $rows = DB::select($sql);
@@ -47,6 +50,5 @@ class EstoqueGeraMovimentoNegocio extends Job implements SelfHandling, ShouldQue
         foreach ($rows as $row)
             $this->dispatch((new EstoqueGeraMovimentoNegocioProdutoBarra($row->codnegocioprodutobarra))->onQueue('high'));
         
-        file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . " - EstoqueGeraMovimentoNegocio {$this->codnegocio} \n", FILE_APPEND);        
     }
 }

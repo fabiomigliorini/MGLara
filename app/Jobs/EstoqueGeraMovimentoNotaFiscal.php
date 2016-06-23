@@ -7,18 +7,22 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 class EstoqueGeraMovimentoNotaFiscal extends Job implements SelfHandling, ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
+    
+    protected $codnotafiscal;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($codnotafiscal)
     {
+        $this->codnotafiscal = $codnotafiscal;
         //
     }
 
@@ -29,7 +33,6 @@ class EstoqueGeraMovimentoNotaFiscal extends Job implements SelfHandling, Should
      */
     public function handle()
     {
-        //
-        file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . ' - EstoqueGeraMovimentoNotaFiscal' . "\n", FILE_APPEND);        
+        Log::info('EstoqueGeraMovimentoNotaFiscal', ['codnotafiscal' => $this->codnotafiscal]);
     }
 }

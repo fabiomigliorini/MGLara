@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 use MGLara\Models\EstoqueMes;
 use MGLara\Jobs\EstoqueGeraMovimentoNegocio;
@@ -45,6 +46,7 @@ class EstoqueGeraMovimentoPeriodo extends Job implements SelfHandling, ShouldQue
      */
     public function handle()
     {
+        Log::info('EstoqueGeraMovimentoPeriodo', ['inicial' => $this->inicial, 'final' => $this->final]);
 
         $corte = Carbon::createFromFormat('Y-m-d H:i:s', EstoqueMes::CORTE_FISICO);
         
@@ -55,8 +57,6 @@ class EstoqueGeraMovimentoPeriodo extends Job implements SelfHandling, ShouldQue
         $rows = DB::select($sql);
         foreach ($rows as $row)
             $this->dispatch((new EstoqueGeraMovimentoNegocio($row->codnegocio))->onQueue('medium'));
-
-        //
-        file_put_contents('/tmp/jobs.log', date('d/m/Y h:i:s') . ' - EstoqueGeraMovimentoPeriodo ' . "$this->inicial - $this->final\n", FILE_APPEND);
+        
     }
 }
