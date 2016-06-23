@@ -20,7 +20,7 @@
         {!! Form::text('secaoproduto', null, ['class' => 'form-control', 'placeholder' => 'Seção']) !!}
     </div>
     <div class="form-group">
-        {!! Form::select('inativo', ['0' => 'Todos', '1' => 'Ativos', '2' => 'Inativos'], (Request::session()->get('secao-produto')['inativo'] == '' ? '1' : null), ['class' => 'form-control']) !!}
+        {!! Form::select('inativo', ['9' => 'Todos', '1' => 'Ativos', '2' => 'Inativos'], (Request::session()->get('secao-produto')['inativo'] == '' ? '1' : null), ['class' => 'form-control']) !!}
     </div>      
     <button type="submit" class="btn btn-default">Buscar</button>
 {!! Form::close() !!}
