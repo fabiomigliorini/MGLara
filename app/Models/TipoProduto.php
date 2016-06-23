@@ -6,6 +6,7 @@ namespace MGLara\Models;
  * Campos
  * @property  bigint                         $codtipoproduto                     NOT NULL DEFAULT nextval('tbltipoproduto_codtipoproduto_seq'::regclass)
  * @property  varchar()                      $tipoproduto                        NOT NULL DEFAULT 50
+ * @property  boolean                        $estoque                            NOT NULL DEFAULT FALSE
  * @property  timestamp                      $alteracao                          
  * @property  bigint                         $codusuarioalteracao                
  * @property  timestamp                      $criacao                            

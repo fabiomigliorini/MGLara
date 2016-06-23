@@ -60,9 +60,10 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
         $corte = Carbon::createFromFormat('Y-m-d H:i:s', EstoqueMes::CORTE_FISICO);
         
         if ($this->NegocioProdutoBarra->Negocio->codnegociostatus == NegocioStatus::FECHADO
-                && $this->NegocioProdutoBarra->Negocio->NaturezaOperacao->estoque == TRUE
-                && $this->NegocioProdutoBarra->Negocio->lancamento->gte($corte)
-                )
+            && $this->NegocioProdutoBarra->Negocio->lancamento->gte($corte)
+            && $this->NegocioProdutoBarra->Negocio->NaturezaOperacao->estoque == TRUE
+            && $this->NegocioProdutoBarra->ProdutoBarra->Produto->TipoProduto->estoque == TRUE        
+            )
         {
             $mov = EstoqueMovimento::where('codnegocioprodutobarra', $this->NegocioProdutoBarra->codnegocioprodutobarra)->where('codestoquemovimentoorigem', null)->first();
 
@@ -70,11 +71,11 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                 $mov = new EstoqueMovimento;
             
             $mes = EstoqueMes::buscaOuCria(
-                    $this->NegocioProdutoBarra->ProdutoBarra->codproduto,
-                    $this->NegocioProdutoBarra->Negocio->codestoquelocal,
-                    false, 
-                    $this->NegocioProdutoBarra->Negocio->lancamento
-                    );
+                $this->NegocioProdutoBarra->ProdutoBarra->codproduto,
+                $this->NegocioProdutoBarra->Negocio->codestoquelocal,
+                false, 
+                $this->NegocioProdutoBarra->Negocio->lancamento
+                );
             
             if (!empty($mov->codestoquemes) && $mov->codestoquemes != $mes->codestoquemes)
                 $mesRecalcular[] = $mov->codestoquemes;
@@ -120,7 +121,7 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                 {
                     $mov->entradavalor = null;
                     if ($mov->saidavalor != $valor);
-                    $mov->saidavalor = $valor;
+                        $mov->saidavalor = $valor;
                 }
 
             }
