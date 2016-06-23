@@ -50,10 +50,22 @@
 @section('inscript')
 <script type="text/javascript">
 $(document).ready(function() {
-    $('ul.pagination').removeClass('hide');
-    $('#pais-search').change(function() {
-        this.submit();
-    });    
+    $("#pais-search").on("change", function (event) {
+        var $this = $(this);
+        var frmValues = $this.serialize();
+        $.ajax({
+            type: 'GET',
+            url: baseUrl + '/pais',
+            data: frmValues
+        })
+        .done(function (data) {
+            $('#items').html(jQuery(data).find('#items').html()); 
+        })
+        .fail(function () {
+            console.log('Erro no filtro');
+        });
+        event.preventDefault(); 
+    });       
 });
 </script>
 @endsection

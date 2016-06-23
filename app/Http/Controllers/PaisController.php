@@ -19,12 +19,15 @@ class PaisController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
+        
+        $parametros = $request->session()->get('MGLara\Http\Middleware\ParametrosGet|pais');
+        
         $model = Pais::filterAndPaginate(
-            $request->get('codpais'),
-            $request->get('pais')
+            $request->session()->get('pais')['codpais'],
+            $request->session()->get('pais')['pais']
         );
         
-        return view('pais.index', compact('model'));
+        return view('pais.index', compact('model', 'parametros'));
     }
 
     /**

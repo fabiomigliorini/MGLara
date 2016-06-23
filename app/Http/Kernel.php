@@ -30,5 +30,6 @@ class Kernel extends HttpKernel
         'auth.basic'    => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest'         => \MGLara\Http\Middleware\RedirectIfAuthenticated::class,
         'permissao'     => \MGLara\Http\Middleware\VerificaPermissao::class,
+        'parametros'    => \MGLara\Http\Middleware\ParametrosGet::class,
     ];
 }

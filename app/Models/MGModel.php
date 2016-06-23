@@ -96,4 +96,12 @@ abstract class MGModel extends Model {
         
     }
     
+    public function scopeCompare($query, $coluna,  $valor)
+    {
+        if (trim($valor) === '')
+            return;
+        
+        $query->where($coluna, $valor);
+    }    
+    
 }
