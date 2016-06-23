@@ -360,12 +360,3 @@ if(!function_exists('listagemTitulo')) {
             return $titulo;
     }
 }
-
-if(!function_exists('pegaParametros')) {
-    function pegaParametros($string)
-    {
-        $string = explode('?', $string);
-        $string = $string[1];
-        return $string;
-    }
-}
