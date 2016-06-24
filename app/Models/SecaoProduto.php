@@ -83,19 +83,24 @@ class SecaoProduto extends MGModel
     {
         $query = SecaoProduto::orderBy('secaoproduto', 'ASC');
         
-        $query->id($parametros['codsecaoproduto']);
+        if(isset($parametros['codsecaoproduto']))
+            $query->id($parametros['codsecaoproduto']);
         
-        $query->secaoProduto($parametros['secaoproduto']);
+        if(isset($parametros['secaoproduto']))
+            $query->secaoProduto($parametros['secaoproduto']);
         
-        switch ($parametros['inativo'])
-        {
-            case 9: // Todos
-                break;
-            case 2: // Inativos
-                $query->inativo();      break;
-            default:
-                $query->ativo();        break;
-        }
+        if(isset($parametros['inativo']))
+            switch ($parametros['inativo'])
+            {
+                case 9: // Todos
+                    break;
+                case 2: // Inativos
+                    $query->inativo();      break;
+                default:
+                    $query->ativo();        break;
+            }
+        else
+            $query->ativo();
         
         return $query->paginate($registros);
     }

@@ -15,6 +15,10 @@ use Carbon\Carbon;
 
 class GrupoProdutoController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('parametros', ['only' => ['show']]);
+    }      
     /**
      * Display a listing of the resource.
      *
@@ -64,13 +68,12 @@ class GrupoProdutoController extends Controller
      */
     public function show(Request $request, $id)
     {
+        if(!array_key_exists('grupo-produto', $request->session()))
+            $request->session()->put('grupo-produto.show', '');
+        
         $model = GrupoProduto::findOrFail($id);
-        $subgrupos = SubGrupoProduto::filterAndPaginate(
-            $request->get('codsubgrupoproduto'),
-            $id,    
-            $request->get('subgrupoproduto'),    
-            $request->get('inativo')  
-        );
+        $request->session()->put('grupo-produto.show.codgrupoproduto', $id);
+        $subgrupos = SubGrupoProduto::search($request->session()->get('grupo-produto')['show']);
         return view('grupo-produto.show', compact('model','subgrupos'));
     }
 

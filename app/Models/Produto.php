@@ -558,6 +558,12 @@ class Produto extends MGModel
         return $query;        
     }
 
+    public static function search()
+    {
+        
+        
+    }
+    
     
     // Buscas 
     public static function filterAndPaginate(

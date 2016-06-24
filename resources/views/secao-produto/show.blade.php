@@ -55,17 +55,32 @@
 </h1>
 @include('includes.autor')
 <hr>
-{!! Form::model(Request::all(), ['method' => 'GET', 'class' => 'form-inline', 'id' => 'familia-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+{!! Form::model(
+    (Request::session()->has('secao-produto.show') ? Request::session()->get('secao-produto')['show'] : null), 
+    [
+        'route' => 'secao-produto.show', 
+        'method' => 'GET', 
+        'class' => 'form-inline', 
+        'id' => 'familia-produto-search', 
+        'role' => 'search', 
+        'autocomplete' => 'off'
+    ]
+)!!}
+
     <div class="form-group">
         <input type="text" name="familiaproduto" id="familiaproduto" placeholder="Família" class="form-control">
     </div>
     <div class="form-group">
-        <select class="form-control" name="inativo" id="inativo" placeholder="Ativos">
-            <option value="0">Todas</option>
-            <option value="1" selected="selected">Ativas</option>
-            <option value="2">Inativas</option>
-        </select>
-    </div>      
+        {!! Form::select(
+            'inativo', [
+                '9' => 'Todos', 
+                '1' => 'Ativos', 
+                '2' => 'Inativos'
+            ], 
+            (Request::session()->has('secao-produto.show')['inativo'] ? null : 1),
+            ['class' => 'form-control']
+        ) !!}
+    </div>    
     <button type="submit" class="btn btn-default"><i class=" glyphicon glyphicon-search"></i> Buscar</button>
     <a class="btn btn-default" href="{{ url("familia-produto/create?codsecaoproduto=$model->codsecaoproduto") }}"><i class=" glyphicon glyphicon-plus"></i> Nova Familia</a>
 {!! Form::close() !!}

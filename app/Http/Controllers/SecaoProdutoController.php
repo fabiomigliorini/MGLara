@@ -16,7 +16,7 @@ class SecaoProdutoController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('parametros', ['only' => ['index']]);
+        $this->middleware('parametros', ['only' => ['index', 'show']]);
     }
     /**
      * Display a listing of the resource.
@@ -24,8 +24,12 @@ class SecaoProdutoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        
-        $model = SecaoProduto::search($request->session()->get('secao-produto'));
+
+        $parametros = [];
+        if ($request->session()->has('secao-produto.index')) 
+            $parametros = $request->session()->get('secao-produto')['index'];
+            
+        $model = SecaoProduto::search($parametros);
         return view('secao-produto.index', compact('model'));
     }
     /**
@@ -65,13 +69,13 @@ class SecaoProdutoController extends Controller
      */
     public function show(Request $request, $id)
     {
+        $parametros = [];
+        if ($request->session()->has('secao-produto.show')) 
+            $parametros = $request->session()->get('secao-produto')['show'];        
+        
         $model = SecaoProduto::find($id);
-        $familias = FamiliaProduto::filterAndPaginate(
-            $request->get('codfamiliaproduto'),
-            $id,
-            $request->get('familiaproduto'), 
-            $request->get('inativo')
-        );
+        $request->session()->put("secao-produto.show.codsecaoproduto", $id);
+        $familias = FamiliaProduto::search($parametros);
         return view('secao-produto.show', compact('model', 'familias'));
     }
 

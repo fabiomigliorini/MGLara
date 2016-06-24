@@ -55,17 +55,13 @@
 </h1>
 @include('includes.autor')
 <hr>
-{!! Form::model(Request::all(), ['method' => 'GET', 'class' => 'form-inline', 'id' => 'grupo-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+{!! Form::model(Request::session()->get('familia-produto')['show'], ['method' => 'GET', 'class' => 'form-inline', 'id' => 'grupo-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
     <div class="form-group">
         {!! Form::text('grupoproduto', null, ['class' => 'form-control', 'placeholder' => 'Grupo']) !!}
     </div>
     <div class="form-group">
-        <select class="form-control" name="inativo" id="inativo" placeholder="Ativos">
-            <option value="0">Todos</option>
-            <option value="1" selected="selected">Ativos</option>
-            <option value="2">Inativos</option>
-        </select>
-    </div>      
+        {!! Form::select('inativo', ['9' => 'Todos', '1' => 'Ativos', '2' => 'Inativos'], (Request::session()->get('familia-produto')['show']['inativo'] == '' ? '1' : null), ['class' => 'form-control']) !!}
+    </div>       
     <button type="submit" class="btn btn-default"><i class=" glyphicon glyphicon-search"></i> Buscar</button>
     <a class="btn btn-default" href="{{ url("grupo-produto/create?codfamiliaproduto=$model->codfamiliaproduto") }}">
         <i class=" glyphicon glyphicon-plus"></i> Novo Grupo
