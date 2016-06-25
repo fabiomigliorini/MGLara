@@ -124,31 +124,31 @@ class ProdutoBarra extends MGModel
     public static function buscaPorBarras($barras)
     {
         //Procura pelo Codigo de Barras
-        if ($ret = ProdutoBarra::where('barras', '=', $barras)->select('codproduto','variacao')->get())
+        if ($ret = ProdutoBarra::where('barras', '=', $barras)->select('codproduto','variacao')->first())
             return $ret;
 
         //Procura pelo Codigo Interno
         if (strlen($barras) == 6 && ($barras == numeroLimpo($barras)))
-            if ($ret = ProdutoBarra::where('codproduto', '=', $barras)->whereNull('codprodutoembalagem')->select('codproduto','variacao')->get())
+            if ($ret = ProdutoBarra::where('codproduto', '=', $barras)->whereNull('codprodutoembalagem')->first())
                 return $ret;
 
         //Procura pelo Codigo Interno * Embalagem
-        $arr = explode('-', $barras);
-        if (
-            count($arr) == 2
-            && strlen($arr[0]) == 6
-            && $arr[0] == numeroLimpo($arr[0])
-            && $arr[1] == numeroLimpo($arr[1])
-            ) 
+        if (strstr($barras, '-'))
         {
-            if ($pe = ProdutoEmbalagem::where('codproduto', '=', $arr[0])->where('quantidade', '=', $arr[1])->select('codproduto','variacao')->get())
+            $arr = explode('-', $barras);
+            if (count($arr == 2))
             {
-                if ($ret = ProdutoEmbalagem::where('codprodutoembalagem', '=', $pe->codprodutoembalagem)->select('codproduto','variacao')->get())
-                {
-                    return $ret;
-                }
+                $codigo = numeroLimpo($arr[0]);
+                $quantidade = numeroLimpo($arr[1]);
+
+                if ($barras == "$codigo-$quantidade")
+                    if ($ret = ProdutoBarra::where('codproduto', $codigo)->whereHas('ProdutoEmbalagem', function($query) use ($quantidade){
+                            $query->where('quantidade', $quantidade);
+                            })->first())
+                        return $ret;
             }
         }
+        
         return false;
 
     }    

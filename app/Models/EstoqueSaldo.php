@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\DB;
  *
  * Tabelas Filhas
  * @property  EstoqueMes[]                   $EstoqueMesS
+ * @property  EstoqueSaldoConferencia[]      $EstoqueSaldoConferenciaS
  */
 
 class EstoqueSaldo extends MGModel
@@ -72,6 +73,11 @@ class EstoqueSaldo extends MGModel
     public function EstoqueMesS()
     {
         return $this->hasMany(EstoqueMes::class, 'codestoquesaldo', 'codestoquesaldo');
+    }
+    
+    public function EstoqueSaldoConferenciaS()
+    {
+        return $this->hasMany(EstoqueSaldoConferencia::class, 'codestoquesaldo', 'codestoquesaldo');
     }
     
     public static function buscaOuCria($codproduto, $codestoquelocal, $fiscal)
@@ -379,7 +385,7 @@ class EstoqueSaldo extends MGModel
             $query->where('fiscal', true);
         else
             $query->where('fiscal', false);
-    } 
+    }
 
     public function scopeLocal($query, $EstoqueLocal)
     {

@@ -101,6 +101,9 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto/{id}/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');
     
     Route::resource('produto','ProdutoController');
+
+    /* Estoque Saldo Conferencia */
+    Route::resource('estoque-saldo-conferencia','EstoqueSaldoConferenciaController');
     
     /* Produto Barra*/
     Route::resource('produto-barra','ProdutoBarraController');
