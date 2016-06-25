@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
  * @property  numeric(14,2)                  $saidavalor                         
  * @property  bigint                         $codnegocioprodutobarra             
  * @property  bigint                         $codnotafiscalprodutobarra          
+ * @property  bigint                         $codestoquesaldoconferencia
  * @property  bigint                         $codestoquemes                      NOT NULL
  * @property  boolean                        $manual                             NOT NULL DEFAULT false
  * @property  timestamp                      $data                               NOT NULL
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\DB;
  * @property  EstoqueMovimentoTipo           $EstoqueMovimentoTipo          
  * @property  NegocioProdutoBarra            $NegocioProdutoBarra           
  * @property  NotaFiscalProdutoBarra         $NotaFiscalProdutoBarra        
+ * @property  EstoqueSaldoConferencia        $EstoqueSaldoConferencia
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
  * @property  EstoqueMes                     $EstoqueMes                    
