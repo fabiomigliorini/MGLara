@@ -558,12 +558,36 @@ class Produto extends MGModel
         return $query;        
     }
 
-    public static function search()
+    public static function search($parametros, $registros = 20)
     {
+        $query = Produto::orderBy('produto', 'ASC');
+            
+        if(isset($parametros['codproduto']))
+            $query->id($parametros['codproduto']);
+        
+        if(isset($parametros['codsubgrupoproduto']))
+            $query->where('codsubgrupoproduto', $parametros['codsubgrupoproduto']);
         
         
+        if(isset($parametros['produto']))
+            $query->produto($parametros['produto']);
+        
+        if(isset($parametros['inativo']))
+            switch ($parametros['inativo'])
+            {
+                case 9: // Todos
+                    break;
+                case 2: // Inativos
+                    $query->inativo();      break;
+                default:
+                    $query->ativo();        break;
+            }
+        else
+            $query->ativo();
+        
+        return $query->paginate($registros);
     }
-    
+
     
     // Buscas 
     public static function filterAndPaginate(
@@ -738,15 +762,14 @@ class Produto extends MGModel
         $query->whereBetween('alteracao', [$alteracao_de, $alteracao_ate]);    
     }
     
-    public function scopeInativo($query, $inativo)
+    
+    public function scopeInativo($query)
     {
-        if (trim($inativo) === '')
-            $query->whereNull('inativo');
-        
-        if($inativo == 1)
-            $query->whereNull('inativo');
+        $query->whereNotNull('inativo');
+    }
 
-        if($inativo == 2)
-            $query->whereNotNull('inativo');
-    }    
+    public function scopeAtivo($query)
+    {
+        $query->whereNull('inativo');
+    }
 }

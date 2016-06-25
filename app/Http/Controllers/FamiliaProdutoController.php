@@ -17,8 +17,8 @@ class FamiliaProdutoController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('parametros', ['only' => ['show']]);
-    }    
+        $this->middleware('parametros', ['only' => ['index', 'show']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -40,7 +40,6 @@ class FamiliaProdutoController extends Controller
         $parent = SecaoProduto::findOrFail($request->get('codsecaoproduto'));
         return view('familia-produto.create', compact('model', 'request', 'parent'));
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -69,12 +68,15 @@ class FamiliaProdutoController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if(!array_key_exists('familia-produto', $request->session()))
-            $request->session()->put('familia-produto.show', '');
+           
+        if (!$request->session()->has('familia-produto.show'))
+            $request->session()->put("familia-produto.show.inativo", '1');
         
+        $request->session()->put("familia-produto.show.codsecaoproduto", $id);
+        $parametros = $request->session()->get('familia-produto.show');        
+            
         $model = FamiliaProduto::find($id);
-        $request->session()->put('familia-produto.show.codfamiliaproduto', $id);
-        $grupos = GrupoProduto::search($request->session()->get('familia-produto')['show']);
+        $grupos = GrupoProduto::search($parametros);
         return view('familia-produto.show', compact('model', 'grupos'));
     }
 

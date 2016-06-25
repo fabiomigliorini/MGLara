@@ -13,7 +13,7 @@
 <hr>
 <div class="search-bar">
 {!! Form::model(
-    (Request::session()->has('secao-produto.index') ? Request::session()->get('secao-produto')['index'] : null), 
+    Request::session()->get('secao-produto.index'), 
     [
         'route' => 'secao-produto.index', 
         'method' => 'GET', 
@@ -36,7 +36,7 @@
                 '1' => 'Ativos', 
                 '2' => 'Inativos'
             ], 
-            (Request::session()->has('secao-produto.index')['inativo'] ? null : 1),
+            Request::session()->get('secao-produto.index.inativo'),
             ['class' => 'form-control']
         ) !!}
     </div>      

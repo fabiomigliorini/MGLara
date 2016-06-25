@@ -56,7 +56,7 @@
 @include('includes.autor')
 <hr>
 {!! Form::model(
-    (Request::session()->has('secao-produto.show') ? Request::session()->get('secao-produto')['show'] : null), 
+    (Request::session()->has('secao-produto.show') ? Request::session()->get('secao-produto')['show'] : null),
     [
         'route' => 'secao-produto.show', 
         'method' => 'GET', 
@@ -66,9 +66,8 @@
         'autocomplete' => 'off'
     ]
 )!!}
-
     <div class="form-group">
-        <input type="text" name="familiaproduto" id="familiaproduto" placeholder="Família" class="form-control">
+        {!! Form::text('familiaproduto', null, ['class' => 'form-control', 'placeholder' => 'Família']) !!}
     </div>
     <div class="form-group">
         {!! Form::select(
@@ -77,7 +76,7 @@
                 '1' => 'Ativos', 
                 '2' => 'Inativos'
             ], 
-            (Request::session()->has('secao-produto.show')['inativo'] ? null : 1),
+            (Request::session()->has('secao-produto.show')['inativo'] ? null : Request::session()->get('secao-produto.show')['inativo']),
             ['class' => 'form-control']
         ) !!}
     </div>    

@@ -146,5 +146,4 @@ class FamiliaProduto extends MGModel
     {
         $query->whereNull('inativo');
     }
-
 }

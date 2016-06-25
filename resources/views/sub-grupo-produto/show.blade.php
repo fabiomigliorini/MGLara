@@ -64,17 +64,32 @@
 </h1>
 @include('includes.autor')
 <hr>
-{!! Form::model(Request::all(), ['method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+{!! Form::model(
+    Request::session()->get('sub-grupo-produto.show'),
+    [
+        'route' => 'grupo-produto.show', 
+        'method' => 'GET', 
+        'class' => 'form-inline', 
+        'id' => 'produto-search', 
+        'role' => 'search', 
+        'autocomplete' => 'off'
+    ]
+)!!}
+
     <div class="form-group">
-        <input type="text" name="produto" id="produto" placeholder="Produto" class="form-control">
+        {!! Form::text('produto', null, ['class' => 'form-control', 'placeholder' => 'Produto']) !!}
     </div>
     <div class="form-group">
-        <select class="form-control" name="inativo" id="inativo" placeholder="Ativos">
-            <option value="0">Todos</option>
-            <option value="1" selected="selected">Ativos</option>
-            <option value="2">Inativos</option>
-        </select>
-    </div>      
+        {!! Form::select(
+            'inativo', [
+                '9' => 'Todos', 
+                '1' => 'Ativos', 
+                '2' => 'Inativos'
+            ], 
+            Request::session()->get('sub-grupo-produto.show.inativo'),
+            ['class' => 'form-control']
+        ) !!}
+    </div>          
     <button type="submit" class="btn btn-default"><i class=" glyphicon glyphicon-search"></i> Buscar</button>
 {!! Form::close() !!}
 <br>

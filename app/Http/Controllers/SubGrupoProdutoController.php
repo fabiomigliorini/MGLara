@@ -68,11 +68,14 @@ class SubGrupoProdutoController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if(!array_key_exists('sub-grupo-produto', $request->session()))
-            $request->session()->put('sub-grupo-produto.show', '');
+        if (!$request->session()->has('sub-grupo-produto.show'))
+            $request->session()->put("sub-grupo-produto.show.inativo", '1');
         
+        $request->session()->put("sub-grupo-produto.show.codsubgrupoproduto", $id);
+        $parametros = $request->session()->get('sub-grupo-produto.show');               
+            
         $model = SubGrupoProduto::findOrFail($id);
-        $produtos = Produto::search($request->session()->get('sub-grupo-produto'));
+        $produtos = Produto::search($parametros);
         return view('sub-grupo-produto.show', compact('model', 'produtos'));
     }
 
