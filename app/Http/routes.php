@@ -87,6 +87,7 @@ Route::group(['middleware' => 'auth'], function() {
               
     /* SubGrupoProduto */
     Route::resource('sub-grupo-produto/{id}/busca-codproduto','SubGrupoProdutoController@buscaCodproduto');           
+    Route::get('sub-grupo-produto/ajax','SubGrupoProdutoController@ajax');  
     Route::post('sub-grupo-produto/inativo','SubGrupoProdutoController@inativo');  
     Route::resource('sub-grupo-produto','SubGrupoProdutoController');           
          

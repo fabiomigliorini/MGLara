@@ -1,16 +1,37 @@
 <?php
 
 use MGLara\Models\UnidadeMedida;
+use MGLara\Models\FamiliaProduto;
 use MGLara\Models\SubGrupoProduto;
 use MGLara\Models\Tributacao;
 use MGLara\Models\TipoProduto;
 
 $medidas        = [''=>''] + UnidadeMedida::lists('unidademedida', 'codunidademedida')->all();
-$grupos         = [''=>''] + SubGrupoProduto::select2();
+//$grupos         = [''=>''] + SubGrupoProduto::select2();
+$secoes         = [''=>''] + FamiliaProduto::select2();
 $tributacoes    = [''=>''] + Tributacao::lists('tributacao', 'codtributacao')->all();
 $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')->all();
 
 ?>
+<div class="form-group">
+    <label for="codmarca" class="col-sm-2 control-label">Marca</label>
+    <div class="col-sm-2">{!! Form::text('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%']) !!}</div>    
+</div>
+
+<div class="form-group">
+    <label for="codfamiliaproduto" class="col-sm-2 control-label">{!! Form::label('Seção:') !!}</label>
+    <div class="col-sm-4">{!! Form::select('codfamiliaproduto', $secoes, null, ['class'=> 'form-control', 'id' => 'codfamiliaproduto', 'style'=>'width:100%']) !!}</div>
+</div>
+
+<div class="form-group">
+    <label for="codsubgrupoproduto" class="col-sm-2 control-label">{!! Form::label('Grupo:') !!}</label>
+    <div class="col-sm-5">
+    <select id="codsubgrupoproduto" name="codsubgrupoproduto" class="form-control">
+        <option>Please choose car make first</option>
+    </select>   
+    </div> 
+</div>
+
 <div class="form-group">
     <label for="produto" class="col-sm-2 control-label">{!! Form::label('Descrição:') !!}</label>
     <div class="col-sm-6">{!! Form::text('produto', null, ['class'=> 'form-control', 'id'=>'produto']) !!}</div>
@@ -24,18 +45,6 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 <div class="form-group">
     <label for="codunidademedida" class="col-sm-2 control-label">{!! Form::label('Unidade Medida:') !!}</label>
     <div class="col-sm-2">{!! Form::select('codunidademedida', $medidas, $model->codunidademedida, ['class'=> 'form-control', 'id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
-</div>
-
-<div class="form-group">
-    <label for="codsubgrupoproduto" class="col-sm-2 control-label">{!! Form::label('Grupo:') !!}</label>
-    <div class="col-sm-6">{!! Form::select('codsubgrupoproduto', $grupos, $model->codsubgrupoproduto, ['class'=> 'form-control', 'id'=>'codsubgrupoproduto', 'style'=>'width:100%']) !!}</div>
-</div>
-
-<div class="form-group">
-    <label for="codmarca" class="col-sm-2 control-label">Marca</label>
-    <div class="col-sm-2">
-        {!! Form::text('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%']) !!}
-    </div>    
 </div>
 
 <div class="form-group">
@@ -259,11 +268,76 @@ $(document).ready(function() {
         closeOnSelect: true
     });
 
+    $('#codfamiliaproduto').select2({
+        placeholder: 'Seção',
+        allowClear: true,
+        closeOnSelect: true
+    });
+
     $('#codsubgrupoproduto').select2({
         placeholder: 'Grupo',
         allowClear: true,
         closeOnSelect: true
+    })<?php echo (isset($model->codsubgrupoproduto) ? ".select2('val', $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codfamiliaproduto);" : ';');?>
+    
+    $('#codfamiliaproduto').change(function(){
+        $.get(baseUrl + '/sub-grupo-produto/ajax', 
+            { 
+                codfamiliaproduto: $(this).val() 
+            }, 
+            function(data) {
+                var model = $('#codsubgrupoproduto');
+                model.empty();
+                //console.log(data);
+                $.each(data, function(key, value) {
+                    model.append("<option value='"+ value.id +"'>" + value.subgrupoproduto + "</option>");
+                });
+            });
     });
+
+
+
+    /*
+    $('#codsubgrupoproduto').select2({
+        minimumInputLength:0,
+        allowClear:true,
+        closeOnSelect:true,
+        placeholder:'Grupo/Sub Grupo',
+        formatResult: function(item) {
+            var markup = "";
+            markup    += "<span>" + item.subgrupoproduto + "</span>";
+            return markup;
+        },
+        formatSelection: function(item) { 
+            return item.subgrupoproduto;
+        },
+        ajax:{
+            url:baseUrl+"/sub-grupo-produto/ajax",
+            dataType:'json',
+            quietMillis:500,
+            data:function(term, codfamiliaproduto) { 
+                return {
+                    q:term,
+                    codfamiliaproduto: $('#codfamiliaproduto').val()
+                }; 
+            },
+            results:function(data) {
+                return {results: data.items};
+            }
+        },
+        initSelection:function (element, callback) {
+            $.ajax({
+                type: "GET",
+                url: baseUrl+"/sub-grupo-produto/ajax",
+                data: "id=<?php if(isset($model)) echo $model->codsubgrupoproduto;?>",
+                dataType: "json",
+                success: function(result) { callback(result); }
+            });
+        },
+        width:'resolve'
+    });      
+    */
+
     
 });
 </script>

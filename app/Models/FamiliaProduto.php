@@ -90,6 +90,18 @@ class FamiliaProduto extends MGModel
         return $this->hasMany(GrupoProduto::class, 'codfamiliaproduto', 'codfamiliaproduto');
     }
 
+    public static function select2()
+    {
+        $sessoes = FamiliaProduto::orderBy('codsecaoproduto', 'ASC')->get();
+        $retorno = [];
+        foreach ($sessoes as $familia)
+        {
+            $retorno[$familia->codfamiliaproduto] =  $familia->SecaoProduto->secaoproduto .' » '. $familia->familiaproduto;
+        }
+
+        return $retorno;
+    }    
+    
     public static function search($parametros, $registros = 20)
     {
         $query = FamiliaProduto::orderBy('familiaproduto', 'ASC');

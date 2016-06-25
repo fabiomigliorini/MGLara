@@ -84,13 +84,20 @@ class SubGrupoProduto extends MGModel
         return $this->hasMany(Produto::class, 'codsubgrupoproduto', 'codsubgrupoproduto')->orderBy('produto');
     }
 
-    public static function select2()
+    public static function select2($codfamiliaproduto)
     {
-        $subgrupos = SubGrupoProduto::orderBy('codgrupoproduto', 'ASC')->get();
+        $subgrupos = SubGrupoProduto::join('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto')
+            ->where('tblgrupoproduto.codfamiliaproduto', $codfamiliaproduto)
+                ->orderBy('tblsubgrupoproduto.codgrupoproduto')
+            ->paginate(20);
+        
         $retorno = [];
         foreach ($subgrupos as $subgrupo)
         {
-            $retorno[$subgrupo->codsubgrupoproduto] =  $subgrupo->GrupoProduto->grupoproduto .' » '. $subgrupo->subgrupoproduto;
+            $retorno[] =  [
+                'id' => $subgrupo->codsubgrupoproduto,
+                'subgrupoproduto' => $subgrupo->GrupoProduto->grupoproduto .' » '. $subgrupo->subgrupoproduto
+            ];
         }
 
         return $retorno;
