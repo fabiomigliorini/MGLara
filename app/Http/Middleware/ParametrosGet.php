@@ -17,7 +17,7 @@ class ParametrosGet
      */
     public function handle(Request $request, Closure $next)
     {
-        $key = $request->route()->uri();
+        $key = $request->route()->getName();
         
         $parameters = $request->all();
 

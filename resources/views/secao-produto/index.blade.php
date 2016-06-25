@@ -12,7 +12,17 @@
 <h1 class="header">{!! titulo(null, [ ['url' => null, 'descricao' => 'Seções de Produto'] ], null) !!}  </h1>
 <hr>
 <div class="search-bar">
-{!! Form::model(Request::session()->get('secao-produto'), ['route' => 'secao-produto.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'secao-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+{!! Form::model(
+    Request::session()->get('secao-produto.index'), 
+    [
+        'route' => 'secao-produto.index', 
+        'method' => 'GET', 
+        'class' => 'form-inline', 
+        'id' => 'secao-produto-search', 
+        'role' => 'search', 
+        'autocomplete' => 'off'
+    ]
+)!!}
     <div class="form-group">
         {!! Form::text('codsecaoproduto', null, ['class' => 'form-control search-cod', 'placeholder' => '#']) !!}
     </div>
@@ -20,7 +30,15 @@
         {!! Form::text('secaoproduto', null, ['class' => 'form-control', 'placeholder' => 'Seção']) !!}
     </div>
     <div class="form-group">
-        {!! Form::select('inativo', ['9' => 'Todos', '1' => 'Ativos', '2' => 'Inativos'], (Request::session()->get('secao-produto')['inativo'] == '' ? '1' : null), ['class' => 'form-control']) !!}
+        {!! Form::select(
+            'inativo', [
+                '9' => 'Todos', 
+                '1' => 'Ativos', 
+                '2' => 'Inativos'
+            ], 
+            Request::session()->get('secao-produto.index.inativo'),
+            ['class' => 'form-control']
+        ) !!}
     </div>      
     <button type="submit" class="btn btn-default">Buscar</button>
 {!! Form::close() !!}

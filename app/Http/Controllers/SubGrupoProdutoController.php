@@ -14,6 +14,10 @@ use Carbon\Carbon;
 
 class SubGrupoProdutoController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('parametros', ['only' => ['show']]);
+    }      
     /**
      * Display a listing of the resource.
      *
@@ -64,25 +68,14 @@ class SubGrupoProdutoController extends Controller
      */
     public function show(Request $request, $id)
     {
+        if (!$request->session()->has('sub-grupo-produto.show'))
+            $request->session()->put("sub-grupo-produto.show.inativo", '1');
+        
+        $request->session()->put("sub-grupo-produto.show.codsubgrupoproduto", $id);
+        $parametros = $request->session()->get('sub-grupo-produto.show');               
+            
         $model = SubGrupoProduto::findOrFail($id);
-        $produtos = Produto::filterAndPaginate(
-            $request->get('codproduto'),
-            $id,
-            $request->get('barras'),
-            $request->get('produto'),
-            $request->get('codmarca'),
-            $request->get('referencia'),
-            $request->get('codtributacao'),
-            $request->get('site'),
-            $request->get('codncm'),
-            $request->get('preco_de'),
-            $request->get('preco_ate'),
-            $request->get('criacao_de'),
-            $request->get('criacao_ate'),
-            $request->get('alteracao_de'),
-            $request->get('alteracao_ate'),
-            $request->get('inativo')
-        );
+        $produtos = Produto::search($parametros);
         return view('sub-grupo-produto.show', compact('model', 'produtos'));
     }
 

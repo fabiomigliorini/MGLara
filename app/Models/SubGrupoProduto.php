@@ -95,18 +95,36 @@ class SubGrupoProduto extends MGModel
 
         return $retorno;
     }
-
-        // Buscas 
-    public static function filterAndPaginate($id, $codgrupoproduto, $subgrupoproduto, $inativo)
-    {
-        return SubGrupoProduto::id(numeroLimpo($id))
-            ->where('codgrupoproduto', $codgrupoproduto)  
-            ->subgrupoproduto($subgrupoproduto)
-            ->inativo($inativo)
-            ->orderBy('subgrupoproduto', 'ASC')
-            ->paginate(20);
-    }
     
+    public static function search($parametros, $registros = 20)
+    {
+        $query = SubGrupoProduto::orderBy('subgrupoproduto', 'ASC');
+
+        if(isset($parametros['codgrupoproduto']))
+            $query->where('codgrupoproduto', $parametros['codgrupoproduto']);
+        
+        if(isset($parametros['codsubgrupoproduto']))
+            $query->id($parametros['codsubgrupoproduto']);
+        
+        if(isset($parametros['subgrupoproduto']))
+            $query->subGrupoProduto($parametros['subgrupoproduto']);
+        
+        if(isset($parametros['inativo']))
+            switch ($parametros['inativo'])
+            {
+                case 9: // Todos
+                    break;
+                case 2: // Inativos
+                    $query->inativo();      break;
+                default:
+                    $query->ativo();        break;
+            }
+        else
+            $query->ativo();
+        
+        return $query->paginate($registros);
+    }
+
     public function scopeId($query, $id)
     {
         if (trim($id) === '')
@@ -115,7 +133,7 @@ class SubGrupoProduto extends MGModel
         $query->where('codsubgrupoproduto', $id);
     }
     
-    public function scopeSubgrupoproduto($query, $subgrupoproduto)
+    public function scopeSubGrupoProduto($query, $subgrupoproduto)
     {
         if (trim($subgrupoproduto) === '')
             return;
@@ -124,17 +142,15 @@ class SubGrupoProduto extends MGModel
         foreach ($subgrupoproduto as $str)
             $query->where('subgrupoproduto', 'ILIKE', "%$str%");
     }    
-    
-    public function scopeInativo($query, $inativo)
-    {
-        if (trim($inativo) === '')
-            $query->whereNull('inativo');
-        
-        if($inativo == 1)
-            $query->whereNull('inativo');
 
-        if($inativo == 2)
-            $query->whereNotNull('inativo');
+    public function scopeInativo($query)
+    {
+        $query->whereNotNull('inativo');
+    }
+
+    public function scopeAtivo($query)
+    {
+        $query->whereNull('inativo');
     }
     
 }

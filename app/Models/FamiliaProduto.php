@@ -90,15 +90,33 @@ class FamiliaProduto extends MGModel
         return $this->hasMany(GrupoProduto::class, 'codfamiliaproduto', 'codfamiliaproduto');
     }
 
-    // Buscas 
-    public static function filterAndPaginate($id, $codsecaoproduto, $familiaproduto, $inativo)
+    public static function search($parametros, $registros = 20)
     {
-        return FamiliaProduto::id(numeroLimpo($id))
-            ->where('codsecaoproduto', $codsecaoproduto)  
-            ->familiaproduto($familiaproduto)
-            ->inativo($inativo)
-            ->orderBy('familiaproduto', 'ASC')
-            ->paginate(5);
+        $query = FamiliaProduto::orderBy('familiaproduto', 'ASC');
+        
+        if(isset($parametros['codsecaoproduto']))
+            $query->where('codsecaoproduto', $parametros['codsecaoproduto']);
+            
+        if(isset($parametros['codfamiliaproduto']))
+            $query->id($parametros['codfamiliaproduto']);
+        
+        if(isset($parametros['familiaproduto']))
+            $query->familiaProduto($parametros['familiaproduto']);
+        
+        if(isset($parametros['inativo']))
+            switch ($parametros['inativo'])
+            {
+                case 9: // Todos
+                    break;
+                case 2: // Inativos
+                    $query->inativo();      break;
+                default:
+                    $query->ativo();        break;
+            }
+        else
+            $query->ativo();
+        
+        return $query->paginate($registros);
     }
     
     public function scopeId($query, $id)
@@ -109,7 +127,7 @@ class FamiliaProduto extends MGModel
         $query->where('codfamiliaproduto', $id);
     }
     
-    public function scopeFamiliaproduto($query, $familiaproduto)
+    public function scopeFamiliaProduto($query, $familiaproduto)
     {
         if (trim($familiaproduto) === '')
             return;
@@ -119,16 +137,13 @@ class FamiliaProduto extends MGModel
             $query->where('familiaproduto', 'ILIKE', "%$str%");
     }    
     
-    public function scopeInativo($query, $inativo)
+    public function scopeInativo($query)
     {
-        if (trim($inativo) === '')
-            $query->whereNull('inativo');
-        
-        if($inativo == 1)
-            $query->whereNull('inativo');
-
-        if($inativo == 2)
-            $query->whereNotNull('inativo');
+        $query->whereNotNull('inativo');
     }
 
+    public function scopeAtivo($query)
+    {
+        $query->whereNull('inativo');
+    }
 }

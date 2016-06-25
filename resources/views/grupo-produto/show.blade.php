@@ -60,16 +60,31 @@
 </h1>
 @include('includes.autor')
 <hr>
-{!! Form::model(Request::all(), ['method' => 'GET', 'class' => 'form-inline', 'id' => 'sub-grupo-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+{!! Form::model(
+    Request::session()->get('grupo-produto.show'),
+    [
+        'route' => 'grupo-produto.show', 
+        'method' => 'GET', 
+        'class' => 'form-inline', 
+        'id' => 'sub-grupo-produto-search', 
+        'role' => 'search', 
+        'autocomplete' => 'off'
+    ]
+)!!}
+
     <div class="form-group">
-        <input type="text" name="subgrupoproduto" id="subgrupoproduto" placeholder="Sub Grupo" class="form-control">
+        {!! Form::text('subgrupoproduto', null, ['class' => 'form-control', 'placeholder' => 'Sub Grupo']) !!}
     </div>
     <div class="form-group">
-        <select class="form-control" name="inativo" id="inativo" placeholder="Ativos">
-            <option value="0">Todos</option>
-            <option value="1" selected="selected">Ativos</option>
-            <option value="2">Inativos</option>
-        </select>
+        {!! Form::select(
+            'inativo', [
+                '9' => 'Todos', 
+                '1' => 'Ativos', 
+                '2' => 'Inativos'
+            ], 
+            Request::session()->get('grupo-produto.show.inativo'),
+            ['class' => 'form-control']
+        ) !!}
     </div>      
     <button type="submit" class="btn btn-default"><i class=" glyphicon glyphicon-search"></i> Buscar</button>
     <a class="btn btn-default" href="{{ url("sub-grupo-produto/create?codgrupoproduto=$model->codgrupoproduto") }}"><i class=" glyphicon glyphicon-plus"></i> Novo Sub Grupo</a>

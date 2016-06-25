@@ -80,18 +80,36 @@ class GrupoProduto extends MGModel
     {
         return $this->hasMany(SubGrupoProduto::class, 'codgrupoproduto', 'codgrupoproduto')->orderBy('subgrupoproduto');
     }
-
-    // Buscas 
-    public static function filterAndPaginate($id, $codfamiliaproduto, $grupoproduto, $inativo)
-    {
-        return GrupoProduto::id(numeroLimpo($id))
-            ->where('codfamiliaproduto', $codfamiliaproduto)
-            ->grupoproduto($grupoproduto)
-            ->inativo($inativo)
-            ->orderBy('grupoproduto', 'ASC')
-            ->paginate(20);
-    }
     
+    public static function search($parametros, $registros = 20)
+    {
+        $query = GrupoProduto::orderBy('grupoproduto', 'ASC');
+
+        if(isset($parametros['codfamiliaproduto']))
+            $query->where('codfamiliaproduto', $parametros['codfamiliaproduto']);
+        
+        if(isset($parametros['codgrupoproduto']))
+            $query->id($parametros['codgrupoproduto']);
+        
+        if(isset($parametros['grupoproduto']))
+            $query->grupoProduto($parametros['grupoproduto']);
+        
+        if(isset($parametros['inativo']))
+            switch ($parametros['inativo'])
+            {
+                case 9: // Todos
+                    break;
+                case 2: // Inativos
+                    $query->inativo();      break;
+                default:
+                    $query->ativo();        break;
+            }
+        else
+            $query->ativo();
+        
+        return $query->paginate($registros);
+    }
+
     public function scopeId($query, $id)
     {
         if (trim($id) === '')
@@ -100,7 +118,7 @@ class GrupoProduto extends MGModel
         $query->where('codgrupoproduto', $id);
     }
     
-    public function scopeGrupoproduto($query, $grupoproduto)
+    public function scopeGrupoProduto($query, $grupoproduto)
     {
         if (trim($grupoproduto) === '')
             return;
@@ -109,17 +127,14 @@ class GrupoProduto extends MGModel
         foreach ($grupoproduto as $str)
             $query->where('grupoproduto', 'ILIKE', "%$str%");
     }
-    
-    public function scopeInativo($query, $inativo)
-    {
-        if (trim($inativo) === '')
-            $query->whereNull('inativo');
-        
-        if($inativo == 1)
-            $query->whereNull('inativo');
 
-        if($inativo == 2)
-            $query->whereNotNull('inativo');
+    public function scopeInativo($query)
+    {
+        $query->whereNotNull('inativo');
     }
 
+    public function scopeAtivo($query)
+    {
+        $query->whereNull('inativo');
+    }
 }
