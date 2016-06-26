@@ -41,6 +41,8 @@ class EstoqueMovimentoTipo extends MGModel
     const PRECO_INFORMADO = 1;
     const PRECO_MEDIO = 2;
     const PRECO_ORIGEM = 3;
+    
+    const AJUSTE = 1002;
 
     // Chaves Estrangeiras
     public function UsuarioAlteracao()

@@ -44,7 +44,7 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Estoque <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="{{ url('estoque-mes') }}">Estoque mês</a></li>
+            <!-- <li><a href="{{ url('estoque-mes') }}">Estoque mês</a></li> -->
             <!-- <li role="separator" class="divider"></li> -->
             <!-- <li><a href="#">Consulta de preço</a></li> -->
             <li><a href="{{ url('produto') }}">Produtos</a><li>
@@ -53,13 +53,13 @@
             <li role="separator" class="divider"></li>
             <li><a href="{{ url('produto-historico-preco') }}">Histórico de Preços</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="{{ url('secao-produto') }}">Seções de produto</a><li> 
+            <li><a href="{{ url('estoque-saldo-conferencia') }}">Conferência Saldo</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="{{ url('grupo-produto') }}">Grupos de Produtos</a><li> 
             <li><a href="{{ url('marca') }}">Marcas</a><li> 
-            <!-- <li><a href="#">NCM</a></li> -->
+            <li><a href="{{ url('secao-produto') }}">Seções de Produto</a><li> 
             <li><a href="{{ url('tipo-produto') }}">Tipos de produtos</a></li>
             <li><a href="{{ url('unidade-medida') }}">Unidades de medida</a></li>
+            <!-- <li><a href="#">NCM</a></li> -->
             <li><a href="{{ url('imagem') }}">Imagens</a></li> 
           </ul>
         </li>

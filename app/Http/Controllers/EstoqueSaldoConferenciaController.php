@@ -12,6 +12,8 @@ use MGLara\Models\ProdutoBarra;
 use MGLara\Models\EstoqueSaldoConferencia;
 use MGLara\Models\EstoqueSaldo;
 
+use MGLara\Jobs\EstoqueGeraMovimentoConferencia;
+
 class EstoqueSaldoConferenciaController extends Controller
 {
     /**
@@ -19,9 +21,17 @@ class EstoqueSaldoConferenciaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        /*
+        if (!$request->session()->has('estoque-saldo-conferencia.index')) 
+            $request->session()->put('estoque-saldo-conferencia.inativo', '1');
+        
+        $parametros = $request->session()->get('estoque-saldo-conferencia')['index'];
+          */
+        $parametros = $request;
+        $model = EstoqueSaldoConferencia::search($parametros);
+        return view('estoque-saldo-conferencia.index', compact('model'));
     }
 
     /**
@@ -99,10 +109,12 @@ class EstoqueSaldoConferenciaController extends Controller
         $model->customedioinformado = $request->get('customedioinformado');
         $model->data = $request->get('data');
         
-        $model = new EstoqueSaldoConferencia($request->all());
-        
         $model->save();
+
+        $this->dispatch((new EstoqueGeraMovimentoConferencia($model->codestoquesaldoconferencia))->onQueue('urgent'));
+        
         Session::flash('flash_success', 'Salvo com sucesso!');
+        
         $data = $model->data->format('d/m/Y H:i:s');
         $fiscal = $es->fiscal;
         $codestoquelocal = $es->EstoqueLocalProduto->codestoquelocal;

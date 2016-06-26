@@ -54,12 +54,12 @@ class EstoqueSaldoConferencia extends MGModel
 
     public function UsuarioAlteracao()
     {
-        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuarioalteracao');
+        return $this->belongsTo(Usuario::class, 'codusuarioalteracao', 'codusuario');
     }
 
     public function UsuarioCriacao()
     {
-        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
+        return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
     }
 
 
@@ -69,5 +69,33 @@ class EstoqueSaldoConferencia extends MGModel
         return $this->hasMany(EstoqueMovimento::class, 'codestoquesaldoconferencia', 'codestoquesaldoconferencia');
     }
 
+    public static function search($parametros, $registros = 20)
+    {
+        $query = EstoqueSaldoConferencia::orderBy('criacao', 'DESC');
+        
+        /*
+        if(isset($parametros['codsecaoproduto']))
+            $query->id($parametros['codsecaoproduto']);
+        
+        if(isset($parametros['secaoproduto']))
+            $query->secaoProduto($parametros['secaoproduto']);
+        
+        if(isset($parametros['inativo']))
+            switch ($parametros['inativo'])
+            {
+                case 9: // Todos
+                    break;
+                case 2: // Inativos
+                    $query->inativo();      break;
+                default:
+                    $query->ativo();        break;
+            }
+        else
+            $query->ativo();
+        */
+        
+        return $query->paginate($registros);
+    }
+    
 
 }

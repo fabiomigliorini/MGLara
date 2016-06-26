@@ -3,16 +3,23 @@
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
+            <li><a href="{{ url("estoque-saldo-conferencia") }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>
         </ul>
     </div>
 </nav>
-
 <h1 class="header">
-    Conferência Estoque
+    {!! 
+    titulo(
+        NULL ,
+        [
+            ['url' => "estoque-saldo-conferencia", 'descricao' => 'Conferência Saldo de Estoque'],
+            ['url' => "", 'descricao' => 'Nova'],
+        ],
+        NULL
+    ) 
+!!}
 </h1>
-
 <hr>
-
 {!! Form::model($model, ['method' => 'GET', 'class' => 'form-inline', 'id' => 'form-estoque-saldo-conferencia-selecao', 'route' => 'estoque-saldo-conferencia.create']) !!}
 
     @include('errors.form_error')
