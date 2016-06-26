@@ -164,6 +164,7 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         {
             $mes->EstoqueSaldo->saldoquantidade = $mes->saldoquantidade;
             $mes->EstoqueSaldo->saldovalor = $mes->saldovalor;
+            $mes->EstoqueSaldo->customedio = $mes->customedio;
             $mes->EstoqueSaldo->save();
         }
         
