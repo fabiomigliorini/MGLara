@@ -564,13 +564,96 @@ class Produto extends MGModel
             
         if(isset($parametros['codproduto']))
             $query->id($parametros['codproduto']);
-        
-        if(isset($parametros['codsubgrupoproduto']))
-            $query->where('codsubgrupoproduto', $parametros['codsubgrupoproduto']);
-        
-        
+
+        if(isset($parametros['barras']) and !empty($parametros['barras'])) {
+            $barras = $parametros['barras'];
+            $query->whereHas('ProdutoBarraS', function($q) use ($barras) {
+                $q->where('barras', $barras);
+            }); 
+        }
+            
         if(isset($parametros['produto']))
             $query->produto($parametros['produto']);
+
+        if(isset($parametros['codmarca']) and !empty($parametros['codmarca']))
+            $query->where('codmarca', $parametros['codmarca']);
+
+        if(isset($parametros['codsecaoproduto']) and !empty($parametros['codsecaoproduto'])) {
+            $query->leftJoin('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto')
+                ->leftJoin('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto')
+                ->leftJoin('tblfamiliaproduto', 'tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto')
+                ->leftJoin('tblsecaoproduto', 'tblsecaoproduto.codsecaoproduto', '=', 'tblfamiliaproduto.codsecaoproduto')
+                ->where('tblsecaoproduto.codsecaoproduto', $parametros['codsecaoproduto']);            
+        }
+        
+        if(isset($parametros['codfamiliaproduto']) and !empty($parametros['codfamiliaproduto'])) {
+            $query->leftJoin('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto')
+                ->leftJoin('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto')
+                ->leftJoin('tblfamiliaproduto', 'tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto')
+                ->where('tblfamiliaproduto.codfamiliaproduto', $parametros['codfamiliaproduto']);            
+        }
+        
+        if(isset($parametros['codgrupoproduto']) and !empty($parametros['codgrupoproduto'])) {
+            $grupo = $parametros['codgrupoproduto'];
+            $query->whereHas('SubGrupoProduto.GrupoProduto', function($query) use ($grupo){
+                $query->where('tblgrupoproduto.codgrupoproduto', $grupo);
+            });
+            
+            /*
+            $query->whereHas('SubGrupoProduto', function($query) use ($grupo)
+            {
+                $query->whereHas('GrupoProduto', function($query) use ($grupo)
+                {
+                    $query->where('codgrupoproduto', $grupo);
+                });
+            });            
+            */
+//            
+//            $query->leftJoin('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto')
+//                ->leftJoin('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto')
+//                ->where('tblgrupoproduto.codgrupoproduto', $parametros['codgrupoproduto']);            
+//            
+            
+            
+        }
+            
+        if(isset($parametros['codsubgrupoproduto']) and !empty($parametros['codsubgrupoproduto']))
+            $query->where('codsubgrupoproduto', $parametros['codsubgrupoproduto']);
+        
+            
+            
+
+        if(isset($parametros['codfamiliaproduto']) and !empty($parametros['codfamiliaproduto']))
+            $query->where('codfamiliaproduto', $parametros['codfamiliaproduto']);
+
+        if(isset($parametros['codgrupoproduto']) and !empty($parametros['codgrupoproduto']))
+            $query->where('codgrupoproduto', $parametros['codgrupoproduto']);
+
+        if(isset($parametros['codsubgrupoproduto']) and !empty($parametros['codsubgrupoproduto']))
+            $query->where('codsubgrupoproduto', $parametros['codsubgrupoproduto']);
+
+        if(isset($parametros['referencia']) and !empty($parametros['referencia']))
+            $query->where('referencia', $parametros['referencia']);
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         if(isset($parametros['inativo']))
             switch ($parametros['inativo'])
@@ -642,15 +725,7 @@ class Produto extends MGModel
         $query->where('codsubgrupoproduto', $codsubgrupoproduto);
     }
        
-    public function scopeBarras($query, $barras)
-    {
-        if (trim($barras) === '')
-            return;
-        
-        $query->whereHas('ProdutoBarraS', function($q) use ($barras) {
-            $q->where('barras', $barras);
-        });        
-    }
+
     
     public function scopeProduto($query, $produto)
     {
@@ -662,21 +737,6 @@ class Produto extends MGModel
             $query->where('produto', 'ILIKE', "%$str%");
     }
         
-    public function scopeCodmarca($query, $codmarca)
-    {
-        if (trim($codmarca) === '')
-            return;
-        
-        $query->where('codmarca', $codmarca);
-    }
-    
-    public function scopeReferencia($query, $referencia)
-    {
-        if (trim($referencia) === '')
-            return;
-        
-        $query->where('referencia', $referencia);
-    }
     
     public function scopeCodtributacao($query, $codtributacao)
     {
@@ -765,11 +825,11 @@ class Produto extends MGModel
     
     public function scopeInativo($query)
     {
-        $query->whereNotNull('inativo');
+        $query->whereNotNull('tblproduto.inativo');
     }
 
     public function scopeAtivo($query)
     {
-        $query->whereNull('inativo');
+        $query->whereNull('tblproduto.inativo');
     }
 }

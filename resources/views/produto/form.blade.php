@@ -27,7 +27,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
     <label for="codsubgrupoproduto" class="col-sm-2 control-label">{!! Form::label('Grupo:') !!}</label>
     <div class="col-sm-5">
     <select id="codsubgrupoproduto" name="codsubgrupoproduto" class="form-control">
-        <option>Please choose car make first</option>
+        <option>Selecione</option>
     </select>   
     </div> 
 </div>

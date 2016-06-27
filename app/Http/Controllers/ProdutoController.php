@@ -23,6 +23,7 @@ class ProdutoController extends Controller
     {
         $this->datas = [];
         $this->numericos = [];
+        $this->middleware('parametros', ['only' => ['index', 'show']]);
     }     
 
     /**
@@ -31,6 +32,14 @@ class ProdutoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
+        
+        if (!$request->session()->has('produto.index')) 
+            $request->session()->put('produto.index.inativo', '1');
+        
+        $parametros = $request->session()->get('produto.index');        
+        $model = Produto::search($parametros);
+        
+        /*
         $model = Produto::filterAndPaginate(
             $request->get('codproduto'),
             $request->get('codsubgrupoproduto'),
@@ -49,6 +58,7 @@ class ProdutoController extends Controller
             $request->get('alteracao_ate'),
             $request->get('inativo')
         );
+        */
         
         return view('produto.index', compact('model'));
     }
