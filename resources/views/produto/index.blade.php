@@ -71,31 +71,17 @@ Request::session()->get('produto.index'),
     </div>
 
     <div class="form-group">
-        <select placeholder="Inativo" class="form-control" name="inativo" id="inativo" style="width: 120px;">
-            <option value=""></option>
-            <option value="0">Todos</option>
-            <option value="1">Ativos</option>
-            <option value="2">Inativos</option>
-        </select>
+        {!! Form::select('inativo', ['' => '', 9 => 'Todos', 1 => 'Ativos', 2 => 'Inativos'], null, ['style' => 'width: 120px', 'id'=>'inativo']) !!}
     </div>
 
     <div class="form-group">
-        <select placeholder="Tributação" class="form-control" name="codtributacao" id="codtributacao" style="width: 120px;">
-            <option value=""></option>
-            <option value="1">Tributação</option>
-            <option value="2">Isento</option>
-            <option value="3">Substituição</option>
-        </select>
+        {!! Form::select('codtributacao', ['' => '', 1 => 'Tributação', 2 => 'Isento', 3 => 'Substituição'], null, ['style' => 'width: 120px', 'id' => 'codtributacao']) !!}
     </div>
 
     <div class="form-group">
-        <select placeholder="Site" class="form-control" name="site" id="site" style="width: 100px;">
-            <option value=""></option>
-            <option value="1">No Site</option>
-            <option value="2">Fora do Site</option>
-        </select>
-    </div>
-    
+        {!! Form::select('site', ['' => '', 'true' => 'No Site', 'false' => 'Fora do Site'], null, ['style' => 'width: 120px', 'id'=>'site']) !!}
+    </div>      
+
     <button type="submit" class="btn btn-default pull-right">Buscar</button>
     
     <div class="form-group">
@@ -256,13 +242,17 @@ $(document).ready(function() {
     });
     
     $('#codtributacao').select2({
+        placeholder: 'Tributação',
         allowClear:true,
         closeOnSelect:true
-    })<?php echo (app('request')->input('codtributacao') ? ".select2('val'," .app('request')->input('codtributacao').");" : ';'); ?>
+    });
+    
     $('#site').select2({
+        placeholder: 'Site',
         allowClear:true,
         closeOnSelect:true
-    })<?php echo (app('request')->input('site') ? ".select2('val'," .app('request')->input('site').");" : ';'); ?>
+    });
+    
     $('#preco_de, #preco_ate').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.' });
     $('#criacao_de, #criacao_ate, #alteracao_de, #alteracao_ate').datetimepicker({
         useCurrent: false,

@@ -578,83 +578,58 @@ class Produto extends MGModel
         if(isset($parametros['codmarca']) and !empty($parametros['codmarca']))
             $query->where('codmarca', $parametros['codmarca']);
 
-        if(isset($parametros['codsecaoproduto']) and !empty($parametros['codsecaoproduto'])) {
+        if( isset($parametros['codsecaoproduto'])       and !empty($parametros['codsecaoproduto']) OR
+            isset($parametros['codfamiliaproduto'])     and !empty($parametros['codfamiliaproduto']) OR
+            isset($parametros['codgrupoproduto'])       and !empty($parametros['codgrupoproduto'])) {
             $query->leftJoin('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto')
                 ->leftJoin('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto')
                 ->leftJoin('tblfamiliaproduto', 'tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto')
-                ->leftJoin('tblsecaoproduto', 'tblsecaoproduto.codsecaoproduto', '=', 'tblfamiliaproduto.codsecaoproduto')
-                ->where('tblsecaoproduto.codsecaoproduto', $parametros['codsecaoproduto']);            
-        }
-        
-        if(isset($parametros['codfamiliaproduto']) and !empty($parametros['codfamiliaproduto'])) {
-            $query->leftJoin('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto')
-                ->leftJoin('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto')
-                ->leftJoin('tblfamiliaproduto', 'tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto')
-                ->where('tblfamiliaproduto.codfamiliaproduto', $parametros['codfamiliaproduto']);            
-        }
-        
-        if(isset($parametros['codgrupoproduto']) and !empty($parametros['codgrupoproduto'])) {
-            $grupo = $parametros['codgrupoproduto'];
-            $query->whereHas('SubGrupoProduto.GrupoProduto', function($query) use ($grupo){
-                $query->where('tblgrupoproduto.codgrupoproduto', $grupo);
-            });
+                ->leftJoin('tblsecaoproduto', 'tblsecaoproduto.codsecaoproduto', '=', 'tblfamiliaproduto.codsecaoproduto');
             
-            /*
-            $query->whereHas('SubGrupoProduto', function($query) use ($grupo)
-            {
-                $query->whereHas('GrupoProduto', function($query) use ($grupo)
-                {
-                    $query->where('codgrupoproduto', $grupo);
-                });
-            });            
-            */
-//            
-//            $query->leftJoin('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto')
-//                ->leftJoin('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto')
-//                ->where('tblgrupoproduto.codgrupoproduto', $parametros['codgrupoproduto']);            
-//            
+            if($parametros['codsecaoproduto'])
+                $query->where('tblsecaoproduto.codsecaoproduto', $parametros['codsecaoproduto']);            
             
+            if($parametros['codfamiliaproduto'])
+                $query->where('tblfamiliaproduto.codfamiliaproduto', $parametros['codfamiliaproduto']);            
             
+            if($parametros['codgrupoproduto'])
+                $query->where('tblgrupoproduto.codgrupoproduto', $parametros['codgrupoproduto']);            
+
         }
             
-        if(isset($parametros['codsubgrupoproduto']) and !empty($parametros['codsubgrupoproduto']))
-            $query->where('codsubgrupoproduto', $parametros['codsubgrupoproduto']);
-        
-            
-            
-
-        if(isset($parametros['codfamiliaproduto']) and !empty($parametros['codfamiliaproduto']))
-            $query->where('codfamiliaproduto', $parametros['codfamiliaproduto']);
-
-        if(isset($parametros['codgrupoproduto']) and !empty($parametros['codgrupoproduto']))
-            $query->where('codgrupoproduto', $parametros['codgrupoproduto']);
-
         if(isset($parametros['codsubgrupoproduto']) and !empty($parametros['codsubgrupoproduto']))
             $query->where('codsubgrupoproduto', $parametros['codsubgrupoproduto']);
 
         if(isset($parametros['referencia']) and !empty($parametros['referencia']))
             $query->where('referencia', $parametros['referencia']);
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        if(isset($parametros['codtributacao']) and !empty($parametros['codtributacao']))
+            $query->where('codtributacao', $parametros['codtributacao']);
+
+        if(isset($parametros['site']) and !empty($parametros['site']))
+            $query->where('site', $parametros['site']);
+
+        if(isset($parametros['codncm']) and !empty($parametros['codncm']))
+            $query->where('codncm', $parametros['codncm']);
+
+        if(isset($parametros['preco_de']) and !empty($parametros['preco_de']))
+            $query->where('preco','>=', converteParaNumerico($parametros['preco_de']));
+
+        if(isset($parametros['preco_ate']) and !empty($parametros['preco_ate']))
+            $query->where('preco','<=', converteParaNumerico($parametros['preco_ate']));
+
+        if(isset($parametros['criacao_de']) and !empty($parametros['criacao_de']))
+            $query->where('criacao', '>=', Carbon::createFromFormat('d/m/y', $parametros['criacao_de'])->format('Y-m-d').' 00:00:00.0');
+            
+        if(isset($parametros['criacao_ate']) and !empty($parametros['criacao_ate']))
+            $query->where('criacao', '<=', Carbon::createFromFormat('d/m/y', $parametros['criacao_ate'])->format('Y-m-d').' 23:59:59.9');
+            
+        if(isset($parametros['alteracao_de']) and !empty($parametros['alteracao_de']))
+            $query->where('criacao', '>=', Carbon::createFromFormat('d/m/y', $parametros['alteracao_de'])->format('Y-m-d').' 00:00:00.0');
+            
+        if(isset($parametros['alteracao_ate']) and !empty($parametros['alteracao_ate']))
+            $query->where('criacao', '<=', Carbon::createFromFormat('d/m/y', $parametros['alteracao_ate'])->format('Y-m-d').' 23:59:59.9');
+            
         if(isset($parametros['inativo']))
             switch ($parametros['inativo'])
             {
@@ -672,43 +647,6 @@ class Produto extends MGModel
     }
 
     
-    // Buscas 
-    public static function filterAndPaginate(
-            $id, 
-            $codsubgrupoproduto, 
-            $barras, 
-            $produto, 
-            $codmarca, 
-            $referencia, 
-            $codtributacao, 
-            $site, 
-            $codncm,
-            $preco_de, 
-            $preco_ate, 
-            $criacao_de, 
-            $criacao_ate, 
-            $alteracao_de, 
-            $alteracao_ate,  
-            $inativo)
-    {
-        return Produto::id(numeroLimpo($id))
-            ->codsubgrupoproduto($codsubgrupoproduto)
-            ->barras($barras)
-            ->produto($produto)
-            ->codmarca($codmarca)
-            ->referencia($referencia)
-            ->codtributacao($codtributacao)
-            ->site($site)
-            ->codncm($codncm)
-            ->precoDe($preco_de)
-            ->precoAte($preco_ate)
-            ->criacao($criacao_de, $criacao_ate)
-            ->alteracao($alteracao_de, $alteracao_ate)
-            ->inativo($inativo)
-            ->orderBy('produto', 'ASC')
-            ->paginate(20);
-    }
-    
     public function scopeId($query, $id)
     {
         if (trim($id) === '')
@@ -716,16 +654,6 @@ class Produto extends MGModel
         
         $query->where('codproduto', $id);
     }
-
-    public function scopeCodsubgrupoproduto($query, $codsubgrupoproduto)
-    {
-        if (trim($codsubgrupoproduto) === '')
-            return;
-        
-        $query->where('codsubgrupoproduto', $codsubgrupoproduto);
-    }
-       
-
     
     public function scopeProduto($query, $produto)
     {
@@ -736,92 +664,6 @@ class Produto extends MGModel
         foreach ($produto as $str)
             $query->where('produto', 'ILIKE', "%$str%");
     }
-        
-    
-    public function scopeCodtributacao($query, $codtributacao)
-    {
-        if (trim($codtributacao) === '')
-            return;
-        
-        $query->where('codtributacao', $codtributacao);
-    }
-    
-    public function scopeSite($query, $site)
-    {
-        if (trim($site) === '')
-            return;
-        
-        if($site == 1)
-            $query->where('site', TRUE);
-
-        if($site == 2)
-            $query->where('site', FALSE);
-    }
-    
-    public function scopeCodncm($query, $codncm)
-    {
-        if (trim($codncm) === '')
-            return;
-        
-        $query->where('codncm', $codncm);
-    }
-    
-    public function scopePrecoDe($query, $preco_de)
-    {
-        if (trim($preco_de) === '')
-            return;
-        
-        $query->where('preco','>=', converteParaNumerico($preco_de));
-    }
-
-    public function scopePrecoAte($query, $preco_ate)
-    {
-        if (trim($preco_ate) === '')
-            return;
-        
-        $query->where('preco','<=', converteParaNumerico($preco_ate));
-    }
-      
-    public function scopeCriacao($query, $criacao_de, $criacao_ate)
-    {
-        if ( (trim($criacao_de) === '') && (trim($criacao_ate) === '') )
-            return;
-        
-        if(!empty($criacao_de))
-            $criacao_de = Carbon::createFromFormat('d/m/y', $criacao_de)->format('Y-m-d').' 00:00:00.0';
-        
-        if(!empty($criacao_ate))
-            $criacao_ate = Carbon::createFromFormat('d/m/y', $criacao_ate)->format('Y-m-d').' 23:59:59.9';
-        
-        if( (!empty($criacao_de)) && (empty($criacao_ate)) )
-            $criacao_ate = Carbon::now()->format('Y-m-d').' 23:59:59.9';
-
-        if( (empty($criacao_de)) && (!empty($criacao_ate)) )
-            $criacao_de = '1900-01-01 00:00:00.0';
-
-        $query->whereBetween('criacao', [$criacao_de, $criacao_ate]);
-    }
-       
-    public function scopeAlteracao($query, $alteracao_de, $alteracao_ate)
-    {
-        if ( (trim($alteracao_de) === '') && (trim($alteracao_ate) === '') )
-            return;
-        
-        if(!empty($alteracao_de))
-            $alteracao_de = Carbon::createFromFormat('d/m/y', $alteracao_de)->toDateTimeString();
-        
-        if(!empty($alteracao_ate))
-            $alteracao_ate = Carbon::createFromFormat('d/m/y', $alteracao_ate)->toDateTimeString();
-        
-        if( (!empty($alteracao_de)) && (empty($alteracao_ate)) )
-            $alteracao_ate = Carbon::now();
-        
-        if( (empty($alteracao_de)) && (!empty($alteracao_ate)) )
-            $alteracao_de = '1900-01-01 00:00:00.0';        
-
-        $query->whereBetween('alteracao', [$alteracao_de, $alteracao_ate]);    
-    }
-    
     
     public function scopeInativo($query)
     {
