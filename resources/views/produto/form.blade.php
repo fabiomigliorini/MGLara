@@ -7,7 +7,8 @@ use MGLara\Models\Tributacao;
 use MGLara\Models\TipoProduto;
 
 $medidas        = [''=>''] + UnidadeMedida::lists('unidademedida', 'codunidademedida')->all();
-//$grupos         = [''=>''] + SubGrupoProduto::select2();
+//if($model->subgrupoproduto)
+    //$subgrupos         = [''=>''] + SubGrupoProduto::combo();
 $secoes         = [''=>''] + FamiliaProduto::select2();
 $tributacoes    = [''=>''] + Tributacao::lists('tributacao', 'codtributacao')->all();
 $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')->all();
@@ -26,9 +27,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 <div class="form-group">
     <label for="codsubgrupoproduto" class="col-sm-2 control-label">{!! Form::label('Grupo:') !!}</label>
     <div class="col-sm-5">
-    <select id="codsubgrupoproduto" name="codsubgrupoproduto" class="form-control">
-        <option>Selecione</option>
-    </select>   
+    {!! Form::select('codsubgrupoproduto', [''=>'Selecione'], (isset($model->codsubgrupoproduto) ? $model->codsubgrupoproduto:null), ['class'=> 'form-control', 'id' => 'codsubgrupoproduto', 'style'=>'width:100%']) !!}
     </div> 
 </div>
 
@@ -98,6 +97,16 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 @section('inscript')
 <script type="text/javascript">
 $(document).ready(function() {
+    function pegaSubgrupos() {
+        return $.get(baseUrl + '/sub-grupo-produto/ajax', { codfamiliaproduto: $(this).val() }, 
+            function(data) {
+                var model = $('#codsubgrupoproduto');
+                model.empty();
+                $.each(data, function(key, value) {
+                    model.append("<option value='"+ value.id +"'>" + value.subgrupoproduto + "</option>");
+                });
+            });
+    }
     $('#form-produto').on("submit", function(e) {
         var currentForm = this;
         e.preventDefault();
@@ -273,27 +282,39 @@ $(document).ready(function() {
         allowClear: true,
         closeOnSelect: true
     });
-
-    $('#codsubgrupoproduto').select2({
-        placeholder: 'Grupo',
-        allowClear: true,
-        closeOnSelect: true
-    })<?php echo (isset($model->codsubgrupoproduto) ? ".select2('val', $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codfamiliaproduto);" : ';');?>
     
-    $('#codfamiliaproduto').change(function(){
-        $.get(baseUrl + '/sub-grupo-produto/ajax', 
-            { 
-                codfamiliaproduto: $(this).val() 
-            }, 
+    <?php if(isset($model->codsubgrupoproduto)) :?>
+        $('#codfamiliaproduto').select2('val', {{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codfamiliaproduto}});
+        $.get(baseUrl + '/sub-grupo-produto/ajax', { codfamiliaproduto: {{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codfamiliaproduto}} }, 
             function(data) {
                 var model = $('#codsubgrupoproduto');
                 model.empty();
-                //console.log(data);
+                $.each(data, function(key, value) {
+                    model.append("<option value='"+ value.id +"'>" + value.subgrupoproduto + "</option>");
+                });
+                //$("#codsubgrupoproduto option").filter(function() {
+                //    return $(this).val() == '2548'; 
+                //}).attr('selected', true);
+            });
+    <?php endif; ?>
+
+    $('#codfamiliaproduto').change(function() {
+        $.get(baseUrl + '/sub-grupo-produto/ajax', { codfamiliaproduto: $(this).val() }, 
+            function(data) {
+                var model = $('#codsubgrupoproduto');
+                model.empty();
                 $.each(data, function(key, value) {
                     model.append("<option value='"+ value.id +"'>" + value.subgrupoproduto + "</option>");
                 });
             });
     });
+/*
+    $('#codsubgrupoproduto').select2({
+        placeholder: 'Grupo',
+        allowClear: true,
+        closeOnSelect: true
+    });
+*/
 
 
 
@@ -338,7 +359,6 @@ $(document).ready(function() {
     });      
     */
 
-    
 });
 </script>
 @endsection
