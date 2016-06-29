@@ -16,16 +16,35 @@ use MGLara\Models\SecaoProduto;
 use MGLara\Models\FamiliaProduto;
 use MGLara\Models\GrupoProduto;
 use MGLara\Models\SubGrupoProduto;
+use MGLara\Models\ProdutoVariacao;
+$filtro = Request::session()->get('produto.index');
 
 $secoes     = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')->all();
-$familias   = [''=>''] + FamiliaProduto::lists('familiaproduto', 'codfamiliaproduto')->all();
-$grupos     = [''=>''] + GrupoProduto::lists('grupoproduto', 'codgrupoproduto')->all();
-$subgrupos  = [''=>''] + SubGrupoProduto::lists('subgrupoproduto', 'codsubgrupoproduto')->all();
+
+$familias   = [''=>''];
+if (!empty($filtro['codsecaoproduto']))
+{
+    $secao = SecaoProduto::findOrFail($filtro['codsecaoproduto']);
+    $familias += $secao->FamiliaProdutoS()->lists('familiaproduto', 'codfamiliaproduto')->all();
+}
+
+$grupos     = [''=>''];
+if (!empty($filtro['codfamiliaproduto']))
+{
+    $fam = FamiliaProduto::findOrFail($filtro['codfamiliaproduto']);
+    $grupos += $fam->GrupoProdutoS()->lists('grupoproduto', 'codgrupoproduto')->all();
+}
+
+$subgrupos  = [''=>''];
+if (!empty($filtro['codgrupoproduto']))
+{
+    $gp = GrupoProduto::findOrFail($filtro['codgrupoproduto']);
+    $subgrupos += $gp->SubGrupoProdutoS()->lists('subgrupoproduto', 'codsubgrupoproduto')->all();
+}
 
 ?>
 <div class="search-bar">
-{!! Form::model(
-Request::session()->get('produto.index'), 
+{!! Form::model($filtro, 
 [
     'route' => 'produto.index', 
     'method' => 'GET', 
@@ -71,18 +90,17 @@ Request::session()->get('produto.index'),
     </div>
 
     <div class="form-group">
-        {!! Form::select('inativo', ['' => '', 9 => 'Todos', 1 => 'Ativos', 2 => 'Inativos'], null, ['style' => 'width: 120px', 'id'=>'inativo']) !!}
+        {!! Form::select('inativo', ['' => '', 1 => 'Ativos', 2 => 'Inativos'], null, ['style' => 'width: 120px', 'id'=>'inativo']) !!}
     </div>
 
     <div class="form-group">
-        {!! Form::select('codtributacao', ['' => '', 1 => 'Tributação', 2 => 'Isento', 3 => 'Substituição'], null, ['style' => 'width: 120px', 'id' => 'codtributacao']) !!}
+        {!! Form::select('codtributacao', ['' => '', 1 => 'Tributado', 2 => 'Isento', 3 => 'Substituição'], null, ['style' => 'width: 120px', 'id' => 'codtributacao']) !!}
     </div>
 
     <div class="form-group">
         {!! Form::select('site', ['' => '', 'true' => 'No Site', 'false' => 'Fora do Site'], null, ['style' => 'width: 120px', 'id'=>'site']) !!}
     </div>      
 
-    <button type="submit" class="btn btn-default pull-right">Buscar</button>
     
     <div class="form-group">
         {!! Form::text('codncm', null, ['class' => 'form-control', 'id'=> 'codncm', 'placeholder' => 'NCM', 'style'=> 'width: 450px;']) !!}
@@ -105,6 +123,12 @@ Request::session()->get('produto.index'),
         {!! Form::text('alteracao_de', null, ['class' => 'form-control between', 'id' => 'alteracao_de', 'placeholder' => 'De']) !!}
         {!! Form::text('alteracao_ate', null, ['class' => 'form-control between', 'id' => 'alteracao_ate', 'placeholder' => 'Até']) !!}
     </div>
+    <div class="form-group pull-right">
+        <button type="submit" class="btn btn-default pull-right">
+            <i class='glyphicon glyphicon-search'></i>
+            Buscar
+        </button>
+    </div>
 
 {!! Form::close() !!}
 </div>
@@ -126,11 +150,6 @@ Request::session()->get('produto.index'),
                     </a>
                 </div>    
                 @endif
-                @if($row->codtributacao)
-                <div class="text-muted">
-                    {{ $row->Tributacao->tributacao }}
-                </div>
-                @endif
             </div>                            
             <div class="col-md-4">
                 <a href="{{ url("produto/$row->codproduto") }}">
@@ -143,43 +162,103 @@ Request::session()->get('produto.index'),
                 @endif
                 @if(!empty($row->codsubgrupoproduto))
                 <div>
-                    <strong>{{ $row->SubGrupoProduto->GrupoProduto->grupoproduto }} › {{ $row->SubGrupoProduto->subgrupoproduto }}</strong>
+                    <a href="{{ url("secao-produto/{$row->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto}") }}">
+                        {{ $row->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->secaoproduto }}
+                    </a>
+                    »
+                    <a href="{{ url("familia-produto/{$row->SubGrupoProduto->GrupoProduto->codfamiliaproduto}") }}">
+                        {{ $row->SubGrupoProduto->GrupoProduto->FamiliaProduto->familiaproduto }}
+                    </a>
+                    »
+                    <a href="{{ url("grupo-produto/{$row->SubGrupoProduto->codgrupoproduto}") }}">
+                        {{ $row->SubGrupoProduto->GrupoProduto->grupoproduto }}
+                    </a>
+                    »
+                    <a href="{{ url("sub-grupo-produto/$row->codsubgrupoproduto") }}">
+                        {{ $row->SubGrupoProduto->subgrupoproduto }}
+                    </a>
+                    »
+                    <a href="{{ url("marca/$row->codmarca") }}">
+                        {{ $row->Marca->marca }}
+                    </a>
+                    »
+                    <span class="text-muted">{{ $row->referencia }}</span>
                 </div>    
                 @endif
-                <a href="{{ url("marca/$row->codmarca") }}">
-                    {{ $row->Marca->marca }}
-                </a>
-                <span class="text-muted">{{ $row->referencia }}</span>
             </div>
-            <div class="col-md-7">
-                <div class="row subregistro">
-                    <strong class="col-md-2 text-right">
+            <div class="col-md-2">
+                <div class="row">
+                    <strong class="col-md-6 text-right">
                         {{ formataNumero($row->preco) }}
                     </strong>
-                    <small class="col-md-2">
+                    <div class="col-md-6">
                         {{ $row->UnidadeMedida->sigla }}
-                    </small>
-                    @foreach ($row->ProdutoBarraS()->whereNull('codprodutoembalagem')->get() as $pb)
-                        <small class="col-md-8 pull-right text-muted"> 
-                            <div class="col-md-3">
-                                {{ $pb->barras}}
-                            </div>
-                            <div class="col-md-5">
-                                {{ $pb->variacao}}
-                            </div>
-                            <div class="col-md-4">
-                                <strong>{{ $pb->Marca->marca or ''}}</strong>
-                                {{ $pb->referencia}}
-                            </div>
-                        </small>
-                    @endforeach
+                    </div>
                 </div>
-                @foreach ($row->ProdutoEmbalagemS as $pe)
-                    @include('produto.produtoembalagem',  ['pe' => $pe])
+                
+                @foreach($row->ProdutoEmbalagemS()->orderBy('quantidade')->get() as $pe)
+                    <div class="row">
+                        @if (empty($pe->preco))
+                            <i class="col-md-6 text-right text-muted">
+                                ({{ formataNumero($row->preco * $pe->quantidade) }})
+                            </i>
+                        @else
+                            <strong class="col-md-6 text-right">
+                                {{ formataNumero($pe->preco) }}                            
+                            </strong>
+                        @endif
+                        <div class="col-md-6 text-left">
+                            {{ $pe->UnidadeMedida->sigla }} C/
+                            {{ formataNumero($pe->quantidade, 0) }}
+                        </div>
+                    </div>
                 @endforeach
             </div>
-        </div>
-      </div>    
+            <div class="col-md-5 small text-muted">
+                <?php
+                $pvs = $row->ProdutoVariacaoS()->with(['ProdutoBarraS' => function ($q) {
+                    $q->with(['ProdutoEmbalagem' => function ($q2) {
+                        $q2->orderBy('quantidade', 'asc');
+                        $q2->with('UnidadeMedida');
+                    }])->orderBy('barras');
+                }])->orderBy('variacao')->get();
+                ?>
+                <table class="table table-striped table-condensed table-hover" style="margin-bottom: 1px">
+                @foreach ($pvs as $pv)
+                    <tr>
+                        <td class="col-md-6">
+                            @foreach ($pv->ProdutoBarraS as $pb)
+                                <div class="row">
+                                    <div class="col-md-7 text-right">
+                                        {{ $pb->barras }}
+                                    </div>
+                                    <small class="col-md-5">
+                                        @if (!empty($pb->codprodutoembalagem))
+                                            {{ $pb->ProdutoEmbalagem->UnidadeMedida->sigla . " " . $pb->ProdutoEmbalagem->descricao }}
+                                        @else
+                                            {{ $row->UnidadeMedida->sigla }}
+                                        @endif
+                                    </small>
+                                </div>
+                            @endforeach
+                        </td>
+                        <td class="col-md-6">
+                            @if (!empty($pv->codmarca))
+                                <a href="{{ url("marca/$pv->codmarca") }}">
+                                    {{ $pv->Marca->marca }}
+                                </a>
+                            @endif
+                            {{ $pv->variacao }}
+                            <div class="pull-right">
+                                {{ $pv->referencia }}
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+                </table>
+            </div>
+        </div>    
+      </div>
     @endforeach
     @if (count($model) === 0)
         <h3>Nenhum registro encontrado!</h3>
@@ -204,36 +283,34 @@ ul.pagination {
 }
 </style>
 <script type="text/javascript">
+function atualizaFiltro()
+{
+    var frmValues = $('#produto-search').serialize();
+    $.ajax({
+        type: 'GET',
+        url: baseUrl + '/produto',
+        data: frmValues
+    })
+    .done(function (data) {
+        $('#items').html(jQuery(data).find('#items').html()); 
+    })
+    .fail(function () {
+        console.log('Erro no filtro');
+    });
+    event.preventDefault(); 
+    
+}
+    
 $(document).ready(function() {
     $('ul.pagination').removeClass('hide');
-    //$('#produto-search').change(function() {
-    //    this.submit();
-    //});
+    
     $("#produto-search").on("change", function (event) {
-        var $this = $(this);
-        var frmValues = $this.serialize();
-        $.ajax({
-            type: 'GET',
-            url: baseUrl + '/produto',
-            data: frmValues
-        })
-        .done(function (data) {
-            $('#items').html(jQuery(data).find('#items').html()); 
-        })
-        .fail(function () {
-            console.log('Erro no filtro');
-        });
-        event.preventDefault(); 
+        atualizaFiltro();
     });
-    /*
-    $('#items').infinitescroll({
-        pathParse: function (path, currentPage) {
-  // Parse out the URL into chunks here
-
-  // `chunkedUrl` should be `["/path/to/resource?page=", "&foo=bar&dynamic=CA735B#!random-hashbang"]`
-  return chunkedUrl;
-}
-    });    */
+    
+    $(document).on('dp.change', '#criacao_de, #criacao_ate, #alteracao_de, #alteracao_ate', function() {
+        atualizaFiltro();
+    });
     
     $('#inativo').select2({
         placeholder: 'Inativo',
@@ -260,9 +337,7 @@ $(document).ready(function() {
         locale: 'pt-br',
         format: 'DD/MM/YY'
     });
-    $(document).on('dp.change', '#criacao_de, #criacao_ate, #alteracao_de, #alteracao_ate', function() {
-        $('#produto-search').submit();
-    });
+
     $('#codncm').select2({
         minimumInputLength:1,
         allowClear:true,
@@ -300,6 +375,7 @@ $(document).ready(function() {
         },
         width:'resolve'
     });    
+    
     $('#codmarca').select2({
         minimumInputLength:1,
         allowClear:true,
@@ -337,6 +413,7 @@ $(document).ready(function() {
         },
         width:'resolve'
     });
+    
     $('#codsecaoproduto').select2({
         placeholder: 'Seção',
         allowClear: true,
@@ -357,120 +434,6 @@ $(document).ready(function() {
         allowClear: true,
         closeOnSelect: true
     });
-    
-    /*
-    $('#codfamiliaproduto').select2({
-        minimumInputLength:1,
-        allowClear:true,
-        closeOnSelect:true,
-        placeholder:'Família',
-        formatResult:function(item) {
-            var markup = "<div class='row-fluid'>";
-            markup    += item.familiaproduto;
-            markup    += "</div>";
-            return markup;
-        },
-        formatSelection:function(item) { 
-            return item.familiaproduto; 
-        },
-        ajax:{
-            url:baseUrl+"/familia-produto/ajax",
-            dataType:'json',
-            quietMillis:500,
-            data:function(term,page) { 
-                return {q: term}; 
-            },
-            results:function(data,page) {
-                var more = (page * 20) < data.total;
-                return {results: data.items};
-            }
-        },
-        initSelection:function (element, callback) {
-            $.ajax({
-                type: "GET",
-                url: baseUrl+"/familia-produto/ajax",
-                data: "id="+$('#codfamiliaproduto').val(),
-                dataType: "json",
-                success: function(result) { callback(result); }
-            });
-        },
-        width:'resolve'
-    });
-    $('#codgrupoproduto').select2({
-        minimumInputLength:1,
-        allowClear:true,
-        closeOnSelect:true,
-        placeholder:'Grupo',
-        formatResult:function(item) {
-            var markup = "<div class='row-fluid'>";
-            markup    += item.grupoproduto;
-            markup    += "</div>";
-            return markup;
-        },
-        formatSelection:function(item) { 
-            return item.grupoproduto; 
-        },
-        ajax:{
-            url:baseUrl+"/grupo-produto/ajax",
-            dataType:'json',
-            quietMillis:500,
-            data:function(term,page) { 
-                return {q: term}; 
-            },
-            results:function(data,page) {
-                var more = (page * 20) < data.total;
-                return {results: data.items};
-            }
-        },
-        initSelection:function (element, callback) {
-            $.ajax({
-                type: "GET",
-                url: baseUrl+"/grupo-produto/ajax",
-                data: "id="+$('#codgrupoproduto').val(),
-                dataType: "json",
-                success: function(result) { callback(result); }
-            });
-        },
-        width:'resolve'
-    });
-    $('#codsubgrupoproduto').select2({
-        minimumInputLength:1,
-        allowClear:true,
-        closeOnSelect:true,
-        placeholder:'Sub Grupo',
-        formatResult:function(item) {
-            var markup = "<div class='row-fluid'>";
-            markup    += item.subgrupoproduto;
-            markup    += "</div>";
-            return markup;
-        },
-        formatSelection:function(item) { 
-            return item.subgrupoproduto; 
-        },
-        ajax:{
-            url:baseUrl+"/sub-grupo-produto/ajax",
-            dataType:'json',
-            quietMillis:500,
-            data:function(term,page) { 
-                return {q: term}; 
-            },
-            results:function(data,page) {
-                var more = (page * 20) < data.total;
-                return {results: data.items};
-            }
-        },
-        initSelection:function (element, callback) {
-            $.ajax({
-                type: "GET",
-                url: baseUrl+"/sub-grupo-produto/ajax",
-                data: "id="+$('#codsubgrupoproduto').val(),
-                dataType: "json",
-                success: function(result) { callback(result); }
-            });
-        },
-        width:'resolve'
-    });
-    */
     
 });
 </script>

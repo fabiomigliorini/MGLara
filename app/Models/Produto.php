@@ -42,6 +42,7 @@ use Carbon\Carbon;
  * Tabelas Filhas
  * @property  EstoqueLocalProduto[]          $EstoqueLocalProdutoS
  * @property  ProdutoBarra[]                 $ProdutoBarraS
+ * @property  ProdutoVariacao                $ProdutoVariacaoS
  * @property  ProdutoEmbalagem[]             $ProdutoEmbalagemS
  * @property  ProdutoHistoricoPreco[]        $ProdutoHistoricoPrecoS
  */
@@ -178,6 +179,11 @@ class Produto extends MGModel
     public function ProdutoBarraS()
     {
         return $this->hasMany(ProdutoBarra::class, 'codproduto', 'codproduto');
+    }
+
+    public function ProdutoVariacaoS()
+    {
+        return $this->hasMany(ProdutoVariacao::class, 'codproduto', 'codproduto');
     }
 
     public function ProdutoEmbalagemS()
@@ -578,27 +584,32 @@ class Produto extends MGModel
         if(isset($parametros['codmarca']) and !empty($parametros['codmarca']))
             $query->where('codmarca', $parametros['codmarca']);
 
-        if( isset($parametros['codsecaoproduto'])       and !empty($parametros['codsecaoproduto']) OR
-            isset($parametros['codfamiliaproduto'])     and !empty($parametros['codfamiliaproduto']) OR
-            isset($parametros['codgrupoproduto'])       and !empty($parametros['codgrupoproduto'])) {
-            $query->leftJoin('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto')
-                ->leftJoin('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto')
-                ->leftJoin('tblfamiliaproduto', 'tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto')
-                ->leftJoin('tblsecaoproduto', 'tblsecaoproduto.codsecaoproduto', '=', 'tblfamiliaproduto.codsecaoproduto');
-            
-            if($parametros['codsecaoproduto'])
-                $query->where('tblsecaoproduto.codsecaoproduto', $parametros['codsecaoproduto']);            
-            
-            if($parametros['codfamiliaproduto'])
-                $query->where('tblfamiliaproduto.codfamiliaproduto', $parametros['codfamiliaproduto']);            
-            
-            if($parametros['codgrupoproduto'])
-                $query->where('tblgrupoproduto.codgrupoproduto', $parametros['codgrupoproduto']);            
-
-        }
-            
-        if(isset($parametros['codsubgrupoproduto']) and !empty($parametros['codsubgrupoproduto']))
+        if(!empty($parametros['codsubgrupoproduto']))
             $query->where('codsubgrupoproduto', $parametros['codsubgrupoproduto']);
+        elseif (!empty($parametros['codgrupoproduto']))
+        {
+            $query->whereHas('SubGrupoProduto', function ($iq) use($parametros) {
+                $iq->where('codgrupoproduto', $parametros['codgrupoproduto']);
+            });
+        }
+        elseif (!empty($parametros['codfamiliaproduto']))
+        {
+            $query->whereHas('SubGrupoProduto', function ($iq) use($parametros) {
+                $iq->whereHas('GrupoProduto', function ($iq2) use($parametros) {
+                    $iq2->where('codfamiliaproduto', $parametros['codfamiliaproduto']);
+                });
+            });
+        }
+        elseif (!empty($parametros['codsecaoproduto']))
+        {
+            $query->whereHas('SubGrupoProduto', function ($iq) use($parametros) {
+                $iq->whereHas('GrupoProduto', function ($iq2) use($parametros) {
+                    $iq2->whereHas('FamiliaProduto', function ($iq3) use($parametros) {
+                        $iq3->where('codsecaoproduto', $parametros['codsecaoproduto']);
+                    });
+                });
+            });
+        }
 
         if(isset($parametros['referencia']) and !empty($parametros['referencia']))
             $query->where('referencia', $parametros['referencia']);
@@ -612,12 +623,49 @@ class Produto extends MGModel
         if(isset($parametros['codncm']) and !empty($parametros['codncm']))
             $query->where('codncm', $parametros['codncm']);
 
-        if(isset($parametros['preco_de']) and !empty($parametros['preco_de']))
-            $query->where('preco','>=', converteParaNumerico($parametros['preco_de']));
+        if(!empty($parametros['preco_de']) && empty($parametros['preco_ate']))
+        {
+            $preco_de = converteParaNumerico($parametros['preco_de']);
+            $sql = "codproduto in (
+                        select pe.codproduto 
+                        from tblprodutoembalagem pe 
+                        inner join tblproduto p on (p.codproduto = pe.codproduto) 
+                        where coalesce(pe.preco, pe.quantidade * p.preco) >= $preco_de
+                        or p.preco >= $preco_de
+                            )
+                    ";
+            $query->whereRaw($sql);
+        }
 
-        if(isset($parametros['preco_ate']) and !empty($parametros['preco_ate']))
-            $query->where('preco','<=', converteParaNumerico($parametros['preco_ate']));
-
+        if(empty($parametros['preco_de']) && !empty($parametros['preco_ate']))
+        {
+            $preco_ate = converteParaNumerico($parametros['preco_ate']);
+            $sql = "codproduto in (
+                        select pe.codproduto 
+                        from tblprodutoembalagem pe 
+                        inner join tblproduto p on (p.codproduto = pe.codproduto) 
+                        where coalesce(pe.preco, pe.quantidade * p.preco) >= $preco_ate
+                        or p.preco >= $preco_ate
+                            )
+                    ";
+            $query->whereRaw($sql);
+        }
+        
+        if(!empty($parametros['preco_de']) && !empty($parametros['preco_ate']))
+        {
+            $preco_de = converteParaNumerico($parametros['preco_de']);
+            $preco_ate = converteParaNumerico($parametros['preco_ate']);
+            $sql = "codproduto in (
+                        select pe.codproduto 
+                        from tblprodutoembalagem pe 
+                        inner join tblproduto p on (p.codproduto = pe.codproduto) 
+                        where coalesce(pe.preco, pe.quantidade * p.preco) between $preco_de and $preco_ate
+                        or p.preco between $preco_de and $preco_ate
+                            )
+                    ";
+            $query->whereRaw($sql);
+        }
+        
         if(isset($parametros['criacao_de']) and !empty($parametros['criacao_de']))
             $query->where('criacao', '>=', Carbon::createFromFormat('d/m/y', $parametros['criacao_de'])->format('Y-m-d').' 00:00:00.0');
             

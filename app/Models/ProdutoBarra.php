@@ -10,6 +10,7 @@ namespace MGLara\Models;
  * @property  varchar(50)                    $barras                             NOT NULL
  * @property  varchar(50)                    $referencia                         
  * @property  bigint                         $codmarca                           
+ * @property  bigint                         $codprodutovariacao                 
  * @property  bigint                         $codprodutoembalagem                
  * @property  timestamp                      $alteracao                          
  * @property  bigint                         $codusuarioalteracao                
@@ -19,6 +20,7 @@ namespace MGLara\Models;
  * Chaves Estrangeiras
  * @property  Marca                          $Marca                         
  * @property  Produto                        $Produto                       
+ * @property  ProdutoVariacao                $ProdutoVariacao               
  * @property  ProdutoEmbalagem               $ProdutoEmbalagem              
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
@@ -74,6 +76,11 @@ class ProdutoBarra extends MGModel
     public function Produto()
     {
         return $this->belongsTo(Produto::class, 'codproduto', 'codproduto');
+    }
+
+    public function ProdutoVariacao()
+    {
+        return $this->belongsTo(ProdutoVariacao::class, 'codprodutovariacao', 'codprodutovariacao');
     }
 
     public function ProdutoEmbalagem()

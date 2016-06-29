@@ -17,7 +17,10 @@ class DashboardController extends Controller
     {
         //$request->session()->flush();
 
+        /*
         dd($request->session());
+         * 
+         */
         return view('dashboard.index'); 
     }
 
