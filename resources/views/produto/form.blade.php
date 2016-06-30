@@ -282,11 +282,12 @@ $(document).ready(function() {
         closeOnSelect: true
     });
 
+    $('#codsecaoproduto').val({{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto or ''}});
     $('#codsecaoproduto').select2({
         placeholder: 'Seção',
         allowClear: true,
         closeOnSelect: true,
-        //val:{{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto or ''}}
+        val:{{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto or ''}}
     });
 
     $('#codfamiliaproduto').select2({

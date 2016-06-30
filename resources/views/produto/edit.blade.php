@@ -23,6 +23,11 @@
 </h1>
 <hr>
 <br>
+<?php
+$model->codgrupoproduto     = $model->SubGrupoProduto->GrupoProduto->codgrupoproduto;;
+$model->codfamiliaproduto   = $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codfamiliaproduto;;
+$model->codsecaoproduto     = $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto;
+?>
 {!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'id' => 'form-produto', 'action' => ['ProdutoController@update', $model->codproduto] ]) !!}
     @include('errors.form_error')
     @include('produto.form', ['submitTextButton' => 'Salvar'])
