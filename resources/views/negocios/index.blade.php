@@ -1,19 +1,17 @@
-@extends('layouts.default')
-@section('content')
+@extends('negocios.template')
+@section('navbar')
 
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
-    <div class="container-fluid">
-        <ul class="nav navbar-nav">
-            <li>
-                <a href="http://mglara.local/MGLara/grupo-cliente/create"><span class="glyphicon glyphicon-plus"></span> Novo</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-<h1 class="header">Negócios</h1>
-<hr>
+<li>
+    <a href="{{ URL::route('negocios::create') }}"><span class="glyphicon glyphicon-plus"></span> Novo</a>
+</li>
 
+@endsection
 
+@section('title')
+Negócios
+@endsection
+
+@section('body')
 <form>
     <div class="row">
         <div class="form-group col-sm-2">
@@ -80,7 +78,6 @@
     </div>
 </form>
 
-
 <div class="panel panel-default">
     <table class="table table-hover table-striped">
         <tbody>
@@ -97,25 +94,26 @@
             </tr>
         </tbody>
         <tbody>
+<?php
+$statusStyle = [
+    'Aberto' => 'success',
+    'Cancelado' => 'danger',
+];
+?>
             @foreach($model as $row)
-            <tr>
+            <tr class="{{ $statusStyle[$row->NegocioStatus->negociostatus] or '' }}">
                 <td>{{ formataCodigo($row->codnegocio) }}</td>
-                <td>{{ formataData($row->lancamento, 'L') }}</td>
+                <td nowrap>{{ formataData($row->lancamento, 'L') }}</td>
                 <td>{{ $row->NaturezaOperacao->naturezaoperacao }}</td>
                 <td>{{ formataNumero($row->valortotal) }}</td>
                 <td>{{ $row->Pessoa->fantasia }}</td>
                 <td><small>{{ $row->Filial->filial }}</small></td>
                 <td><small>{{ $row->Usuario->usuario }}</small></td>
-                <td><small>$row->NegocioStatus->negociostatus</small></td>
-                <td><small>$row->PessoaVendedor->fantasia</small></td>
+                <td><small>{{ $row->NegocioStatus->negociostatus }}</small></td>
+                <td><small>{{ $row->PessoaVendedor->fantasia or '' }}</small></td>
             </tr>
             @endforeach
         </tbody>
     </table>
 </div>
-
-@section('inscript')
-<link rel="stylesheet" href="{{ URL::asset('public/css/negocios.css') }}">
-<script src="{{ URL::asset('public/js/negocios.js') }}"></script>
 @endsection
-@stop

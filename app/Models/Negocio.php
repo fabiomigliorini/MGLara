@@ -106,7 +106,7 @@ class Negocio extends MGModel
 
     public function PessoaVendedor()
     {
-        return $this->belongsTo(Pessoa::class, 'codpessoa', 'codpessoavendedor');
+        return $this->belongsTo(Pessoa::class, 'codpessoavendedor', 'codpessoa');
     }
 
     public function Usuario()
