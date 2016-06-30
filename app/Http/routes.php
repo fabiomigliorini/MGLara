@@ -68,6 +68,7 @@ Route::group(['middleware' => 'auth'], function() {
     
     /* GrupoProduto */
     Route::post('grupo-produto/inativo','GrupoProdutoController@inativo');
+    Route::resource('grupo-produto/ajax','GrupoProdutoController@ajax');
     Route::resource('grupo-produto/{id}/busca-codproduto','GrupoProdutoController@buscaCodproduto');           
     Route::resource('grupo-produto','GrupoProdutoController');           
                
@@ -155,6 +156,7 @@ Route::group(['middleware' => 'auth'], function() {
         
     /* Família Produto */
     Route::post('familia-produto/inativo','FamiliaProdutoController@inativo');
+    Route::resource('familia-produto/ajax','FamiliaProdutoController@ajax');
     Route::resource('familia-produto','FamiliaProdutoController');
     
 

@@ -74,11 +74,11 @@ if (!empty($filtro['codgrupoproduto']))
     </div>
 
     <div class="form-group">
-        {!! Form::select('codfamiliaproduto', $familias, null, ['class'=> 'form-control', 'id' => 'codfamiliaproduto', 'style'=>'width:160px']) !!}
+        {!! Form::text('codfamiliaproduto', null, ['class'=> 'form-control', 'id' => 'codfamiliaproduto', 'style'=>'width:160px']) !!}
     </div>
 
     <div class="form-group">
-        {!! Form::select('codgrupoproduto', $grupos, null, ['class'=> 'form-control', 'id' => 'codgrupoproduto', 'style'=>'width:160px']) !!}
+        {!! Form::text('codgrupoproduto', null, ['class'=> 'form-control', 'id' => 'codgrupoproduto', 'style'=>'width:160px']) !!}
     </div>
 
     <div class="form-group">
@@ -101,7 +101,6 @@ if (!empty($filtro['codgrupoproduto']))
         {!! Form::select('site', ['' => '', 'true' => 'No Site', 'false' => 'Fora do Site'], null, ['style' => 'width: 120px', 'id'=>'site']) !!}
     </div>      
 
-    
     <div class="form-group">
         {!! Form::text('codncm', null, ['class' => 'form-control', 'id'=> 'codncm', 'placeholder' => 'NCM', 'style'=> 'width: 450px;']) !!}
     </div>
@@ -419,12 +418,95 @@ $(document).ready(function() {
         allowClear: true,
         closeOnSelect: true
     });
+    /*
+    $("#codsecaoproduto").load(function() {
+        if($("#codsecaoproduto").val() > 0) {
+            $("#codfamiliaproduto").select2("enable", true);
+        }
+    });*/
     $('#codfamiliaproduto').select2({
-        placeholder: 'Família',
-        allowClear: true,
-        closeOnSelect: true
+        minimumInputLength:0,
+        allowClear:true,
+        closeOnSelect:true,
+        placeholder:'Família',
+        formatResult:function(item) {
+            var markup = "<div class='row-fluid'>";
+            markup    += item.familiaproduto;
+            markup    += "</div>";
+            return markup;
+        },
+        formatSelection:function(item) { 
+            return item.familiaproduto; 
+        },
+        ajax:{
+            url:baseUrl+"/familia-produto/ajax",
+            dataType:'json',
+            quietMillis:500,
+            data:function(term, codsecaoproduto, page) { 
+                return {
+                    q: term,
+                    codsecaoproduto: $('#codsecaoproduto').val()
+                }; 
+            },
+            results:function(data,page) {
+                var more = (page * 20) < data.total;
+                return {results: data.items};
+            }
+        },
+        initSelection:function (element, callback) {
+            $.ajax({
+                type: "GET",
+                url: baseUrl+"/familia-produto/ajax",
+                data: "id="+$('#codfamiliaproduto').val(),
+                dataType: "json",
+                success: function(result) { callback(result); }
+            });
+        },
+        width:'resolve'
     });
+    
     $('#codgrupoproduto').select2({
+        minimumInputLength:0,
+        allowClear:true,
+        closeOnSelect:true,
+        placeholder:'Grupo',
+        formatResult:function(item) {
+            var markup = "<div class='row-fluid'>";
+            markup    += item.grupoproduto;
+            markup    += "</div>";
+            return markup;
+        },
+        formatSelection:function(item) { 
+            return item.grupoproduto; 
+        },
+        ajax:{
+            url:baseUrl+"/grupo-produto/ajax",
+            dataType:'json',
+            quietMillis:500,
+            data:function(term, codfamiliaproduto, page) { 
+                return {
+                    q: term,
+                    codfamiliaproduto: $('#codfamiliaproduto').val()
+                }; 
+            },
+            results:function(data,page) {
+                var more = (page * 20) < data.total;
+                return {results: data.items};
+            }
+        },
+        initSelection:function (element, callback) {
+            $.ajax({
+                type: "GET",
+                url: baseUrl+"/grupo-produto/ajax",
+                data: "id="+$('#codgrupoproduto').val(),
+                dataType: "json",
+                success: function(result) { callback(result); }
+            });
+        },
+        width:'resolve'
+    });
+
+    $('#').select2({
         placeholder: 'Grupo',
         allowClear: true,
         closeOnSelect: true
@@ -434,6 +516,9 @@ $(document).ready(function() {
         allowClear: true,
         closeOnSelect: true
     });
+
+
+
     
 });
 </script>

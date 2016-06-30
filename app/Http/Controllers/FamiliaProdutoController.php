@@ -152,4 +152,17 @@ class FamiliaProdutoController extends Controller
         Session::flash('flash_success', $msg);
     }    
     
+    public function ajax(Request $request){
+        if($request->get('codsecaoproduto')) {
+            $model = FamiliaProduto::where('codsecaoproduto', $request->get('codsecaoproduto'))
+                ->familiaproduto($request->get('q'))
+                ->select('codfamiliaproduto as id', 'familiaproduto')
+                ->take(10)
+                ->get();
+            return response()->json(['items' => $model]);       
+        } elseif($request->get('id')) {
+            $model = FamiliaProduto::find($request->get('id'));
+            return response()->json($model);
+        }
+    } 
 }
