@@ -10,8 +10,15 @@ class NegociosController extends Controller
 {
     public function index(Request $request)
     {
-        $model = Negocio::paginate(200);
+        $model = Negocio::orderBy('criacao', 'desc')->paginate(20);
 
         return view('negocios.index', compact('model'));
+    }
+
+    public function create(Request $request)
+    {
+        $model = Negocio::orderBy('criacao', 'desc')->paginate(200);
+
+        return view('negocios.create', compact('model'));
     }
 }
