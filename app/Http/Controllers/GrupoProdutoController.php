@@ -151,7 +151,8 @@ class GrupoProdutoController extends Controller
         Session::flash('flash_success', $msg);
     }
     
-    public function ajax(Request $request){
+    public function ajax(Request $request)
+    {
         if($request->get('codfamiliaproduto')) {
             $model = GrupoProduto::where('codfamiliaproduto', $request->get('codfamiliaproduto'))
                 ->grupoproduto($request->get('q'))
@@ -164,5 +165,4 @@ class GrupoProdutoController extends Controller
             return response()->json($model);
         }
     } 
-    
 }

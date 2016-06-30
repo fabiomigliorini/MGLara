@@ -9,39 +9,13 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Produtos</h1>
+<h1 class="header">{!! titulo(null, [ ['url' => null, 'descricao' => 'Produtos'] ], null) !!}  </h1>
 <hr>
 <?php
 use MGLara\Models\SecaoProduto;
-use MGLara\Models\FamiliaProduto;
-use MGLara\Models\GrupoProduto;
-use MGLara\Models\SubGrupoProduto;
 use MGLara\Models\ProdutoVariacao;
 $filtro = Request::session()->get('produto.index');
-
 $secoes     = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')->all();
-
-$familias   = [''=>''];
-if (!empty($filtro['codsecaoproduto']))
-{
-    $secao = SecaoProduto::findOrFail($filtro['codsecaoproduto']);
-    $familias += $secao->FamiliaProdutoS()->lists('familiaproduto', 'codfamiliaproduto')->all();
-}
-
-$grupos     = [''=>''];
-if (!empty($filtro['codfamiliaproduto']))
-{
-    $fam = FamiliaProduto::findOrFail($filtro['codfamiliaproduto']);
-    $grupos += $fam->GrupoProdutoS()->lists('grupoproduto', 'codgrupoproduto')->all();
-}
-
-$subgrupos  = [''=>''];
-if (!empty($filtro['codgrupoproduto']))
-{
-    $gp = GrupoProduto::findOrFail($filtro['codgrupoproduto']);
-    $subgrupos += $gp->SubGrupoProdutoS()->lists('subgrupoproduto', 'codsubgrupoproduto')->all();
-}
-
 ?>
 <div class="search-bar">
 {!! Form::model($filtro, 
@@ -82,7 +56,7 @@ if (!empty($filtro['codgrupoproduto']))
     </div>
 
     <div class="form-group">
-        {!! Form::select('codsubgrupoproduto', $subgrupos, null, ['class'=> 'form-control', 'id' => 'codsubgrupoproduto', 'style'=>'width:160px']) !!}
+        {!! Form::text('codsubgrupoproduto', null, ['class'=> 'form-control', 'id' => 'codsubgrupoproduto', 'style'=>'width:160px']) !!}
     </div>
 
     <div class="form-group">
@@ -418,12 +392,7 @@ $(document).ready(function() {
         allowClear: true,
         closeOnSelect: true
     });
-    /*
-    $("#codsecaoproduto").load(function() {
-        if($("#codsecaoproduto").val() > 0) {
-            $("#codfamiliaproduto").select2("enable", true);
-        }
-    });*/
+
     $('#codfamiliaproduto').select2({
         minimumInputLength:0,
         allowClear:true,
@@ -506,20 +475,46 @@ $(document).ready(function() {
         width:'resolve'
     });
 
-    $('#').select2({
-        placeholder: 'Grupo',
-        allowClear: true,
-        closeOnSelect: true
-    });
     $('#codsubgrupoproduto').select2({
-        placeholder: 'Sub Grupo',
-        allowClear: true,
-        closeOnSelect: true
+        minimumInputLength:0,
+        allowClear:true,
+        closeOnSelect:true,
+        placeholder:'Sub Grupo',
+        formatResult:function(item) {
+            var markup = "<div class='row-fluid'>";
+            markup    += item.subgrupoproduto;
+            markup    += "</div>";
+            return markup;
+        },
+        formatSelection:function(item) { 
+            return item.subgrupoproduto; 
+        },
+        ajax:{
+            url:baseUrl+"/sub-grupo-produto/ajax",
+            dataType:'json',
+            quietMillis:500,
+            data:function(term, codgrupoproduto, page) { 
+                return {
+                    q: term,
+                    codgrupoproduto: $('#codgrupoproduto').val()
+                }; 
+            },
+            results:function(data,page) {
+                var more = (page * 20) < data.total;
+                return {results: data.items};
+            }
+        },
+        initSelection:function (element, callback) {
+            $.ajax({
+                type: "GET",
+                url: baseUrl+"/sub-grupo-produto/ajax",
+                data: "id="+$('#codsubgrupoproduto').val(),
+                dataType: "json",
+                success: function(result) { callback(result); }
+            });
+        },
+        width:'resolve'
     });
-
-
-
-    
 });
 </script>
 @endsection
