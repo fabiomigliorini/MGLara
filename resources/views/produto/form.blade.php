@@ -13,6 +13,11 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 ?>
 <div class="form-group">
     <label for="codmarca" class="col-sm-2 control-label">Marca</label>
+    <div class="col-sm-3">@include('includes.select2.marca', ['inativo' => '1'])</div>    
+</div>
+
+<div class="form-group">
+    <label for="codmarca" class="col-sm-2 control-label">Marca</label>
     <div class="col-sm-3">{!! Form::text('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%']) !!}</div>    
 </div>
 

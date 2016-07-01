@@ -40,7 +40,7 @@ $secoes     = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')-
     </div>
 
     <div class="form-group">
-        {!! Form::text('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:140px', 'placeholder' => 'Marca']) !!}
+        @include('includes.select2.marca', ['inativo' => '1'])
     </div>
 
     <div class="form-group">
