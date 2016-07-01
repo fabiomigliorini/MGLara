@@ -270,6 +270,7 @@ $(document).ready(function() {
         allowClear: true,
         closeOnSelect: true
     });
+
     $('#codtributacao').select2({
         placeholder: 'Tributação',
         allowClear: true,
@@ -282,13 +283,18 @@ $(document).ready(function() {
         closeOnSelect: true
     });
 
-    $('#codsecaoproduto').val({{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto or ''}});
+    if($('#codsecaoproduto').val() == '') {
+        $('#codsecaoproduto').val({{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto or ''}});
+    }
     $('#codsecaoproduto').select2({
         placeholder: 'Seção',
         allowClear: true,
         closeOnSelect: true,
-        val:{{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto or ''}}
     });
+
+    if($('#codfamiliaproduto').val() == '') {
+        $('#codfamiliaproduto').val({{ $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codfamiliaproduto or '' }});
+    }
 
     $('#codfamiliaproduto').select2({
         minimumInputLength:0,
@@ -323,7 +329,7 @@ $(document).ready(function() {
             $.ajax({
                 type: "GET",
                 url: baseUrl+"/familia-produto/ajax",
-                data: "id={{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codfamiliaproduto or ''}}",
+                data: "id="+$('#codfamiliaproduto').val(),
                 dataType: "json",
                 success: function(result) { callback(result); }
             });
@@ -331,6 +337,10 @@ $(document).ready(function() {
         width:'resolve'
     });
     
+    if($('#codgrupoproduto').val() == '') {
+        $('#codgrupoproduto').val({{ $model->SubGrupoProduto->GrupoProduto->codgrupoproduto or '' }});
+    }
+
     $('#codgrupoproduto').select2({
         minimumInputLength:0,
         allowClear:true,
@@ -364,7 +374,7 @@ $(document).ready(function() {
             $.ajax({
                 type: "GET",
                 url: baseUrl+"/grupo-produto/ajax",
-                data: "id={{$model->SubGrupoProduto->GrupoProduto->codgrupoproduto or ''}}",
+                data: "id="+$('#codgrupoproduto').val(),
                 dataType: "json",
                 success: function(result) { callback(result); }
             });
@@ -413,7 +423,10 @@ $(document).ready(function() {
         width:'resolve'
     });
 
-
+    console.log($('#codsecaoproduto').val());
+    console.log($('#codfamiliaproduto').val());
+    console.log($('#codgrupoproduto').val());
+    console.log($('#codsubgrupoproduto').val());
 
 });
 </script>
