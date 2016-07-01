@@ -422,12 +422,6 @@ $(document).ready(function() {
         },
         width:'resolve'
     });
-
-    console.log($('#codsecaoproduto').val());
-    console.log($('#codfamiliaproduto').val());
-    console.log($('#codgrupoproduto').val());
-    console.log($('#codsubgrupoproduto').val());
-
 });
 </script>
 @endsection
