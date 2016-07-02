@@ -154,7 +154,7 @@ return [
         MGLara\Providers\LanguageProvider::class,
         MGLara\Providers\ValidatorServiceProvider::class,
         //MGLara\Providers\ProdutoServiceProvider::class,
-        MGLara\Providers\BreadcrumbsServiceProvider::class
+        MGLara\Providers\FormMacrosProvider::class
     ],
 
     /*
