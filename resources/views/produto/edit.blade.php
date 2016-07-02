@@ -9,7 +9,18 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Alterar Produto: {{$model->produto}}</h1>
+<h1 class="header">
+{!! 
+    titulo(
+        $model->codproduto,
+        [
+            ['url' => "produto/$model->codproduto", 'descricao' => $model->produto],
+            ['url' => null, 'descricao' => 'Alterar'],
+        ],
+        $model->inativo
+    ) 
+!!}     
+</h1>
 <hr>
 <br>
 {!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'id' => 'form-produto', 'action' => ['ProdutoController@update', $model->codproduto] ]) !!}

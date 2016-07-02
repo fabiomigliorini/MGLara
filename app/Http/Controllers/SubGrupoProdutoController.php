@@ -150,10 +150,15 @@ class SubGrupoProdutoController extends Controller
         Session::flash('flash_success', $msg);
     }    
 
-    public function ajax(Request $request){
-        if($request->get('codfamiliaproduto')) {
-            $model = SubGrupoProduto::select2($request->get('codfamiliaproduto'));
-            return response()->json($model);       
+    public function ajax(Request $request)
+    {
+        if($request->get('codgrupoproduto')) {
+            $model = SubGrupoProduto::where('codgrupoproduto', $request->get('codgrupoproduto'))
+                ->subgrupoproduto($request->get('q'))
+                ->select('codsubgrupoproduto as id', 'subgrupoproduto')
+                ->take(10)
+                ->get();
+            return response()->json(['items' => $model]);       
         } elseif($request->get('id')) {
             $model = SubGrupoProduto::find($request->get('id'));
             return response()->json($model);

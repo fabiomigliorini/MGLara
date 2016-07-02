@@ -7,7 +7,18 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Novo Produto</h1>
+<h1 class="header">
+{!! 
+    titulo(
+        null,
+        [
+            ['url' => "produto", 'descricao' => 'Produtos'],
+            ['url' => null, 'descricao' => 'Novo Produto'],
+        ],
+        $model->inativo
+    ) 
+!!}   
+</h1>
 <hr>
 <br>
 {!! Form::model($model, ['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form-produto', 'route' => 'produto.store']) !!}

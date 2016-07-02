@@ -149,6 +149,20 @@ class GrupoProdutoController extends Controller
         
         $model->save();
         Session::flash('flash_success', $msg);
-    }    
+    }
     
+    public function ajax(Request $request)
+    {
+        if($request->get('codfamiliaproduto')) {
+            $model = GrupoProduto::where('codfamiliaproduto', $request->get('codfamiliaproduto'))
+                ->grupoproduto($request->get('q'))
+                ->select('codgrupoproduto as id', 'grupoproduto')
+                ->take(10)
+                ->get();
+            return response()->json(['items' => $model]);       
+        } elseif($request->get('id')) {
+            $model = GrupoProduto::find($request->get('id'));
+            return response()->json($model);
+        }
+    } 
 }
