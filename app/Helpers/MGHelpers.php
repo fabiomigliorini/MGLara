@@ -308,38 +308,35 @@ if(!function_exists('removeAcentos')) {
 }
 
 if(!function_exists('titulo')) {
-    function titulo ($codigo, $descricao, $inativo) 
+    function titulo ($codigo, $descricao, $inativo, $digitos_codigo = 8) 
     {
-        $htmlCodigo     = '';
-        $htmlDescricao  = '';
-        $htmlInativo    = '';
         
-        if(!empty($codigo))
-            $htmlCodigo .= "<small>". formataCodigo($codigo) ."</small> ";
+        $html = (!empty($codigo))?'<small class=\'text-muted\'>'. formataCodigo($codigo, $digitos_codigo) .'</small> ':'';
         
-        if(!empty($inativo))
-            $htmlCodigo .= "<del>";
+        $i = 0;
         
-        foreach ($descricao as $key => $value)
+        if (is_string($descricao))
+            $descricao = [$descricao];
+        
+        foreach ($descricao as $url => $titulo)
         {
-            if($key > 0)
-                $htmlDescricao .= " » ";
+            $htmlItem = $titulo;
             
-            if(!empty($value['url']))   
-                $htmlDescricao .= "<a href=" .  url($value['url']) . ">";
+            if (!is_null($url) && !is_integer($url))
+                $htmlItem = "<a href='$url'>$htmlItem</a>";
             
-            $htmlDescricao .= $value['descricao'];
+            if ($i > 0)
+                $htmlItem = " » $htmlItem";
             
-            if(!empty($value['url']))
-                $htmlDescricao .= "</a> ";
+            $html .= $htmlItem;
+            
+            $i++;
         }
         
         if(!empty($inativo))
-            $htmlInativo .= "</del> <small class='text-danger'> Inativo desde ".formataData($inativo, 'L') . "!</small>";
-        
-        $resultado = $htmlCodigo . $htmlDescricao . $htmlInativo;
+            $html = "<del>$html</del> <small class='text-danger'> Inativo desde ".formataData($inativo, 'L') . "!</small>";
 
-        return $resultado;
+        return $html;
     }
 }
 

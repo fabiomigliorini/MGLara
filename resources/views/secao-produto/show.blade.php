@@ -46,9 +46,7 @@
 {!! 
     titulo(
         $model->codsecaoproduto,
-        [
-            ['url' => null, 'descricao' => $model->secaoproduto],
-        ],
+        $model->secaoproduto,
         $model->inativo
     ) 
 !!} 

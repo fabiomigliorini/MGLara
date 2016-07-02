@@ -47,16 +47,10 @@
     titulo(
         $model->codgrupoproduto,
         [
-            [
-                'url' => "secao-produto/{$model->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto}", 
-                'descricao' => $model->GrupoProduto->FamiliaProduto->SecaoProduto->secaoproduto
-            ],
-            [
-                'url' => "familia-produto/{$model->GrupoProduto->FamiliaProduto->codfamiliaproduto}", 
-                'descricao' => $model->GrupoProduto->FamiliaProduto->familiaproduto
-            ],
-            ['url' => "grupo-produto/$model->codgrupoproduto", 'descricao' => $model->GrupoProduto->grupoproduto],
-            ['url' => null, 'descricao' => $model->subgrupoproduto],
+            url("secao-produto/{$model->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto}") => $model->GrupoProduto->FamiliaProduto->SecaoProduto->secaoproduto,
+            url("familia-produto/{$model->GrupoProduto->FamiliaProduto->codfamiliaproduto}") => $model->GrupoProduto->FamiliaProduto->familiaproduto,
+            url("grupo-produto/$model->codgrupoproduto") => $model->GrupoProduto->grupoproduto,
+            $model->subgrupoproduto,
         ],
         $model->inativo
     ) 

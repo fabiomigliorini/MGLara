@@ -12,9 +12,7 @@
 <h1 class="header">{!! 
     titulo(
         NULL ,
-        [
-            ['url' => "", 'descricao' => 'Conferência Saldo de Estoque'],
-        ],
+        'Conferência Saldo de Estoque',
         NULL
     ) 
 !!}

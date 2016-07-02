@@ -12,14 +12,14 @@ $locais = [''=>''] + EstoqueLocal::lists('estoquelocal', 'codestoquelocal')->all
 <div class='row'>
     <div class='col-md-6'>
         <h4>
-            <small>{{ formataCodigo($model->EstoqueSaldo->EstoqueLocalProduto->codproduto, 6) }}</small>
             {!! 
                 titulo(
-                    NULL ,
+                    $model->EstoqueSaldo->EstoqueLocalProduto->codproduto ,
                     [
-                        ['url' => "produto/{$model->EstoqueSaldo->EstoqueLocalProduto->codproduto}", 'descricao' => $model->EstoqueSaldo->EstoqueLocalProduto->Produto->produto],
+                        url("produto/{$model->EstoqueSaldo->EstoqueLocalProduto->codproduto}") => $model->EstoqueSaldo->EstoqueLocalProduto->Produto->produto,
                     ],
-                    $model->EstoqueSaldo->EstoqueLocalProduto->Produto->inativo
+                    $model->EstoqueSaldo->EstoqueLocalProduto->Produto->inativo,
+                    6
                 ) 
             !!}
         </h4>

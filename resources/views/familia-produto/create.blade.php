@@ -12,8 +12,8 @@
     titulo(
         $parent->codsecaoproduto,
         [
-            ['url' => "secao-produto/$parent->codsecaoproduto", 'descricao' => $parent->secaoproduto],
-            ['id' => null, 'descricao' => "Nova Família"]
+            url("secao-produto/$parent->codsecaoproduto") => $parent->secaoproduto,
+            "Nova Família"
         ],
         null
     ) 

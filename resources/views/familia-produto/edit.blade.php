@@ -14,9 +14,9 @@
     titulo(
         $model->codfamiliaproduto,
         [
-            ['url' => "secao-produto/$model->codsecaoproduto", 'descricao' => $model->SecaoProduto->secaoproduto],
-            ['url' => "familia-produto/$model->codfamiliaproduto", 'descricao' => $model->familiaproduto],
-            ['url' => null, 'descricao' => 'Alterar']
+            url("secao-produto/$model->codsecaoproduto") => $model->SecaoProduto->secaoproduto,
+            url("familia-produto/$model->codfamiliaproduto") => $model->familiaproduto,
+            'Alterar'
         ],
         $model->inativo
     ) 

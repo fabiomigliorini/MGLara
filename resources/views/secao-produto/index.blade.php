@@ -9,7 +9,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">{!! titulo(null, [ ['url' => null, 'descricao' => 'Seções de Produto'] ], null) !!}  </h1>
+<h1 class="header">{!! titulo(null, 'Seções de Produto', null) !!}  </h1>
 <hr>
 <div class="search-bar">
 {!! Form::model(

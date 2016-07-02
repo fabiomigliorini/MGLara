@@ -134,8 +134,13 @@ h1.header {
     font-weight: bold;
     margin: 0;
 }
-.produtos-detalhe-cifrao {
+.produtos-detalhe-preco-menor {
     font-size: 3em;
+    font-weight: bold;
+    margin: 0;
+}
+.produtos-detalhe-cifrao {
+    font-size: 0.4em;
     font-weight: bold;
     margin: 8px 0 0;
 }

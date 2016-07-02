@@ -12,8 +12,8 @@
     titulo(
         NULL ,
         [
-            ['url' => "estoque-saldo-conferencia", 'descricao' => 'Conferência Saldo de Estoque'],
-            ['url' => "", 'descricao' => 'Nova'],
+            url("estoque-saldo-conferencia") => 'Conferência Saldo de Estoque',
+            'Nova',
         ],
         NULL
     ) 

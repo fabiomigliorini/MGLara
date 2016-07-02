@@ -47,12 +47,9 @@
     titulo(
         $model->codgrupoproduto,
         [
-            [
-                'url' => "secao-produto/{$model->FamiliaProduto->SecaoProduto->codsecaoproduto}", 
-                'descricao' => $model->FamiliaProduto->SecaoProduto->secaoproduto
-            ],
-            ['url' => "familia-produto/$model->codfamiliaproduto", 'descricao' => $model->FamiliaProduto->familiaproduto],
-            ['url' => null, 'descricao' => $model->grupoproduto],
+            url("secao-produto/{$model->FamiliaProduto->SecaoProduto->codsecaoproduto}") => $model->FamiliaProduto->SecaoProduto->secaoproduto,
+            url("familia-produto/$model->codfamiliaproduto") => $model->FamiliaProduto->familiaproduto,
+            $model->grupoproduto,
         ],
         $model->inativo
     ) 

@@ -12,13 +12,10 @@
     titulo(
         $parent->FamiliaProduto->SecaoProduto->codsecaoproduto,
         [
-            [
-            	'url' => "secao-produto/{$parent->FamiliaProduto->SecaoProduto->codsecaoproduto}", 
-            	'descricao' => $parent->FamiliaProduto->SecaoProduto->secaoproduto
-        	],
-            ['url' => "familia-produto/{$parent->FamiliaProduto->codfamiliaproduto}", 'descricao' => $parent->FamiliaProduto->familiaproduto],
-            ['url' => "grupo-produto/{$parent->codgrupoproduto}", 'descricao' => $parent->grupoproduto],
-            ['id' => null, 'descricao' => 'Novo Sub Grupo Produto']
+            url("secao-produto/{$parent->FamiliaProduto->SecaoProduto->codsecaoproduto}") => $parent->FamiliaProduto->SecaoProduto->secaoproduto,
+            url("familia-produto/{$parent->FamiliaProduto->codfamiliaproduto}") => $parent->FamiliaProduto->familiaproduto,
+            url("grupo-produto/{$parent->codgrupoproduto}") => $parent->grupoproduto,
+            'Novo Sub-Grupo de Produto'
         ],
         null
     ) 

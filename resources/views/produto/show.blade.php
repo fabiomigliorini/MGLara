@@ -36,11 +36,6 @@
         </ul>
     </div>
 </nav>
-@if(!empty($model->inativo))
-    <br>
-    <div class="alert alert-danger" role="alert">Inativado em {{formataData($model->inativo, 'L')}}</div>
-@endif
-<br>
 <div class="row">
     <div class="col-md-5">
         {!! Form::model(Request::all(), [
@@ -65,18 +60,67 @@
 </div>
 <hr>
 <div class="row">
-    <div class="col-md-7">
+    <div class="col-md-8">
+        <div class="panel panel-warning">
+            <div class="panel-body bg-warning">
+                <h2 class="text-danger produtos-detalhes-produto">
+                    {!! titulo($model->codproduto, $model->produto, $model->inativo, 6) !!}
+                </h2>
+                <div>
+                    {!! 
+                        titulo(
+                            NULL, 
+                            [
+                                url("secao-produto/{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto}") => $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->secaoproduto,
+                                url("familia-produto/{$model->SubGrupoProduto->GrupoProduto->codfamiliaproduto}") => $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->familiaproduto,
+                                url("grupo-produto/{$model->SubGrupoProduto->codgrupoproduto}") => $model->SubGrupoProduto->GrupoProduto->grupoproduto,
+                                url("sub-grupo-produto/{$model->codsubgrupoproduto}") => $model->SubGrupoProduto->subgrupoproduto,
+                                url("marca/{$model->codmarca}") => $model->Marca->marca,
+                                $model->referencia,
+                            ], 
+                            NULL) 
+                    !!}
+                </div>
+                <div>
+                    <?php 
+                    $arr = [            
+                        url("tipo-produto/{$model->codtipoproduto}") => $model->TipoProduto->tipoproduto,
+                        url("ncm/{$model->codncm}") => formataNcm($model->Ncm->ncm),
+                        url("ncm/{$model->codtributacao}") => $model->Tributacao->tributacao,
+                    ];
+                    if (!empty($model->codcest))
+                        $arr[""]
+                        /*
+                                ($model->importado)?'Importado':'Nacional',
+                                        ''
+                            ];
+dd($arr);
+                         * 
+                         */
+                    /*
+                    ?>
+                    {!! 
+                        titulo(
+                            NULL, 
+                            $arr
+                            NULL) 
+                    !!}
+                     * */
+                    ?>
+                </div>
+                    
+            </div>
+        </div>
         <div class="panel panel-warning">
             <div class="panel-body bg-warning">
                 <h1 class="text-danger produtos-detalhes-produto">
                     {{ $model->produto}} {{ app('request')->input('v') }}
-                    <span class="pull-right text-muted">{{ $model->UnidadeMedida->unidademedida }}</span>
                 </h1>
                 <hr>
                 <div class="row">
                     <div class="col-md-4">
                         <p class="mz"><strong>Código</strong></p>
-                        {{ formataCodigo($model->codproduto, 6) }}
+                        {{ formataCodigo($model->codproduto) }}
                     </div>
                     <div class="col-md-4">
                         <p class="mz"><strong>Marca</strong></p>
@@ -89,6 +133,45 @@
                 </div>
             </div>
         </div>
+        
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-success">
+            <div class="panel-body bg-success">
+                <div class="row">
+                    <h2 class="produtos-detalhe-preco text-right text-success col-md-10">
+                        <span class="pull-left text-muted produtos-detalhe-cifrao">R$ &nbsp; </span>
+                        {{ formataNumero($model->preco) }}
+                    </h2>
+                    <span class="text-muted col-md-2">
+                        {{ $model->UnidadeMedida->unidademedida }}
+                    </span>
+                </div>
+                @foreach($model->ProdutoEmbalagemS()->orderBy('quantidade')->get() as $pe)
+                    <hr>
+                    <div class="row">
+                        <h4 class="produtos-detalhe-preco-menor text-right text-success col-md-10">
+                            <span class="pull-left text-muted produtos-detalhe-cifrao">R$ &nbsp; </span>
+                            @if (empty($pe->preco))
+                                <i class="text-muted">
+                                    ({{ formataNumero($model->preco * $pe->quantidade) }})
+                                </i>
+                            @else
+                                {{ formataNumero($pe->preco) }}                            
+                            @endif
+                        </h4>
+                        <span class="text-muted col-md-2">
+                            {{ $pe->UnidadeMedida->unidademedida }} com
+                            {{ formataNumero($pe->quantidade, 0) }}
+                        </span>
+                    </div>
+                @endforeach
+            </div>
+        </div> 
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
         <!--FOTOS -->
         <div class="panel panel-info produtos-detalhe-carousel">
             <div class="pull-right carousel-menu">
@@ -115,45 +198,59 @@
         </div>
         <!--/ FOTOS -->
     </div>
-    <div class="col-md-5">
-        <div class="panel panel-success">
-            <div class="panel-body bg-success">
-                <h2 class="produtos-detalhe-preco text-right pull-right text-success">{{ formataNumero($model->preco) }}</h2>
-                <span class="text-muted text-left pull-left produtos-detalhe-cifrao">R$</span>
-            </div>
-        </div> 
+    <div class="col-md-6">
         <div id="produto-detalhes">
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#tab-combinacoes" aria-controls="home" role="tab" data-toggle="tab">Combinações</a></li>
+                <li role="presentation" class="active"><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Variações</a></li>
+                <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab" data-toggle="tab">Estoque</a></li>
+                <li role="presentation"><a href="#tab-site" aria-controls="profile" role="tab" data-toggle="tab">Site</a></li>
                 <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">Fiscal</a></li>
                 <li role="presentation"><a href="#tab-npb" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
-                <li role="presentation"><a href="#tab-nfpb" aria-controls="messages" role="tab" data-toggle="tab">Notas fiscais</a></li>
+                <li role="presentation"><a href="#tab-nfpb" aria-controls="messages" role="tab" data-toggle="tab">Notas Fiscais</a></li>
             </ul>
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="tab-combinacoes">
-                    @include('produto.combinacoes')
+                <div role="tabpanel" class="tab-pane fade in active" id="tab-variacoes">
+                    @include('produto.variacoes')
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="tab-estoque">
+                    <!--
+                    @include('produto.estoque')
+                    -->
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="tab-site">
+                    <br>
+                    <strong>Divulgado no Site: {{ ($model->site)?'Sim':'Não' }}</strong>
+                    <hr>
+                    {{ $model->descricaosite }}
+                    <!--
+                    @include('produto.estoque')
+                    -->
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-fiscal">
+                    <!--
                     @include('produto.fiscal')
+                    -->
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-npb">
+                    <!--
                     @include('negocio-produto-barra.index')
+                    -->
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-nfpb">
+                    <!--
                     @include('nota-fiscal-produto-barra.index')
+                    -->
                 </div>
             </div>
         </div>
 
         <!-- ESTOQUE -->
-        @include('produto.estoque')
         <!-- ./ESTOQUE -->
         
     </div>    
 </div>
-<hr>
 @include('includes.autor')
-<hr>
+<br>
 <br>
 @section('inscript')
 <script type="text/javascript">var codproduto = {{ $model->codproduto }}</script>

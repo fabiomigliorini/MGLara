@@ -216,18 +216,33 @@ if (!empty($filtro['codgrupoproduto']))
             </div>
             <div class="col-md-5 small text-muted">
                 <?php
-                $pvs = $row->ProdutoVariacaoS()->with(['ProdutoBarraS' => function ($q) {
-                    $q->with(['ProdutoEmbalagem' => function ($q2) {
-                        $q2->orderBy('quantidade', 'asc');
-                        $q2->with('UnidadeMedida');
-                    }])->orderBy('barras');
-                }])->orderBy('variacao')->get();
+                $pvs = $row->ProdutoVariacaoS()->orderBy('variacao', 'ASC NULLS FIRST')->get();
                 ?>
                 <table class="table table-striped table-condensed table-hover" style="margin-bottom: 1px">
                 @foreach ($pvs as $pv)
                     <tr>
                         <td class="col-md-6">
-                            @foreach ($pv->ProdutoBarraS as $pb)
+                            @if (!empty($pv->codmarca))
+                                <a href="{{ url("marca/$pv->codmarca") }}">
+                                    {{ $pv->Marca->marca }}
+                                </a>
+                            @endif
+                            @if (!empty($pv->variacao))
+                                {{ $pv->variacao }}
+                            @else
+                                <i>{ Sem Variação }</i>
+                            @endif
+                            <div class="pull-right">
+                                {{ $pv->referencia }}
+                            </div>
+                        </td>
+                        <td class="col-md-6">
+                            <?php
+                            $pbs = $pv->ProdutoBarraS()->leftJoin('tblprodutoembalagem as pe', 'pe.codprodutoembalagem', '=', 'tblprodutobarra.codprodutoembalagem')
+                               ->orderBy('pe.quantidade', 'ASC NULLS FIRST')
+                               ->with('ProdutoEmbalagem')->get();
+                            ?>
+                            @foreach ($pbs as $pb)
                                 <div class="row">
                                     <div class="col-md-7 text-right">
                                         {{ $pb->barras }}
@@ -241,17 +256,6 @@ if (!empty($filtro['codgrupoproduto']))
                                     </small>
                                 </div>
                             @endforeach
-                        </td>
-                        <td class="col-md-6">
-                            @if (!empty($pv->codmarca))
-                                <a href="{{ url("marca/$pv->codmarca") }}">
-                                    {{ $pv->Marca->marca }}
-                                </a>
-                            @endif
-                            {{ $pv->variacao }}
-                            <div class="pull-right">
-                                {{ $pv->referencia }}
-                            </div>
                         </td>
                     </tr>
                 @endforeach

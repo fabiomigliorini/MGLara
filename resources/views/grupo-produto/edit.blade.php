@@ -14,10 +14,10 @@
     titulo(
         $model->codgrupoproduto,
         [
-            ['url' => "secao-produto/{$model->FamiliaProduto->SecaoProduto->codsecaoproduto}", 'descricao' => $model->FamiliaProduto->SecaoProduto->secaoproduto],
-            ['url' => "familia-produto/{$model->FamiliaProduto->codfamiliaproduto}", 'descricao' => $model->FamiliaProduto->familiaproduto],
-            ['url' => "grupo-produto/$model->codgrupoproduto", 'descricao' => $model->grupoproduto],
-            ['url' => null, 'descricao' => 'Alterar']
+            url("secao-produto/{$model->FamiliaProduto->SecaoProduto->codsecaoproduto}") => $model->FamiliaProduto->SecaoProduto->secaoproduto,
+            url("familia-produto/{$model->FamiliaProduto->codfamiliaproduto}") => $model->FamiliaProduto->familiaproduto,
+            url("grupo-produto/$model->codgrupoproduto") => $model->grupoproduto,
+            'Alterar'
         ],
         $model->inativo
     ) 
