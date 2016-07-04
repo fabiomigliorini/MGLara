@@ -10,6 +10,8 @@ use MGLara\Models\Produto;
 use MGLara\Models\Marca;
 use MGLara\Models\ProdutoEmbalagem;
 
+use Illuminate\Support\Facades\DB;
+
 class ValidatorServiceProvider extends ServiceProvider
 {
     /**
@@ -93,39 +95,49 @@ class ValidatorServiceProvider extends ServiceProvider
             }
         }); 
         
-        $this->app['validator']->extend('validaPrecoMin', function ($attribute, $value, $parameters)
+        /**
+         * @param string $parameters[0] Nome da Tabela para validar
+         * @param string $parameters[1] Chave Primaria
+         * @param string $parameters[2] Código do registro sendo alterado
+         * @param string $parameters[3] Nome do Campo 1
+         * @param string $parameters[4] Nome do Campo 2
+         * @param string $parameters[5] Valor do Campo 2
+         * @param string $parameters[n] Nome do Campo N
+         * @param string $parameters[n+1] Valor do Campo N
+         */
+        $this->app['validator']->extend('UniqueMultiple', function ($attribute, $value, $parameters)
         {
-            $produto = Produto::find($parameters[0]);
+            $tabela = $parameters[0];
+            $pk = $parameters[1];
+            $codigo = $parameters[2];
             
-            if ($value <= $produto->preco)
+            $validar = [$parameters[3] => $value];
+            
+            //dd(sizeof($parameters));
+            
+            $i = 4;
+            while($i < (sizeof($parameters)))
+            {
+                $validar[$parameters[$i]] = $parameters[ $i + 1 ];
+                $i += 2;
+            }
+            
+            $query = DB::table($tabela);
+            
+            if (!empty($codigo))
+                $query->where($pk, '!=', $codigo);
+            
+            foreach ($validar as $campo => $valor)
+                $query->where($campo, $valor);
+            
+            $qtd = $query->count();
+
+            if ($qtd > 0)
                 return false;
             
             return true;
+            
         });        
-        
-        $this->app['validator']->extend('validaPrecoMax', function ($attribute, $value, $parameters)
-        {
-            $produto = Produto::find($parameters[0]);
-            
-            if ($value >= ($produto->preco * $parameters[1]))
-                return false;
-            
-            return true;
-        });        
-        
-        $this->app['validator']->extend('validaQuantidade', function ($attribute, $value, $parameters)
-        {
-            if(empty($parameters[1]))
-                $parameters[1] = 0;
-            
-            $query = ProdutoEmbalagem::validaQuantidade($parameters[0], $value, $parameters[1]);
-            
-            if (!$query)
-                return false;
-            
-            return true;
-        });        
-        
     }
 
     /**

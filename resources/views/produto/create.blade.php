@@ -12,8 +12,8 @@
     titulo(
         null,
         [
-            ['url' => "produto", 'descricao' => 'Produtos'],
-            ['url' => null, 'descricao' => 'Novo Produto'],
+            url('produto') => 'Produtos',
+            'Novo Produto'
         ],
         $model->inativo
     ) 

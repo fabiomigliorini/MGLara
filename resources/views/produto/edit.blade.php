@@ -14,8 +14,9 @@
     titulo(
         $model->codproduto,
         [
-            ['url' => "produto/$model->codproduto", 'descricao' => $model->produto],
-            ['url' => null, 'descricao' => 'Alterar'],
+            url("produto") => 'Produtos',
+            url("produto/$model->codproduto") => $model->produto,
+            'Alterar',
         ],
         $model->inativo
     ) 

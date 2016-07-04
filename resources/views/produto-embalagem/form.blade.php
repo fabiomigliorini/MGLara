@@ -7,7 +7,7 @@
 
 <div class="form-group">
     <label for="codunidademedida" class="col-sm-2 control-label">{!! Form::label('Unidade Medida:') !!}</label>
-    <div class="col-sm-2">{!! Form::select('codunidademedida', $medidas, ['class'=> 'form-control'], ['id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
+    <div class="col-sm-2">{!! Form::select('codunidademedida', $medidas, null, ['class'=> 'form-control', 'id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
 </div>
 
 <div class="form-group">
@@ -48,7 +48,7 @@ $(document).ready(function() {
         placeholder: 'Unidade Medida',
         allowClear: true,
         closeOnSelect: true
-    })<?php echo (isset($model->codunidademedida) ? ".select2('val', $model->codunidademedida);" : ';');?>
+    });
     
 });
 </script>

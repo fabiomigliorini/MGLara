@@ -48,7 +48,7 @@ class ProdutoEmbalagem extends MGModel
         else
             $digitos = 5;
         
-        return 'C/ ' . formataNumero($this->quantidade, $digitos);
+        return $this->UnidadeMedida->sigla . ' C/' . formataNumero($this->quantidade, $digitos);
     }
     
     public function getPrecoCalculadoAttribute()
@@ -59,24 +59,33 @@ class ProdutoEmbalagem extends MGModel
         return $preco_calculado;
     }
     
-    public function validate() {
+    public function validate() 
+    {
 
+        $preco = 'numeric|min:0.01';
+        
+        if (!empty($this->codproduto))
+        {
+            $preco .= "|min:" . ($this->Produto->preco * $this->quantidade * .5);
+            $preco .= "|max:" . $this->Produto->preco * $this->quantidade;
+        }
+        
         $this->_regrasValidacao = [            
+            'codproduto'  => 'required|numeric',
             'codunidademedida'  => 'required|numeric',
-            'quantidade' => "required|numeric|validaQuantidade:$this->codproduto,$this->codprodutoembalagem",
-            'preco' => "numeric|min:0.01|validaPrecoMin:$this->codproduto|validaPrecoMax:$this->codproduto,$this->quantidade",          
+            //'quantidade' => "required|numeric|validaQuantidade:$this->codproduto,$this->codprodutoembalagem",
+            'quantidade' => "required|numeric|uniqueMultiple:tblprodutoembalagem,codprodutoembalagem,$this->codprodutoembalagem,quantidade,codproduto,$this->codproduto",
+            'preco' => $preco,
         ];
     
         $this->_mensagensErro = [
-            'codunidademedida.required'         => 'O campo Unidade Medida não pode ser vazio',
-            'codunidademedida.numeric'          => 'O campo Unidade Medida deve ser um valor numérico',
-            'quantidade.required'               => 'O campo Quantidade deve ser preenchido',
-            'quantidade.numeric'                => 'O campo Quantidade deve ser um valor numérico',
-            'quantidade.validaQuantidade'       => 'Erroquantidade',
-            'preco.numeric'                     => 'A descrição do produto não pode ter menos de 10 caracteres',
-            'preco.min'                         => 'A descrição do produto não pode ter menos de 10 caracteres',
-            'preco.valida_preco_min'                 => 'O preço deve ser maior do que preço unitário',
-            'preco.valida_preco_max'                 => 'O preço deve ser menos que preço unitário X quantidade da embalagem',
+            'codunidademedida.required'         => 'O campo Unidade Medida não pode ser vazio!',
+            'codunidademedida.numeric'          => 'O campo Unidade Medida deve ser um valor numérico!',
+            'quantidade.required'               => 'O campo Quantidade deve ser preenchido!',
+            'quantidade.numeric'                => 'O campo Quantidade deve conter um valor numérico!',
+            'quantidade.unique_multiple'        => 'Já existe uma embalagem cadastrada com esta mesma quantidade!',
+            'preco.max'                         => 'Preço maior que o custo unitário!',
+            'preco.min'                         => 'Preço inferior à 50% do custo unitário!',
         ];
         
         return parent::validate();
@@ -115,27 +124,4 @@ class ProdutoEmbalagem extends MGModel
         return $this->hasMany(ProdutoHistoricoPreco::class, 'codprodutoembalagem', 'codprodutoembalagem');
     }    
 
-    /*
-     * Verifica se já existe uma embalagem com a mesma quantidade a ser cadastrada.
-     */
-    public static function validaQuantidade($codproduto, $quantidade, $codprodutoembalagem)
-    {
-        $query = ProdutoEmbalagem::where('codproduto', $codproduto)
-                ->where('quantidade', $quantidade)
-                ->where('codprodutoembalagem', $codprodutoembalagem)
-                ->get();
-        
-        return $query;
-    }
-    
-    public static function unidadesMedida($codproduto)
-    {
-        $unidades = ProdutoEmbalagem::where('codproduto', $codproduto)->get();
-        $resultado = [];
-        foreach ($unidades as $unidade)
-        {
-            $resultado[$unidade->codprodutoembalagem] = $unidade->getDescricaoAttribute();
-        }
-        return $resultado;
-    }
 }

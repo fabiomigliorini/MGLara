@@ -9,7 +9,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">{!! titulo(null, [ ['url' => null, 'descricao' => 'Produtos'] ], null) !!}  </h1>
+<h1 class="header">{!! titulo(null, 'Produtos', null) !!}  </h1>
 <hr>
 <?php
 use MGLara\Models\SecaoProduto;
@@ -114,7 +114,7 @@ $secoes     = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')-
         <div class="row item">
             <div class="col-md-1">
                 <a href="{{ url("produto/$row->codproduto") }}">
-                    <strong>{{ formataCodigo($row->codproduto) }}</strong>
+                    <strong>{{ formataCodigo($row->codproduto, 6) }}</strong>
                 </a>
                 @if($row->codncm)
                 <div class="text-muted">
@@ -181,8 +181,7 @@ $secoes     = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')-
                             </strong>
                         @endif
                         <div class="col-md-6 text-left">
-                            {{ $pe->UnidadeMedida->sigla }} C/
-                            {{ formataNumero($pe->quantidade, 0) }}
+                            {{ $pe->descricao }}
                         </div>
                     </div>
                 @endforeach
