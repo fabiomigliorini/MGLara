@@ -9,7 +9,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">{!! titulo(null, [ ['url' => null, 'descricao' => 'Produtos'] ], null) !!}  </h1>
+<h1 class="header">{!! titulo(null, 'Produtos', null) !!}  </h1>
 <hr>
 <?php
 use MGLara\Models\SecaoProduto;

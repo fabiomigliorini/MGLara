@@ -14,7 +14,7 @@ class FormMacrosProvider extends ServiceProvider
      */
     public function boot()
     {
-        foreach(File::glob(app_path() .'/FormMacros/forms/*.php') as $macro) {
+        foreach(File::glob(app_path() .'/FormMacros/*.php') as $macro) {
             require $macro;
         }
     }
