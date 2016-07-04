@@ -130,20 +130,21 @@ h1.header {
 }
 
 .produtos-detalhe-preco {
-    font-size: 5em;
+    font-size: 4em;
     font-weight: bold;
     margin: 0;
 }
 .produtos-detalhe-preco-menor {
-    font-size: 3em;
+    font-size: 1.5em;
     font-weight: bold;
     margin: 0;
 }
 .produtos-detalhe-cifrao {
-    font-size: 0.4em;
+    font-size: 0.5em;
     font-weight: bold;
     margin: 8px 0 0;
 }
+
 #produto-detalhes {
     padding-bottom: 30px;
 }

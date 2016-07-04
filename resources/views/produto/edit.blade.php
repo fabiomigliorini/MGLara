@@ -14,13 +14,13 @@
     titulo(
         $model->codproduto,
         [
-            url("produto/$model->codproduto") => $model->oproduto,
+            url("produto") => 'Produtos',
+            url("produto/$model->codproduto") => $model->produto,
             'Alterar',
         ],
         $model->inativo
     ) 
 !!}     
-
 </h1>
 <hr>
 <br>

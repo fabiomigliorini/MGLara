@@ -23,8 +23,8 @@ abstract class MGModel extends Model {
     const UPDATED_AT = 'alteracao';
     public $timestamps = true;
     
-    protected $_regrasValidacao;
-    protected $_mensagensErro;
+    protected $_regrasValidacao = [];
+    protected $_mensagensErro = [];
     public $_validator;
     
     /*

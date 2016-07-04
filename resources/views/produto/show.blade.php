@@ -12,7 +12,17 @@
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="<?php echo url('produto');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="<?php echo url('produto/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
+            
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-plus"></span>Novo<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="<?php echo url('produto/create');?>">Produto</a></li>             
+                    <li><a href="<?php echo url("produto-embalagem/create?codproduto={$model->codproduto}");?>">Embalagem</a></li>             
+                    <li><a href="<?php echo url("produto-variacao/create?codproduto={$model->codproduto}");?>">Variação</a></li>             
+                    <li><a href="<?php echo url("produto-barra/create?codproduto={$model->codproduto}");?>">Código de Barras</a></li>             
+                </ul>
+            </li>
+        
             <li><a href="<?php echo url("produto/$model->codproduto/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li><a href="<?php echo url("produto/$model->codproduto/juntar-barras");?>"><span class="glyphicon glyphicon-resize-small"></span> Juntar códigosde barra</a></li> 
             <li><a href="<?php echo url("produto/$model->codproduto/transferir-barras");?>"><span class="glyphicon glyphicon-transfer"></span> Transferir códigos de barra</a></li> 
@@ -59,14 +69,14 @@
     </div>
 </div>
 <hr>
-<div class="row">
-    <div class="col-md-8">
-        <div class="panel panel-warning">
-            <div class="panel-body bg-warning">
+<div class="panel panel-default">
+    <table class="table table-bordered table-responsive">
+        <tr>
+            <td class="col-md-8 bg-warning" style="vertical-align: middle">
                 <h2 class="text-danger produtos-detalhes-produto">
                     {!! titulo($model->codproduto, $model->produto, $model->inativo, 6) !!}
                 </h2>
-                <div>
+                <div class="pull-left">
                     {!! 
                         titulo(
                             NULL, 
@@ -81,76 +91,40 @@
                             NULL) 
                     !!}
                 </div>
-                <div>
+                <div class="pull-right">
                     <?php 
                     $arr = [            
                         url("tipo-produto/{$model->codtipoproduto}") => $model->TipoProduto->tipoproduto,
                         url("ncm/{$model->codncm}") => formataNcm($model->Ncm->ncm),
-                        url("ncm/{$model->codtributacao}") => $model->Tributacao->tributacao,
+                        url("tributacao/{$model->codtributacao}") => $model->Tributacao->tributacao,
                     ];
+
                     if (!empty($model->codcest))
-                        $arr[""]
-                        /*
-                                ($model->importado)?'Importado':'Nacional',
-                                        ''
-                            ];
-dd($arr);
-                         * 
-                         */
-                    /*
+                        $arr[url("cest/{$model->codcest}")] = formataCest($model->Cest->cest);
+
+                    $arr[] = ($model->importado)?'Importado':'Nacional';
+
                     ?>
                     {!! 
-                        titulo(
-                            NULL, 
-                            $arr
-                            NULL) 
+                        titulo(NULL, $arr, NULL) 
                     !!}
-                     * */
-                    ?>
                 </div>
-                    
-            </div>
-        </div>
-        <div class="panel panel-warning">
-            <div class="panel-body bg-warning">
-                <h1 class="text-danger produtos-detalhes-produto">
-                    {{ $model->produto}} {{ app('request')->input('v') }}
-                </h1>
-                <hr>
-                <div class="row">
-                    <div class="col-md-4">
-                        <p class="mz"><strong>Código</strong></p>
-                        {{ formataCodigo($model->codproduto) }}
-                    </div>
-                    <div class="col-md-4">
-                        <p class="mz"><strong>Marca</strong></p>
-                        {{ $model->Marca->marca or '' }}
-                    </div>
-                    <div class="col-md-4">
-                        <p class="mz"><strong>Referência</strong></p>
-                        {{ $model->referencia }}
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-    </div>
-    <div class="col-md-4">
-        <div class="panel panel-success">
-            <div class="panel-body bg-success">
-                <div class="row">
-                    <h2 class="produtos-detalhe-preco text-right text-success col-md-10">
+
+
+            </td>
+            <td class="col-md-4 bg-success" style="vertical-align: middle">
+                <div class="col-md-12">
+                    <h2 class="produtos-detalhe-preco text-right text-success col-md-7">
                         <span class="pull-left text-muted produtos-detalhe-cifrao">R$ &nbsp; </span>
                         {{ formataNumero($model->preco) }}
                     </h2>
-                    <span class="text-muted col-md-2">
+                    <span class="text-muted col-md-5">
                         {{ $model->UnidadeMedida->unidademedida }}
                     </span>
                 </div>
                 @foreach($model->ProdutoEmbalagemS()->orderBy('quantidade')->get() as $pe)
-                    <hr>
-                    <div class="row">
-                        <h4 class="produtos-detalhe-preco-menor text-right text-success col-md-10">
+                    <div class="col-md-12"  style="border-top: 1px dashed green">
+                        <h4 class="produtos-detalhe-preco-menor text-right text-success col-md-7">
                             <span class="pull-left text-muted produtos-detalhe-cifrao">R$ &nbsp; </span>
                             @if (empty($pe->preco))
                                 <i class="text-muted">
@@ -160,20 +134,26 @@ dd($arr);
                                 {{ formataNumero($pe->preco) }}                            
                             @endif
                         </h4>
-                        <span class="text-muted col-md-2">
+                        <span class="text-muted col-md-5">
                             {{ $pe->UnidadeMedida->unidademedida }} com
                             {{ formataNumero($pe->quantidade, 0) }}
+
+                            <div class="pull-right">
+                                <a href="{{ url("produto-embalagem/$pe->codprodutoembalagem/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
+                                <a href="{{ url("produto-embalagem/$pe->codprodutoembalagem/delete") }}"><i class="glyphicon glyphicon-trash"></i></a>
+                            </div>
                         </span>
                     </div>
                 @endforeach
-            </div>
-        </div> 
-    </div>
+
+            </td>
+        </tr>
+    </table>
 </div>
 <div class="row">
     <div class="col-md-6">
         <!--FOTOS -->
-        <div class="panel panel-info produtos-detalhe-carousel">
+        <div class="panel panel-default produtos-detalhe-carousel">
             <div class="pull-right carousel-menu">
                 <a class="btn btn-default" href="{{ url("/imagem/produto/$model->codproduto") }}">
                     <i class="glyphicon glyphicon-picture"></i> 
@@ -213,40 +193,36 @@ dd($arr);
                     @include('produto.variacoes')
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-estoque">
-                    <!--
-                    @include('produto.estoque')
-                    -->
+                    <?php
+                    //@include('produto.estoque')
+                    ?>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-site">
                     <br>
                     <strong>Divulgado no Site: {{ ($model->site)?'Sim':'Não' }}</strong>
                     <hr>
                     {{ $model->descricaosite }}
-                    <!--
-                    @include('produto.estoque')
-                    -->
+                    <?php
+                    //@include('produto.estoque')
+                    ?>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-fiscal">
-                    <!--
-                    @include('produto.fiscal')
-                    -->
+                    <?php
+                    //@include('produto.fiscal')
+                    ?>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-npb">
-                    <!--
+                    <?php
                     @include('negocio-produto-barra.index')
-                    -->
+                    ?>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-nfpb">
-                    <!--
-                    @include('nota-fiscal-produto-barra.index')
-                    -->
+                    <?php
+                    //@include('nota-fiscal-produto-barra.index')
+                    ?>
                 </div>
             </div>
         </div>
-
-        <!-- ESTOQUE -->
-        <!-- ./ESTOQUE -->
-        
     </div>    
 </div>
 @include('includes.autor')

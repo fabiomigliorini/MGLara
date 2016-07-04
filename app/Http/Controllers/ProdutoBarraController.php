@@ -9,19 +9,10 @@ use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
 
 use MGLara\Models\ProdutoBarra;
+use MGLara\Models\Produto;
 
 class ProdutoBarraController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -30,7 +21,8 @@ class ProdutoBarraController extends Controller
     public function create(Request $request)
     {
         $model = new ProdutoBarra();
-        return view('produto-barra.create', compact('model', 'request'));
+        $produto = Produto::findOrFail($request->codproduto);
+        return view('produto-barra.create', compact('model', 'produto'));
     }
 
     /**
@@ -44,23 +36,15 @@ class ProdutoBarraController extends Controller
         $model = new ProdutoBarra($request->all());
         $model->codproduto = $request->input('codproduto');
         
+        if ($model->codprodutoembalagem == 0)
+            $model->codprodutoembalagem = null;
+        
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         
         $model->save();
         Session::flash('flash_create', 'Registro inserido.');
         return redirect("produto/$model->codproduto");
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -72,7 +56,8 @@ class ProdutoBarraController extends Controller
     public function edit($id)
     {
         $model = ProdutoBarra::findOrFail($id);
-        return view('produto-barra.edit',  compact('model'));
+        $produto = $model->Produto;
+        return view('produto-barra.edit',  compact('model', 'produto'));
     }
 
     /**
@@ -86,6 +71,9 @@ class ProdutoBarraController extends Controller
     {
         $model = ProdutoBarra::findOrFail($id);
         $model->fill($request->all());
+        
+        if ($model->codprodutoembalagem == 0)
+            $model->codprodutoembalagem = null;
         
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);

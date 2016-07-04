@@ -8,17 +8,12 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
 
-use MGLara\Models\ProdutoEmbalagem;
+use MGLara\Models\ProdutoVariacao;
 use MGLara\Models\Produto;
 
-class ProdutoEmbalagemController extends Controller
+
+class ProdutoVariacaoController extends Controller
 {
-    public function __construct()
-    {
-        $this->datas = [];
-        $this->numericos = [];
-    }         
-    
     /**
      * Show the form for creating a new resource.
      *
@@ -26,9 +21,9 @@ class ProdutoEmbalagemController extends Controller
      */
     public function create(Request $request)
     {
-        $model = new ProdutoEmbalagem();
+        $model = new ProdutoVariacao();
         $produto = Produto::findOrFail($request->codproduto);
-        return view('produto-embalagem.create', compact('model', 'produto'));
+        return view('produto-variacao.create', compact('model', 'produto'));
     }
 
     /**
@@ -39,11 +34,8 @@ class ProdutoEmbalagemController extends Controller
      */
     public function store(Request $request)
     {
-        $this->converteNumericos([
-            'preco' => $request->input('preco'),
-            'quantidade' => $request->input('quantidade')
-        ]);
-        $model = new ProdutoEmbalagem($request->all());
+        $model = new ProdutoVariacao($request->all());
+        
         $model->codproduto = $request->input('codproduto');
         
         if (!$model->validate())
@@ -62,9 +54,9 @@ class ProdutoEmbalagemController extends Controller
      */
     public function edit($id)
     {
-        $model = ProdutoEmbalagem::findOrFail($id);
-        $produto = $model->produto;
-        return view('produto-embalagem.edit',  compact('model', 'produto'));
+        $model = ProdutoVariacao::findOrFail($id);
+        $produto = $model->Produto;
+        return view('produto-variacao.edit',  compact('model', 'produto'));
     }
 
     /**
@@ -76,12 +68,7 @@ class ProdutoEmbalagemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->converteNumericos([
-            'preco' => $request->input('preco'),
-            'quantidade' => $request->input('quantidade')
-        ]);
-        
-        $model = ProdutoEmbalagem::findOrFail($id);
+        $model = ProdutoVariacao::findOrFail($id);
         $model->fill($request->all());
         
         if (!$model->validate())
@@ -89,9 +76,8 @@ class ProdutoEmbalagemController extends Controller
         
         $model->save();
         Session::flash('flash_update', 'Registro atualizado.');
-        return redirect("produto/$model->codproduto");        
+        return redirect("produto/$model->codproduto");     
     }
-
 
     /**
      * Remove the specified resource from storage.
@@ -102,7 +88,7 @@ class ProdutoEmbalagemController extends Controller
     public function destroy($id)
     {
         try{
-            ProdutoEmbalagem::find($id)->delete();
+            ProdutoVariacao::find($id)->delete();
             Session::flash('flash_delete', 'Registro deletado!');
             //return Redirect::route('');
         }
@@ -110,4 +96,5 @@ class ProdutoEmbalagemController extends Controller
             return view('errors.fk');
         }     
     }
+
 }

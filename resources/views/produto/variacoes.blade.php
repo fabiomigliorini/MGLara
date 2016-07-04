@@ -1,4 +1,4 @@
-<div class="panel panel-info">
+<div class="panel panel-default">
     <?php
     $pvs = $model->ProdutoVariacaoS()->orderBy('variacao', 'ASC NULLS FIRST')->get();
     ?>
@@ -35,7 +35,7 @@
                         {{ $pb->barras }}
                         <small class="text-muted pull-right">
                             @if (!empty($pb->codprodutoembalagem))
-                                {{ $pb->ProdutoEmbalagem->UnidadeMedida->sigla . " " . $pb->ProdutoEmbalagem->descricao }}
+                                {{ $pb->ProdutoEmbalagem->descricao }}
                             @else
                                 {{ $model->UnidadeMedida->sigla }}
                             @endif

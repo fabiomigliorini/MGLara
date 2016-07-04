@@ -5,95 +5,93 @@ use MGLara\Models\SecaoProduto;
 use MGLara\Models\Tributacao;
 use MGLara\Models\TipoProduto;
 
-$medidas        = [''=>''] + UnidadeMedida::lists('unidademedida', 'codunidademedida')->all();
+$medidas        = [''=>''] + UnidadeMedida::lists('sigla', 'codunidademedida')->all();
 $secoes         = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')->all();
 $tributacoes    = [''=>''] + Tributacao::lists('tributacao', 'codtributacao')->all();
 $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')->all();
 
 ?>
- 
-<div class="form-group">
-    <label for="codmarca" class="col-sm-2 control-label">Marca</label>
-    <div class="col-sm-3">{!! Form::select2Marca() !!}</div>
+<div class='col-md-5'>
+    <div class="form-group">
+        <label for="codtipoproduto" class="col-sm-3 control-label">{!! Form::label('Tipo:') !!}</label>
+        <div class="col-sm-9">{!! Form::select('codtipoproduto', $tipos, $model->codtipoproduto, ['class'=> 'form-control', 'id' => 'codtipoproduto', 'style'=>'width:100%']) !!}</div>
+    </div>
     
-</div>
+    <div class="form-group">
+        <label for="codmarca" class="col-sm-3 control-label">Marca</label>
+        <div class="col-sm-9">@include('includes.select2.marca', ['inativo' => '1'])</div>    
+    </div>
 
-<div class="form-group">
-    <label for="codsecaoproduto" class="col-sm-2 control-label">Seção</label>
-    <div class="col-sm-3">{!! Form::select('codsecaoproduto', $secoes, null, ['class'=> 'form-control', 'id' => 'codsecaoproduto', 'style'=>'width:100%']) !!}</div>
-</div>
+    <div class="form-group">
+        <label for="codsecaoproduto" class="col-sm-3 control-label">Seção</label>
+        <div class="col-sm-9">{!! Form::select('codsecaoproduto', $secoes, null, ['class'=> 'form-control', 'id' => 'codsecaoproduto', 'style'=>'width:100%']) !!}</div>
+    </div>
 
-<div class="form-group">
-    <label for="codfamiliaproduto" class="col-sm-2 control-label">Família</label>
-    <div class="col-sm-3">{!! Form::text('codfamiliaproduto', null, ['class'=> 'form-control', 'id' => 'codfamiliaproduto', 'style'=>'width:100%']) !!}</div>
-</div>
+    <div class="form-group">
+        <label for="codfamiliaproduto" class="col-sm-3 control-label">Família</label>
+        <div class="col-sm-9">{!! Form::text('codfamiliaproduto', null, ['class'=> 'form-control', 'id' => 'codfamiliaproduto', 'style'=>'width:100%']) !!}</div>
+    </div>
 
-<div class="form-group">
-    <label for="codgrupoproduto" class="col-sm-2 control-label">Grupo Produto</label>
-    <div class="col-sm-3">{!! Form::text('codgrupoproduto', null, ['class'=> 'form-control', 'id' => 'codgrupoproduto', 'style'=>'width:100%']) !!}</div>
-</div>
+    <div class="form-group">
+        <label for="codgrupoproduto" class="col-sm-3 control-label">Grupo Produto</label>
+        <div class="col-sm-9">{!! Form::text('codgrupoproduto', null, ['class'=> 'form-control', 'id' => 'codgrupoproduto', 'style'=>'width:100%']) !!}</div>
+    </div>
 
-<div class="form-group">
-    <label for="codsubgrupoproduto" class="col-sm-2 control-label">Sub Grupo</label>
-    <div class="col-sm-3">{!! Form::text('codsubgrupoproduto', null, ['class'=> 'form-control', 'id' => 'codsubgrupoproduto', 'style'=>'width:160px']) !!}</div>
-</div>
+    <div class="form-group">
+        <label for="codsubgrupoproduto" class="col-sm-3 control-label">Sub Grupo</label>
+        <div class="col-sm-9">{!! Form::text('codsubgrupoproduto', null, ['class'=> 'form-control', 'id' => 'codsubgrupoproduto', 'style'=>'width:100%']) !!}</div>
+    </div>
+    
+    <div class="form-group">
+        <label for="ncm" class="col-sm-3 control-label">{!! Form::label('NCM:') !!}</label>
+        <div class="col-sm-9">{!! Form::text('codncm', null, ['class'=> 'form-control', 'id'=>'codncm']) !!}</div>
+    </div>
+    
+    <div class="form-group">
+        <label for="codtributacao" class="col-sm-3 control-label">{!! Form::label('Tributação:') !!}</label>
+        <div class="col-sm-4">{!! Form::select('codtributacao', $tributacoes, $model->codtributacao, ['class'=> 'form-control', 'id'=>'codtributacao', 'style'=>'width:100%'], ['data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+    </div>
 
-<div class="form-group">
-    <label for="produto" class="col-sm-2 control-label">{!! Form::label('Descrição:') !!}</label>
-    <div class="col-sm-6">{!! Form::text('produto', null, ['class'=> 'form-control', 'id'=>'produto']) !!}</div>
-</div>
+    <div class="form-group">
+        <label for="codcest" class="col-sm-3 control-label">{!! Form::label('CEST:') !!}</label>
+        <div class="col-sm-9">{!! Form::text('codcest', null, ['class'=> 'form-control','id'=>'codcest', 'style'=>'width:100%']) !!}</div>
+    </div>
 
-<div class="form-group">
-    <label for="referencia" class="col-sm-2 control-label">{!! Form::label('Referência:') !!}</label>
-    <div class="col-sm-2">{!! Form::text('referencia', null, ['class'=> 'form-control'], ['id'=>'referencia']) !!}</div>
 </div>
+<div class='col-md-7'>
+    <div class="form-group">
+        <label for="produto" class="col-sm-3 control-label">{!! Form::label('Descrição:') !!}</label>
+        <div class="col-sm-9">{!! Form::text('produto', null, ['class'=> 'form-control', 'id'=>'produto']) !!}</div>
+    </div>
 
-<div class="form-group">
-    <label for="codunidademedida" class="col-sm-2 control-label">{!! Form::label('Unidade Medida:') !!}</label>
-    <div class="col-sm-2">{!! Form::select('codunidademedida', $medidas, $model->codunidademedida, ['class'=> 'form-control', 'id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
-</div>
+    <div class="form-group">
+        <label for="referencia" class="col-sm-3 control-label">{!! Form::label('Referência:') !!}</label>
+        <div class="col-sm-5">{!! Form::text('referencia', null, ['class'=> 'form-control'], ['id'=>'referencia']) !!}</div>
+    </div>
 
-<div class="form-group">
-    <label for="preco" class="col-sm-2 control-label">{!! Form::label('Preço:') !!}</label>
-    <div class="col-sm-2">{!! Form::text('preco', null, ['class'=> 'form-control text-right', 'id'=>'preco']) !!}
+    <div class="form-group">
+        <label for="preco" class="col-sm-3 control-label">{!! Form::label('Preço:') !!}</label>
+        <div class="col-sm-2">{!! Form::text('preco', null, ['class'=> 'form-control text-right', 'id'=>'preco']) !!}</div>
+        <div class="col-sm-2">{!! Form::select('codunidademedida', $medidas, $model->codunidademedida, ['class'=> 'form-control', 'id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
+        
+    </div>
+
+    <div class="form-group">
+        <label for="importado" class="col-sm-3 control-label">{!! Form::label('Importado:') !!}</label>
+        <div class="col-sm-9" id="wrapper-importado">{!! Form::checkbox('importado', null, false,[ 'id'=>'importado', 'data-off-text' => 'Nacional', 'data-on-text' => 'Importado']) !!}</div>
+    </div>
+
+
+    <div class="form-group">
+        <label for="site" class="col-sm-3 control-label">{!! Form::label('Disponível no Site:') !!}</label>
+        <div class="col-sm-9" id="wrapper-site">{!! Form::checkbox('site', null, null, ['id'=>'site', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+    </div>
+
+    <div class="form-group">
+        <label for="descricaosite" class="col-sm-3 control-label">{!! Form::label('Descrição Site:') !!}</label>
+        <div class="col-sm-9">{!! Form::textarea('descricaosite', null, ['class'=> 'form-control', 'id'=>'descricaosite']) !!}</div>
     </div>
 </div>
-
-<div class="form-group">
-    <label for="importado" class="col-sm-2 control-label">{!! Form::label('Importado:') !!}</label>
-    <div class="col-sm-10" id="wrapper-importado">{!! Form::checkbox('importado', null, false,[ 'id'=>'importado', 'data-off-text' => 'Nacional', 'data-on-text' => 'Importado']) !!}</div>
-</div>
-
-<div class="form-group">
-    <label for="ncm" class="col-sm-2 control-label">{!! Form::label('NCM:') !!}</label>
-    <div class="col-sm-5">{!! Form::text('codncm', null, ['class'=> 'form-control', 'id'=>'codncm']) !!}</div>
-</div>
-
-<div class="form-group">
-    <label for="codtributacao" class="col-sm-2 control-label">{!! Form::label('Tributação:') !!}</label>
-    <div class="col-sm-2">{!! Form::select('codtributacao', $tributacoes, $model->codtributacao, ['class'=> 'form-control', 'id'=>'codtributacao', 'style'=>'width:100%'], ['data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
-</div>
-
-<div class="form-group">
-    <label for="codcest" class="col-sm-2 control-label">{!! Form::label('CEST:') !!}</label>
-    <div class="col-sm-5">{!! Form::text('codcest', null, ['class'=> 'form-control','id'=>'codcest', 'style'=>'width:100%']) !!}</div>
-</div>
-
-<div class="form-group">
-    <label for="codtipoproduto" class="col-sm-2 control-label">{!! Form::label('Tipo:') !!}</label>
-    <div class="col-sm-3">{!! Form::select('codtipoproduto', $tipos, $model->codtipoproduto, ['class'=> 'form-control', 'id' => 'codtipoproduto', 'style'=>'width:100%']) !!}</div>
-</div>
-
-<div class="form-group">
-    <label for="site" class="col-sm-2 control-label">{!! Form::label('Disponível no Site:') !!}</label>
-    <div class="col-sm-10" id="wrapper-site">{!! Form::checkbox('site', null, null, ['id'=>'site', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
-</div>
-
-<div class="form-group">
-    <label for="descricaosite" class="col-sm-2 control-label">{!! Form::label('Descrição Site:') !!}</label>
-    <div class="col-sm-6">{!! Form::textarea('descricaosite', null, ['class'=> 'form-control', 'id'=>'descricaosite']) !!}</div>
-</div>
-
 <hr>
 <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
@@ -152,6 +150,44 @@ $(document).ready(function() {
     $("#produto").Setcase();
     $('#preco').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
 
+    $('#codmarca').select2({
+        placeholder:'Marca',
+        minimumInputLength: 1,
+        allowClear: true,
+        closeOnSelect: true,
+      
+        formatResult: function(item) {
+            var markup = "<div class='row-fluid'>";
+            markup    += item.marca;
+            markup    += "</div>";
+            return markup;
+        },
+        formatSelection: function(item) { 
+            return item.marca; 
+        },
+        ajax:{
+            url: baseUrl + "/marca/ajax",
+            dataType: 'json',
+            quietMillis: 500,
+            data: function(term,page) { 
+            return {q: term}; 
+        },
+        results: function(data,page) {
+            var more = (page * 20) < data.total;
+            return {results: data.items};
+        }},
+        initSelection: function (element, callback) {
+            $.ajax({
+              type: "GET",
+              url: baseUrl + "/marca/ajax",
+              data: "id="+$('#codmarca').val(),
+              dataType: "json",
+              success: function(result) { callback(result); }
+              });
+        },
+        width: 'resolve'
+    }); 
+    
     $('#codncm').select2({
         minimumInputLength:1,
         allowClear:true,

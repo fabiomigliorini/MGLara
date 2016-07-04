@@ -7,14 +7,16 @@ use Illuminate\Http\Request;
 use MGLara\Http\Requests;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Produto;
 use MGLara\Models\ProdutoBarra;
 use MGLara\Models\NegocioProdutoBarra;
 use MGLara\Models\NotaFiscalProdutoBarra;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use MGLara\Models\TipoProduto;
 
 class ProdutoController extends Controller
 {
@@ -49,6 +51,7 @@ class ProdutoController extends Controller
     public function create()
     {
         $model = new Produto;
+        $model->codtipoproduto = TipoProduto::MERCADORIA;
         return view('produto.create', compact('model'));
     }
 
@@ -87,7 +90,12 @@ class ProdutoController extends Controller
 
     public function show(Request $request, $id)
     {
+        /*
+        DB::enableQueryLog();
+        */
+        
         $model = Produto::find($id);
+        /*
         $npbs = NegocioProdutoBarra::search(
             $id,
             $request->get('npb_lancamento_de'),
@@ -104,7 +112,17 @@ class ProdutoController extends Controller
             $request->get('nfpb_codnaturezaoperacao'),
             $request->get('nfpb_codpessoa')
         );
-        return view('produto.show', compact('model', 'nfpbs', 'npbs'));
+         * 
+         */
+        $ret = view('produto.show', compact('model', 'nfpbs', 'npbs'));
+        
+        /*
+        $queries = DB::getQueryLog();
+
+         echo '<hr><h1>queries</h1>';
+        dd($queries);
+        */
+        return $ret;
     }
 
 
@@ -155,7 +173,17 @@ class ProdutoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+            $model = Produto::findOrFail($id);
+            $model->delete();
+            Session::flash('flash_success', "Produto '{$model->produto}' Excluído!");
+            return Redirect::route('produto.index');
+        }
+        catch(\Exception $e){
+            Session::flash('flash_danger', "Impossível Excluir!");
+            Session::flash('flash_danger_detail', $e->getMessage());
+            return redirect("produto/$id"); 
+        }     
     }
     
     public function buscaPorBarras(Request $request)

@@ -69,4 +69,19 @@ class ProdutoVariacao extends MGModel
     }
 
 
+    public function validate()
+    {
+        
+        $this->_regrasValidacao = [
+          'variacao' => "uniqueMultiple:tblprodutovariacao,codprodutovariacao,$this->codprodutovariacao,variacao,codproduto,$this->codproduto"
+        ];
+        $this->_mensagensErro = [
+            'variacao.unique_multiple' => 'Esta Variação já está cadastrada!',
+            'variacao.min' => 'Variação deve ter mais de 3 caracteres!',
+        ];
+
+        return parent::validate();
+    }    
+
+
 }

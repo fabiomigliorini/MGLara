@@ -12,12 +12,12 @@
     titulo(
         null,
         [
-            url("produto") => 'Produtos',
-            'Novo Produto',
+            url('produto') => 'Produtos',
+            'Novo Produto'
         ],
         $model->inativo
     ) 
-!!} 
+!!}   
 </h1>
 <hr>
 <br>

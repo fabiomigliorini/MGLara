@@ -107,10 +107,13 @@ Route::group(['middleware' => 'auth'], function() {
     /* Estoque Saldo Conferencia */
     Route::resource('estoque-saldo-conferencia','EstoqueSaldoConferenciaController');
     
-    /* Produto Barra*/
+    /* Produto Variacao */
+    Route::resource('produto-variacao','ProdutoVariacaoController');
+    
+    /* Produto Barra */
     Route::resource('produto-barra','ProdutoBarraController');
     
-    /* Produto Barra*/
+    /* Produto Embalagem */
     Route::resource('produto-embalagem','ProdutoEmbalagemController');
         
     /* Pais */

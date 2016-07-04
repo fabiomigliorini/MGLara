@@ -6,10 +6,8 @@ namespace MGLara\Models;
  * Campos
  * @property  bigint                         $codprodutobarra                    NOT NULL DEFAULT nextval('tblprodutobarra_codprodutobarra_seq'::regclass)
  * @property  bigint                         $codproduto                         NOT NULL
- * @property  varchar(100)                   $variacao                           
+ * @property  bigint                         $codprodutovariacao                 NOT NULL
  * @property  varchar(50)                    $barras                             NOT NULL
- * @property  varchar(50)                    $referencia                         
- * @property  bigint                         $codmarca                           
  * @property  bigint                         $codprodutovariacao                 
  * @property  bigint                         $codprodutoembalagem                
  * @property  timestamp                      $alteracao                          
@@ -38,10 +36,8 @@ class ProdutoBarra extends MGModel
     protected $primaryKey = 'codprodutobarra';
     protected $fillable = [
         'codproduto',
-        'variacao',
+        'codprodutovariacao',
         'barras',
-        'referencia',
-        'codmarca',
         'codprodutoembalagem',
     ];
     protected $dates = [
@@ -53,15 +49,15 @@ class ProdutoBarra extends MGModel
 
         $this->_regrasValidacao = [            
             'codproduto'  => 'required',
-            'barras'  => 'required|unique:tblprodutobarra,barras',
+            'barras'  => "required|UniqueMultiple:tblprodutobarra,codprodutobarra,$this->codprodutobarra,barras",
             'codmarca'  => "validaMarcaBarra:$this->codproduto",
         ];
     
         $this->_mensagensErro = [
-            'codproduto.required'     => 'O Código do produto não pode ser vazio',
-            'barras.unique'          => 'Já existe esse código de barras',
-            'barras.required'          => 'O campo Barras deve ser vazio',
-            'codmarca.valida_marca_barra'          => 'Você selecionou a mesma marca informada no Produto, neste caso deixe em branco. Só preencha quando a marca for diferente da marca principal do produto',
+            'codproduto.required'           => 'O Código do produto não pode ser vazio',
+            'barras.unique'                 => 'Já existe esse código de barras',
+            'barras.required'               => 'O campo Barras deve ser vazio',
+            'codmarca.valida_marca_barra'   => 'Você selecionou a mesma marca informada no Produto, neste caso deixe em branco. Só preencha quando a marca for diferente da marca principal do produto',
         ];
         
         return parent::validate();

@@ -23,6 +23,8 @@ namespace MGLara\Models;
 
 class TipoProduto extends MGModel
 {
+    const MERCADORIA = 0;
+    
     protected $table = 'tbltipoproduto';
     protected $primaryKey = 'codtipoproduto';
     protected $fillable = [
