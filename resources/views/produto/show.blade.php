@@ -229,6 +229,77 @@
 <br>
 <br>
 @section('inscript')
+<style type="text/css">
+.produtos-grid-inativo {
+    margin: 0 0 5px 0;
+}
+
+.subregistro .col-md-8 {
+    margin-bottom: 5px;
+}
+.produtos-detalhes-produto {
+    font-family: sans-serif;
+    letter-spacing: -1px;
+    margin: 0 0 20px;
+    font-size: 28px;
+}
+
+.produtos-detalhe-preco {
+    font-size: 4em;
+    font-weight: bold;
+    margin: 0;
+}
+.produtos-detalhe-preco-menor {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 0;
+}
+.produtos-detalhe-cifrao {
+    font-size: 0.5em;
+    font-weight: bold;
+    margin: 8px 0 0;
+}
+
+#produto-detalhes {
+    padding-bottom: 30px;
+}
+#produto-detalhes table th {
+    text-align: right;
+}
+.produtos-combinacoes-titulo {
+    font-size: 22px;
+}
+.produto-detalhes-unidade {
+    font-size: 20px;
+}
+.bg-info .list-group-item {
+    background: none;
+}
+.produtos-detalhe-carousel {
+    min-height: 500px;
+}
+.carousel-control.left, 
+.carousel-control.right {
+    background: none;
+}
+.carousel-menu {
+    margin-right: -1px;
+    margin-top: -1px;
+    position: relative;
+    z-index: 100;
+}
+.produto-historico-preco > .list-group-item {
+    padding: 10px 0;
+}
+
+#produto-search .form-group, 
+#produto-npb-search .form-group {
+    margin-bottom: 5px;
+    position: relative;
+}
+    
+</style>
+
 <script type="text/javascript">var codproduto = {{ $model->codproduto }}</script>
 <script type="text/javascript">
 $(document).ready(function() {

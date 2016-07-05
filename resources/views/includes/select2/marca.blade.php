@@ -1,5 +1,5 @@
 {!! Form::text('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%']) !!}
-@section('inscriptComponentes')
+@section('macros_scripts')
 <script type="text/javascript">
 $(document).ready(function() {
     var inativo = {{ $inativo }}

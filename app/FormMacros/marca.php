@@ -1,5 +1,13 @@
-$(document).ready(function() {
-    //var inativo = {{$inativo}}
+<?php
+//use Blade;
+
+Form::macro('select2Marca', function($inativo = 1)
+{
+    $input = "<input type='text' id='codmarca' name='codmarca' placeholder='Marca'>";
+    //$input .= "@section('inscript')";
+    $input .= "<script type='text/javascript'>
+    $(document).ready(function() {
+    var inativo = $inativo;
     $('#codmarca').select2({
         placeholder:'Marca',
         minimumInputLength: 1,
@@ -7,7 +15,7 @@ $(document).ready(function() {
         closeOnSelect: true,
 
         formatResult: function(item) {
-            var markup = "<div class='row-fluid'>";
+            var markup = '<div class='row-fluid'>;
             markup    += item.marca;
             markup    += '</div>';
             return markup;
@@ -40,4 +48,10 @@ $(document).ready(function() {
         },
         width: 'resolve'
     });
-});     
+});    
+</script>";
+    //$input .= @endsection;
+    
+    return $input;
+});
+

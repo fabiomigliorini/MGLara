@@ -63,6 +63,11 @@
   <?php echo $model->appends(Request::all())->render();?>
 </div>
 @section('inscript')
+<style type="text/css">
+.search-pessoa {
+  width: 500px !important;
+}  
+</style>
 <script type="text/javascript">
 $(document).ready(function() {
   $('#usuario-search').change(function() {

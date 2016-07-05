@@ -53,4 +53,13 @@
         </div>
     </div>
 </div>
+@section('inscript')
+<style type="text/css">
+.auth h3 {
+    margin: 5px;
+    text-align: center;
+    text-transform: uppercase;
+}    
+</style>
 @endsection
+@stop
