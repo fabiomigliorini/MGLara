@@ -93,12 +93,12 @@ class ProdutoBarraController extends Controller
     {
         try{
             ProdutoBarra::find($id)->delete();
-            Session::flash('flash_delete', 'Registro deletado!');
-            //return Redirect::route('');
+            $ret = ['resultado' => true, 'mensagem' => 'Código de Barras excluído com sucesso!'];
         }
         catch(\Exception $e){
-            return view('errors.fk');
-        }     
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir código de barras!', 'exception' => $e];
+        }
+        return json_encode($ret);
     }
 
 }

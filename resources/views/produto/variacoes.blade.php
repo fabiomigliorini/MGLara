@@ -40,8 +40,8 @@
                                 {{ $model->UnidadeMedida->sigla }}
                             @endif
                             &nbsp;
-                            <a href="{{ url("produto-barra/$pb->codprodutobarra/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
-                            <a href="{{ url("produto-barra/$pb->codprodutobarra/delete") }}"><i class="glyphicon glyphicon-trash"></i></a>
+                            <a href="{{ url("produto-barra/{$pb->codprodutobarra}/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
+                            <a href="{{ url("produto-barra/{$pb->codprodutobarra}") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o Código de Barras '{{ $pb->barras }}'?" data-after-delete="location.reload();"><i class="glyphicon glyphicon-trash"></i></a>
                         </small>
                     </div>
                 @endforeach
