@@ -1,6 +1,6 @@
 <h3>
     Histórico de cobranças
-    <span class="btn-novo-titulo">
+    <span class="">
         <a class="btn btn-sm btn-default" href="{{ url("cobranca-historico/create") }}"><i class="glyphicon glyphicon-plus"></i> Nova</a>
     </span>
 </h3>

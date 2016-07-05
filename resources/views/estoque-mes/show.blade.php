@@ -209,6 +209,12 @@
 </div>
 
 @section('inscript')
+<style type="text/css">
+#estoque-mes-filtro .col-sm-1 {
+    padding-top: 8px
+}
+    
+</style>
 <script type="text/javascript">
     
 function recalculaMovimentoEstoque() {

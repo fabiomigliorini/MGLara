@@ -1,6 +1,6 @@
 <h3>
     Registros SPC 
-    <span class="btn-novo-titulo">
+    <span class="">
         <a class="btn btn-sm btn-default" href="{{ url("registro-spc/create") }}"><i class="glyphicon glyphicon-plus"></i> Nova</a>
     </span>
 </h3>
