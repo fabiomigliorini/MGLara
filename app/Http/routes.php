@@ -196,4 +196,5 @@ Route::group(['middleware' => 'auth'], function() {
 Route::group(['prefix' => 'negocios', 'as' => 'negocios::', 'middleware' => 'auth'], function () {
     Route::get('/', ['as' => 'index', 'uses' => 'NegociosController@index']);
     Route::get('/create', ['as' => 'create', 'uses' => 'NegociosController@create']);
+    Route::post('/store', ['as' => 'store', 'uses' => 'NegociosController@store']);
 });

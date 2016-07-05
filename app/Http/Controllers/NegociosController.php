@@ -17,8 +17,35 @@ class NegociosController extends Controller
 
     public function create(Request $request)
     {
-        $model = Negocio::orderBy('criacao', 'desc')->paginate(200);
+        $filialCollection           = Filial::filiaisOrdenadoPorNome()->get();
+        $estoqueLocalCollection     = EstoqueLocal::comFilialOrganizadoPorNomeDaFilial()->get();
+        $naturezaOperacaoCollection = NaturezaOperacao::ordenadoPorNome()->get();
+        $pessoaCollection           = Pessoa::ordenadoPorNome()->paginate(10);
+        $vendedoresCollection       = Pessoa::vendedoresOrdenadoPorNome()->paginate(10);
 
-        return view('negocios.create', compact('model'));
+        return view('negocios.create', compact(
+            'filialCollection',
+            'estoqueLocalCollection',
+            'naturezaOperacaoCollection',
+            'pessoaCollection',
+            'vendedoresCollection'
+        ));
+    }
+
+    public function store(Request $request)
+    {
+
+        $model = new Negocio($request->all());
+
+        dd($model->validate());
+
+        if (!$model->validate()) {
+            $this->throwValidationException($request, $model->_validator);
+        }
+
+        $model->save();
+        Session::flash('flash_create', 'Registro inserido.');
+
+        return redirect(URL::route('negocios::index'));
     }
 }

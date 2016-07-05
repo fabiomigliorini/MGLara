@@ -96,7 +96,7 @@ Negócios
         <tbody>
 <?php
 $statusStyle = [
-    'Aberto' => 'success',
+    'Aberto'    => 'success',
     'Cancelado' => 'danger',
 ];
 ?>

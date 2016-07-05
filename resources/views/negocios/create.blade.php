@@ -12,7 +12,8 @@ Novo Negócio
 @endsection
 
 @section('body')
-<form class="form-horizontal">
+<form class="form-horizontal" method="POST" action="{{ URL::route('negocios::store') }}">
+    <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
 
     <div class="form-group">
         <label for="filial" class="col-sm-2 control-label">Filial:</label>
@@ -20,7 +21,7 @@ Novo Negócio
             <select
                 placeholder="Filial"
                 class="form-control select-search"
-                name="filial"
+                name="codfilial"
                 id="filial">
                 <option value=""></option>
                 <option value="0">Consumidor</option>
@@ -34,7 +35,7 @@ Novo Negócio
             <select
                 placeholder="Local Estoque"
                 class="form-control select-search"
-                name="local-estoque"
+                name="codestoquelocal"
                 id="local-estoque">
                 <option value=""></option>
                 <option value="0">Local Estoque</option>
@@ -48,7 +49,7 @@ Novo Negócio
             <select
                 placeholder="Natureza de Operação"
                 class="form-control select-search"
-                name="natureza-de-operacao"
+                name="codnaturezaoperacao"
                 id="natureza-de-operacao">
                 <option value=""></option>
                 <option value="0">Natureza de Operação</option>
@@ -62,7 +63,7 @@ Novo Negócio
             <select
                 placeholder="Pessoa"
                 class="form-control select-search"
-                name="pessoa"
+                name="codpessoa"
                 id="pessoa">
                 <option value=""></option>
                 <option value="0">Pessoa</option>
@@ -76,10 +77,12 @@ Novo Negócio
             <select
                 placeholder="Vendedor"
                 class="form-control select-search"
-                name="vendedor"
+                name="codpessoavendedor"
                 id="vendedor">
                 <option value=""></option>
-                <option value="0">Vendedor</option>
+                @foreach($vendedoresCollection as $vendedor)
+                <option value="{{ $vendedor->codpessoa }}">{{ $vendedor->pessoa }}</option>
+                @endforeach
             </select>
         </div>
     </div>

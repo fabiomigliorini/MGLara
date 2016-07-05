@@ -5,22 +5,22 @@ namespace MGLara\Models;
 /**
  * Campos
  * @property  bigint                         $codnegocio                         NOT NULL DEFAULT nextval('tblnegocio_codnegocio_seq'::regclass)
- * @property  bigint                         $codpessoa                          
+ * @property  bigint                         $codpessoa
  * @property  bigint                         $codfilial                          NOT NULL
  * @property  timestamp                      $lancamento                         NOT NULL
- * @property  bigint                         $codpessoavendedor                  
+ * @property  bigint                         $codpessoavendedor
  * @property  bigint                         $codoperacao                        NOT NULL
  * @property  bigint                         $codnegociostatus                   NOT NULL
- * @property  varchar(500)                   $observacoes                        
+ * @property  varchar(500)                   $observacoes
  * @property  bigint                         $codusuario                         NOT NULL
- * @property  numeric(14,2)                  $valordesconto                      
+ * @property  numeric(14,2)                  $valordesconto
  * @property  boolean                        $entrega                            NOT NULL DEFAULT false
- * @property  timestamp                      $acertoentrega                      
- * @property  bigint                         $codusuarioacertoentrega            
- * @property  timestamp                      $alteracao                          
- * @property  bigint                         $codusuarioalteracao                
- * @property  timestamp                      $criacao                            
- * @property  bigint                         $codusuariocriacao                  
+ * @property  timestamp                      $acertoentrega
+ * @property  bigint                         $codusuarioacertoentrega
+ * @property  timestamp                      $alteracao
+ * @property  bigint                         $codusuarioalteracao
+ * @property  timestamp                      $criacao
+ * @property  bigint                         $codusuariocriacao
  * @property  bigint                         $codnaturezaoperacao                NOT NULL
  * @property  numeric(14,2)                  $valorprodutos                      NOT NULL
  * @property  numeric(14,2)                  $valortotal                         NOT NULL
@@ -29,17 +29,17 @@ namespace MGLara\Models;
  * @property  bigint                         $codestoquelocal                    NOT NULL
  *
  * Chaves Estrangeiras
- * @property  Filial                         $Filial                        
- * @property  NaturezaOperacao               $NaturezaOperacao              
- * @property  NegocioStatus                  $NegocioStatus                 
- * @property  Operacao                       $Operacao                      
- * @property  Pessoa                         $Pessoa                        
+ * @property  Filial                         $Filial
+ * @property  NaturezaOperacao               $NaturezaOperacao
+ * @property  NegocioStatus                  $NegocioStatus
+ * @property  Operacao                       $Operacao
+ * @property  Pessoa                         $Pessoa
  * @property  Pessoa                         $PessoaVendedor
- * @property  Usuario                        $Usuario                       
- * @property  Usuario                        $UsuarioAcertoEntrega                       
+ * @property  Usuario                        $Usuario
+ * @property  Usuario                        $UsuarioAcertoEntrega
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
- * @property  Estoquelocal                   $Estoquelocal                  
+ * @property  Estoquelocal                   $Estoquelocal
  *
  * Tabelas Filhas
  * @property  NegocioFormaPagamento[]        $NegocioformapagamentoS
@@ -48,9 +48,9 @@ namespace MGLara\Models;
 
 class Negocio extends MGModel
 {
-    protected $table = 'tblnegocio';
+    protected $table      = 'tblnegocio';
     protected $primaryKey = 'codnegocio';
-    protected $fillable = [
+    protected $fillable   = [
         'codpessoa',
         'codfilial',
         'lancamento',
@@ -76,7 +76,6 @@ class Negocio extends MGModel
         'alteracao',
         'criacao',
     ];
-
 
     // Chaves Estrangeiras
     public function Filial()
@@ -134,7 +133,6 @@ class Negocio extends MGModel
         return $this->belongsTo(EstoqueLocal::class, 'codestoquelocal', 'codestoquelocal');
     }
 
-
     // Tabelas Filhas
     public function NegocioFormaPagamentosS()
     {
@@ -144,6 +142,6 @@ class Negocio extends MGModel
     public function NegocioProdutoBarraS()
     {
         return $this->hasMany(NegocioProdutoBarra::class, 'codnegocio', 'codnegocio');
-    }    
+    }
 
 }
