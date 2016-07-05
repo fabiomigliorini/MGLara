@@ -73,11 +73,13 @@ class ProdutoVariacao extends MGModel
     {
         
         $this->_regrasValidacao = [
-          'variacao' => "uniqueMultiple:tblprodutovariacao,codprodutovariacao,$this->codprodutovariacao,variacao,codproduto,$this->codproduto"
+          'variacao' => "uniqueMultiple:tblprodutovariacao,codprodutovariacao,$this->codprodutovariacao,variacao,codproduto,$this->codproduto",
+          'codmarca' => "not_in:{$this->Produto->codmarca}"
         ];
         $this->_mensagensErro = [
             'variacao.unique_multiple' => 'Esta Variação já está cadastrada!',
             'variacao.min' => 'Variação deve ter mais de 3 caracteres!',
+            'codmarca.not_in' => 'Somente selecione a Marca caso seja diferente do produto!',
         ];
 
         return parent::validate();

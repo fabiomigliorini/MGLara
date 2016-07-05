@@ -50,7 +50,7 @@ class ProdutoEmbalagemController extends Controller
             $this->throwValidationException($request, $model->_validator);
         
         $model->save();
-        Session::flash('flash_create', 'Registro inserido.');
+        Session::flash('flash_success', "Embalagem '{$model->descricao}' criada!");
         return redirect("produto/$model->codproduto");
     }
 
@@ -88,7 +88,7 @@ class ProdutoEmbalagemController extends Controller
             $this->throwValidationException($request, $model->_validator);
         
         $model->save();
-        Session::flash('flash_update', 'Registro atualizado.');
+        Session::flash('flash_success', "Embalagem '{$model->descricao}' alterada!");
         return redirect("produto/$model->codproduto");        
     }
 

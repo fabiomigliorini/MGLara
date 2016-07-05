@@ -16,7 +16,8 @@
             url("produto/$produto->codproduto") => $produto->produto,
             'Novo Código de Barras',
         ],
-        $model->inativo
+        $model->inativo,
+        6
     ) 
 !!}     
 </h1>

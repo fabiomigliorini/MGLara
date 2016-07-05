@@ -186,23 +186,23 @@ $secoes     = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')-
                     </div>
                 @endforeach
             </div>
-            <div class="col-md-5 small text-muted">
+            <div class="col-md-5 small text-muted" >
                 <?php
-                $pvs = $row->ProdutoVariacaoS()->orderBy('variacao', 'ASC NULLS FIRST')->get();
+                $pvs = $row->ProdutoVariacaoS()->orderBy('variacao', 'ASC')->get();
                 ?>
                 <table class="table table-striped table-condensed table-hover" style="margin-bottom: 1px">
                 @foreach ($pvs as $pv)
                     <tr>
                         <td class="col-md-6">
-                            @if (!empty($pv->codmarca))
-                                <a href="{{ url("marca/$pv->codmarca") }}">
-                                    {{ $pv->Marca->marca }}
-                                </a>
-                            @endif
                             @if (!empty($pv->variacao))
                                 {{ $pv->variacao }}
                             @else
                                 <i>{ Sem Variação }</i>
+                            @endif
+                            @if (!empty($pv->codmarca))
+                                <a href="{{ url("marca/$pv->codmarca") }}">
+                                    {{ $pv->Marca->marca }}
+                                </a>
                             @endif
                             <div class="pull-right">
                                 {{ $pv->referencia }}
@@ -221,7 +221,7 @@ $secoes     = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')-
                                     </div>
                                     <small class="col-md-5">
                                         @if (!empty($pb->codprodutoembalagem))
-                                            {{ $pb->ProdutoEmbalagem->UnidadeMedida->sigla . " " . $pb->ProdutoEmbalagem->descricao }}
+                                            {{ $pb->ProdutoEmbalagem->descricao }}
                                         @else
                                             {{ $row->UnidadeMedida->sigla }}
                                         @endif

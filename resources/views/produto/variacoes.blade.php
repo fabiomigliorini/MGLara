@@ -1,20 +1,20 @@
 <div class="panel panel-default">
     <?php
-    $pvs = $model->ProdutoVariacaoS()->orderBy('variacao', 'ASC NULLS FIRST')->get();
+    $pvs = $model->ProdutoVariacaoS()->orderBy('variacao', 'ASC')->get();
     ?>
     <ul class="list-group group-list-striped group-list-hover">
         @foreach ($pvs as $pv)
             <li class="list-group-item">
                 <strong>
-                    @if (!empty($pv->codmarca))
-                        <a href="{{ url("marca/$pv->codmarca") }}">
-                            {{ $pv->Marca->marca }}
-                        </a>
-                    @endif
                     @if (!empty($pv->variacao))
                         {{ $pv->variacao }}
                     @else
                         <i>{ Sem Variação }</i>
+                    @endif
+                    @if (!empty($pv->codmarca))
+                        <a href="{{ url("marca/$pv->codmarca") }}">
+                            {{ $pv->Marca->marca }}
+                        </a>
                     @endif
                 </strong>
                 <div class="pull-right">
@@ -31,7 +31,7 @@
                    ->with('ProdutoEmbalagem')->get();
                 ?>
                 @foreach ($pbs as $pb)
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         {{ $pb->barras }}
                         <small class="text-muted pull-right">
                             @if (!empty($pb->codprodutoembalagem))

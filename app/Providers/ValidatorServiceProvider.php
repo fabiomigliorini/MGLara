@@ -30,17 +30,6 @@ class ValidatorServiceProvider extends ServiceProvider
             }  
         });   
 
-        $this->app['validator']->extend('validaMarcaBarra', function ($attribute, $value, $parameters)
-        {
-            $produto = Produto::find($parameters[0]);
-            if (empty($value))
-                return true; 
-            
-            if ($value == $produto->codmarca)
-                return false;
-            
-        });   
-        
 	/**
 	 * Verifica se o usuario selecionou um NCM com 8 Digitos
 	 */

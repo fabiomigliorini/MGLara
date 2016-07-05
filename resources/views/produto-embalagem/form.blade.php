@@ -1,7 +1,7 @@
 <?php
 
     use MGLara\Models\UnidadeMedida;
-    $medidas        = [''=>''] + UnidadeMedida::lists('unidademedida', 'codunidademedida')->all();
+    $medidas        = [''=>''] + UnidadeMedida::orderBy('unidademedida')->lists('unidademedida', 'codunidademedida')->all();
 
 ?>
 
@@ -12,13 +12,13 @@
 
 <div class="form-group">
     <label for="preco" class="col-sm-2 control-label">{!! Form::label('Quantidade:') !!}</label>
-    <div class="col-sm-2">{!! Form::text('quantidade', null, ['class'=> 'form-control text-right', 'id'=>'quantidade']) !!}
+    <div class="col-sm-1">{!! Form::text('quantidade', null, ['class'=> 'form-control text-right', 'id'=>'quantidade']) !!}
     </div>
 </div>
 
 <div class="form-group">
     <label for="preco" class="col-sm-2 control-label">{!! Form::label('Preço:') !!}</label>
-    <div class="col-sm-2">{!! Form::text('preco', null, ['class'=> 'form-control text-right', 'id'=>'preco']) !!}
+    <div class="col-sm-1">{!! Form::text('preco', null, ['class'=> 'form-control text-right', 'id'=>'preco']) !!}
     </div>
 </div>
 

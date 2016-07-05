@@ -42,7 +42,7 @@ class ProdutoVariacaoController extends Controller
             $this->throwValidationException($request, $model->_validator);
         
         $model->save();
-        Session::flash('flash_create', 'Registro inserido.');
+        Session::flash('flash_success', "Variação '{$model->variacao}' criada!");
         return redirect("produto/$model->codproduto");
     }
 
@@ -75,7 +75,7 @@ class ProdutoVariacaoController extends Controller
             $this->throwValidationException($request, $model->_validator);
         
         $model->save();
-        Session::flash('flash_update', 'Registro atualizado.');
+        Session::flash('flash_success', "Variação '{$model->variacao}' alterada!");
         return redirect("produto/$model->codproduto");     
     }
 

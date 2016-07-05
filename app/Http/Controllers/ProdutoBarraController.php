@@ -43,7 +43,7 @@ class ProdutoBarraController extends Controller
             $this->throwValidationException($request, $model->_validator);
         
         $model->save();
-        Session::flash('flash_create', 'Registro inserido.');
+        Session::flash('flash_success', "Código de Barras '{$model->barras}' criado!");
         return redirect("produto/$model->codproduto");
     }
 
@@ -79,7 +79,7 @@ class ProdutoBarraController extends Controller
             $this->throwValidationException($request, $model->_validator);
         
         $model->save();
-        Session::flash('flash_update', 'Registro atualizado.');
+        Session::flash('flash_success', "Código de Barras '{$model->barras}' atualizado!");
         return redirect("produto/$model->codproduto");     
     }
 

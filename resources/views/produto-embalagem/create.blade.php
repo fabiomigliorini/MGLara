@@ -16,7 +16,8 @@
             url("produto/$produto->codproduto") => $produto->produto,
             'Nova Embalagem',
         ],
-        $model->inativo
+        $model->inativo,
+        6
     ) 
 !!}     
 </h1>

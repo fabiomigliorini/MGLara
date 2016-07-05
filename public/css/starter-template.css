@@ -1,9 +1,5 @@
 body {
-  padding-top: 100px;
-}
-hr {
-  margin-bottom: 15px;
-  margin-top: 15px;    
+    padding-top: 100px;
 }
 h1.header {
     font-family: sans-serif;
@@ -164,4 +160,9 @@ h1.header {
     -o-transform: translateX(200px);
     -webkit-transform: translateX(200px);
     transform: translateX(200px);
+}
+
+html {
+    overflow: -moz-scrollbars-vertical; 
+    overflow-y: scroll;
 }

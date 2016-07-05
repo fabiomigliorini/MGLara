@@ -14,7 +14,7 @@
             <li><a href="<?php echo url('produto');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
             
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-plus"></span>Novo<span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-plus"></span> Novo <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li><a href="<?php echo url('produto/create');?>">Produto</a></li>             
                     <li><a href="<?php echo url("produto-embalagem/create?codproduto={$model->codproduto}");?>">Embalagem</a></li>             
@@ -24,8 +24,10 @@
             </li>
         
             <li><a href="<?php echo url("produto/$model->codproduto/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
+            <!--
             <li><a href="<?php echo url("produto/$model->codproduto/juntar-barras");?>"><span class="glyphicon glyphicon-resize-small"></span> Juntar códigosde barra</a></li> 
             <li><a href="<?php echo url("produto/$model->codproduto/transferir-barras");?>"><span class="glyphicon glyphicon-transfer"></span> Transferir códigos de barra</a></li> 
+            -->
             <li>
                 @if(empty($model->inativo))
                 <a href="" id="inativar-produto">
@@ -43,6 +45,7 @@
         </ul>
     </div>
 </nav>
+<!--
 <div class="row">
     <div class="col-md-5">
         {!! Form::model(Request::all(), [
@@ -66,6 +69,7 @@
     </div>
 </div>
 <hr>
+-->
 <div class="panel panel-default">
     <table class="table table-bordered table-responsive">
         <tr>
