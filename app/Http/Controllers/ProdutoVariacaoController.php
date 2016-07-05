@@ -89,12 +89,11 @@ class ProdutoVariacaoController extends Controller
     {
         try{
             ProdutoVariacao::find($id)->delete();
-            Session::flash('flash_delete', 'Registro deletado!');
-            //return Redirect::route('');
+            $ret = ['resultado' => true, 'mensagem' => 'Variação excluída com sucesso!'];
         }
         catch(\Exception $e){
-            return view('errors.fk');
-        }     
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir variação!', 'exception' => $e];
+        }
+        return json_encode($ret);
     }
-
 }

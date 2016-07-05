@@ -38,10 +38,7 @@
                 @endif
             </li> 
             <li>
-                {!! Form::open(['method' => 'DELETE', 'route' => ['produto.destroy', $model->codproduto]]) !!}
-                <span class="glyphicon glyphicon-trash"></span>
-                {!! Form::submit('Excluir') !!}
-                {!! Form::close() !!}
+                <a href="{{ url("produto/$model->codproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o produto '{{ $model->produto }}'?" data-after-delete="redirecionar();"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
             </li>
         </ul>
     </div>
@@ -140,7 +137,7 @@
 
                             <div class="pull-right">
                                 <a href="{{ url("produto-embalagem/$pe->codprodutoembalagem/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
-                                <a href="{{ url("produto-embalagem/$pe->codprodutoembalagem/delete") }}"><i class="glyphicon glyphicon-trash"></i></a>
+                                <a href="{{ url("produto-embalagem/$pe->codprodutoembalagem") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a Embalagem '{{ $pe->UnidadeMedida->unidademedida }} com {{ formataNumero($pe->quantidade, 0) }}'?" data-after-delete="location.reload();"><i class="glyphicon glyphicon-trash"></i></a>
                             </div>
                         </span>
                     </div>
@@ -302,6 +299,10 @@
 
 <script type="text/javascript">var codproduto = {{ $model->codproduto }}</script>
 <script type="text/javascript">
+function redirecionar()
+{
+    location.replace(baseUrl + '/produto');
+}
 $(document).ready(function() {
     $('#codproduto').change(function (){
         window.location.href = '{{ url("produto/") }}' + $('#codproduto').val();
@@ -696,7 +697,7 @@ $(document).ready(function() {
                 });
             },'width':'resolve'
         });
-    
+        
 });
 </script>
 @endsection

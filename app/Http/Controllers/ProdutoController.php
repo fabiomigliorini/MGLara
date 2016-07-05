@@ -174,17 +174,15 @@ class ProdutoController extends Controller
     public function destroy($id)
     {
         try{
-            $model = Produto::findOrFail($id);
-            $model->delete();
-            Session::flash('flash_success', "Produto '{$model->produto}' Excluído!");
-            return Redirect::route('produto.index');
+            Produto::find($id)->delete();
+            $ret = ['resultado' => true, 'mensagem' => 'Produto excluído com sucesso!'];
         }
         catch(\Exception $e){
-            Session::flash('flash_danger', "Impossível Excluir!");
-            Session::flash('flash_danger_detail', $e->getMessage());
-            return redirect("produto/$id"); 
-        }     
-    }
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir produto!', 'exception' => $e];
+        }
+        return json_encode($ret);
+    }    
+    
     
     public function buscaPorBarras(Request $request)
     {

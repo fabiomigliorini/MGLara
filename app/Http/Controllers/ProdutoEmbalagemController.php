@@ -103,11 +103,11 @@ class ProdutoEmbalagemController extends Controller
     {
         try{
             ProdutoEmbalagem::find($id)->delete();
-            Session::flash('flash_delete', 'Registro deletado!');
-            //return Redirect::route('');
+            $ret = ['resultado' => true, 'mensagem' => 'Embalagem excluída com sucesso!'];
         }
         catch(\Exception $e){
-            return view('errors.fk');
-        }     
-    }
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir embalagem!', 'exception' => $e];
+        }
+        return json_encode($ret);
+    }    
 }
