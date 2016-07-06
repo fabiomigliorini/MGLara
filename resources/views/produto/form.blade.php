@@ -61,7 +61,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 <div class='col-md-7'>
     <div class="form-group">
         <label for="produto" class="col-sm-3 control-label">{!! Form::label('Descrição:') !!}</label>
-        <div class="col-sm-9">{!! Form::text('produto', null, ['class'=> 'form-control', 'id'=>'produto']) !!}</div>
+        <div class="col-sm-9" id="produto-descricao">{!! Form::text('produto', null, ['class'=> 'form-control', 'id'=>'produto']) !!}</div>
     </div>
 
     <div class="form-group">
@@ -422,6 +422,71 @@ $(document).ready(function() {
         },
         width:'resolve'
     });
+
+    var limpaSecaoProduto = function(){
+        $('#codfamiliaproduto').select2('val', null);
+        $('#codgrupoproduto').select2('val', null);
+        $('#codsubgrupoproduto').select2('val', null);        
+    }
+    var limpaFamiliaProduto = function(){
+        $('#codgrupoproduto').select2('val', null);
+        $('#codsubgrupoproduto').select2('val', null);        
+    }
+
+    var limpaGrupoProduto = function () {
+        $('#codsubgrupoproduto').select2('val', null);
+    }
+
+    $("#codsecaoproduto").on("select2-removed", function(e) {
+        limpaSecaoProduto;
+    }).change(limpaSecaoProduto);
+
+    $("#codfamiliaproduto").on("select2-removed", function(e) {
+        limpaFamiliaProduto
+    }).change(limpaFamiliaProduto);
+
+    $('#codgrupoproduto').on("select2-removed", function(e) { 
+        limpaGrupoProduto
+    }).change(limpaGrupoProduto);  
+
+    function mostraPopoverDescricao(produto)
+    {
+        $.get(baseUrl + "/produto/descricao", 
+            { 
+                codsubgrupoproduto: $('#codsubgrupoproduto').val(), 
+                q: produto 
+            } 
+        ).done(function( data ) {
+            if(data.data.length > 0){
+                $.each(data.data, function(k, v) {
+                    $('.popover-content').prepend('<li>'+ v.produto +'</li>');
+                });
+            } else {
+                $('.popover-content').prepend('<p>Nenhum produto encontrado</p>');
+            }
+
+        }).fail(function(error ) {
+            return console.log(error)
+        });  
+
+        $("#produto-descricao").popover({
+            title: 'Similares', 
+            content: '', 
+            trigger: 'manual', 
+            placement: 'bottom'
+        });
+        $("#produto-descricao").popover('show');
+    }
+    $('#produto').on('keyup',function(){
+        if($(this).val().length > 2){
+            mostraPopoverDescricao($(this).val());
+        } else {
+            $("#produto-descricao").popover('destroy');
+        }
+    });
+
+
+
 });
 </script>
 @endsection

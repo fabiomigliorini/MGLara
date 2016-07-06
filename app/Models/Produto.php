@@ -574,7 +574,7 @@ class Produto extends MGModel
         if(isset($parametros['barras']) and !empty($parametros['barras'])) {
             $barras = $parametros['barras'];
             $query->whereHas('ProdutoBarraS', function($q) use ($barras) {
-                $q->where('barras', $barras);
+                $q->where('barras', 'ILIKE', "%$barras%");
             }); 
         }
             

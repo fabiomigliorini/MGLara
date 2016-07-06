@@ -42,21 +42,15 @@ class FamiliaProduto extends MGModel
 
     public function validate() {
         
-        if ($this->codfamiliaproduto) {
-            $unique_familiaproduto = 'unique:tblfamiliaproduto,familiaproduto,'.$this->codfamiliaproduto.',codfamiliaproduto';
-        } else {
-            $unique_familiaproduto = 'unique:tblfamiliaproduto,familiaproduto';
-        }
-        
         $this->_regrasValidacao = [
             'codsecaoproduto' => 'required', 
-            'familiaproduto' => "required|min:3|$unique_familiaproduto", 
+            'familiaproduto' => "required|min:3|uniqueMultiple:tblfamiliaproduto,codfamiliaproduto,$this->codfamiliaproduto,familiaproduto,codsecaoproduto,$this->codsecaoproduto",
         ];    
         $this->_mensagensErro = [
-            'codsecaoproduto.required'  => 'Selecione uma Seção de produto.',
-            'familiaproduto.required'   => 'Família de produto nao pode ser vazio.',
-            'familiaproduto.min'        => 'Família de produto deve ter mais de 3 caracteres.',
-            'familiaproduto.unique'     => 'Esta Família já esta cadastrada',
+            'codsecaoproduto.required'  => 'Selecione uma Seção de produto!',
+            'familiaproduto.required'   => 'Família de produto nao pode ser vazio!',
+            'familiaproduto.min'        => 'Família de produto deve ter mais de 3 caracteres!',
+            'familiaproduto.unique_multiple'     => 'Esta Família já esta cadastrada nessa seção!',
         ];
 
         return parent::validate();

@@ -36,19 +36,13 @@ class GrupoProduto extends MGModel
 
     public function validate() {
         
-        if ($this->codgrupoproduto) {
-            $unique_grupoproduto = 'unique:tblgrupoproduto,grupoproduto,'.$this->codgrupoproduto.',codgrupoproduto';
-        } else {
-            $unique_grupoproduto = 'unique:tblgrupoproduto,grupoproduto';
-        }
-
         $this->_regrasValidacao = [
-            'grupoproduto' => "required|min:5|$unique_grupoproduto", 
+            'grupoproduto' => "required|min:3|uniqueMultiple:tblgrupoproduto,codgrupoproduto,$this->codgrupoproduto,grupoproduto,codfamiliaproduto,$this->codfamiliaproduto",
         ];    
         $this->_mensagensErro = [
-            'grupoproduto.required' => 'Grupo de produto nao pode ser vazio.',
-            'grupoproduto.unique' => 'Este Grupo de produto ja esta cadastrado.',
-            'grupoproduto.min' => 'Grupo de produto deve ter mais de 4 caracteres.',
+            'grupoproduto.required' => 'Grupo de produto nao pode ser vazio!',
+            'grupoproduto.unique_multiple' => 'Este Grupo de produto ja esta cadastrado nessa família!',
+            'grupoproduto.min' => 'Grupo de produto deve ter mais de 2 caracteres!',
         ];
 
         return parent::validate();
