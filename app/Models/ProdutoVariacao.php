@@ -79,10 +79,17 @@ class ProdutoVariacao extends MGModel
         $this->_mensagensErro = [
             'variacao.unique_multiple' => 'Esta Variação já está cadastrada!',
             'variacao.min' => 'Variação deve ter mais de 3 caracteres!',
+            'variacao.required' => 'Já existe uma Variação em branco, preencha a descrição desta nova Variação!',
             'codmarca.not_in' => 'Somente selecione a Marca caso seja diferente do produto!',
         ];
+        
+        if (isset($this->codproduto) && empty($this->variacao))
+            if ($this->Produto->ProdutoVariacaoS()->whereNull('variacao')->count() > 0)
+                $this->_regrasValidacao['variacao'] = 'required|' . $this->_regrasValidacao['variacao'];
 
-        return parent::validate();
+        $ret = parent::validate();
+        
+        return $ret;
     }    
 
 

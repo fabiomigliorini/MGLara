@@ -169,7 +169,7 @@ $secoes     = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')-
                     </div>
                 </div>
                 
-                @foreach($row->ProdutoEmbalagemS()->orderBy('quantidade')->get() as $pe)
+                @foreach($row->ProdutoEmbalagemS()->orderBy(DB::raw('coalesce(quantidade, 0)'))->get() as $pe)
                     <div class="row">
                         @if (empty($pe->preco))
                             <i class="col-md-6 text-right text-muted">
@@ -188,7 +188,7 @@ $secoes     = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')-
             </div>
             <div class="col-md-5 small text-muted" >
                 <?php
-                $pvs = $row->ProdutoVariacaoS()->orderBy('variacao', 'ASC')->get();
+                $pvs = $row->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
                 ?>
                 <table class="table table-striped table-condensed table-hover" style="margin-bottom: 1px">
                 @foreach ($pvs as $pv)
@@ -211,7 +211,7 @@ $secoes     = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')-
                         <td class="col-md-6">
                             <?php
                             $pbs = $pv->ProdutoBarraS()->leftJoin('tblprodutoembalagem as pe', 'pe.codprodutoembalagem', '=', 'tblprodutobarra.codprodutoembalagem')
-                               ->orderBy('pe.quantidade', 'ASC NULLS FIRST')
+                               ->orderBy(DB::raw('coalesce(pe.quantidade, 0)'), 'ASC')
                                ->with('ProdutoEmbalagem')->get();
                             ?>
                             @foreach ($pbs as $pb)

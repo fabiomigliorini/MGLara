@@ -1,6 +1,6 @@
 <div class="panel panel-default">
     <?php
-    $pvs = $model->ProdutoVariacaoS()->orderBy('variacao', 'ASC')->get();
+    $pvs = $model->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
     ?>
     <ul class="list-group group-list-striped group-list-hover">
         @foreach ($pvs as $pv)
@@ -27,7 +27,7 @@
                 <div class="row">
                 <?php
                 $pbs = $pv->ProdutoBarraS()->leftJoin('tblprodutoembalagem as pe', 'pe.codprodutoembalagem', '=', 'tblprodutobarra.codprodutoembalagem')
-                   ->orderBy('pe.quantidade', 'ASC NULLS FIRST')
+                   ->orderBy(DB::raw('coalesce(pe.quantidade, 0)'), 'ASC')
                    ->with('ProdutoEmbalagem')->get();
                 ?>
                 @foreach ($pbs as $pb)

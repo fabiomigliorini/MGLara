@@ -20,7 +20,6 @@
 !!}   
 </h1>
 <hr>
-<br>
 {!! Form::model($model, ['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form-produto', 'route' => 'produto.store']) !!}
     @include('errors.form_error')
     @include('produto.form', ['submitTextButton' => 'Salvar'])

@@ -191,7 +191,7 @@
             </ul>
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane fade in active" id="tab-variacoes">
-                    @include('produto.variacoes')
+                    @include('produto.show-variacoes')
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-estoque">
                     <?php

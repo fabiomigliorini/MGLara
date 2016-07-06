@@ -3,13 +3,15 @@
 namespace MGLara\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
+
 use MGLara\Http\Controllers\Controller;
 
 use MGLara\Models\ProdutoEmbalagem;
 use MGLara\Models\Produto;
+use MGLara\Models\ProdutoBarra;
 
 class ProdutoEmbalagemController extends Controller
 {
@@ -46,11 +48,45 @@ class ProdutoEmbalagemController extends Controller
         $model = new ProdutoEmbalagem($request->all());
         $model->codproduto = $request->input('codproduto');
         
+        DB::beginTransaction();
+        
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         
-        $model->save();
-        Session::flash('flash_success', "Embalagem '{$model->descricao}' criada!");
+        try {
+            if (!$model->save())
+                throw new Exception ('Erro ao Criar Embalagem!');
+            
+            $i = 0;
+            foreach ($model->Produto->ProdutoVariacaoS as $pv)
+            {
+                $pb = new ProdutoBarra();
+                $pb->codproduto = $model->codproduto;
+                $pb->codprodutovariacao = $pv->codprodutovariacao;
+                $pb->codprodutoembalagem = $model->codprodutoembalagem;
+                $pb->barras = str_pad($model->codproduto, 6, '0', STR_PAD_LEFT);
+                
+                if (!empty($pv->variacao))
+                    $pb->barras .= '-' . str_pad($pv->codprodutovariacao, 8, '0', STR_PAD_LEFT);
+                
+                $pb->barras .= '-' . formataNumero($model->quantidade, 0);
+                
+                if (!$pb->save())
+                    throw new Exception ('Erro ao Criar Barras!');
+                
+                $i++;
+            }
+            
+            
+            DB::commit();
+            Session::flash('flash_success', "Embalagem '{$model->descricao}' criada!");
+            return redirect("produto/$model->codproduto");               
+            
+        } catch (Exception $ex) {
+            DB::rollBack();
+            $this->throwValidationException($request, $model->_validator);              
+        }
+        
         return redirect("produto/$model->codproduto");
     }
 

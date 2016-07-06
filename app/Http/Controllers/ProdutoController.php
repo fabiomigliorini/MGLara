@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Produto;
 use MGLara\Models\ProdutoBarra;
+use MGLara\Models\ProdutoVariacao;
 use MGLara\Models\NegocioProdutoBarra;
 use MGLara\Models\NotaFiscalProdutoBarra;
 use MGLara\Models\TipoProduto;
@@ -75,10 +76,24 @@ class ProdutoController extends Controller
         
         try {
             if (!$model->save())
-                throw new Exception ('Erro Inserir');       
+                throw new Exception ('Erro ao Criar Produto!');
+            
+            $pv = new ProdutoVariacao();
+            $pv->codproduto = $model->codproduto;
+                    
+            if (!$pv->save())
+                throw new Exception ('Erro ao Criar Variação!');
+            
+            $pb = new ProdutoBarra();
+            $pb->codproduto = $model->codproduto;
+            $pb->codprodutovariacao = $pv->codprodutovariacao;
+            $pb->barras = str_pad($model->codproduto, 6, '0', STR_PAD_LEFT);
+                    
+            if (!$pb->save())
+                throw new Exception ('Erro ao Criar Barras!');
             
             DB::commit();
-            Session::flash('flash_create', 'Registro inserido.');
+            Session::flash('flash_success', "Produto '{$model->produto}' criado!");
             return redirect("produto/$model->codproduto");               
             
         } catch (Exception $ex) {
@@ -161,7 +176,7 @@ class ProdutoController extends Controller
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         $model->save();
-        Session::flash('flash_update', 'Registro alterado.');
+        Session::flash('flash_success', "Produto '{$model->produto}' alterado!");
         return redirect("produto/$model->codproduto");           
     }
 
