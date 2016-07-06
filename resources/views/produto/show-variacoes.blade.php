@@ -9,7 +9,7 @@
                     @if (!empty($pv->variacao))
                         {{ $pv->variacao }}
                     @else
-                        <i>{ Sem Variação }</i>
+                        <i class='text-muted'>{ Sem Variação }</i>
                     @endif
                     @if (!empty($pv->codmarca))
                         <a href="{{ url("marca/$pv->codmarca") }}">

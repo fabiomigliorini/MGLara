@@ -100,5 +100,10 @@ class EstoqueLocal extends MGModel
             $query->where('codestoquelocal', "$codestoquelocal");
         }
     }     
+    
+    public function scopeAtivo($query)
+    {
+        $query->whereNull('inativo');
+    }     
 
 }

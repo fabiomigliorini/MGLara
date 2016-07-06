@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
  * @property  bigint                         $codestoquesaldo                    NOT NULL DEFAULT nextval('tblestoquesaldo_codestoquesaldo_seq'::regclass)
  * @property  bigint                         $codestoquelocalprodutovariacao             NOT NULL
  * @property  boolean                        $fiscal                             NOT NULL
+ * @property  timestamp                      $ultimaconferencia
  * @property  numeric(14,3)                  $saldoquantidade                    
  * @property  numeric(14,2)                  $saldovalor                         
  * @property  numeric(14,6)                  $customedio                 
@@ -95,6 +96,7 @@ class EstoqueSaldo extends MGModel
         return $es;
     }
 
+    /*
     public static function saldoPorGrupoProduto()
     {
         
@@ -213,7 +215,6 @@ class EstoqueSaldo extends MGModel
     
     public function recalculaCustoMedio()
     {
-        /*
         $inicialquantidade = 0;
         $inicialvalor = 0;
         foreach ($this->EstoqueMesS as $mes)
@@ -300,18 +301,11 @@ class EstoqueSaldo extends MGModel
         $this->saldovalor = $saldovalor;
         $this->customedio = $customedio;
         $this->save();
-         * 
-         */
         
         return true;
     }
     
     
-    /**
-     * 
-     * @param EstoqueSaldo $destino
-     * @param double $quantidade
-     */
     public function transfere(EstoqueSaldo $destino, $quantidade)
     {
         $data = Carbon::create($year = 2015, $month = 12, $day = 31, $hour = 23, $minute = 59, $second = 59);
@@ -394,5 +388,7 @@ class EstoqueSaldo extends MGModel
         else
             $query->where('codestoquelocal', $EstoqueLocal->codestoquelocal);
     } 
+     * 
+     */
     
 }

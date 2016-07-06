@@ -180,23 +180,22 @@
         <!--/ FOTOS -->
     </div>
     <div class="col-md-6">
-        <div id="produto-detalhes">
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Variações</a></li>
-                <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab" data-toggle="tab">Estoque</a></li>
+        <div>
+            <ul class="nav nav-pills" role="tablist">
+                <li role="presentation"><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Variações</a></li>
+                <li role="presentation" class="active"><a href="#tab-estoque" aria-controls="home" role="tab" data-toggle="tab">Estoque</a></li>
                 <li role="presentation"><a href="#tab-site" aria-controls="profile" role="tab" data-toggle="tab">Site</a></li>
                 <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">Fiscal</a></li>
                 <li role="presentation"><a href="#tab-npb" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
                 <li role="presentation"><a href="#tab-nfpb" aria-controls="messages" role="tab" data-toggle="tab">Notas Fiscais</a></li>
             </ul>
+            <br>
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="tab-variacoes">
+                <div role="tabpanel" class="tab-pane fade" id="tab-variacoes">
                     @include('produto.show-variacoes')
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab-estoque">
-                    <?php
-                    //@include('produto.estoque')
-                    ?>
+                <div role="tabpanel" class="tab-pane fade in active" id="tab-estoque">
+                    @include('estoque-saldo.resumo-produto', ['codproduto' => $model->codproduto, 'somentequantidade' => false])                
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-site">
                     <br>
@@ -261,12 +260,6 @@
     margin: 8px 0 0;
 }
 
-#produto-detalhes {
-    padding-bottom: 30px;
-}
-#produto-detalhes table th {
-    text-align: right;
-}
 .produtos-combinacoes-titulo {
     font-size: 22px;
 }
