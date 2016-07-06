@@ -422,6 +422,33 @@ $(document).ready(function() {
         },
         width:'resolve'
     });
+
+    var limpaSecaoProduto = function(){
+        $('#codfamiliaproduto').select2('val', null);
+        $('#codgrupoproduto').select2('val', null);
+        $('#codsubgrupoproduto').select2('val', null);        
+    }
+    var limpaFamiliaProduto = function(){
+        $('#codgrupoproduto').select2('val', null);
+        $('#codsubgrupoproduto').select2('val', null);        
+    }
+
+    var limpaGrupoProduto = function () {
+        $('#codsubgrupoproduto').select2('val', null);
+    }
+
+    $("#codsecaoproduto").on("select2-removed", function(e) {
+        limpaSecaoProduto;
+    }).change(limpaSecaoProduto);
+
+    $("#codfamiliaproduto").on("select2-removed", function(e) {
+        limpaFamiliaProduto
+    }).change(limpaFamiliaProduto);
+
+    $('#codgrupoproduto').on("select2-removed", function(e) { 
+        limpaGrupoProduto
+    }).change(limpaGrupoProduto);  
+
 });
 </script>
 @endsection
