@@ -96,6 +96,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('produto/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');           
     Route::resource('produto/busca-barras','ProdutoController@buscaPorBarras');
     Route::resource('produto/ajax','ProdutoController@ajaxProduto');
+    Route::resource('produto/descricao','ProdutoController@ajaxDescricao');
     Route::resource('produto/estoque-saldo','ProdutoController@estoqueSaldo');
     Route::resource('produto/inativo','ProdutoController@inativo');
     Route::resource('produto/{id}/recalcula-movimento-estoque','ProdutoController@recalculaMovimentoEstoque');

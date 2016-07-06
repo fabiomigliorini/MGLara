@@ -417,6 +417,16 @@ class ProdutoController extends Controller
                 return response()->json($query);
             }
         }
+        
+        public function ajaxDescricao(Request $request) 
+        {
+            $sql = Produto::produto($request->get('q'))
+                    ->where('codsubgrupoproduto', $request->get('codsubgrupoproduto'))
+                    ->select('produto')
+                    ->paginate(20);
+            
+            return response()->json($sql);
+        }
 
     public function inativo(Request $request)
     {
