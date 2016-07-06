@@ -8,14 +8,14 @@
     </div>
 </nav>
 <h1 class="header">
-    <a href='{{ url("grupo-produto/{$model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->codgrupoproduto}") }}'>
-        {{$model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->GrupoProduto->grupoproduto}}
+    <a href='{{ url("grupo-produto/{$model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->SubGrupoProduto->codgrupoproduto}") }}'>
+        {{$model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->SubGrupoProduto->GrupoProduto->grupoproduto}}
     </a> ›
-    <a href='{{ url("sub-grupo-produto/{$model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->Produto->codsubgrupoproduto}") }}'>
-        {{$model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->subgrupoproduto}}
+    <a href='{{ url("sub-grupo-produto/{$model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->codsubgrupoproduto}") }}'>
+        {{$model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->SubGrupoProduto->subgrupoproduto}}
     </a> ›
-    <a href='{{ url("produto/{$model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->codproduto}") }}'>
-        {{ $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->Produto->produto }}     
+    <a href='{{ url("produto/{$model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codproduto}") }}'>
+        {{ $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->produto }}     
     </a>    
 </h1>
 <hr>

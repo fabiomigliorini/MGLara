@@ -2,7 +2,7 @@
     $arr_saldos = [];
     $arr_totais = [false => 0, true => 0];
 /*
-    foreach ($model->EstoqueLocalProdutoS as $es)
+    foreach ($model->EstoqueLocalProdutoVariacaoS as $es)
     {
         $arr_totais[$es->EstoqueSaldoS->first()->fiscal] += $es->EstoqueSaldoS->first()->saldoquantidade;
         $arr_saldos[] = $es;
@@ -19,7 +19,7 @@
         </div>
     </div>            
     <ul class="list-group bg-infoo">
-        @foreach($model->EstoqueLocalProdutos as $elp)
+        @foreach($model->EstoqueLocalProdutoVariacaos as $elp)
         <li class="list-group-item">
             <div class="row item">            
                 <div class="col-md-3">

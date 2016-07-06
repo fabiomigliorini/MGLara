@@ -59,7 +59,7 @@ class EstoqueSaldoConferenciaController extends Controller
         
         if ($pb && !empty($codestoquelocal) && !empty($model->data))
         {
-            $es = EstoqueSaldo::buscaOuCria($pb->codproduto, $codestoquelocal, (!empty($request->get('fiscal'))));
+            $es = EstoqueSaldo::buscaOuCria($pb->codprodutovariacao, $codestoquelocal, (!empty($request->get('fiscal'))));
             $model->codestoquesaldo = $es->codestoquesaldo;
             $model->quantidadeinformada = $es->saldoquantidade;
             $model->customedioinformado = $es->customedio;
@@ -91,14 +91,14 @@ class EstoqueSaldoConferenciaController extends Controller
         
         $es = EstoqueSaldo::findOrFail($request->get('codestoquesaldo'));
         
-        $es->EstoqueLocalProduto->estoquemaximo = $request->get('estoquemaximo');
-        $es->EstoqueLocalProduto->estoqueminimo = $request->get('estoqueminimo');
-        $es->EstoqueLocalProduto->corredor = $request->get('corredor');
-        $es->EstoqueLocalProduto->prateleira = $request->get('prateleira');
-        $es->EstoqueLocalProduto->coluna = $request->get('coluna');
-        $es->EstoqueLocalProduto->bloco = $request->get('bloco');
+        $es->EstoqueLocalProdutoVariacao->estoquemaximo = $request->get('estoquemaximo');
+        $es->EstoqueLocalProdutoVariacao->estoqueminimo = $request->get('estoqueminimo');
+        $es->EstoqueLocalProdutoVariacao->corredor = $request->get('corredor');
+        $es->EstoqueLocalProdutoVariacao->prateleira = $request->get('prateleira');
+        $es->EstoqueLocalProdutoVariacao->coluna = $request->get('coluna');
+        $es->EstoqueLocalProdutoVariacao->bloco = $request->get('bloco');
         
-        $es->EstoqueLocalProduto->save();
+        $es->EstoqueLocalProdutoVariacao->save();
         
         $model = new EstoqueSaldoConferencia();
         
@@ -117,7 +117,7 @@ class EstoqueSaldoConferenciaController extends Controller
         
         $data = $model->data->format('d/m/Y H:i:s');
         $fiscal = $es->fiscal;
-        $codestoquelocal = $es->EstoqueLocalProduto->codestoquelocal;
+        $codestoquelocal = $es->EstoqueLocalProdutoVariacao->codestoquelocal;
         return redirect("estoque-saldo-conferencia/create?data=$data&fiscal=$fiscal&codestoquelocal=$codestoquelocal");
         //
     }

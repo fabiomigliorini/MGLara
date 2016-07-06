@@ -247,7 +247,7 @@ class NotaFiscalProdutoBarra extends MGModel
         
         $em->codnegocioprodutobarra = null;
         $em->codnotafiscalprodutobarra = $this->codnotafiscalprodutobarra;
-        $mes = EstoqueMes::buscaOuCria($this->ProdutoBarra->codproduto, $this->NotaFiscal->codestoquelocal, true, $this->NotaFiscal->saida);
+        $mes = EstoqueMes::buscaOuCria($this->ProdutoBarra->codprodutovariacao, $this->NotaFiscal->codestoquelocal, true, $this->NotaFiscal->saida);
         $em->codestoquemes = $mes->codestoquemes;
         $em->manual = false;
         $em->data = $this->NotaFiscal->saida;

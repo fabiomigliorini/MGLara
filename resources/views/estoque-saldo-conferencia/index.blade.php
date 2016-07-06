@@ -62,13 +62,13 @@
                 {{ formataCodigo($row->codestoquesaldoconferencia)}}
             </div>  
             <div class="col-md-3">
-                <a class="" href="{{ url("produto/{$row->EstoqueSaldo->EstoqueLocalProduto->codproduto}") }}">
-                    {{ $row->EstoqueSaldo->EstoqueLocalProduto->Produto->produto}}
+                <a class="" href="{{ url("produto/{$row->EstoqueSaldo->EstoqueLocalProdutoVariacao->codproduto}") }}">
+                    {{ $row->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->produto}}
                 </a>          
             </div>  
             <div class="col-md-1">
-                <a class="" href="{{ url("estoque-local/{$row->EstoqueSaldo->EstoqueLocalProduto->codestoquelocal}") }}">
-                    {{ $row->EstoqueSaldo->EstoqueLocalProduto->EstoqueLocal->estoquelocal }}
+                <a class="" href="{{ url("estoque-local/{$row->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal}") }}">
+                    {{ $row->EstoqueSaldo->EstoqueLocalProdutoVariacao->EstoqueLocal->estoquelocal }}
                 </a>          
             </div>  
             <div class="col-md-1">

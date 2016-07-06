@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 /**
  * Campos
  * @property  bigint                         $codestoquesaldo                    NOT NULL DEFAULT nextval('tblestoquesaldo_codestoquesaldo_seq'::regclass)
- * @property  bigint                         $codestoquelocalproduto             NOT NULL
+ * @property  bigint                         $codestoquelocalprodutovariacao             NOT NULL
  * @property  boolean                        $fiscal                             NOT NULL
  * @property  numeric(14,3)                  $saldoquantidade                    
  * @property  numeric(14,2)                  $saldovalor                         
@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\DB;
  * @property  Produto                        $Produto                       
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
- * @property  EstoqueLocalProduto            $EstoqueLocalProduto
+ * @property  EstoqueLocalProdutoVariacao            $EstoqueLocalProdutoVariacao
  *
  * Tabelas Filhas
  * @property  EstoqueMes[]                   $EstoqueMesS
@@ -45,7 +45,7 @@ class EstoqueSaldo extends MGModel
         'saldoquantidade',
         'saldovalor',
         'customedio',
-        'codestoquelocalproduto',
+        'codestoquelocalprodutovariacao',
     ];
     protected $dates = [
         'alteracao',
@@ -63,9 +63,9 @@ class EstoqueSaldo extends MGModel
         return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
     }
 
-    public function EstoqueLocalProduto()
+    public function EstoqueLocalProdutoVariacao()
     {
-        return $this->belongsTo(EstoqueLocalProduto::class, 'codestoquelocalproduto', 'codestoquelocalproduto');
+        return $this->belongsTo(EstoqueLocalProdutoVariacao::class, 'codestoquelocalprodutovariacao', 'codestoquelocalprodutovariacao');
     }
 
 
@@ -80,15 +80,15 @@ class EstoqueSaldo extends MGModel
         return $this->hasMany(EstoqueSaldoConferencia::class, 'codestoquesaldo', 'codestoquesaldo');
     }
     
-    public static function buscaOuCria($codproduto, $codestoquelocal, $fiscal)
+    public static function buscaOuCria($codprodutovariacao, $codestoquelocal, $fiscal)
     {
-        $elp = EstoqueLocalProduto::buscaOuCria($codproduto, $codestoquelocal);
+        $elpv = EstoqueLocalProdutoVariacao::buscaOuCria($codprodutovariacao, $codestoquelocal);
 
-        $es = self::where('codestoquelocalproduto', $elp->codestoquelocalproduto)->where('fiscal', $fiscal)->first();
+        $es = self::where('codestoquelocalprodutovariacao', $elpv->codestoquelocalprodutovariacao)->where('fiscal', $fiscal)->first();
         if ($es == false)
         {
             $es = new EstoqueSaldo;
-            $es->codestoquelocalproduto = $elp->codestoquelocalproduto;
+            $es->codestoquelocalprodutovariacao = $elpv->codestoquelocalprodutovariacao;
             $es->fiscal = $fiscal;
             $es->save();
         }
@@ -101,18 +101,18 @@ class EstoqueSaldo extends MGModel
         $res = DB::select('
             select 
                   tblsubgrupoproduto.codgrupoproduto
-                , tblestoquelocalproduto.codestoquelocal
+                , tblestoquelocalprodutovariacao.codestoquelocal
                 , tblestoquesaldo.fiscal
                 , sum(tblestoquesaldo.saldoquantidade) as saldoquantidade
                 , sum(tblestoquesaldo.saldovalor) as saldovalor
-            from tblestoquelocalproduto
-            left join tblproduto on (tblproduto.codproduto = tblestoquelocalproduto.codproduto)
-            left join tblestoquesaldo on (tblestoquesaldo.codestoquelocalproduto = tblestoquelocalproduto.codestoquelocalproduto)
+            from tblestoquelocalprodutovariacao
+            left join tblproduto on (tblproduto.codproduto = tblestoquelocalprodutovariacao.codproduto)
+            left join tblestoquesaldo on (tblestoquesaldo.codestoquelocalprodutovariacao = tblestoquelocalprodutovariacao.codestoquelocalprodutovariacao)
             left join tblsubgrupoproduto on (tblsubgrupoproduto.codsubgrupoproduto = tblproduto.codsubgrupoproduto)
             group by 
                   tblsubgrupoproduto.codgrupoproduto
                 , tblestoquesaldo.fiscal
-                , tblestoquelocalproduto.codestoquelocal
+                , tblestoquelocalprodutovariacao.codestoquelocal
         ');
 
         return $res;
@@ -124,18 +124,18 @@ class EstoqueSaldo extends MGModel
         $res = DB::select('
         select 
               tblmarca.codmarca
-            , tblestoquelocalproduto.codestoquelocal
+            , tblestoquelocalprodutovariacao.codestoquelocal
             , tblestoquesaldo.fiscal
             , sum(tblestoquesaldo.saldoquantidade) as saldoquantidade
             , sum(tblestoquesaldo.saldovalor) as saldovalor
-        from tblestoquelocalproduto
-        left join tblproduto on (tblproduto.codproduto = tblestoquelocalproduto.codproduto)
+        from tblestoquelocalprodutovariacao
+        left join tblproduto on (tblproduto.codproduto = tblestoquelocalprodutovariacao.codproduto)
         left join tblmarca on (tblmarca.codmarca = tblproduto.codmarca)
-        left join tblestoquesaldo on (tblestoquesaldo.codestoquelocalproduto = tblestoquelocalproduto.codestoquelocalproduto)
+        left join tblestoquesaldo on (tblestoquesaldo.codestoquelocalprodutovariacao = tblestoquelocalprodutovariacao.codestoquelocalprodutovariacao)
         group by 
               tblmarca.codmarca
             , tblestoquesaldo.fiscal
-            , tblestoquelocalproduto.codestoquelocal
+            , tblestoquelocalprodutovariacao.codestoquelocal
         ');
 
         return $res;
@@ -147,19 +147,19 @@ class EstoqueSaldo extends MGModel
         $res = DB::select("
             select 
                   tblsubgrupoproduto.codsubgrupoproduto
-                , tblestoquelocalproduto.codestoquelocal
+                , tblestoquelocalprodutovariacao.codestoquelocal
                 , tblestoquesaldo.fiscal
                 , sum(tblestoquesaldo.saldoquantidade) as saldoquantidade
                 , sum(tblestoquesaldo.saldovalor) as saldovalor
-            from tblestoquelocalproduto
-            left join tblproduto on (tblproduto.codproduto = tblestoquelocalproduto.codproduto)
-            left join tblestoquesaldo on (tblestoquesaldo.codestoquelocalproduto = tblestoquelocalproduto.codestoquelocalproduto)
+            from tblestoquelocalprodutovariacao
+            left join tblproduto on (tblproduto.codproduto = tblestoquelocalprodutovariacao.codproduto)
+            left join tblestoquesaldo on (tblestoquesaldo.codestoquelocalprodutovariacao = tblestoquelocalprodutovariacao.codestoquelocalprodutovariacao)
             left join tblsubgrupoproduto on (tblsubgrupoproduto.codsubgrupoproduto = tblproduto.codsubgrupoproduto)
             where codgrupoproduto = $codgrupoproduto
             group by 
                   tblsubgrupoproduto.codsubgrupoproduto
                 , tblestoquesaldo.fiscal
-                , tblestoquelocalproduto.codestoquelocal
+                , tblestoquelocalprodutovariacao.codestoquelocal
         ");
 
         return $res;
@@ -171,18 +171,18 @@ class EstoqueSaldo extends MGModel
         $res = DB::select("
             select 
                   tblproduto.codproduto
-                , tblestoquelocalproduto.codestoquelocal
+                , tblestoquelocalprodutovariacao.codestoquelocal
                 , tblestoquesaldo.fiscal
                 , sum(tblestoquesaldo.saldoquantidade) as saldoquantidade
                 , sum(tblestoquesaldo.saldovalor) as saldovalor
-            from tblestoquelocalproduto
-            left join tblproduto on (tblproduto.codproduto = tblestoquelocalproduto.codproduto)
-            left join tblestoquesaldo on (tblestoquesaldo.codestoquelocalproduto = tblestoquelocalproduto.codestoquelocalproduto)
+            from tblestoquelocalprodutovariacao
+            left join tblproduto on (tblproduto.codproduto = tblestoquelocalprodutovariacao.codproduto)
+            left join tblestoquesaldo on (tblestoquesaldo.codestoquelocalprodutovariacao = tblestoquelocalprodutovariacao.codestoquelocalprodutovariacao)
             where tblproduto.codsubgrupoproduto = $codsubgrupoproduto
             group by 
                   tblproduto.codproduto
                 , tblestoquesaldo.fiscal
-                , tblestoquelocalproduto.codestoquelocal
+                , tblestoquelocalprodutovariacao.codestoquelocal
         ");
 
         return $res;
@@ -194,18 +194,18 @@ class EstoqueSaldo extends MGModel
         $res = DB::select("
             select 
                   tblproduto.codproduto
-                , tblestoquelocalproduto.codestoquelocal
+                , tblestoquelocalprodutovariacao.codestoquelocal
                 , tblestoquesaldo.fiscal
                 , sum(tblestoquesaldo.saldoquantidade) as saldoquantidade
                 , sum(tblestoquesaldo.saldovalor) as saldovalor
-            from tblestoquelocalproduto
-            left join tblproduto on (tblproduto.codproduto = tblestoquelocalproduto.codproduto)
-            left join tblestoquesaldo on (tblproduto.codproduto = tblestoquelocalproduto.codproduto)
+            from tblestoquelocalprodutovariacao
+            left join tblproduto on (tblproduto.codproduto = tblestoquelocalprodutovariacao.codproduto)
+            left join tblestoquesaldo on (tblproduto.codproduto = tblestoquelocalprodutovariacao.codproduto)
             where tblproduto.codmarca = $codmarca
             group by 
                   tblproduto.codproduto
                 , tblestoquesaldo.fiscal
-                , tblestoquelocalproduto.codestoquelocal        
+                , tblestoquelocalprodutovariacao.codestoquelocal        
         ");
 
         return $res;
@@ -315,8 +315,8 @@ class EstoqueSaldo extends MGModel
     public function transfere(EstoqueSaldo $destino, $quantidade)
     {
         $data = Carbon::create($year = 2015, $month = 12, $day = 31, $hour = 23, $minute = 59, $second = 59);
-        $emOrigem = EstoqueMes::buscaOuCria($this->codproduto, $this->codestoquelocal, $this->fiscal, $data);
-        $emDestino = EstoqueMes::buscaOuCria($destino->codproduto, $destino->codestoquelocal, $destino->fiscal, $data);
+        $emOrigem = EstoqueMes::buscaOuCria($this->codprodutovariacao, $this->codestoquelocal, $this->fiscal, $data);
+        $emDestino = EstoqueMes::buscaOuCria($destino->codprodutovariacao, $destino->codestoquelocal, $destino->fiscal, $data);
         $data = Carbon::create($year = 2015, $month = 12, $day = 31, $hour = 23, $minute = 59, $second = 59);
         
         $movOrigem = new EstoqueMovimento();
@@ -352,7 +352,7 @@ class EstoqueSaldo extends MGModel
             return false;
         
         $data = Carbon::create($year = 2015, $month = 12, $day = 31, $hour = 23, $minute = 59, $second = 59);
-        $mes = EstoqueMes::buscaOuCria($this->codproduto, $this->codestoquelocal, $this->fiscal, $data);
+        $mes = EstoqueMes::buscaOuCria($this->codprodutovariacao, $this->codestoquelocal, $this->fiscal, $data);
         $mov = new EstoqueMovimento();
         $data = Carbon::create($year = 2015, $month = 12, $day = 31, $hour = 23, $minute = 59, $second = 59);
         

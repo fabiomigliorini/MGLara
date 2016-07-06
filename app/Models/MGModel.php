@@ -87,7 +87,6 @@ abstract class MGModel extends Model {
             $this->_regrasValidacao, 
             $this->_mensagensErro
         );
-
         
         if ($this->_validator->fails())
             return false;
