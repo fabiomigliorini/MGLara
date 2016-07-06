@@ -14,38 +14,38 @@ $locais = [''=>''] + EstoqueLocal::lists('estoquelocal', 'codestoquelocal')->all
         <h4>
             {!! 
                 titulo(
-                    $model->EstoqueSaldo->EstoqueLocalProduto->codproduto ,
+                    $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->codproduto ,
                     [
-                        url("produto/{$model->EstoqueSaldo->EstoqueLocalProduto->codproduto}") => $model->EstoqueSaldo->EstoqueLocalProduto->Produto->produto,
+                        url("produto/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->codproduto}") => $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->produto,
                     ],
-                    $model->EstoqueSaldo->EstoqueLocalProduto->Produto->inativo,
+                    $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->inativo,
                     6
                 ) 
             !!}
         </h4>
         <hr>
         <h5>
-            <a href='{{ url("secao-produto/{$model->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto}") }}' class=''>
-                {!! $model->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->secaoproduto!!}
+            <a href='{{ url("secao-produto/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto}") }}' class=''>
+                {!! $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->secaoproduto!!}
             </a>
             »
-            <a href='{{ url("familia-produto/{$model->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->GrupoProduto->codfamiliaproduto}") }}' class=''>
-                {!! $model->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->familiaproduto!!}
+            <a href='{{ url("familia-produto/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->SubGrupoProduto->GrupoProduto->codfamiliaproduto}") }}' class=''>
+                {!! $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->familiaproduto!!}
             </a>
             »
-            <a href='{{ url("grupo-produto/{$model->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->codgrupoproduto}") }}' class=''>
-                {!! $model->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->GrupoProduto->grupoproduto!!}
+            <a href='{{ url("grupo-produto/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->SubGrupoProduto->codgrupoproduto}") }}' class=''>
+                {!! $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->SubGrupoProduto->GrupoProduto->grupoproduto!!}
             </a>
             »
-            <a href='{{ url("sub-grupo-produto/{$model->EstoqueSaldo->EstoqueLocalProduto->Produto->codsubgrupoproduto}") }}' class=''>
-                {!! $model->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->subgrupoproduto!!}
+            <a href='{{ url("sub-grupo-produto/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->codsubgrupoproduto}") }}' class=''>
+                {!! $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->SubGrupoProduto->subgrupoproduto!!}
             </a>
             »
-            <a href='{{ url("marca/{$model->EstoqueSaldo->EstoqueLocalProduto->Produto->codmarca}") }}' class=''>
-                {!! $model->EstoqueSaldo->EstoqueLocalProduto->Produto->Marca->marca !!}
+            <a href='{{ url("marca/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->codmarca}") }}' class=''>
+                {!! $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->Marca->marca !!}
             </a>
             »
-            R$ {!! formataNumero($model->EstoqueSaldo->EstoqueLocalProduto->Produto->preco) !!}
+            R$ {!! formataNumero($model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->preco) !!}
         </h5>
         <hr>
         <div class="form-group">
@@ -56,7 +56,7 @@ $locais = [''=>''] + EstoqueLocal::lists('estoquelocal', 'codestoquelocal')->all
                 <div class="input-group" style='width:160px'>
                     {!! Form::text('quantidadeinformada', null, ['class'=> 'form-control text-right', 'id'=>'quantidadeinformada', 'required'=>'required', 'placeholder'=>'Quantidade']) !!}
                     <span class="input-group-addon" id="basic-addon2">
-                        {!! $model->EstoqueSaldo->EstoqueLocalProduto->Produto->UnidadeMedida->sigla !!}
+                        {!! $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->UnidadeMedida->sigla !!}
                     </span>
                 </div>
                 
@@ -68,8 +68,8 @@ $locais = [''=>''] + EstoqueLocal::lists('estoquelocal', 'codestoquelocal')->all
                 {!! Form::label('Min/Max:') !!}
             </label>
             <div class="col-md-9 form-inline">
-                {!! Form::text('estoqueminimo', $model->EstoqueSaldo->EstoqueLocalProduto->estoqueminimo, ['class'=> 'form-control text-right', 'id'=>'estoqueminimo', 'style'=>'width:160px', 'placeholder'=>'Mínimo']) !!}
-                {!! Form::text('estoquemaximo', $model->EstoqueSaldo->EstoqueLocalProduto->estoquemaximo, ['class'=> 'form-control text-right', 'id'=>'estoquemaximo', 'style'=>'width:160px', 'placeholder'=>'Máximo']) !!}
+                {!! Form::text('estoqueminimo', $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->estoqueminimo, ['class'=> 'form-control text-right', 'id'=>'estoqueminimo', 'style'=>'width:160px', 'placeholder'=>'Mínimo']) !!}
+                {!! Form::text('estoquemaximo', $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->estoquemaximo, ['class'=> 'form-control text-right', 'id'=>'estoquemaximo', 'style'=>'width:160px', 'placeholder'=>'Máximo']) !!}
             </div>
         </div>
         <div class="form-group">
@@ -77,10 +77,10 @@ $locais = [''=>''] + EstoqueLocal::lists('estoquelocal', 'codestoquelocal')->all
                 {!! Form::label('Localização:') !!}
             </label>
             <div class="col-md-9 form-inline">
-                {!! Form::text('corredor', $model->EstoqueSaldo->EstoqueLocalProduto->corredor, ['class'=> 'form-control text-center', 'id'=>'corredor', 'style'=>'width:78px', 'placeholder'=>'Corredor']) !!}
-                {!! Form::text('prateleira', $model->EstoqueSaldo->EstoqueLocalProduto->prateleira, ['class'=> 'form-control text-center', 'id'=>'prateleira', 'style'=>'width:78px', 'placeholder'=>'Prateleira']) !!}
-                {!! Form::text('coluna', $model->EstoqueSaldo->EstoqueLocalProduto->coluna, ['class'=> 'form-control text-center', 'id'=>'coluna', 'style'=>'width:78px', 'placeholder'=>'Coluna']) !!}
-                {!! Form::text('bloco', $model->EstoqueSaldo->EstoqueLocalProduto->bloco, ['class'=> 'form-control text-center', 'id'=>'bloco', 'style'=>'width:78px', 'placeholder'=>'Bloco']) !!}
+                {!! Form::text('corredor', $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->corredor, ['class'=> 'form-control text-center', 'id'=>'corredor', 'style'=>'width:78px', 'placeholder'=>'Corredor']) !!}
+                {!! Form::text('prateleira', $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->prateleira, ['class'=> 'form-control text-center', 'id'=>'prateleira', 'style'=>'width:78px', 'placeholder'=>'Prateleira']) !!}
+                {!! Form::text('coluna', $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->coluna, ['class'=> 'form-control text-center', 'id'=>'coluna', 'style'=>'width:78px', 'placeholder'=>'Coluna']) !!}
+                {!! Form::text('bloco', $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->bloco, ['class'=> 'form-control text-center', 'id'=>'bloco', 'style'=>'width:78px', 'placeholder'=>'Bloco']) !!}
             </div>
         </div>
 
@@ -103,9 +103,9 @@ $locais = [''=>''] + EstoqueLocal::lists('estoquelocal', 'codestoquelocal')->all
                     fisico.codestoquesaldo as codestoquesaldo_fisico, fisico.saldoquantidade as saldoquantidade_fisico, fisico.saldovalor as saldovalor_fisico, fisico.customedio as customedio_fisico,
                     fiscal.codestoquesaldo as codestoquesaldo_fiscal, fiscal.saldoquantidade as saldoquantidade_fiscal, fiscal.saldovalor as saldovalor_fiscal, fiscal.customedio as customedio_fiscal
             from tblestoquelocal el
-            left join tblestoquelocalproduto elp on (elp.codestoquelocal = el.codestoquelocal and elp.codproduto = {$model->EstoqueSaldo->EstoqueLocalProduto->codproduto})
-            left join tblestoquesaldo fisico on (fisico.codestoquelocalproduto = elp.codestoquelocalproduto and fisico.fiscal = false)
-            left join tblestoquesaldo fiscal on (fiscal.codestoquelocalproduto = elp.codestoquelocalproduto and fiscal.fiscal = true)
+            left join tblestoquelocalprodutovariacao elp on (elp.codestoquelocal = el.codestoquelocal and elp.codproduto = {$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->codproduto})
+            left join tblestoquesaldo fisico on (fisico.codestoquelocalprodutovariacao = elp.codestoquelocalprodutovariacao and fisico.fiscal = false)
+            left join tblestoquesaldo fiscal on (fiscal.codestoquelocalprodutovariacao = elp.codestoquelocalprodutovariacao and fiscal.fiscal = true)
             where el.inativo is null
             order by el.estoquelocal";
             

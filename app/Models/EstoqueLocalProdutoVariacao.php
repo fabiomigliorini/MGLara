@@ -4,9 +4,9 @@ namespace MGLara\Models;
 
 /**
  * Campos
- * @property  bigint                         $codestoquelocalproduto             NOT NULL DEFAULT nextval('tblestoquelocalproduto_codestoquelocalproduto_seq'::regclass)
+ * @property  bigint                         $codestoquelocalprodutovariacao     NOT NULL DEFAULT nextval('tblestoquelocalprodutovariacao_codestoquelocalprodutovariacao_seq'::regclass)
  * @property  bigint                         $codestoquelocal                    NOT NULL
- * @property  bigint                         $codproduto                         NOT NULL
+ * @property  bigint                         $codprodutovariacao                 NOT NULL
  * @property  bigint                         $corredor                           
  * @property  bigint                         $prateleira                         
  * @property  bigint                         $coluna                             
@@ -18,7 +18,7 @@ namespace MGLara\Models;
  *
  * Chaves Estrangeiras
  * @property  EstoqueLocal                   $EstoqueLocal                  
- * @property  Produto                        $Produto                       
+ * @property  ProdutoVariacao                $ProdutoVariacao
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
  *
@@ -26,13 +26,13 @@ namespace MGLara\Models;
  * @property  Estoquesaldo[]                 $EstoquesaldoS
  */
 
-class EstoqueLocalProduto extends MGModel
+class EstoqueLocalProdutoVariacao extends MGModel
 {
-    protected $table = 'tblestoquelocalproduto';
-    protected $primaryKey = 'codestoquelocalproduto';
+    protected $table = 'tblestoquelocalprodutovariacao';
+    protected $primaryKey = 'codestoquelocalprodutovariacao';
     protected $fillable = [
         'codestoquelocal',
-        'codproduto',
+        'codprodutovariacao',
         'corredor',
         'prateleira',
         'coluna',
@@ -50,9 +50,9 @@ class EstoqueLocalProduto extends MGModel
         return $this->belongsTo(EstoqueLocal::class, 'codestoquelocal', 'codestoquelocal');
     }
 
-    public function Produto()
+    public function ProdutoVariacao()
     {
-        return $this->belongsTo(Produto::class, 'codproduto', 'codproduto');
+        return $this->belongsTo(ProdutoVariacao::class, 'codprodutovariacao', 'codprodutovariacao');
     }
 
     public function UsuarioAlteracao()
@@ -69,20 +69,20 @@ class EstoqueLocalProduto extends MGModel
     // Tabelas Filhas
     public function EstoqueSaldoS()
     {
-        return $this->hasMany(EstoqueSaldo::class, 'codestoquelocalproduto', 'codestoquelocalproduto');
+        return $this->hasMany(EstoqueSaldo::class, 'codestoquelocalprodutovariacao', 'codestoquelocalprodutovariacao');
     }
     
-    public static function buscaOuCria($codproduto, $codestoquelocal)
+    public static function buscaOuCria($codprodutovariacao, $codestoquelocal)
     {
-        $elp = self::where('codproduto', $codproduto)->where('codestoquelocal', $codestoquelocal)->first();
-        if ($elp == false)
+        $elpv = self::where('codprodutovariacao', $codprodutovariacao)->where('codestoquelocal', $codestoquelocal)->first();
+        if ($elpv == false)
         {
-            $elp = new EstoqueLocalProduto;
-            $elp->codproduto = $codproduto;
-            $elp->codestoquelocal = $codestoquelocal;
-            $elp->save();
+            $elpv = new EstoqueLocalProdutoVariacao;
+            $elpv->codprodutovariacao = $codprodutovariacao;
+            $elpv->codestoquelocal = $codestoquelocal;
+            $elpv->save();
         }
-        return $elp;
+        return $elpv;
     }
 
 

@@ -106,9 +106,9 @@ class EstoqueMes extends MGModel
      * @param Carbon $data
      * @return EstoqueMes
      */
-    public static function buscaOuCria($codproduto, $codestoquelocal, $fiscal, $data)
+    public static function buscaOuCria($codprodutovariacao, $codestoquelocal, $fiscal, $data)
     {
-        $es = EstoqueSaldo::buscaOuCria($codproduto, $codestoquelocal, $fiscal);
+        $es = EstoqueSaldo::buscaOuCria($codprodutovariacao, $codestoquelocal, $fiscal);
         $mes = $data;
         $mes->day = 1;
         //Antes de 2015, cria somente um registro de mes por ano, em dezembro

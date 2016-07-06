@@ -433,11 +433,11 @@ class ProdutoController extends Controller
     public function estoqueSaldo(Request $request) 
     {
         $query = DB::table('tblestoquesaldo')
-            ->join('tblestoquelocalproduto', 'tblestoquelocalproduto.codestoquelocalproduto', '=', 'tblestoquesaldo.codestoquelocalproduto')
+            ->join('tblestoquelocalprodutovariacao', 'tblestoquelocalprodutovariacao.codestoquelocalprodutovariacao', '=', 'tblestoquesaldo.codestoquelocalprodutovariacao')
             ->where('codproduto', '=', $request->get('codproduto'))
             ->select('customedio', 'saldovalor', 'saldoquantidade');
 
-        if($request->get('codestoquelocal')) $query->where('tblestoquelocalproduto.codestoquelocal', '=', $request->get('codestoquelocal'));
+        if($request->get('codestoquelocal')) $query->where('tblestoquelocalprodutovariacao.codestoquelocal', '=', $request->get('codestoquelocal'));
         if($request->get('fiscal') == 1) 
             $query->where('fiscal', '=', true);
         else 

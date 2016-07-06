@@ -66,7 +66,7 @@ class EstoqueMovimentoController extends Controller
         $model = new EstoqueMovimento($request->all());
         
         $em = EstoqueMes::buscaOuCria(
-                $model->EstoqueMes->EstoqueSaldo->codproduto, 
+                $model->EstoqueMes->EstoqueSaldo->codprodutovariacao, 
                 $model->EstoqueMes->EstoqueSaldo->codestoquelocal, 
                 $model->EstoqueMes->EstoqueSaldo->fiscal, 
                 $model->data);
@@ -84,7 +84,7 @@ class EstoqueMovimentoController extends Controller
             //$origem = $model->EstoqueMovimentoOrigem;
 
             $emOrigem = EstoqueMes::buscaOuCria(
-                    $request->input('codproduto'), 
+                    $request->input('codprodutovariacao'), 
                     $request->input('codestoquelocal'), 
                     $model->EstoqueMes->EstoqueSaldo->fiscal, 
                     $model->data);
@@ -163,7 +163,7 @@ class EstoqueMovimentoController extends Controller
         }
         
         $em = EstoqueMes::buscaOuCria(
-                $model->EstoqueMes->EstoqueSaldo->codproduto, 
+                $model->EstoqueMes->EstoqueSaldo->codprodutovariacao, 
                 $model->EstoqueMes->EstoqueSaldo->codestoquelocal, 
                 $model->EstoqueMes->EstoqueSaldo->fiscal, 
                 $model->data);
@@ -176,7 +176,7 @@ class EstoqueMovimentoController extends Controller
             $origem = $model->EstoqueMovimentoOrigem;
 
             $emOrigem = EstoqueMes::buscaOuCria(
-                    $request->input('codproduto'), 
+                    $request->input('codprodutovariacao'), 
                     $request->input('codestoquelocal'), 
                     $model->EstoqueMes->EstoqueSaldo->fiscal, 
                     $model->data);

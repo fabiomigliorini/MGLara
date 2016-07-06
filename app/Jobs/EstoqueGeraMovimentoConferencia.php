@@ -74,8 +74,8 @@ class EstoqueGeraMovimentoConferencia extends Job implements SelfHandling, Shoul
             $mov = new EstoqueMovimento;
         
         $mes = EstoqueMes::buscaOuCria(
-                $this->EstoqueSaldoConferencia->EstoqueSaldo->EstoqueLocalProduto->codproduto, 
-                $this->EstoqueSaldoConferencia->EstoqueSaldo->EstoqueLocalProduto->codestoquelocal, 
+                $this->EstoqueSaldoConferencia->EstoqueSaldo->EstoqueLocalProdutoVariacao->codprodutovariacao, 
+                $this->EstoqueSaldoConferencia->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal, 
                 $this->EstoqueSaldoConferencia->EstoqueSaldo->fiscal, 
                 $this->EstoqueSaldoConferencia->data);
         

@@ -19,7 +19,7 @@ namespace MGLara\Models;
  * @property  Usuario                        $UsuarioCriacao
  *
  * Tabelas Filhas
- * @property  EstoqueLocalProduto[]          $EstoqueLocalProdutoS
+ * @property  EstoqueLocalProdutoVariacao[]          $EstoqueLocalProdutoVariacaoS
  * @property  Negocio[]                      $NegocioS
  * @property  NotaFiscal[]                   $NotaFiscalS
  */
@@ -70,9 +70,9 @@ class EstoqueLocal extends MGModel
 
 
     // Tabelas Filhas
-    public function EstoqueLocalProdutoS()
+    public function EstoqueLocalProdutoVariacaoS()
     {
-        return $this->hasMany(EstoqueLocalProduto::class, 'codestoquelocal', 'codestoquelocal');
+        return $this->hasMany(EstoqueLocalProdutoVariacao::class, 'codestoquelocal', 'codestoquelocal');
     }
 
     public function NegocioS()

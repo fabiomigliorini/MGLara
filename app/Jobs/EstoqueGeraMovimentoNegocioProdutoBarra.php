@@ -71,7 +71,7 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                 $mov = new EstoqueMovimento;
             
             $mes = EstoqueMes::buscaOuCria(
-                $this->NegocioProdutoBarra->ProdutoBarra->codproduto,
+                $this->NegocioProdutoBarra->ProdutoBarra->codprodutovariacao,
                 $this->NegocioProdutoBarra->Negocio->codestoquelocal,
                 false, 
                 $this->NegocioProdutoBarra->Negocio->lancamento
@@ -160,7 +160,7 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                     $movDest = new EstoqueMovimento;
 
                 $mesDest = EstoqueMes::buscaOuCria(
-                        $this->NegocioProdutoBarra->ProdutoBarra->codproduto,
+                        $this->NegocioProdutoBarra->ProdutoBarra->codprodutovariacao,
                         $localDest->codestoquelocal,
                         false, 
                         $this->NegocioProdutoBarra->Negocio->lancamento

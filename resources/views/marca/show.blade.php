@@ -57,7 +57,7 @@
 <?php
 foreach($model->ProdutoS as $prod)
 {
-    foreach ($prod->EstoqueLocalProdutoS as $es)
+    foreach ($prod->EstoqueLocalProdutoVariacaoS as $es)
     {
         $arr_saldos[$prod->codproduto][$es->codestoquelocal][$es->EstoqueSaldoS->first()->fiscal] = [
             'codestoquesaldo'   => $es->EstoqueSaldoS->first()->codestoquesaldo,

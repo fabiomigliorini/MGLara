@@ -11,30 +11,30 @@
 </nav>
 
 <h1 class="header">
-    <a href='{{ url("grupo-produto/{$model->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->codgrupoproduto}") }}'>
-        {{ $model->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->GrupoProduto->grupoproduto }}
+    <a href='{{ url("grupo-produto/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->SubGrupoProduto->codgrupoproduto}") }}'>
+        {{ $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->SubGrupoProduto->GrupoProduto->grupoproduto }}
     </a> 
     ›
-    <a href='{{ url("sub-grupo-produto/{$model->EstoqueSaldo->EstoqueLocalProduto->Produto->codsubgrupoproduto}") }}'>
-        {{ $model->EstoqueSaldo->EstoqueLocalProduto->Produto->SubGrupoProduto->subgrupoproduto }}
+    <a href='{{ url("sub-grupo-produto/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->codsubgrupoproduto}") }}'>
+        {{ $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->SubGrupoProduto->subgrupoproduto }}
     </a>
     ›
-    <a href='{{ url("produto/{$model->EstoqueSaldo->EstoqueLocalProduto->codproduto}") }}'>
-        {{ $model->EstoqueSaldo->EstoqueLocalProduto->Produto->produto }}     
+    <a href='{{ url("produto/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->codproduto}") }}'>
+        {{ $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->produto }}     
     </a>
 </h1>
 
 <div class="row row-fluid" id="estoque-mes-filtro">
     <div class="col-sm-1">
-        {{ $model->EstoqueSaldo->EstoqueLocalProduto->EstoqueLocal->estoquelocal }}
+        {{ $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->EstoqueLocal->estoquelocal }}
     </div> 
     <div class="col-sm-1">
         {{ ($model->EstoqueSaldo->fiscal)?"Fiscal":"Fisico" }}
     </div> 
     <div class="col-sm-1">
-        @if (isset($model->EstoqueSaldo->EstoqueLocalProduto->Produto->codmarca))
-            <a href="{{ url("marca/{$model->EstoqueSaldo->EstoqueLocalProduto->Produto->Marca->codmarca}") }}">
-                {{ $model->EstoqueSaldo->EstoqueLocalProduto->Produto->Marca->marca }}
+        @if (isset($model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->codmarca))
+            <a href="{{ url("marca/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->Marca->codmarca}") }}">
+                {{ $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->Marca->marca }}
             </a>
         @endif
     </div> 
@@ -44,7 +44,7 @@
         </a>
     </div> 
     <div class="col-sm-1">
-        {{ formataNumero($model->EstoqueSaldo->EstoqueLocalProduto->Produto->preco, 2) }}
+        {{ formataNumero($model->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->preco, 2) }}
     </div>
     <div class="col-sm-2">
     {!! Form::model(Request::all(), ['url' => "estoque-mes/$model->codestoquemes", 'method' => 'GET', 'class' => 'form-inline', 'id' => 'estoque-mes-search', 'role' => 'search', 'autocomplete' => 'off'])!!}        
@@ -155,13 +155,13 @@
                 
                 @if (isset($row->codestoquemovimentoorigem))
                     <a href="{{ url("estoque-mes/" . $row->EstoqueMovimentoOrigem->codestoquemes) }}">
-                       {{ $row->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->EstoqueLocal->estoquelocal }}
+                       {{ $row->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->EstoqueLocal->estoquelocal }}
                     </a>
                 @endif
                 
                 @foreach ($row->EstoqueMovimentoS as $em)
                     <a href="{{ url("estoque-mes/" . $em->codestoquemes) }}">
-                       {{ $em->EstoqueMes->EstoqueSaldo->EstoqueLocalProduto->EstoqueLocal->estoquelocal }}
+                       {{ $em->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->EstoqueLocal->estoquelocal }}
                     </a>
                 @endforeach
                 

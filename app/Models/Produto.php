@@ -40,7 +40,7 @@ use Carbon\Carbon;
  * @property  Usuario                        $UsuarioCriacao
  *
  * Tabelas Filhas
- * @property  EstoqueLocalProduto[]          $EstoqueLocalProdutoS
+ * @property  EstoqueLocalProdutoVariacao[]          $EstoqueLocalProdutoVariacaoS
  * @property  ProdutoBarra[]                 $ProdutoBarraS
  * @property  ProdutoVariacao                $ProdutoVariacaoS
  * @property  ProdutoEmbalagem[]             $ProdutoEmbalagemS
@@ -171,9 +171,9 @@ class Produto extends MGModel
     }
 
     // Tabelas Filhas
-    public function EstoqueLocalProdutoS()
+    public function EstoqueLocalProdutoVariacaoS()
     {
-        return $this->hasMany(EstoqueLocalProduto::class, 'codproduto', 'codproduto');
+        return $this->hasMany(EstoqueLocalProdutoVariacao::class, 'codproduto', 'codproduto');
     }
 
     public function ProdutoBarraS()
