@@ -38,20 +38,14 @@ class SubGrupoProduto extends MGModel
 
     public function validate() {
 
-        if ($this->codsubgrupoproduto) {
-            $unique_subgrupoproduto = 'unique:tblsubgrupoproduto,subgrupoproduto,'.$this->codsubgrupoproduto.',codsubgrupoproduto';
-        } else {
-            $unique_subgrupoproduto = 'unique:tblsubgrupoproduto,subgrupoproduto';
-        }
-
         $this->_regrasValidacao = [
             'codgrupoproduto' => "required|numeric", 
-            'subgrupoproduto' => "required|min:5|$unique_subgrupoproduto", 
+            'subgrupoproduto' => "required|min:3|uniqueMultiple:tblsubgrupoproduto,codsubgrupoproduto,$this->codsubgrupoproduto,subgrupoproduto,codgrupoproduto,$this->codgrupoproduto",
         ];    
         $this->_mensagensErro = [
-            'subgrupoproduto.required' => 'Sub grupo de produto nao pode ser vazio.',
-            'subgrupoproduto.unique' => 'Este Sub grupo de produto já esta cadastrado.',
-            'subgrupoproduto.min' => 'Sub grupo de produto nao pode ter menos de 5 caracteres.',
+            'subgrupoproduto.required' => 'Sub grupo de produto nao pode ser vazio!',
+            'subgrupoproduto.unique_multiple' => 'Este Sub grupo de produto já esta cadastrado nesse grupo!',
+            'subgrupoproduto.min' => 'Sub grupo de produto nao pode ter menos de 2 caracteres!',
         ];
         return parent::validate();
     }    

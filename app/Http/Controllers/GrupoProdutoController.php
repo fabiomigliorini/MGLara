@@ -49,11 +49,11 @@ class GrupoProdutoController extends Controller
     public function store(Request $request)
     {
         $model = new GrupoProduto($request->all());
+        $model->codfamiliaproduto = $request->get('codfamiliaproduto');
         
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         
-        $model->codfamiliaproduto = $request->get('codfamiliaproduto');
         $model->save();
         
         Session::flash('flash_success', 'Grupo Criado!');
