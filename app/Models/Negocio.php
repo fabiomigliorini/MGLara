@@ -144,4 +144,25 @@ class Negocio extends MGModel
         return $this->hasMany(NegocioProdutoBarra::class, 'codnegocio', 'codnegocio');
     }
 
+    public function validate()
+    {
+        $this->_regrasValidacao = [
+            'codfilial'           => 'required',
+            'codestoquelocal'     => 'required',
+            'codnaturezaoperacao' => 'required',
+            'codpessoa'           => 'required',
+            'codpessoavendedor'   => 'required',
+        ];
+
+        $this->_mensagensErro = [
+            'codfilial.required'           => 'O campo Filial é obrigatório.',
+            'codestoquelocal.required'     => 'O campo Local Estoque é obrigatório.',
+            'codnaturezaoperacao.required' => 'O campo Natureza de Operação é obrigatório.',
+            'codpessoa.required'           => 'O campo Pessoa é obrigatório.',
+            'codpessoavendedor.required'   => 'O campo Vendedor é obrigatório.',
+        ];
+
+        return parent::validate();
+    }
+
 }

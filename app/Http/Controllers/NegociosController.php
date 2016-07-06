@@ -3,8 +3,11 @@
 namespace MGLara\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Negocio;
+use MGLara\Models\NegocioStatus;
+use MGLara\Models\Pessoa;
 
 class NegociosController extends Controller
 {
@@ -13,6 +16,13 @@ class NegociosController extends Controller
         $model = Negocio::orderBy('criacao', 'desc')->paginate(20);
 
         return view('negocios.index', compact('model'));
+    }
+
+    public function view($id)
+    {
+        $model = Negocio::find($id);
+
+        return view('negocios.view', compact('model'));
     }
 
     public function create(Request $request)
@@ -35,17 +45,28 @@ class NegociosController extends Controller
     public function store(Request $request)
     {
 
-        $model = new Negocio($request->all());
+        $user = Auth::user();
 
-        dd($model->validate());
+        $model = new Negocio($request->all());
+        $model->setAttribute('lancamento', new \DateTime());
+        $model->setAttribute('codusuario', $user->codusuario);
+        $model->setAttribute('codnegociostatus', NegocioStatus::ABERTO);
+        // $model->setAttribute('codfilial', $user->codfilial);
+        // $model->codnaturezaoperacao = NaturezaOperacao::VENDA;
+        // $model->setAttribute('codnaturezaoperacao', NaturezaOperacao::VENDA);
+        // $model->setAttribute('codpessoa, Pessoa::CONSUMIDOR);
+
+        if ($model->getAttribute('codnaturezaoperacao')) {
+            $naturezaOperacao = NaturezaOperacao::find($model->getAttribute('codnaturezaoperacao'));
+            $model->setAttribute('codoperacao', $naturezaOperacao->codoperacao);
+        }
 
         if (!$model->validate()) {
             $this->throwValidationException($request, $model->_validator);
         }
 
         $model->save();
-        Session::flash('flash_create', 'Registro inserido.');
 
-        return redirect(URL::route('negocios::index'));
+        return redirect()->route('negocios::view', [$model])->with('status', 'Registro inserido.');
     }
 }

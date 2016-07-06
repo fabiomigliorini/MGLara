@@ -12,6 +12,15 @@ Novo Negócio
 @endsection
 
 @section('body')
+@if ( ! $errors->isEmpty() )
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 alert alert-danger">
+        @foreach ( $errors->all() as $error )
+            {{ $error }}<br>
+        @endforeach
+        </div>
+    </div>
+@endif
 <form class="form-horizontal" method="POST" action="{{ URL::route('negocios::store') }}">
     <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
 
@@ -96,8 +105,7 @@ Novo Negócio
                 maxlength="500"
                 tabindex="-1"
                 name="observacoes"
-                id="observacoes">
-            </textarea>
+                id="observacoes"></textarea>
         </div>
     </div>
 
