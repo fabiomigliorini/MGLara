@@ -8,28 +8,30 @@ use MGLara\Http\Requests;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
+use Auth;
+
 use MGLara\Models\ProdutoHistoricoPreco;
 
 class ProdutoHistoricoPrecoController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('parametros', ['only' => ['index']]);
+    }       
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $model = ProdutoHistoricoPreco::filterAndPaginate(
-            $request->get('codprodutohistoricopreco'), 
-            $request->get('produto'), 
-            $request->get('referencia'), 
-            $request->get('de'), 
-            $request->get('ate'), 
-            $request->get('codmarca'), 
-            $request->get('codusuario')
-        );
         
+        if (!$request->session()->has('produto-historico-preco.index')) 
+            $request->session()->put('produto-historico-preco.index.codusuario', '');
+        
+        $parametros = $request->session()->get('produto-historico-preco.index');        
+        $model = ProdutoHistoricoPreco::search($parametros);
         return view('produto-historico-preco.index', compact('model'));
-    }
+    }    
 
     /**
      * Show the form for creating a new resource.

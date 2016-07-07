@@ -108,6 +108,9 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 .produtos-similares {
     list-style: none;
     padding: 5px 0;
+}
+.popover-title {
+    display: none;
 }   
 </style>
 <script type="text/javascript">
@@ -452,7 +455,7 @@ $(document).ready(function() {
             clearTimeout (timer);
             timer = setTimeout(callback, ms);
         };
-    })();
+    });
 
     $("#codsecaoproduto").on("select2-removed", function(e) {
         limpaSecaoProduto;
@@ -476,7 +479,7 @@ $(document).ready(function() {
         ).done(function( data ) {
             if(data.data.length > 0){
                 $.each(data.data, function(k, v) {
-                    $('.popover-content').prepend('<li class="produtos-similares">'+ v.produto +'</li>');
+                    $('.popover-content').prepend('<li class="produtos-similares small">'+ v.produto +'</li>');
                 });
             } else {
                 $('.popover-content').prepend('<p>Nenhum produto encontrado</p>');
@@ -487,7 +490,7 @@ $(document).ready(function() {
         });  
 
         $("#produto-descricao").popover({
-            title: 'Produtos similares', 
+            title: ' ', 
             content: '', 
             trigger: 'manual', 
             placement: 'bottom'
@@ -496,13 +499,11 @@ $(document).ready(function() {
     }
     
     $('#produto').on('keyup',function() {
-        //delay(function(){
-            if($(this).val().length > 2) {
-                mostraPopoverDescricao($(this).val());
-            } else {
-                $("#produto-descricao").popover('destroy');
-            }
-        //}, 1000 );
+        if($(this).val().length > 2) {
+            mostraPopoverDescricao( $(this).val() );
+        } else {
+            $("#produto-descricao").popover('destroy');
+        }
     });
 
 });

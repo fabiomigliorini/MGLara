@@ -8,7 +8,7 @@
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li>
-                <a href="{{ url("#") }}"><span class="glyphicon glyphicon-print"></span> Relatório</a>
+                <a href=""><span class="glyphicon glyphicon-print"></span> Relatório</a>
             </li> 
         </ul>
     </div>
@@ -16,27 +16,41 @@
 <h1 class="header">Histórico de Preços</h1>
 <hr>
 <div class="search-bar">
-{!! Form::model(Request::all(), ['route' => 'produto-historico-preco.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-historico-preco-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+{!! Form::model(Request::session()->get('produto-historico-preco.index'), [
+'route' => 'produto-historico-preco.index', 
+'method' => 'GET', 
+'class' => 'form-inline', 
+'id' => 'produto-historico-preco-search', 
+'role' => 'search', 
+'autocomplete' => 'off'
+])!!}
+
     <div class="form-group">
-        {!! Form::text('codproduto-historico-preco', null, ['class' => 'form-control search-cod', 'placeholder' => '#']) !!}
+        {!! Form::text('id', null, ['class' => 'form-control search-cod', 'placeholder' => '#']) !!}
     </div>
+    
     <div class="form-group">
         {!! Form::text('produto', null, ['class' => 'form-control', 'placeholder' => 'Produto']) !!}
     </div>
+    
     <div class="form-group">
         {!! Form::text('referencia', null, ['class' => 'form-control', 'placeholder' => 'Referencia']) !!}
     </div>
+
     <strong>Alteração</strong>
     <div class="form-group">
-        {!! Form::text('de', null, ['class' => 'form-control between', 'id' => 'de', 'placeholder' => 'De']) !!}
-        {!! Form::text('ate', null, ['class' => 'form-control between', 'id' => 'ate', 'placeholder' => 'Até']) !!}
+        {!! Form::text('alteracao_de', null, ['class' => 'form-control between', 'id' => 'alteracao_de', 'placeholder' => 'De']) !!}
+        {!! Form::text('alteracao_ate', null, ['class' => 'form-control between', 'id' => 'alteracao_ate', 'placeholder' => 'Até']) !!}
     </div>
+    
     <div class="form-group">
-        {!! Form::text('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:140px', 'placeholder' => 'Marca']) !!}
+        {!! Form::text('codmarca', null, ['class'=> 'form-control', 'id' => 'codmarca', 'style'=>'width:160px']) !!}
     </div>
+
     <div class="form-group">
-        {!! Form::select('codusuario', $usuarios, ['class' => 'form-control'],['id'=>'codusuario', 'style'=>'width:140px']) !!}
+        {!! Form::select('codusuario', $usuarios, null, ['class'=> 'form-control', 'id' => 'codusuario', 'style'=>'width:160px']) !!}
     </div>
+
     <button type="submit" class="btn btn-default">Buscar</button>
 {!! Form::close() !!}
 </div>
@@ -55,8 +69,7 @@
                 <div class="col-md-3">
                     <small class="span3 text-center">
                         @if(isset($row->codprodutoembalagem))
-                            {{ $row->ProdutoEmbalagem->UnidadeMedida->sigla }}
-                            " C/" {{ formataNumero($row->ProdutoEmbalagem->quantidade, 0) }}
+                            {{ $row->ProdutoEmbalagem->UnidadeMedida->sigla }} /{{ formataNumero($row->ProdutoEmbalagem->quantidade, 0) }}
                         @else
                             {{ $row->Produto->UnidadeMedida->sigla }}
                         @endif
@@ -113,11 +126,30 @@
 }
 </style>
 <script type="text/javascript">
+function atualizaFiltro()
+{
+    var frmValues = $('#produto-historico-preco-search').serialize();
+    $.ajax({
+        type: 'GET',
+        url: baseUrl + '/produto-historico-preco',
+        data: frmValues
+    })
+    .done(function (data) {
+        $('#items').html(jQuery(data).find('#items').html()); 
+    })
+    .fail(function () {
+        console.log('Erro no filtro');
+    });
+    event.preventDefault(); 
+    
+}
 $(document).ready(function() {
     $('ul.pagination').removeClass('hide');
     $('#produto-historico-preco-search').change(function() {
-        this.submit();
+        atualizaFiltro();
+        event.preventDefault(); 
     });
+
     $('#codmarca').select2({
         minimumInputLength:1,
         allowClear:true,
@@ -159,15 +191,15 @@ $(document).ready(function() {
         placeholder: 'Usuário',
         allowClear:true,
         closeOnSelect:true
-    })<?php echo (app('request')->input('codusuario') ? ".select2('val'," .app('request')->input('codusuario').");" : ';'); ?>    
-    $('#de, #ate').datetimepicker({
+    });    
+    $('#alteracao_de, #alteracao_ate').datetimepicker({
         useCurrent: false,
         showClear: true,
         locale: 'pt-br',
         format: 'DD/MM/YY'
     });
-    $(document).on('dp.change', '#de, #ate, #codmarca', function() {
-        $('#produto-historico-preco-search').submit();
+    $(document).on('dp.change', '#alteracao_de, #alteracao_ate, #codmarca', function() {
+        atualizaFiltro();
     });    
 });
 </script>

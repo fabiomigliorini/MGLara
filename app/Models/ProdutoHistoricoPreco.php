@@ -48,7 +48,7 @@ class ProdutoHistoricoPreco extends MGModel
 
     public function ProdutoEmbalagem()
     {
-        return $this->belongsTo(Produtoembalagem::class, 'codprodutoembalagem', 'codprodutoembalagem');
+        return $this->belongsTo(ProdutoEmbalagem::class, 'codprodutoembalagem', 'codprodutoembalagem');
     }
 
     public function UsuarioAlteracao()
@@ -64,26 +64,49 @@ class ProdutoHistoricoPreco extends MGModel
 
     // Tabelas Filhas
         // ...
-    
-    // Buscas 
-    public static function filterAndPaginate($codprodutohistoricopreco, $produto, $referencia, $de, $ate, $codmarca, $codusuario)
+
+
+    public static function search($parametros, $registros = 20)
     {
-        return ProdutoHistoricoPreco::codprodutohistoricopreco(numeroLimpo($codprodutohistoricopreco))
-            ->produto($produto)
-            ->referencia($referencia)
-            ->alteracao($de, $ate)                
-            ->marca($codmarca)
-            ->usuario($codusuario)
-            ->orderBy('alteracao', 'DESC')
-            ->paginate(20);
+        $query = ProdutoHistoricoPreco::orderBy('criacao', 'DESC');
+            
+        if(isset($parametros['id']) and !empty($parametros['id']))
+            $query->id($parametros['id']);
+
+        if(isset($parametros['produto']))
+            $query->produto(removeAcentos ($parametros['produto']));
+
+        if(isset($parametros['referencia']) and !empty($parametros['referencia']))
+            $query->whereHas('Produto', function($q) use ($parametros) {
+                $referencia = $parametros['referencia'];
+                $q->where('referencia', 'ILIKE', "%$referencia%");
+            });
+            
+        if(isset($parametros['alteracao_de']) and !empty($parametros['alteracao_de']))
+            $query->where('criacao', '>=', Carbon::createFromFormat('d/m/y', $parametros['alteracao_de'])->format('Y-m-d').' 00:00:00.0');
+            
+        if(isset($parametros['alteracao_ate']) and !empty($parametros['alteracao_ate']))
+            $query->where('criacao', '<=', Carbon::createFromFormat('d/m/y', $parametros['alteracao_ate'])->format('Y-m-d').' 23:59:59.9');
+
+        if(isset($parametros['codmarca']) and !empty($parametros['codmarca']))
+            $query->whereHas('Produto', function($q) use ($parametros) {
+                $codmarca = $parametros['codmarca'];
+                $q->where('codmarca', $codmarca);
+        });        
+        
+        if(isset($parametros['codusuario']) and !empty($parametros['codusuario']))
+            $query->where('codusuariocriacao', $parametros['codusuario']);
+        
+        return $query->paginate($registros);
     }
+
     
-    public function scopeCodprodutohistoricopreco($query, $codprodutohistoricopreco)
+    public function scopeId($query, $id)
     {
-        if (trim($codprodutohistoricopreco) === '')
+        if (trim($id) === '')
             return;
         
-        $query->where('codprodutohistoricopreco', $codprodutohistoricopreco);
+        $query->where('codprodutohistoricopreco', $id);
     }
     
     public function scopeProduto($query, $produto) 
@@ -96,54 +119,5 @@ class ProdutoHistoricoPreco extends MGModel
             foreach ($produto as $str)
                 $q->where('produto', 'ILIKE', "%$str%");
        });
-    }    
-    
-    public function scopeReferencia($query, $referencia) 
-    {
-        if (trim($referencia) === '')
-            return;
-
-        return $query->whereHas('Produto', function($q) use ($referencia) {
-            $q->where('referencia', 'ILIKE', "%$referencia%");
-       });
-    }    
-    
-    public function scopeAlteracao($query, $de, $ate)
-    {
-        if ( (trim($de) === '') && (trim($ate) === '') )
-            return;
-        
-        if(!empty($de))
-            $de = Carbon::createFromFormat('d/m/y', $de)->toDateTimeString();
-        
-        if(!empty($ate))
-            $ate = Carbon::createFromFormat('d/m/y', $ate)->toDateTimeString();
-        
-        if( (!empty($de)) && (empty($ate)) )
-            $ate = Carbon::now();
-        
-        if( (empty($de)) && (!empty($ate)) )
-            $de = '1900-01-01 00:00:00.0';        
-
-        $query->whereBetween('alteracao', [$de, $ate]);    
-    }    
-        
-    public function scopeMarca($query, $codmarca)
-    {
-        if (trim($codmarca) === '')
-            return;
-        
-        return $query->whereHas('Produto', function($q) use ($codmarca) {
-            $q->where('codmarca', $codmarca);
-       });        
-        
-    }
-        
-    public function scopeUsuario($query, $codusuario)
-    {
-        if (trim($codusuario) === '')
-            return;
-        
-        $query->where('codusuariocriacao', $codusuario);
-    }
+    }      
 }
