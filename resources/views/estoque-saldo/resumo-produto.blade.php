@@ -3,6 +3,11 @@
 use Carbon\Carbon;
 use MGLara\Models\EstoqueLocal;
 
+function somaArray($array, $coluna)
+{
+    return array_sum(array_column(json_decode(json_encode($array), true), $coluna));
+}
+
 function linha(
         $codestoquelocal, 
         $estoquelocal,
@@ -206,7 +211,7 @@ function linha(
         $customedio_fisico = null;
         $customedio_fiscal = null;
         
-        if (array_sum(array_column($saldos, 'codestoquesaldo_fisico')) == 0)
+        if (somaArray($saldos, 'codestoquesaldo_fisico') == 0)
         {
             $totais[$el->codestoquelocal]['saldoquantidade_fisico'] = null;
             $totais[$el->codestoquelocal]['saldovalor_fisico'] = null;
@@ -214,14 +219,14 @@ function linha(
         }
         else
         {
-            $totais[$el->codestoquelocal]['saldoquantidade_fisico'] = array_sum(array_column($saldos, 'saldoquantidade_fisico'));
-            $totais[$el->codestoquelocal]['saldovalor_fisico'] = array_sum(array_column($saldos, 'saldovalor_fisico'));
+            $totais[$el->codestoquelocal]['saldoquantidade_fisico'] = somaArray($saldos, 'saldoquantidade_fisico');
+            $totais[$el->codestoquelocal]['saldovalor_fisico'] = somaArray($saldos, 'saldovalor_fisico');
             $totais[$el->codestoquelocal]['ultimaconferencia_fisico'] = @max(array_column($saldos, 'ultimaconferencia_fisico'));
             if ($totais[$el->codestoquelocal]['saldoquantidade_fisico'] != 0)
                 $customedio_fisico = $totais[$el->codestoquelocal]['saldovalor_fisico'] / $totais[$el->codestoquelocal]['saldoquantidade_fisico'];
         }
         
-        if (array_sum(array_column($saldos, 'codestoquesaldo_fiscal')) == 0)
+        if (somaArray($saldos, 'codestoquesaldo_fiscal') == 0)
         {
             $totais[$el->codestoquelocal]['saldoquantidade_fiscal'] = null;
             $totais[$el->codestoquelocal]['saldovalor_fiscal'] = null;
@@ -229,8 +234,8 @@ function linha(
         }
         else
         {
-            $totais[$el->codestoquelocal]['saldoquantidade_fiscal'] = array_sum(array_column($saldos, 'saldoquantidade_fiscal'));
-            $totais[$el->codestoquelocal]['saldovalor_fiscal'] = array_sum(array_column($saldos, 'saldovalor_fiscal'));
+            $totais[$el->codestoquelocal]['saldoquantidade_fiscal'] = somaArray($saldos, 'saldoquantidade_fiscal');
+            $totais[$el->codestoquelocal]['saldovalor_fiscal'] = somaArray($saldos, 'saldovalor_fiscal');
             $totais[$el->codestoquelocal]['ultimaconferencia_fiscal'] = @max(array_column($saldos, 'ultimaconferencia_fiscal'));
             if ($totais[$el->codestoquelocal]['saldoquantidade_fiscal'] != 0)
                 $customedio_fiscal = $totais[$el->codestoquelocal]['saldovalor_fiscal'] / $totais[$el->codestoquelocal]['saldoquantidade_fiscal'];
@@ -292,8 +297,8 @@ function linha(
             </div>
             <?php
             $customedio_fisico = null;
-            $saldoquantidade_fisico = array_sum(array_column($totais, 'saldoquantidade_fisico'));
-            $saldovalor_fisico = array_sum(array_column($totais, 'saldovalor_fisico'));
+            $saldoquantidade_fisico = somaArray($totais, 'saldoquantidade_fisico');
+            $saldovalor_fisico = somaArray($totais, 'saldovalor_fisico');
             if ($saldovalor_fisico != 0)
                 $customedio_fisico = $saldovalor_fisico / $saldoquantidade_fisico;
             ?>
@@ -310,8 +315,8 @@ function linha(
             @endif
             <?php
             $customedio_fiscal = null;
-            $saldoquantidade_fiscal = array_sum(array_column($totais, 'saldoquantidade_fiscal'));
-            $saldovalor_fiscal = array_sum(array_column($totais, 'saldovalor_fiscal'));
+            $saldoquantidade_fiscal = somaArray($totais, 'saldoquantidade_fiscal');
+            $saldovalor_fiscal = somaArray($totais, 'saldovalor_fiscal');
             if ($saldovalor_fiscal != 0)
                 $customedio_fiscal = $saldovalor_fiscal / $saldoquantidade_fiscal;
             ?>
