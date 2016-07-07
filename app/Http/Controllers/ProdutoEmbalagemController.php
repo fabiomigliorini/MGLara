@@ -12,6 +12,7 @@ use MGLara\Http\Controllers\Controller;
 use MGLara\Models\ProdutoEmbalagem;
 use MGLara\Models\Produto;
 use MGLara\Models\ProdutoBarra;
+use MGLara\Models\ProdutoHistoricoPreco;
 
 class ProdutoEmbalagemController extends Controller
 {
@@ -120,12 +121,36 @@ class ProdutoEmbalagemController extends Controller
         $model = ProdutoEmbalagem::findOrFail($id);
         $model->fill($request->all());
         
+        DB::beginTransaction();
+        
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         
-        $model->save();
-        Session::flash('flash_success', "Embalagem '{$model->descricao}' alterada!");
-        return redirect("produto/$model->codproduto");        
+        try {
+            $preco = $model->getOriginal('preco');
+            
+            if (!$model->save())
+                throw new Exception ('Erro ao alterar Embalagem!');
+            
+            if($preco != $model->preco) {
+                $historico = new ProdutoHistoricoPreco();
+                $historico->codproduto  = $model->Produto->codproduto;
+                $historico->codprodutoembalagem  = $model->codprodutoembalagem;
+                $historico->precoantigo = $preco;
+                $historico->preconovo   = $model->preco;
+                
+                if (!$historico->save())
+                    throw new Exception ('Erro ao gravar Historico!');
+            }
+            
+            DB::commit();
+            Session::flash('flash_success', "Embalagem '{$model->descricao}' alterada!");
+            return redirect("produto/$model->codproduto");        
+            
+        } catch (Exception $ex) {
+            DB::rollBack();
+            $this->throwValidationException($request, $model->_validator);              
+        }        
     }
 
 

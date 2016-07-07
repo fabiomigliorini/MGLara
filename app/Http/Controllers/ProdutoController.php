@@ -18,6 +18,7 @@ use MGLara\Models\ProdutoVariacao;
 use MGLara\Models\NegocioProdutoBarra;
 use MGLara\Models\NotaFiscalProdutoBarra;
 use MGLara\Models\TipoProduto;
+use MGLara\Models\ProdutoHistoricoPreco;
 
 class ProdutoController extends Controller
 {
@@ -173,11 +174,33 @@ class ProdutoController extends Controller
             $model->site = FALSE;
         }
 
+        DB::beginTransaction();
+        
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
-        $model->save();
-        Session::flash('flash_success', "Produto '{$model->produto}' alterado!");
-        return redirect("produto/$model->codproduto");           
+        
+        try {
+            $preco = $model->getOriginal('preco');
+            
+            if (!$model->save())
+                throw new Exception ('Erro ao alterar Produto!');
+            if($preco != $model->preco) {
+                $historico = new ProdutoHistoricoPreco();
+                $historico->codproduto  = $model->codproduto;
+                $historico->precoantigo = $preco;
+                $historico->preconovo   = $model->preco;
+                if (!$historico->save())
+                    throw new Exception ('Erro ao gravar Historico!');
+            }
+            
+            DB::commit();
+            Session::flash('flash_success', "Produto '{$model->produto}' alterado!");
+            return redirect("produto/$model->codproduto");           
+        } catch (Exception $ex) {
+            DB::rollBack();
+            $this->throwValidationException($request, $model->_validator);              
+        }        
+
     }
 
     /**
