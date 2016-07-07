@@ -38,6 +38,8 @@ class ProdutoBarra extends MGModel
         'codproduto',
         'codprodutovariacao',
         'barras',
+        'variacao',
+        'referencia',
         'codprodutoembalagem',
     ];
     protected $dates = [

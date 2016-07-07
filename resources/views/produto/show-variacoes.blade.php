@@ -31,8 +31,10 @@
                    ->with('ProdutoEmbalagem')->get();
                 ?>
                 @foreach ($pbs as $pb)
-                    <div class="col-md-6">
+                    <div class="col-md-6 small">
                         {{ $pb->barras }}
+                        {{ $pb->referencia }}
+                        {{ $pb->variacao }}
                         <small class="text-muted pull-right">
                             @if (!empty($pb->codprodutoembalagem))
                                 {{ $pb->ProdutoEmbalagem->descricao }}

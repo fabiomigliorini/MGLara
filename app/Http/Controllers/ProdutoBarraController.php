@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
 
+use MGLara\Jobs\EstoqueGeraMovimentoProdutoVariacao;
+
 use MGLara\Models\ProdutoBarra;
 use MGLara\Models\Produto;
 
@@ -70,6 +72,7 @@ class ProdutoBarraController extends Controller
     public function update(Request $request, $id)
     {
         $model = ProdutoBarra::findOrFail($id);
+        $codprodutovariacao_original = $model->codprodutovariacao;
         $model->fill($request->all());
         
         if ($model->codprodutoembalagem == 0)
@@ -79,6 +82,14 @@ class ProdutoBarraController extends Controller
             $this->throwValidationException($request, $model->_validator);
         
         $model->save();
+
+        //Recalcula movimento de estoque caso trocou o codigo de barras de variacao
+        if ($model->codprodutovariacao != $codprodutovariacao_original)
+        {
+            $this->dispatch((new EstoqueGeraMovimentoProdutoVariacao($model->codprodutovariacao))->onQueue('medium'));
+            $this->dispatch((new EstoqueGeraMovimentoProdutoVariacao($codprodutovariacao_original))->onQueue('medium'));
+        }
+        
         Session::flash('flash_success', "Código de Barras '{$model->barras}' atualizado!");
         return redirect("produto/$model->codproduto");     
     }
