@@ -55,136 +55,135 @@ function linha(
     }
     else
     {
-        $class = 'panel-collapse collapse';
-        $id = "detalhesCodEstoqueLocal$codestoquelocal";
     }
     ?>
-    <tr class="{{ $class }}" id="{{ $id }}">
+    <div class="col-md-12">
         @if (empty($codprodutovariacao))
-            <th>
+            <div class="col-md-4">
                 <a href="#detalhesCodEstoqueLocal{{$codestoquelocal}}" data-toggle="collapse" >
                     {{ $estoquelocal }}
                 </a>
-            </th>
+            </div>
         @else
-            <td>
+            <div class="col-md-4">
                 @if (!empty($variacao))
                     {{ $variacao }}
                 @else
                     <i class='text-muted'>{ Sem Variação }</i>
                 @endif
-            </td>
+            </div>
         @endif
-        
+
         <!-- FISICO -->
         <?php
         $class = ($codestoquesaldo_fisico == $codestoquesaldo_destaque && !empty($codestoquesaldo_destaque))?'info':'';
         $url = empty($codestoquesaldo_fisico)?"#detalhesCodEstoqueLocal{$codestoquelocal}":url("estoque-saldo/$codestoquesaldo_fisico");
         $toggle = empty($codestoquesaldo_fisico)?'data-toggle="collapse"':'';
         ?>
-        <td class='text-right {{ $class }}'>
+        <div class='text-right {{ $class }} col-md-2'>
             <a href='{{ $url }}' {!! $toggle !!}>
                 {{ formataNumero($saldoquantidade_fisico, 3) }}
             </a>
             <a class="label pull-left {{ $label_fisico }}">
                 &nbsp;
             </a>
-        </td>
+        </div>
         @if (!$somentequantidade)
-            <td class='text-right {{ $class }}'>
+            <div class='text-right {{ $class }} col-md-1'>
                 <a href='{{ $url }}' {!! $toggle !!}>
                     {{ formataNumero($saldovalor_fisico, 2) }}
                 </a>
-            </td>
-            <td class='text-right {{ $class }}'>
+            </div>
+            <div class='text-right {{ $class }} col-md-1'>
                 {{ formataNumero($customedio_fisico, 6) }}
-            </td>
+            </div>
         @endif
-        
+
         <!-- FISCAL -->
         <?php
         $class = ($codestoquesaldo_fisico == $codestoquesaldo_destaque && !empty($codestoquesaldo_destaque))?'info':'';
         $url = empty($codestoquesaldo_fiscal)?"#detalhesCodEstoqueLocal{$codestoquelocal}":url("estoque-saldo/$codestoquesaldo_fiscal");
         $toggle = empty($codestoquesaldo_fisico)?'data-toggle="collapse"':'';
         ?>
-        <td class='text-right {{ $class }}'>
+        <div class='text-right {{ $class }} col-md-2'>
             <a class="label pull-left {{ $label_fiscal }}">
                 &nbsp;
             </a>
             <a href='{{ $url }}' {!! $toggle !!}>
                 {{ formataNumero($saldoquantidade_fiscal, 3) }}
             </a>
-        </td>
+        </div>
         @if (!$somentequantidade)
-            <td class='text-right {{ $class }}'>
+            <div class='text-right {{ $class }} col-md-1'>
                 <a href='{{ $url }}' {!! $toggle !!}>
                     {{ formataNumero($saldovalor_fiscal, 2) }}
                 </a>
-            </td>
-            <td class='text-right {{ $class }}'>
+            </div>
+            <div class='text-right {{ $class }} col-md-1'>
                 {{ formataNumero($customedio_fiscal, 6) }}
-            </td>
+            </div>
         @endif
-    </tr>
+    </div>
     <?php
 }
 
 
 ?>
 <div class="panel panel-default">
-<table class='table table-hover table-condensed table-bordered'>
-    <thead>
+<div class='table table-hover table-condensed table-bordered'>
+    <div class="row">
+    <div class="col-md-12">
         @if (!$somentequantidade)
-            <tr>
-                <th rowspan='2' class='col-md-2 text-left'>
+            <div>
+                <div rowspan='2' class='col-md-2 text-left'>
                     Local
-                </th>
-                <th colspan='3' class='text-center'>
+                </div>
+                <div colspan='3' class='text-center'>
                     Físico
-                </th>
-                <th colspan='3' class='text-center'>
+                </div>
+                <div colspan='3' class='text-center'>
                     Fiscal
-                </th>
-            </tr>
+                </div>
+            </div>
         @endif
-        <tr>
+        <div>
             @if ($somentequantidade)
-            <th class='col-md-2 text-right'>
+            <div class='col-md-4 text-right'>
                 Local
-            </th>
+            </div>
             @endif
-            <th class='col-md-1 text-right'>
+            <div class='col-md-2 text-right'>
                 @if (!$somentequantidade)
                     Saldo
                 @else
                     Físico
                 @endif
-            </th>
+            </div>
             @if (!$somentequantidade)
-                <th class='col-md-1 text-right'>
+                <div class='col-md-1 text-right'>
                     Valor
-                </th>
-                <th class='col-md-1 text-right'>
+                </div>
+                <div class='col-md-1 text-right'>
                     Custo
-                </th>
+                </div>
             @endif
-            <th class='col-md-1 text-right'>
+            <div class='col-md-2 text-right'>
                 @if (!$somentequantidade)
                     Saldo
                 @else
                     Fiscal
                 @endif
-            </th>
+            </div>
             @if (!$somentequantidade)
-                <th class='col-md-1 text-right'>
+                <div class='col-md-1 text-right'>
                     Valor
-                </th>
-                <th class='col-md-1 text-right'>
+                </div>
+                <div class='col-md-1 text-right'>
                     Custo
-                </th>
+                </div>
             @endif
-        </tr>
-    </thead>
+        </div>
+    </div>
     <?php
 
     foreach (EstoqueLocal::ativo()->get() as $el)
@@ -258,39 +257,39 @@ function linha(
                 );
         
         ?>
+        <div class="panel-collapse collapse" id="detalhesCodEstoqueLocal{{ $el->codestoquelocal }}">
         @foreach ($saldos as $saldo)
-        
-            <?php
-            linha(
-                    $el->codestoquelocal, 
-                    $el->estoquelocal, 
-                    $saldo->codprodutovariacao, 
-                    $saldo->variacao, 
-                    65370,
-                    $saldo->codestoquesaldo_fisico, 
-                    $saldo->saldoquantidade_fisico, 
-                    $saldo->saldovalor_fisico, 
-                    $saldo->customedio_fisico, 
-                    $saldo->ultimaconferencia_fisico, 
-                    $saldo->codestoquesaldo_fiscal, 
-                    $saldo->saldoquantidade_fiscal, 
-                    $saldo->saldovalor_fiscal, 
-                    $saldo->customedio_fiscal, 
-                    $saldo->ultimaconferencia_fiscal,
-                    $somentequantidade
-                    );
-            ?>
+                <?php
+                linha(
+                        $el->codestoquelocal, 
+                        $el->estoquelocal, 
+                        $saldo->codprodutovariacao, 
+                        $saldo->variacao, 
+                        65370,
+                        $saldo->codestoquesaldo_fisico, 
+                        $saldo->saldoquantidade_fisico, 
+                        $saldo->saldovalor_fisico, 
+                        $saldo->customedio_fisico, 
+                        $saldo->ultimaconferencia_fisico, 
+                        $saldo->codestoquesaldo_fiscal, 
+                        $saldo->saldoquantidade_fiscal, 
+                        $saldo->saldovalor_fiscal, 
+                        $saldo->customedio_fiscal, 
+                        $saldo->ultimaconferencia_fiscal,
+                        $somentequantidade
+                        );
+                ?>
         @endforeach
-
+        </div>
         <?php
     }
 
     ?>
-    <tfoot>
-        <tr>
-            <th class='col-md-1'>
+    <div class="col-md-12">
+        <div>
+            <div class='col-md-4'>
                 Total
-            </th>
+            </div>
             <?php
             $customedio_fisico = null;
             $saldoquantidade_fisico = array_sum(array_column($totais, 'saldoquantidade_fisico'));
@@ -298,16 +297,16 @@ function linha(
             if ($saldovalor_fisico != 0)
                 $customedio_fisico = $saldovalor_fisico / $saldoquantidade_fisico;
             ?>
-            <th class='col-md-1 text-right'>
+            <div class='col-md-2 text-right'>
                 {{ formataNumero($saldoquantidade_fisico, 3) }}
-            </th>
+            </div>
             @if (!$somentequantidade)
-                <th class='col-md-1 text-right'>
+                <div class='col-md-1 text-right'>
                     {{ formataNumero($saldovalor_fisico, 2) }}
-                </th>
-                <th class='col-md-1 text-right'>
+                </div>
+                <div class='col-md-1 text-right'>
                     {{ formataNumero($customedio_fisico, 6) }}
-                </th>
+                </div>
             @endif
             <?php
             $customedio_fiscal = null;
@@ -316,18 +315,19 @@ function linha(
             if ($saldovalor_fiscal != 0)
                 $customedio_fiscal = $saldovalor_fiscal / $saldoquantidade_fiscal;
             ?>
-            <th class='col-md-1 text-right'>
+            <div class='col-md-2 text-right'>
                 {{ formataNumero($saldoquantidade_fiscal, 3) }}
-            </th>
+            </div>
             @if (!$somentequantidade)
-                <th class='col-md-1 text-right'>
+                <div class='col-md-1 text-right'>
                     {{ formataNumero($saldovalor_fiscal, 2) }}
-                </th>
-                <th class='col-md-1 text-right'>
+                </div>
+                <div class='col-md-1 text-right'>
                     {{ formataNumero($customedio_fiscal, 6) }}
-                </th>
+                </div>
             @endif
-        </tr>                
-    </tfoot>
-</table>
+        </div>                
+    </div>
+</div>
+</div>
 </div>

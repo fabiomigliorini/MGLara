@@ -15,9 +15,9 @@
 <h1 class="header">
     {!!
         titulo(
-                $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->codproduto, 
+                $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto, 
                 [
-                    url("produto/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->codproduto}")=>$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->produto,
+                    url("produto/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}")=>$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->produto,
                     $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->variacao,
                     url("estoque-local/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal}")=>$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->EstoqueLocal->estoquelocal,
                     ($model->EstoqueSaldo->fiscal)?"Fiscal":"Fisico"

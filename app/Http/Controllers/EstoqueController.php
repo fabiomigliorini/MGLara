@@ -12,6 +12,7 @@ use MGLara\Jobs\EstoqueCalculaCustoMedio;
 use MGLara\Jobs\EstoqueGeraMovimentoNegocioProdutoBarra;
 use MGLara\Jobs\EstoqueGeraMovimentoNegocio;
 use MGLara\Jobs\EstoqueGeraMovimentoProduto;
+use MGLara\Jobs\EstoqueGeraMovimentoProdutoVariacao;
 use MGLara\Jobs\EstoqueGeraMovimentoPeriodo;
 
 use MGLara\Models\EstoqueMes;
@@ -54,19 +55,19 @@ class EstoqueController extends Controller
         return response()->json(['response' => 'Agendado']);
     }
     
+    public function geraMovimentoProdutoVariacao(Request $request, $id)
+    {
+        $this->dispatch((new EstoqueGeraMovimentoProdutoVariacao($id))->onQueue('low'));
+        return response()->json(['response' => 'Agendado']);
+    }
+    
     public function geraMovimentoPeriodo(Request $request)
     {
-        //dd($request->final);
-        
         $inicial = Carbon::createFromFormat('d/m/Y H:i:s', $request->inicial); // 1975-05-21 22:00:00
         $final = Carbon::createFromFormat('d/m/Y H:i:s', $request->final); // 1975-05-21 22:00:00
 
         $this->dispatch((new EstoqueGeraMovimentoPeriodo($inicial, $final))->onQueue('low'));
         
         return response()->json(['response' => 'Agendado']);
-        
-        dd($final);
-
-        dd($request);
     }
 }

@@ -195,7 +195,7 @@
                     @include('produto.show-variacoes')
                 </div>
                 <div role="tabpanel" class="tab-pane fade in active" id="tab-estoque">
-                    @include('estoque-saldo.resumo-produto', ['codproduto' => $model->codproduto, 'somentequantidade' => false])                
+                    @include('estoque-saldo.resumo-produto', ['codproduto' => $model->codproduto, 'somentequantidade' => true])
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-site">
                     <br>
