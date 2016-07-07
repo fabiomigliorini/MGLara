@@ -100,6 +100,16 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 </div>
 
 @section('inscript')
+<style type="text/css">
+.popover {
+    max-width: 100%;
+    width: 70% !important;
+}
+.produtos-similares {
+    list-style: none;
+    padding: 5px 0;
+}   
+</style>
 <script type="text/javascript">
 $(document).ready(function() {
     function pegaSubgrupos() {
@@ -436,6 +446,13 @@ $(document).ready(function() {
     var limpaGrupoProduto = function () {
         $('#codsubgrupoproduto').select2('val', null);
     }
+    var delay = (function(){
+        var timer = 0;
+        return function(callback, ms){
+            clearTimeout (timer);
+            timer = setTimeout(callback, ms);
+        };
+    })();
 
     $("#codsecaoproduto").on("select2-removed", function(e) {
         limpaSecaoProduto;
@@ -459,7 +476,7 @@ $(document).ready(function() {
         ).done(function( data ) {
             if(data.data.length > 0){
                 $.each(data.data, function(k, v) {
-                    $('.popover-content').prepend('<li>'+ v.produto +'</li>');
+                    $('.popover-content').prepend('<li class="produtos-similares">'+ v.produto +'</li>');
                 });
             } else {
                 $('.popover-content').prepend('<p>Nenhum produto encontrado</p>');
@@ -470,22 +487,23 @@ $(document).ready(function() {
         });  
 
         $("#produto-descricao").popover({
-            title: 'Similares', 
+            title: 'Produtos similares', 
             content: '', 
             trigger: 'manual', 
             placement: 'bottom'
         });
         $("#produto-descricao").popover('show');
     }
-    $('#produto').on('keyup',function(){
-        if($(this).val().length > 2){
-            mostraPopoverDescricao($(this).val());
-        } else {
-            $("#produto-descricao").popover('destroy');
-        }
+    
+    $('#produto').on('keyup',function() {
+        //delay(function(){
+            if($(this).val().length > 2) {
+                mostraPopoverDescricao($(this).val());
+            } else {
+                $("#produto-descricao").popover('destroy');
+            }
+        //}, 1000 );
     });
-
-
 
 });
 </script>
