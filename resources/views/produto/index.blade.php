@@ -110,7 +110,7 @@ $secoes     = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')-
 <div id="registros">
   <div class="list-group group-list-striped group-list-hover" id="items">
     @foreach($model as $row)
-      <div class="list-group-item">
+      <div class="list-group-item @if(!empty($row->inativo)) bg-danger @endif"">
         <div class="row item">
             <div class="col-md-1">
                 <a href="{{ url("produto/$row->codproduto") }}">
@@ -128,11 +128,6 @@ $secoes     = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')-
                 <a href="{{ url("produto/$row->codproduto") }}">
                     <strong>{{ $row->produto }}</strong>
                 </a>
-                @if(!empty($row->inativo))
-                <div>
-                    <span class="label label-danger produtos-grid-inativo">Inativado em {{ formataData($row->inativo, 'L')}} </span>
-                </div>
-                @endif
                 @if(!empty($row->codsubgrupoproduto))
                 <div>
                     <a href="{{ url("secao-produto/{$row->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto}") }}">
@@ -187,6 +182,7 @@ $secoes     = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')-
                 @endforeach
             </div>
             <div class="col-md-5 small text-muted" >
+                {!! inativo($row->inativo) !!}
                 <?php
                 $pvs = $row->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
                 ?>
