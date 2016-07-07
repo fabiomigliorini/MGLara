@@ -61,10 +61,16 @@
             <div class="col-md-1 small text-muted">
                 {{ formataCodigo($row->codestoquesaldoconferencia)}}
             </div>  
-            <div class="col-md-3">
-                <a class="" href="{{ url("produto/{$row->EstoqueSaldo->EstoqueLocalProdutoVariacao->codproduto}") }}">
-                    {{ $row->EstoqueSaldo->EstoqueLocalProdutoVariacao->Produto->produto}}
-                </a>          
+            <div class="col-md-4">
+                <a class="" href="{{ url("produto/{$row->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}") }}">
+                    {{ $row->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->produto}}
+                </a>
+                »
+                @if (!empty($row->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->variacao))
+                    {{ $row->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->variacao }}
+                @else
+                    <i class='text-muted'>{ Sem Variação }</i>
+                @endif
             </div>  
             <div class="col-md-1">
                 <a class="" href="{{ url("estoque-local/{$row->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal}") }}">
@@ -82,8 +88,8 @@
             <div class="col-md-1 text-right">
                 {{ formataNumero($row->customedioinformado, 6) }}
             </div>  
-            <div class="col-md-2 small">
-                {{ formataData($row->data, 'L') }}
+            <div class="col-md-1 small">
+                {{ formataData($row->data, 'C') }}
             </div>  
             <div class="col-md-2 small text-muted">
                 {{ $row->UsuarioCriacao->usuario }} 

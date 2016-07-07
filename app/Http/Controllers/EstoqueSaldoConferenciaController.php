@@ -110,6 +110,9 @@ class EstoqueSaldoConferenciaController extends Controller
         $model->data = $request->get('data');
         
         $model->save();
+        
+        $model->EstoqueSaldo->ultimaconferencia = $model->criacao;
+        $model->EstoqueSaldo->save();
 
         $this->dispatch((new EstoqueGeraMovimentoConferencia($model->codestoquesaldoconferencia))->onQueue('urgent'));
         

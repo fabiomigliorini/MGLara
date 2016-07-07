@@ -182,8 +182,8 @@
     <div class="col-md-6">
         <div>
             <ul class="nav nav-pills" role="tablist">
-                <li role="presentation"><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Variações</a></li>
-                <li role="presentation" class="active"><a href="#tab-estoque" aria-controls="home" role="tab" data-toggle="tab">Estoque</a></li>
+                <li role="presentation" class="active"><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Variações</a></li>
+                <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab" data-toggle="tab">Estoque</a></li>
                 <li role="presentation"><a href="#tab-site" aria-controls="profile" role="tab" data-toggle="tab">Site</a></li>
                 <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">Fiscal</a></li>
                 <li role="presentation"><a href="#tab-npb" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
@@ -191,10 +191,10 @@
             </ul>
             <br>
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade" id="tab-variacoes">
+                <div role="tabpanel" class="tab-pane fade in active" id="tab-variacoes">
                     @include('produto.show-variacoes')
                 </div>
-                <div role="tabpanel" class="tab-pane fade in active" id="tab-estoque">
+                <div role="tabpanel" class="tab-pane fade" id="tab-estoque">
                     @include('estoque-saldo.resumo-produto', ['codproduto' => $model->codproduto, 'somentequantidade' => true])
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-site">

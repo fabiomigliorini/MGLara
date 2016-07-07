@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
  * @property  numeric(14,3)                  $saldoquantidade                    
  * @property  numeric(14,2)                  $saldovalor                         
  * @property  numeric(14,6)                  $customedio                 
+ * @property  timestamp                      $ultimaconferencia
  * @property  timestamp                      $alteracao                          
  * @property  bigint                         $codusuarioalteracao                
  * @property  timestamp                      $criacao                            
@@ -30,7 +31,7 @@ use Illuminate\Support\Facades\DB;
  * @property  Produto                        $Produto                       
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
- * @property  EstoqueLocalProdutoVariacao            $EstoqueLocalProdutoVariacao
+ * @property  EstoqueLocalProdutoVariacao    $EstoqueLocalProdutoVariacao
  *
  * Tabelas Filhas
  * @property  EstoqueMes[]                   $EstoqueMesS
@@ -47,10 +48,12 @@ class EstoqueSaldo extends MGModel
         'saldovalor',
         'customedio',
         'codestoquelocalprodutovariacao',
+        'ultimaconferencia',
     ];
     protected $dates = [
         'alteracao',
         'criacao',
+        'ultimaconferencia',
     ];
     
     // Chaves Estrangeiras

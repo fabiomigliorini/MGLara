@@ -18,7 +18,7 @@
                 $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto, 
                 [
                     url("produto/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}")=>$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->produto,
-                    $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->variacao,
+                    (empty($model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->variacao))?"<i class='text-muted'>{ Sem Variação }</i>":$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->variacao,
                     url("estoque-local/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal}")=>$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->EstoqueLocal->estoquelocal,
                     ($model->EstoqueSaldo->fiscal)?"Fiscal":"Fisico"
                 ],

@@ -129,7 +129,7 @@ class ProdutoBarra extends MGModel
     public static function buscaPorBarras($barras)
     {
         //Procura pelo Codigo de Barras
-        if ($ret = ProdutoBarra::where('barras', '=', $barras)->select('codproduto','variacao')->first())
+        if ($ret = ProdutoBarra::where('barras', '=', $barras)->first())
             return $ret;
 
         //Procura pelo Codigo Interno

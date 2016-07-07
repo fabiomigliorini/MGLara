@@ -1,5 +1,11 @@
 <?php
 
+if (!isset($codestoquelocal_destaque))
+    $codestoquelocal_destaque = null;
+
+if (!isset($codestoquesaldo_destaque))
+    $codestoquesaldo_destaque = null;
+
 use Carbon\Carbon;
 use MGLara\Models\EstoqueLocal;
 
@@ -29,8 +35,9 @@ function linha(
     $label_fisico = 'label-default';
     $label_fiscal = 'label-default';
     
-    if (is_a($ultimaconferencia_fisico, 'Carbon'))
+    if (!empty($ultimaconferencia_fisico))
     {
+        $ultimaconferencia_fisico = new Carbon($ultimaconferencia_fisico);
         $dias_fisico = $ultimaconferencia_fisico->diffInDays();
 
         if ($dias_fisico > 30)
@@ -41,8 +48,9 @@ function linha(
             $label_fisico = 'label-success';
     }
     
-    if (is_a($ultimaconferencia_fisico, 'Carbon'))
+    if (!empty($ultimaconferencia_fiscal))
     {
+        $ultimaconferencia_fiscal = new Carbon($ultimaconferencia_fiscal);
         $dias_fiscal = $ultimaconferencia_fiscal->diffInDays();
 
         if ($dias_fiscal > 30)
@@ -54,15 +62,11 @@ function linha(
     }
     
     if (empty($codprodutovariacao))
-    {
-        $class = '';
-        $id = '';
-    }
+        $style = 'border-top: 1px dashed grey';
     else
-    {
-    }
+        $style = '';
     ?>
-    <div class="col-md-12">
+    <div class="col-md-12" style="{{ $style }}">
         @if (empty($codprodutovariacao))
             <div class="col-md-4">
                 <a href="#detalhesCodEstoqueLocal{{$codestoquelocal}}" data-toggle="collapse" >
@@ -81,51 +85,55 @@ function linha(
 
         <!-- FISICO -->
         <?php
-        $class = ($codestoquesaldo_fisico == $codestoquesaldo_destaque && !empty($codestoquesaldo_destaque))?'info':'';
+        $class = ($codestoquesaldo_fisico == $codestoquesaldo_destaque && !empty($codestoquesaldo_destaque))?'bg-info':'';
         $url = empty($codestoquesaldo_fisico)?"#detalhesCodEstoqueLocal{$codestoquelocal}":url("estoque-saldo/$codestoquesaldo_fisico");
         $toggle = empty($codestoquesaldo_fisico)?'data-toggle="collapse"':'';
         ?>
         <div class='text-right {{ $class }} col-md-2'>
             <a href='{{ $url }}' {!! $toggle !!}>
-                {{ formataNumero($saldoquantidade_fisico, 3) }}
+                {{ formataNumero($saldoquantidade_fisico, 3) }}&nbsp;
             </a>
-            <a class="label pull-left {{ $label_fisico }}">
-                &nbsp;
-            </a>
+            @if (!empty($codprodutovariacao))
+                <a class="label pull-left {{ $label_fisico }}">
+                    &nbsp;
+                </a>
+            @endif
         </div>
         @if (!$somentequantidade)
             <div class='text-right {{ $class }} col-md-1'>
                 <a href='{{ $url }}' {!! $toggle !!}>
-                    {{ formataNumero($saldovalor_fisico, 2) }}
+                    {{ formataNumero($saldovalor_fisico, 2) }}&nbsp;
                 </a>
             </div>
             <div class='text-right {{ $class }} col-md-1'>
-                {{ formataNumero($customedio_fisico, 6) }}
+                {{ formataNumero($customedio_fisico, 6) }}&nbsp;
             </div>
         @endif
 
         <!-- FISCAL -->
         <?php
-        $class = ($codestoquesaldo_fisico == $codestoquesaldo_destaque && !empty($codestoquesaldo_destaque))?'info':'';
+        $class = ($codestoquesaldo_fiscal == $codestoquesaldo_destaque && !empty($codestoquesaldo_destaque))?'bg-info':'';
         $url = empty($codestoquesaldo_fiscal)?"#detalhesCodEstoqueLocal{$codestoquelocal}":url("estoque-saldo/$codestoquesaldo_fiscal");
-        $toggle = empty($codestoquesaldo_fisico)?'data-toggle="collapse"':'';
+        $toggle = empty($codestoquesaldo_fiscal)?'data-toggle="collapse"':'';
         ?>
         <div class='text-right {{ $class }} col-md-2'>
-            <a class="label pull-left {{ $label_fiscal }}">
-                &nbsp;
-            </a>
             <a href='{{ $url }}' {!! $toggle !!}>
-                {{ formataNumero($saldoquantidade_fiscal, 3) }}
+                {{ formataNumero($saldoquantidade_fiscal, 3) }}&nbsp;
             </a>
+            @if (!empty($codprodutovariacao))
+                <a class="label pull-left {{ $label_fiscal }}">
+                    &nbsp;
+                </a>
+            @endif
         </div>
         @if (!$somentequantidade)
             <div class='text-right {{ $class }} col-md-1'>
                 <a href='{{ $url }}' {!! $toggle !!}>
-                    {{ formataNumero($saldovalor_fiscal, 2) }}
+                    {{ formataNumero($saldovalor_fiscal, 2) }}&nbsp;
                 </a>
             </div>
             <div class='text-right {{ $class }} col-md-1'>
-                {{ formataNumero($customedio_fiscal, 6) }}
+                {{ formataNumero($customedio_fiscal, 6) }}&nbsp;
             </div>
         @endif
     </div>
@@ -134,29 +142,25 @@ function linha(
 
 
 ?>
-<div class="panel panel-default">
-<div class='table table-hover table-condensed table-bordered'>
+<div class='table-condensed'>
     <div class="row">
     <div class="col-md-12">
         @if (!$somentequantidade)
-            <div>
-                <div rowspan='2' class='col-md-2 text-left'>
-                    Local
+            <div class="col-md-12">
+                <div class='col-md-4'>
                 </div>
-                <div colspan='3' class='text-center'>
+                <div class='text-center col-md-4'>
                     Físico
                 </div>
-                <div colspan='3' class='text-center'>
+                <div class='text-center col-md-4'>
                     Fiscal
                 </div>
             </div>
         @endif
         <div>
-            @if ($somentequantidade)
             <div class='col-md-4 text-right'>
                 Local
             </div>
-            @endif
             <div class='col-md-2 text-right'>
                 @if (!$somentequantidade)
                     Saldo
@@ -261,8 +265,12 @@ function linha(
                 $somentequantidade
                 );
         
+        if ($el->codestoquelocal == $codestoquelocal_destaque)
+            $class = 'in';
+        else
+            $class = '';
         ?>
-        <div class="panel-collapse collapse" id="detalhesCodEstoqueLocal{{ $el->codestoquelocal }}">
+        <div class="panel-collapse collapse {{ $class }}" id="detalhesCodEstoqueLocal{{ $el->codestoquelocal }}">
         @foreach ($saldos as $saldo)
                 <?php
                 linha(
@@ -270,7 +278,7 @@ function linha(
                         $el->estoquelocal, 
                         $saldo->codprodutovariacao, 
                         $saldo->variacao, 
-                        65370,
+                        $codestoquesaldo_destaque,
                         $saldo->codestoquesaldo_fisico, 
                         $saldo->saldoquantidade_fisico, 
                         $saldo->saldovalor_fisico, 
@@ -290,7 +298,7 @@ function linha(
     }
 
     ?>
-    <div class="col-md-12">
+    <div class="col-md-12" style="border-top: double grey">
         <div>
             <div class='col-md-4'>
                 Total
@@ -333,6 +341,5 @@ function linha(
             @endif
         </div>                
     </div>
-</div>
 </div>
 </div>
