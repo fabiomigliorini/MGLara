@@ -117,7 +117,13 @@ class ValidatorServiceProvider extends ServiceProvider
                 $query->where($pk, '!=', $codigo);
             
             foreach ($validar as $campo => $valor)
-                $query->where($campo, $valor);
+            {
+                $valor = trim($valor);
+                if (!empty($valor))
+                    $query->where($campo, 'ilike', "%$valor%");
+                else
+                    $query->whereNull($campo);
+            }
             
             $qtd = $query->count();
 

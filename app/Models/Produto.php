@@ -79,11 +79,8 @@ class Produto extends MGModel
     }
     
     public function validate() {
-        if ($this->codproduto) {
-            $unique = 'unique:tblproduto,produto,'.$this->codproduto.',codproduto';
-        } else {
-            $unique = 'unique:tblproduto,produto';
-        }    
+        
+        $unique  = "uniqueMultiple:tblproduto,codproduto,$this->codproduto,produto";
         
         $this->_regrasValidacao = [            
             'produto'           => "min:10|max:100|validaMarca:$this->codmarca,$this->inativo|$unique",
@@ -100,7 +97,7 @@ class Produto extends MGModel
     
         $this->_mensagensErro = [
             'produto.required'              => 'O campo descrição não pode ser vazio',
-            'produto.unique'                => 'Já existe um produto com essa descrição',
+            'produto.unique_multiple'       => 'Já existe um produto com essa descrição!',
             'produto.min'                   => 'A descrição do produto não pode ter menos de 10 caracteres',
             'produto.valida_marca'          => 'Preencha o nome da marca na descrição do produto',
             'codunidademedida.required'     => 'O campo Unidade de medida não pode ser vazio',
