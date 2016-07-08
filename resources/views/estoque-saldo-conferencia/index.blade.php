@@ -71,6 +71,12 @@
                 @else
                     <i class='text-muted'>{ Sem Variação }</i>
                 @endif
+                @if (!empty($row->observacoes))
+                <br>
+                <small class="text-muted">
+                    {{ $row->observacoes }}
+                </small>
+                @endif
             </div>  
             <div class="col-md-1">
                 <a class="" href="{{ url("estoque-local/{$row->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal}") }}">
@@ -80,17 +86,17 @@
             <div class="col-md-1">
                 <a class="" href="{{ url("estoque-saldo/{$row->codestoquesaldo}") }}">
                     {{ ($row->EstoqueSaldo->fiscal)?'Fiscal':'Físico' }}
-                </a>          
-            </div>  
+                </a>
+            </div>
             <div class="col-md-1 text-right">
                 {{ formataNumero($row->quantidadeinformada, 3) }}
-            </div>  
+            </div>
             <div class="col-md-1 text-right">
                 {{ formataNumero($row->customedioinformado, 6) }}
-            </div>  
+            </div>
             <div class="col-md-1 small">
                 {{ formataData($row->data, 'C') }}
-            </div>  
+            </div>
             <div class="col-md-2 small text-muted">
                 {{ $row->UsuarioCriacao->usuario }} 
                 <div class='pull-right'>

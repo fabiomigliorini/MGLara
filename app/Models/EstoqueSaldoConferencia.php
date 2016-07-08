@@ -71,7 +71,7 @@ class EstoqueSaldoConferencia extends MGModel
 
     public static function search($parametros, $registros = 20)
     {
-        $query = EstoqueSaldoConferencia::orderBy('criacao', 'DESC');
+        $query = EstoqueSaldoConferencia::orderBy('codestoquesaldoconferencia', 'DESC');
         
         /*
         if(isset($parametros['codsecaoproduto']))
