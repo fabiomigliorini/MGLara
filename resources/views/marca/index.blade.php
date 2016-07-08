@@ -37,7 +37,9 @@ foreach($ess as $es)
     <div class="col-md-6">
     {!! Form::model(Request::all(), ['route' => 'marca.index', 'method' => 'GET', 'class' => 'navbar-form navbar-right pull-right', 'id'=> 'marca-search', 'role' => 'search', 'style'=>'margin:0']) !!}
         <div class="form-group">
-            <div class="col-md-2">{!! Form::number('codmarca', null, ['class' => 'form-control', 'placeholder' => '#', 'style'=>'width:100px']) !!}</div>
+            <div class="col-md-2">
+                {!! Form::select2marca('codmarca', null, ['class' => 'form-control', 'placeholder' => '#', 'style'=>'width:100px']) !!}
+            </div>
         </div>
         <div class="form-group">
           {!! Form::text('marca', null, ['class' => 'form-control', 'placeholder' => 'Nome da marca']) !!}

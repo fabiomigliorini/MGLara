@@ -44,7 +44,7 @@
     </div>
     
     <div class="form-group">
-        {!! Form::text('codmarca', null, ['class'=> 'form-control', 'id' => 'codmarca', 'style'=>'width:160px']) !!}
+        {!! Form::select2marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:160px']) !!}
     </div>
 
     <div class="form-group">
@@ -150,43 +150,6 @@ $(document).ready(function() {
         event.preventDefault(); 
     });
 
-    $('#codmarca').select2({
-        minimumInputLength:1,
-        allowClear:true,
-        closeOnSelect:true,
-        placeholder:'Marca',
-        formatResult:function(item) {
-            var markup = "<div class='row-fluid'>";
-            markup    += item.marca;
-            markup    += "</div>";
-            return markup;
-        },
-        formatSelection:function(item) { 
-            return item.marca; 
-        },
-        ajax:{
-            url:baseUrl+"/marca/ajax",
-            dataType:'json',
-            quietMillis:500,
-            data:function(term,page) { 
-                return {q: term}; 
-            },
-            results:function(data,page) {
-                var more = (page * 20) < data.total;
-                return {results: data.items};
-            }
-        },
-        initSelection:function (element, callback) {
-            $.ajax({
-                type: "GET",
-                url: baseUrl+"/marca/ajax",
-                data: "id="+$('#codmarca').val(),
-                dataType: "json",
-                success: function(result) { callback(result); }
-            });
-        },
-        width:'resolve'
-    });
     $('#codusuario').select2({
         placeholder: 'Usuário',
         allowClear:true,

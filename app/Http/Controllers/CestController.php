@@ -88,7 +88,7 @@ class CestController extends Controller
         //
     }
     
-    public function ajax(Request $request) {
+    public function listagemJson(Request $request) {
         
         if($request->get('codncm')) {
             $ncm = Ncm::find($request->get('codncm'));

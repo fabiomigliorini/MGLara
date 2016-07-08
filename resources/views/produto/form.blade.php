@@ -14,34 +14,33 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 <div class='col-md-5'>
     <div class="form-group">
         <label for="codtipoproduto" class="col-sm-3 control-label">{!! Form::label('Tipo:') !!}</label>
-        <div class="col-sm-9">{!! Form::select('codtipoproduto', $tipos, $model->codtipoproduto, ['class'=> 'form-control', 'id' => 'codtipoproduto', 'style'=>'width:100%']) !!}</div>
+        <div class="col-sm-6">{!! Form::select('codtipoproduto', $tipos, $model->codtipoproduto, ['class'=> 'form-control', 'id' => 'codtipoproduto', 'style'=>'width:100%']) !!}</div>
     </div>
     
     <div class="form-group">
         <label for="codmarca" class="col-sm-3 control-label">Marca</label>
-        <div class="col-sm-9">@include('includes.select2.marca', ['inativo' => '1'])</div>    
+        <div class="col-sm-5">{!! Form::select2marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%']) !!}</div>    
     </div>
-
+    
     <div class="form-group">
         <label for="codsecaoproduto" class="col-sm-3 control-label">Seção</label>
-        <div class="col-sm-9">{!! Form::select('codsecaoproduto', $secoes, null, ['class'=> 'form-control', 'id' => 'codsecaoproduto', 'style'=>'width:100%']) !!}</div>
+        <div class="col-sm-6">{!! Form::select('codsecaoproduto', $secoes, null, ['class'=> 'form-control', 'id' => 'codsecaoproduto', 'style'=>'width:100%']) !!}</div>
     </div>
 
     <div class="form-group">
         <label for="codfamiliaproduto" class="col-sm-3 control-label">Família</label>
-        <div class="col-sm-9">{!! Form::text('codfamiliaproduto', null, ['class'=> 'form-control', 'id' => 'codfamiliaproduto', 'style'=>'width:100%']) !!}</div>
+        <div class="col-sm-6">{!! Form::text('codfamiliaproduto', null, ['class'=> 'form-control', 'id' => 'codfamiliaproduto', 'style'=>'width:100%']) !!}</div>
     </div>
 
     <div class="form-group">
         <label for="codgrupoproduto" class="col-sm-3 control-label">Grupo Produto</label>
-        <div class="col-sm-9">{!! Form::text('codgrupoproduto', null, ['class'=> 'form-control', 'id' => 'codgrupoproduto', 'style'=>'width:100%']) !!}</div>
+        <div class="col-sm-6">{!! Form::text('codgrupoproduto', null, ['class'=> 'form-control', 'id' => 'codgrupoproduto', 'style'=>'width:100%']) !!}</div>
     </div>
 
     <div class="form-group">
         <label for="codsubgrupoproduto" class="col-sm-3 control-label">Sub Grupo</label>
-        <div class="col-sm-9">{!! Form::text('codsubgrupoproduto', null, ['class'=> 'form-control', 'id' => 'codsubgrupoproduto', 'style'=>'width:100%']) !!}</div>
+        <div class="col-sm-6">{!! Form::text('codsubgrupoproduto', null, ['class'=> 'form-control', 'id' => 'codsubgrupoproduto', 'style'=>'width:100%']) !!}</div>
     </div>
-    
     <div class="form-group">
         <label for="ncm" class="col-sm-3 control-label">{!! Form::label('NCM:') !!}</label>
         <div class="col-sm-9">{!! Form::text('codncm', null, ['class'=> 'form-control', 'id'=>'codncm']) !!}</div>
@@ -116,7 +115,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 <script type="text/javascript">
 $(document).ready(function() {
     function pegaSubgrupos() {
-        return $.get(baseUrl + '/sub-grupo-produto/ajax', { codfamiliaproduto: $(this).val() }, 
+        return $.get(baseUrl + '/sub-grupo-produto/listagem-json', { codfamiliaproduto: $(this).val() }, 
             function(data) {
                 var model = $('#codsubgrupoproduto');
                 model.empty();
@@ -163,44 +162,6 @@ $(document).ready(function() {
     $("#produto").Setcase();
     $('#preco').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
 
-    $('#codmarca').select2({
-        placeholder:'Marca',
-        minimumInputLength: 1,
-        allowClear: true,
-        closeOnSelect: true,
-      
-        formatResult: function(item) {
-            var markup = "<div class='row-fluid'>";
-            markup    += item.marca;
-            markup    += "</div>";
-            return markup;
-        },
-        formatSelection: function(item) { 
-            return item.marca; 
-        },
-        ajax:{
-            url: baseUrl + "/marca/ajax",
-            dataType: 'json',
-            quietMillis: 500,
-            data: function(term,page) { 
-            return {q: term}; 
-        },
-        results: function(data,page) {
-            var more = (page * 20) < data.total;
-            return {results: data.items};
-        }},
-        initSelection: function (element, callback) {
-            $.ajax({
-              type: "GET",
-              url: baseUrl + "/marca/ajax",
-              data: "id="+$('#codmarca').val(),
-              dataType: "json",
-              success: function(result) { callback(result); }
-              });
-        },
-        width: 'resolve'
-    }); 
-    
     $('#codncm').select2({
         minimumInputLength:1,
         allowClear:true,
@@ -216,7 +177,7 @@ $(document).ready(function() {
             return item.ncm + "&nbsp;" + item.descricao; 
         },
         ajax:{
-            url:baseUrl+"/ncm/ajax",
+            url:baseUrl+"/ncm/listagem-json",
             dataType:'json',
             quietMillis:500,
             data:function(term, page) { 
@@ -230,7 +191,7 @@ $(document).ready(function() {
         initSelection:function (element, callback) {
             $.ajax({
                 type: "GET",
-                url: baseUrl+"/ncm/ajax",
+                url: baseUrl+"/ncm/listagem-json",
                 data: "id="+$('#codncm').val(),
                 dataType: "json",
                 success: function(result) { callback(result); }
@@ -255,7 +216,7 @@ $(document).ready(function() {
                 return item.ncm + "/" + item.cest + "&nbsp;" + item.descricao; 
         },
         ajax:{
-            url:baseUrl+"/cest/ajax",
+            url:baseUrl+"/cest/listagem-json",
             dataType:'json',
             quietMillis:500,
             data:function(codncm, page) { 
@@ -269,7 +230,7 @@ $(document).ready(function() {
         initSelection:function (element, callback) {
             $.ajax({
                 type: "GET",
-                url: baseUrl+"/cest/ajax",
+                url: baseUrl+"/cest/listagem-json",
                 data: "id="+$('#codcest').val(),
                 dataType: "json",
                 success: function(result) { callback(result); }
@@ -324,7 +285,7 @@ $(document).ready(function() {
             return item.familiaproduto; 
         },
         ajax:{
-            url:baseUrl+"/familia-produto/ajax",
+            url:baseUrl+"/familia-produto/listagem-json",
             dataType:'json',
             quietMillis:500,
             data:function(term, codsecaoproduto, page) { 
@@ -341,7 +302,7 @@ $(document).ready(function() {
         initSelection:function (element, callback) {
             $.ajax({
                 type: "GET",
-                url: baseUrl+"/familia-produto/ajax",
+                url: baseUrl+"/familia-produto/listagem-json",
                 data: "id="+$('#codfamiliaproduto').val(),
                 dataType: "json",
                 success: function(result) { callback(result); }
@@ -369,7 +330,7 @@ $(document).ready(function() {
             return item.grupoproduto; 
         },
         ajax:{
-            url:baseUrl+"/grupo-produto/ajax",
+            url:baseUrl+"/grupo-produto/listagem-json",
             dataType:'json',
             quietMillis:500,
             data:function(term, codfamiliaproduto, page) { 
@@ -386,7 +347,7 @@ $(document).ready(function() {
         initSelection:function (element, callback) {
             $.ajax({
                 type: "GET",
-                url: baseUrl+"/grupo-produto/ajax",
+                url: baseUrl+"/grupo-produto/listagem-json",
                 data: "id="+$('#codgrupoproduto').val(),
                 dataType: "json",
                 success: function(result) { callback(result); }
@@ -410,7 +371,7 @@ $(document).ready(function() {
             return item.subgrupoproduto; 
         },
         ajax:{
-            url:baseUrl+"/sub-grupo-produto/ajax",
+            url:baseUrl+"/sub-grupo-produto/listagem-json",
             dataType:'json',
             quietMillis:500,
             data:function(term, codgrupoproduto, page) { 
@@ -427,7 +388,7 @@ $(document).ready(function() {
         initSelection:function (element, callback) {
             $.ajax({
                 type: "GET",
-                url: baseUrl+"/sub-grupo-produto/ajax",
+                url: baseUrl+"/sub-grupo-produto/listagem-json",
                 data: "id="+$('#codsubgrupoproduto').val(),
                 dataType: "json",
                 success: function(result) { callback(result); }

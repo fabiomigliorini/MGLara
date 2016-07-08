@@ -87,7 +87,7 @@ class NcmController extends Controller
         //
     }
     
-    public function ajax(Request $request) {
+    public function listagemJson(Request $request) {
         if($request->get('q')) {
             return Ncm::select2($request->get('q'));
         } elseif($request->get('id')) {

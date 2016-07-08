@@ -151,7 +151,7 @@ class FamiliaProdutoController extends Controller
         Session::flash('flash_success', $msg);
     }    
     
-    public function ajax(Request $request)
+    public function listagemJson(Request $request)
     {
         if($request->get('codsecaoproduto')) {
             $model = FamiliaProduto::where('codsecaoproduto', $request->get('codsecaoproduto'))

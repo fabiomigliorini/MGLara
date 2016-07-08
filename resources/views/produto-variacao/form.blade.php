@@ -11,7 +11,7 @@
 </div>
 <div class="form-group">
     <label for="codmarca" class="col-sm-2 control-label">Marca</label>
-    <div class="col-sm-2">{!! Form::text('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%']) !!}</div>    
+    <div class="col-sm-2">{!! Form::select2marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%']) !!}</div>
 </div>
 <div class="form-group">
     <label for="referencia" class="col-sm-2 control-label">{!! Form::label('Referencia:') !!}</label>
@@ -55,7 +55,7 @@ $(document).ready(function() {
             return item.marca; 
         },
         ajax:{
-            url: baseUrl + "/marca/ajax",
+            url: baseUrl + "/marca/listagem-json",
             dataType: 'json',
             quietMillis: 500,
             data: function(term,page) { 
@@ -68,7 +68,7 @@ $(document).ready(function() {
         initSelection: function (element, callback) {
             $.ajax({
               type: "GET",
-              url: baseUrl + "/marca/ajax",
+              url: baseUrl + "/marca/listagem-json",
               data: "id="+<?php echo (isset($model->codmarca) ? $model->codmarca : "$('#codmarca').val()");?>,
               dataType: "json",
               success: function(result) { callback(result); }

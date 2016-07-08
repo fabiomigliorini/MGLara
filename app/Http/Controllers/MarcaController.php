@@ -122,14 +122,19 @@ class MarcaController extends Controller
         }     
     }
     
-    public function ajax(Request $request) {
-        if($request->get('q')) {
+    public function listagemJson(Request $request) 
+    {
+        if($request->get('q')) 
+        {
             $marcas = Marca::marca($request->get('q'))
                     ->select('codmarca as id', 'marca')
                     ->inativo($request->get('inativo'))
                     ->take(10)->get();
+            
             return response()->json(['items' => $marcas]);       
-        } elseif($request->get('id')) {
+            
+        } elseif($request->get('id')) 
+        {
             $marca = Marca::find($request->get('id'));
             return response()->json($marca);
         }

@@ -320,8 +320,8 @@ class ProdutoController extends Controller
         return json_encode($ret);
     }
     
-    public function ajax(Request $request)
-    //public function ajax($texto, $inativo = false, $limite = 20, $pagina = 1) 
+    public function listagemJson(Request $request)
+    //public function listagemJson($texto, $inativo = false, $limite = 20, $pagina = 1) 
     {
         $pagina = $request->get('page');
         $limite = $request->get('per_page');
@@ -407,7 +407,7 @@ class ProdutoController extends Controller
             
         } 
 
-        public function ajaxProduto(Request $request) 
+        public function listagemJsonProduto(Request $request) 
         {
             if($request->get('q')) {
                 $pagina = $request->get('page');
@@ -441,7 +441,7 @@ class ProdutoController extends Controller
             }
         }
         
-        public function ajaxDescricao(Request $request) 
+        public function listagemJsonDescricao(Request $request) 
         {
             $sql = Produto::produto($request->get('q'))
                     ->where('codsubgrupoproduto', $request->get('codsubgrupoproduto'))

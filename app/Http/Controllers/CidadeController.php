@@ -116,7 +116,7 @@ class CidadeController extends Controller
         }     
     }
     
-    public function ajax(Request $request){
+    public function listagemJson(Request $request){
         if($request->get('q')) {
             $model = Cidade::select2($request->get('q'));
             return response()->json($model);       

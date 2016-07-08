@@ -222,7 +222,7 @@ $(document).ready(function() {
             return item.produto + " - " + item.preco; 
         },
         ajax: {
-            url: baseUrl+'/produto/ajax',
+            url: baseUrl+'/produto/listagem-json',
             dataType: 'json',
             quietMillis: 500,
             data: function(term, current_page) { 
@@ -243,7 +243,7 @@ $(document).ready(function() {
         initSelection: function (element, callback) {
             $.ajax({
                 type: "GET",
-                url: baseUrl+'/produto/ajax',
+                url: baseUrl+'/produto/listagem-json',
                 data: "id=<?php echo $produto;?>",
                 dataType: "json",
                 success: function(result) { 

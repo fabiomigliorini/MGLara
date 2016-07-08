@@ -151,7 +151,7 @@ class GrupoProdutoController extends Controller
         Session::flash('flash_success', $msg);
     }
     
-    public function ajax(Request $request)
+    public function listagemJson(Request $request)
     {
         if($request->get('codfamiliaproduto')) {
             $model = GrupoProduto::where('codfamiliaproduto', $request->get('codfamiliaproduto'))

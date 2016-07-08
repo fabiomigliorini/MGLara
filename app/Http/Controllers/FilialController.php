@@ -86,7 +86,7 @@ class FilialController extends Controller
         //
     }
 
-    public function ajax(Request $request)
+    public function listagemJson(Request $request)
     {
         if($request->get('q')) {
             $query = Filial::filial($request->get('q'))

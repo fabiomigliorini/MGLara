@@ -164,7 +164,7 @@ class PessoaController extends Controller
         }     
     }
 
-    public function ajax(Request $request)
+    public function listagemJson(Request $request)
     {
         if($request->get('q')) {
             $query = Pessoa::pessoa($request->get('q'))

@@ -133,7 +133,7 @@ class UsuarioController extends Controller
             ->delete();        
     }
 
-//    public function ajax(Request $request){
+//    public function listagemJson(Request $request){
 //        if($request->get('q')) {
 //            $marcas = Marca::marca($request->get('q'))->select('codmarca as id', 'marca')->take(10)->get();
 //            return response()->json(['items' => $marcas]);       

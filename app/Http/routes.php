@@ -55,11 +55,11 @@ Route::group(['middleware' => 'auth'], function() {
 
     /* Pessoas */
     Route::resource('pessoa','PessoaController');
-    Route::get('pessoa-ajax', 'PessoaController@ajax');
+    Route::get('pessoa/listagem-json', 'PessoaController@listagemJson');
 
     /* Filiais */
     Route::resource('filial','FilialController');
-    Route::get('filial-ajax', 'FilialController@ajax');
+    Route::get('filial/listagem-json', 'FilialController@listagemJson');
     
     /* Estoque mês */
     Route::resource('estoque-mes','EstoqueMesController');       
@@ -70,35 +70,35 @@ Route::group(['middleware' => 'auth'], function() {
     
     /* GrupoProduto */
     Route::post('grupo-produto/inativo','GrupoProdutoController@inativo');
-    Route::resource('grupo-produto/ajax','GrupoProdutoController@ajax');
+    Route::resource('grupo-produto/listagem-json','GrupoProdutoController@listagemJson');
     Route::resource('grupo-produto/{id}/busca-codproduto','GrupoProdutoController@buscaCodproduto');           
     Route::resource('grupo-produto','GrupoProdutoController');           
                
     /* NCM */
-    Route::get('ncm/ajax','NcmController@ajax');           
+    Route::get('ncm/listagem-json','NcmController@listagemJson');           
     Route::resource('ncm','NcmController');           
                
     /* CEST */
-    Route::get('cest/ajax','CestController@ajax');           
+    Route::get('cest/listagem-json','CestController@listagemJson');           
     Route::resource('cest','CestController');           
                
     /* Marca */
-    Route::get('marca/ajax','MarcaController@ajax');           
+    Route::get('marca/listagem-json','MarcaController@listagemJson');           
     Route::resource('marca/inativo','MarcaController@inativo');           
     Route::resource('marca/{id}/busca-codproduto','MarcaController@buscaCodproduto'); 
     Route::resource('marca','MarcaController');           
               
     /* SubGrupoProduto */
     Route::resource('sub-grupo-produto/{id}/busca-codproduto','SubGrupoProdutoController@buscaCodproduto');           
-    Route::get('sub-grupo-produto/ajax','SubGrupoProdutoController@ajax');  
+    Route::get('sub-grupo-produto/listagem-json','SubGrupoProdutoController@listagemJson');  
     Route::post('sub-grupo-produto/inativo','SubGrupoProdutoController@inativo');  
     Route::resource('sub-grupo-produto','SubGrupoProdutoController');           
          
     /* Produto */
     Route::get('produto/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');           
     Route::resource('produto/busca-barras','ProdutoController@buscaPorBarras');
-    Route::resource('produto/ajax','ProdutoController@ajaxProduto');
-    Route::resource('produto/descricao','ProdutoController@ajaxDescricao');
+    Route::resource('produto/listagem-json','ProdutoController@listagemJsonProduto');
+    Route::resource('produto/descricao','ProdutoController@listagemJsonDescricao');
     Route::resource('produto/estoque-saldo','ProdutoController@estoqueSaldo');
     Route::resource('produto/inativo','ProdutoController@inativo');
     Route::resource('produto/{id}/recalcula-movimento-estoque','ProdutoController@recalculaMovimentoEstoque');
@@ -126,7 +126,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('estado','EstadoController');
     
     /* Cidades */
-    Route::resource('cidade/ajax','CidadeController@ajax');
+    Route::resource('cidade/listagem-json','CidadeController@listagemJson');
     Route::resource('cidade','CidadeController');
    
     /* Unidades de medida */
@@ -162,7 +162,7 @@ Route::group(['middleware' => 'auth'], function() {
         
     /* Família Produto */
     Route::post('familia-produto/inativo','FamiliaProdutoController@inativo');
-    Route::resource('familia-produto/ajax','FamiliaProdutoController@ajax');
+    Route::resource('familia-produto/listagem-json','FamiliaProdutoController@listagemJson');
     Route::resource('familia-produto','FamiliaProdutoController');
     
 

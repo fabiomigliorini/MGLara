@@ -118,7 +118,7 @@ $(document).ready(function() {
       return item.fantasia; 
     },
     'ajax':{
-      'url': baseUrl+'/pessoa-ajax',
+      'url': baseUrl+'/pessoa/listagem-json',
       'dataType':'json',
       'quietMillis':500,
       'data':function(term,page) { 
@@ -139,7 +139,7 @@ $(document).ready(function() {
     'initSelection':function (element, callback) {
       $.ajax({
         type: "GET",
-        url: baseUrl+'/pessoa-ajax',
+        url: baseUrl+'/pessoa/listagem-json',
         data: "codpessoa=",
         dataType: "json",
         success: function(result) {
@@ -184,7 +184,7 @@ $(document).ready(function() {
             return item.fantasia; 
         },
         'ajax':{
-            'url':baseUrl+'/pessoa-ajax',
+            'url':baseUrl+'/pessoa/listagem-json',
             'dataType':'json',
             'quietMillis':500,
             'data':function(term, current_page) { 
@@ -205,7 +205,7 @@ $(document).ready(function() {
         'initSelection':function (element, callback) {
             $.ajax({
                 type: "GET",
-                url: baseUrl+'/pessoa-ajax',
+                url: baseUrl+'/pessoa/listagem-json',
                 data: "id=<?php if(isset($_GET['codpessoa'])){echo $_GET['codpessoa'];}?>",
                 dataType: "json",
                 success: function(result) { 

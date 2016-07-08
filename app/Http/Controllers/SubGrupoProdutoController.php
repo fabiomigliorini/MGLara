@@ -150,7 +150,7 @@ class SubGrupoProdutoController extends Controller
         Session::flash('flash_success', $msg);
     }    
 
-    public function ajax(Request $request)
+    public function listagemJson(Request $request)
     {
         if($request->get('codgrupoproduto')) {
             $model = SubGrupoProduto::where('codgrupoproduto', $request->get('codgrupoproduto'))

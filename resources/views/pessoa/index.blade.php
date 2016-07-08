@@ -162,7 +162,7 @@ $(document).ready(function() {
             return item.cidade; 
         },
         ajax:{
-            url: baseUrl+'/cidade/ajax',
+            url: baseUrl+'/cidade/listagem-json',
             dataType: 'json',
             quietMillis: 500,
             data: function(term, current_page) { 
@@ -183,7 +183,7 @@ $(document).ready(function() {
         initSelection: function (element, callback) {
             $.ajax({
                 type: "GET",
-                url: baseUrl+'/cidade/ajax',
+                url: baseUrl+'/cidade/listagem-json',
                 data: "id=<?php if(isset($_GET['cidade'])){echo $_GET['cidade'];}?>",
                 dataType: "json",
                 success: function(result) { 
