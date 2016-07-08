@@ -71,8 +71,10 @@ class ProdutoHistoricoPreco extends MGModel
         $query = ProdutoHistoricoPreco::orderBy('criacao', 'DESC');
             
         if(isset($parametros['id']) and !empty($parametros['id']))
-            $query->id($parametros['id']);
-
+            $query->whereHas('Produto', function($q) use ($parametros) {
+                $q->where('codproduto',  $parametros['id']);
+            });
+        
         if(isset($parametros['produto']))
             $query->produto(removeAcentos ($parametros['produto']));
 
@@ -100,15 +102,6 @@ class ProdutoHistoricoPreco extends MGModel
         return $query->paginate($registros);
     }
 
-    
-    public function scopeId($query, $id)
-    {
-        if (trim($id) === '')
-            return;
-        
-        $query->where('codprodutohistoricopreco', $id);
-    }
-    
     public function scopeProduto($query, $produto) 
     {
         if (trim($produto) === '')

@@ -126,7 +126,7 @@ $secoes     = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')-
             </div>                            
             <div class="col-md-4">
                 <a href="{{ url("produto/$row->codproduto") }}">
-                    <strong>{{ $row->produto }}</strong>
+                    <strong>{!! listagemTitulo($row->produto, $row->inativo) !!}</strong>
                 </a>
                 @if(!empty($row->codsubgrupoproduto))
                 <div>
