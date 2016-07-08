@@ -62,7 +62,7 @@
       <div class="list-group-item">
         <div class="row item">
             <div class="col-md-4">
-                <div class="col-md-2"><small>{{ formataCodigo($row->codprodutohistoricopreco, 6) }}</small></div>
+                <div class="col-md-2"><small>{{ formataCodigo($row->codproduto, 6) }}</small></div>
                 <div class="col-md-10"><small><a href="{{ url("produto/$row->codproduto") }}">{{ $row->Produto->produto }}</a></small></div>
             </div>                            
             <div class="col-md-3">

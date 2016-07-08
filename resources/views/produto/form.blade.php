@@ -506,6 +506,11 @@ $(document).ready(function() {
         }
     });
 
+    $('#produto').on('blur',function() {
+        $("#produto-descricao").popover('destroy');
+    });
+
+
 });
 </script>
 @endsection
