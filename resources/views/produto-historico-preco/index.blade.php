@@ -44,7 +44,7 @@
     </div>
     
     <div class="form-group">
-        {!! Form::select2marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:160px']) !!}
+        {!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:160px']) !!}
     </div>
 
     <div class="form-group">

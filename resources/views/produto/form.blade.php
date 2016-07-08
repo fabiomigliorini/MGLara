@@ -5,7 +5,6 @@ use MGLara\Models\SecaoProduto;
 use MGLara\Models\Tributacao;
 use MGLara\Models\TipoProduto;
 
-$medidas        = [''=>''] + UnidadeMedida::orderBy('unidademedida')->lists('unidademedida', 'codunidademedida')->all();
 $secoes         = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')->all();
 $tributacoes    = [''=>''] + Tributacao::lists('tributacao', 'codtributacao')->all();
 $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')->all();
@@ -19,7 +18,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
     
     <div class="form-group">
         <label for="codmarca" class="col-sm-3 control-label">Marca</label>
-        <div class="col-sm-5">{!! Form::select2marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%']) !!}</div>    
+        <div class="col-sm-5">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%']) !!}</div>    
     </div>
     
     <div class="form-group">
@@ -71,7 +70,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
     <div class="form-group">
         <label for="preco" class="col-sm-3 control-label">{!! Form::label('Preço:') !!}</label>
         <div class="col-sm-2">{!! Form::text('preco', null, ['class'=> 'form-control text-right', 'id'=>'preco']) !!}</div>
-        <div class="col-sm-3">{!! Form::select('codunidademedida', $medidas, $model->codunidademedida, ['class'=> 'form-control', 'id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
+        <div class="col-sm-3">{!! Form::select2UnidadeMedida('codunidademedida', null, ['required' => true,  'class'=> 'form-control', 'campo' => 'unidademedida', 'id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
         
     </div>
 
@@ -133,7 +132,7 @@ $(document).ready(function() {
             }
         });
     });
-    $('#produto, #codunidademedida, #codsubgrupoproduto, #codmarca, #preco, #codtributacao, #codtipoproduto, #codncm').prop('required', true);
+    $('#produto, #codsubgrupoproduto, #codmarca, #preco, #codtributacao, #codtipoproduto, #codncm').prop('required', true);
     $('#importado').bootstrapSwitch('state', <?php echo ($model->importado == 1 ? 'true' : 'false'); ?>);
     $('#site').bootstrapSwitch('state', <?php echo ($model->site == 1 ? 'true' : 'false'); ?>);
     $('input[name="site"]').on('switchChange.bootstrapSwitch', function(event, state) {
@@ -238,12 +237,6 @@ $(document).ready(function() {
         },
         width:'resolve'
     });      
-    
-    $('#codunidademedida').select2({
-        placeholder: 'Unidade Medida',
-        allowClear: true,
-        closeOnSelect: true
-    });
 
     $('#codtributacao').select2({
         placeholder: 'Tributação',

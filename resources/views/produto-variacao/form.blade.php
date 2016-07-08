@@ -11,7 +11,7 @@
 </div>
 <div class="form-group">
     <label for="codmarca" class="col-sm-2 control-label">Marca</label>
-    <div class="col-sm-2">{!! Form::select2marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%']) !!}</div>
+    <div class="col-sm-2">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%']) !!}</div>
 </div>
 <div class="form-group">
     <label for="referencia" class="col-sm-2 control-label">{!! Form::label('Referencia:') !!}</label>
