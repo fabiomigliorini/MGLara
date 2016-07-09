@@ -107,12 +107,35 @@ function excluirClick (tag)
     return true;
 }
 
-$(document).ready(function() {
+function recarregaDiv(div, url)
+{
+    if(url === undefined) {
+        url = $(location).attr('href');
+    };
+
+    if (url.indexOf("?") == -1)
+        url += '?';
+    else
+        url += '&';
     
-    $('a[data-excluir]').click(function(event) {
+    url += '_div=' + div + ' #' + div + ' > *';
+
+    $('#' + div).load(url, function (){
+        inicializa('#' + div + ' *');
+    });
+}
+
+function inicializa(elemento)
+{
+    $(elemento).find('a[data-excluir]').click(function(event) {
         event.preventDefault();
         return excluirClick($(this));
     });
+}
+
+$(document).ready(function() {
+    
+    inicializa('*');
     
     $('#deleteId').on("submit", function(e) {
         var currentForm = this;

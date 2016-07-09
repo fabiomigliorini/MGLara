@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div class="panel panel-default" id="div-variacoes">
     <?php
     $pvs = $model->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
     ?>
@@ -21,7 +21,7 @@
                     {{ $pv->referencia }}
                     &nbsp;
                     <a href="{{ url("produto-variacao/$pv->codprodutovariacao/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
-                    <a href="{{ url("produto-variacao/$pv->codprodutovariacao") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a variação '{{ $pv->variacao }}'?" data-after-delete="location.reload();"><i class="glyphicon glyphicon-trash"></i></a>
+                    <a href="{{ url("produto-variacao/$pv->codprodutovariacao") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a variação '{{ $pv->variacao }}'?" data-after-delete="recarregaDiv('div-variacoes');"><i class="glyphicon glyphicon-trash"></i></a>
                 </div>
                     
                 <div class="row">
@@ -43,7 +43,7 @@
                             @endif
                             &nbsp;
                             <a href="{{ url("produto-barra/{$pb->codprodutobarra}/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
-                            <a href="{{ url("produto-barra/{$pb->codprodutobarra}") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o Código de Barras '{{ $pb->barras }}'?" data-after-delete="location.reload();"><i class="glyphicon glyphicon-trash"></i></a>
+                            <a href="{{ url("produto-barra/{$pb->codprodutobarra}") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o Código de Barras '{{ $pb->barras }}'?" data-after-delete="recarregaDiv('div-variacoes');"><i class="glyphicon glyphicon-trash"></i></a>
                         </small>
                     </div>
                 @endforeach
