@@ -3,6 +3,43 @@
 
 use Collective\Html\FormFacade;
 
+Form::macro('select2', function($name, $list = [], $selected = null, $options = [])
+{
+    
+    if (empty($options['id']))
+        $options['id'] = $name;
+    
+    if (empty($options['placeholder']))
+        $options['placeholder'] = 'Selecione...';
+    
+    if (empty($options['allowClear']))
+        $options['allowClear'] = true;
+    $options['allowClear'] = ($options['allowClear'])?'true':'false';
+    
+    if (empty($options['closeOnSelect']))
+        $options['closeOnSelect'] = true;
+    $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
+    
+    $script = <<< END
+  
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#{$options['id']}').select2({
+                    placeholder: '{$options['placeholder']}',
+                    allowClear: {$options['allowClear']},
+                    closeOnSelect: {$options['closeOnSelect']}
+                });
+            });            
+        </script>
+END;
+    
+    unset($options['placeholder']);
+                    
+    $campo = Form::select($name, $list, $selected, $options);
+            
+    return $campo . $script;
+});
+
 Form::macro('select2Marca', function($name, $value = null, $options = [])
 {
     
@@ -74,43 +111,7 @@ END;
     return $campo . $script;
 });
 
-Form::macro('select2', function($name, $list = [], $selected = null, $options = [])
-{
-    
-    if (empty($options['id']))
-        $options['id'] = $name;
-    
-    if (empty($options['placeholder']))
-        $options['placeholder'] = 'Selecione...';
-    
-    if (empty($options['allowClear']))
-        $options['allowClear'] = true;
-    $options['allowClear'] = ($options['allowClear'])?'true':'false';
-    
-    if (empty($options['closeOnSelect']))
-        $options['closeOnSelect'] = true;
-    $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
-    
-    $script = <<< END
-  
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $('#{$options['id']}').select2({
-                    placeholder: '{$options['placeholder']}',
-                    allowClear: {$options['allowClear']},
-                    closeOnSelect: {$options['closeOnSelect']}
-                });
-            });            
-        </script>
-END;
-    
-    unset($options['placeholder']);
-                    
-    $campo = Form::select($name, $list, $selected, $options);
-            
-    return $campo . $script;
-});
-
+/* UNIDADES DE MEDIDA */
 Form::macro('select2UnidadeMedida', function($name, $selected = null, $options = [])
 {
     if (empty($options['campo']))
@@ -118,3 +119,27 @@ Form::macro('select2UnidadeMedida', function($name, $selected = null, $options =
     $medidas = [''=>''] + MGLara\Models\UnidadeMedida::orderBy('unidademedida')->lists($options['campo'], 'codunidademedida')->all();
     return Form::select2($name, $medidas, $selected, $options);
 });
+
+/* SEÇÃO DE PRODUTO */
+Form::macro('select2SecaoProduto', function($name, $selected = null, $options = [])
+{
+    $secoes = [''=>''] + MGLara\Models\SecaoProduto::orderBy('secaoproduto')->lists('secaoproduto', 'codsecaoproduto')->all();
+    $campo = Form::select2($name, $secoes, $selected, $options);
+    $script = <<< END
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var limpaSecaoProduto = function(){
+                    $('#codfamiliaproduto').select2('val', null);
+                    $('#codgrupoproduto').select2('val', null);
+                    $('#codsubgrupoproduto').select2('val', null);        
+                }
+                $("#codsecaoproduto").on("select2-removed", function(e) {
+                    limpaSecaoProduto;
+                }).change(limpaSecaoProduto);
+            });            
+        </script>
+END;
+
+    return $campo . $script;    
+});
+

@@ -5,7 +5,7 @@ use MGLara\Models\SecaoProduto;
 use MGLara\Models\Tributacao;
 use MGLara\Models\TipoProduto;
 
-$secoes         = [''=>''] + SecaoProduto::lists('secaoproduto', 'codsecaoproduto')->all();
+
 $tributacoes    = [''=>''] + Tributacao::lists('tributacao', 'codtributacao')->all();
 $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')->all();
 
@@ -23,7 +23,8 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
     
     <div class="form-group">
         <label for="codsecaoproduto" class="col-sm-3 control-label">Seção</label>
-        <div class="col-sm-6">{!! Form::select('codsecaoproduto', $secoes, null, ['class'=> 'form-control', 'id' => 'codsecaoproduto', 'style'=>'width:100%']) !!}</div>
+        <div class="col-sm-6">{!! Form::select2SecaoProduto('codsecaoproduto', null, ['required' => true, 'class'=> 'form-control', 'id' => 'codsecaoproduto', 'style'=>'width:100%', 'placeholder' => 'Seção']) !!}</div>
+
     </div>
 
     <div class="form-group">
@@ -253,11 +254,7 @@ $(document).ready(function() {
     if($('#codsecaoproduto').val() == '') {
         $('#codsecaoproduto').val({{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto or ''}});
     }
-    $('#codsecaoproduto').select2({
-        placeholder: 'Seção',
-        allowClear: true,
-        closeOnSelect: true,
-    });
+    
 
     if($('#codfamiliaproduto').val() == '') {
         $('#codfamiliaproduto').val({{ $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codfamiliaproduto or '' }});
@@ -286,6 +283,7 @@ $(document).ready(function() {
                     q: term,
                     codsecaoproduto: $('#codsecaoproduto').val()
                 }; 
+                console.log($('#codsecaoproduto').val());
             },
             results:function(data,page) {
                 var more = (page * 20) < data.total;
@@ -303,6 +301,8 @@ $(document).ready(function() {
         },
         width:'resolve'
     });
+
+
     
     if($('#codgrupoproduto').val() == '') {
         $('#codgrupoproduto').val({{ $model->SubGrupoProduto->GrupoProduto->codgrupoproduto or '' }});
@@ -390,12 +390,12 @@ $(document).ready(function() {
         width:'resolve'
     });
 
-    var limpaSecaoProduto = function(){
+/*    var limpaSecaoProduto = function(){
         $('#codfamiliaproduto').select2('val', null);
         $('#codgrupoproduto').select2('val', null);
         $('#codsubgrupoproduto').select2('val', null);        
     }
-    var limpaFamiliaProduto = function(){
+*/    var limpaFamiliaProduto = function(){
         $('#codgrupoproduto').select2('val', null);
         $('#codsubgrupoproduto').select2('val', null);        
     }
@@ -410,12 +410,12 @@ $(document).ready(function() {
             timer = setTimeout(callback, ms);
         };
     });
-
+/*
     $("#codsecaoproduto").on("select2-removed", function(e) {
         limpaSecaoProduto;
     }).change(limpaSecaoProduto);
 
-    $("#codfamiliaproduto").on("select2-removed", function(e) {
+*/    $("#codfamiliaproduto").on("select2-removed", function(e) {
         limpaFamiliaProduto
     }).change(limpaFamiliaProduto);
 
