@@ -389,3 +389,90 @@ END;
     
     return $campo . $script;
 });
+
+
+/* NCM */
+Form::macro('select2Ncm', function($name, $value = null, $options = [])
+{
+    if (empty($options['id']))
+        $options['id'] = $name;
+    
+    if (empty($options['placeholder']))
+        $options['placeholder'] = 'Sub Grupo...';
+    
+    if (empty($options['allowClear']))
+        $options['allowClear'] = true;
+    $options['allowClear'] = ($options['allowClear'])?'true':'false';
+    
+    if (empty($options['closeOnSelect']))
+        $options['closeOnSelect'] = true;
+    $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
+    
+    if (empty($options['somenteAtivos']))
+        $options['somenteAtivos'] = true;
+    $options['somenteAtivos'] = ($options['somenteAtivos'])?'true':'false';
+    
+    $script = <<< END
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#{$options['id']}').select2({
+                    placeholder: '{$options['placeholder']}',
+                    minimumInputLength: 1,
+                    allowClear: {$options['allowClear']},
+                    closeOnSelect: {$options['closeOnSelect']},
+                    formatResult:function(item) {
+                        var markup = "";
+                        markup    += "<b>" + item.ncm + "</b>&nbsp;";
+                        markup    += "<span>" + item.descricao + "</span>";
+                        return markup;
+                    },
+                    formatSelection:function(item) { 
+                        return item.ncm + "&nbsp;" + item.descricao; 
+                    },
+                    ajax:{
+                        url:baseUrl+"/ncm/listagem-json",
+                        dataType:'json',
+                        quietMillis:500,
+                        data:function(term, page) { 
+                            return {q: term}; 
+                        },
+                        results:function(data, page) {
+                            var more = (page * 20) < data.total;
+                            return {results: data.data};
+                        }
+                    },
+                    initSelection:function (element, callback) {
+                        $.ajax({
+                            type: "GET",
+                            url: baseUrl+"/ncm/listagem-json",
+                            data: "id="+$('#{$options['id']}').val(),
+                            dataType: "json",
+                            success: function(result) { callback(result); }
+                        });
+                    },
+                    width:'resolve'
+                });
+            });
+        </script>
+END;
+
+    $campo = Form::text($name, $value, $options);
+    
+    return $campo . $script;
+});
+
+
+
+/* TRIBUTAÇÃO */
+Form::macro('select2Tributacao', function($name, $selected = null, $options = [])
+{
+    $tributacoes = [''=>''] + MGLara\Models\Tributacao::orderBy('tributacao')->lists('tributacao', 'codtributacao')->all();
+    return Form::select2($name, $tributacoes, $selected, $options);
+});
+
+/* TIPO PRODUTO */
+Form::macro('select2TipoProduto', function($name, $selected = null, $options = [])
+{
+    $tipos = [''=>''] + MGLara\Models\TipoProduto::orderBy('tipoproduto')->lists('tipoproduto', 'codtipoproduto')->all();
+    return Form::select2($name, $tipos, $selected, $options);
+});

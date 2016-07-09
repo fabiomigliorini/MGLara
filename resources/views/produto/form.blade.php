@@ -5,20 +5,16 @@ use MGLara\Models\SecaoProduto;
 use MGLara\Models\Tributacao;
 use MGLara\Models\TipoProduto;
 
-
-$tributacoes    = [''=>''] + Tributacao::lists('tributacao', 'codtributacao')->all();
-$tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')->all();
-
 ?>
 <div class='col-md-5'>
     <div class="form-group">
         <label for="codtipoproduto" class="col-sm-3 control-label">{!! Form::label('Tipo:') !!}</label>
-        <div class="col-sm-6">{!! Form::select('codtipoproduto', $tipos, $model->codtipoproduto, ['class'=> 'form-control', 'id' => 'codtipoproduto', 'style'=>'width:100%']) !!}</div>
+        <div class="col-sm-6">{!! Form::select2TipoProduto('codtipoproduto', null, ['required' => true,  'class'=> 'form-control', 'id' => 'codtipoproduto', 'style'=>'width:100%', 'placeholder'=>'Tipo']) !!}</div>
     </div>
     
     <div class="form-group">
         <label for="codmarca" class="col-sm-3 control-label">Marca</label>
-        <div class="col-sm-5">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%']) !!}</div>    
+        <div class="col-sm-5">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%', 'required'=>true]) !!}</div>    
     </div>
     
     <div class="form-group">
@@ -29,26 +25,26 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 
     <div class="form-group">
         <label for="codfamiliaproduto" class="col-sm-3 control-label">Família</label>
-        <div class="col-sm-6">{!! Form::select2FamiliaProduto('codfamiliaproduto', null, ['class' => 'form-control','id'=>'codfamiliaproduto', 'style'=>'width:100%', 'placeholder' => 'Família']) !!}</div>
+        <div class="col-sm-6">{!! Form::select2FamiliaProduto('codfamiliaproduto', null, ['required' => true, 'class' => 'form-control','id'=>'codfamiliaproduto', 'style'=>'width:100%', 'placeholder' => 'Família']) !!}</div>
     </div>
 
     <div class="form-group">
         <label for="codgrupoproduto" class="col-sm-3 control-label">Grupo Produto</label>
-        <div class="col-sm-6">{!! Form::select2GrupoProduto('codgrupoproduto', null, ['class' => 'form-control','id'=>'codgrupoproduto', 'style'=>'width:100%', 'placeholder' => 'Grupo']) !!}</div>
+        <div class="col-sm-6">{!! Form::select2GrupoProduto('codgrupoproduto', null, ['required' => true, 'class' => 'form-control','id'=>'codgrupoproduto', 'style'=>'width:100%', 'placeholder' => 'Grupo']) !!}</div>
     </div>
 
     <div class="form-group">
         <label for="codsubgrupoproduto" class="col-sm-3 control-label">Sub Grupo</label>
-        <div class="col-sm-6">{!! Form::select2SubGrupoProduto('codsubgrupoproduto', null, ['class' => 'form-control','id'=>'codsubgrupoproduto', 'style'=>'width:100%', 'placeholder' => 'Sub Grupo']) !!}</div>        
+        <div class="col-sm-6">{!! Form::select2SubGrupoProduto('codsubgrupoproduto', null, ['required' => true, 'class' => 'form-control','id'=>'codsubgrupoproduto', 'style'=>'width:100%', 'placeholder' => 'Sub Grupo']) !!}</div>        
     </div>
     <div class="form-group">
         <label for="ncm" class="col-sm-3 control-label">{!! Form::label('NCM:') !!}</label>
-        <div class="col-sm-9">{!! Form::text('codncm', null, ['class'=> 'form-control', 'id'=>'codncm']) !!}</div>
+        <div class="col-sm-9">{!! Form::select2Ncm('codncm', null, ['required' => true, 'class' => 'form-control','id'=>'codncm', 'style'=>'width:100%', 'placeholder' => 'NCM']) !!}</div>
     </div>
     
     <div class="form-group">
         <label for="codtributacao" class="col-sm-3 control-label">{!! Form::label('Tributação:') !!}</label>
-        <div class="col-sm-4">{!! Form::select('codtributacao', $tributacoes, $model->codtributacao, ['class'=> 'form-control', 'id'=>'codtributacao', 'style'=>'width:100%'], ['data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+        <div class="col-sm-4">{!! Form::select2Tributacao('codtributacao', null, ['required' => true, 'placeholder'=>'Tributação',  'class'=> 'form-control', 'id' => 'codtributacao', 'style'=>'width:100%']) !!}</div>
     </div>
 
     <div class="form-group">
@@ -60,7 +56,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 <div class='col-md-7'>
     <div class="form-group">
         <label for="produto" class="col-sm-3 control-label">{!! Form::label('Descrição:') !!}</label>
-        <div class="col-sm-9" id="produto-descricao">{!! Form::text('produto', null, ['class'=> 'form-control', 'id'=>'produto']) !!}</div>
+        <div class="col-sm-9" id="produto-descricao">{!! Form::text('produto', null, ['class'=> 'form-control', 'id'=>'produto', 'required'=>'true']) !!}</div>
     </div>
 
     <div class="form-group">
@@ -70,7 +66,7 @@ $tipos          = [''=>''] + TipoProduto::lists('tipoproduto', 'codtipoproduto')
 
     <div class="form-group">
         <label for="preco" class="col-sm-3 control-label">{!! Form::label('Preço:') !!}</label>
-        <div class="col-sm-2">{!! Form::text('preco', null, ['class'=> 'form-control text-right', 'id'=>'preco']) !!}</div>
+        <div class="col-sm-2">{!! Form::text('preco', null, ['required' => true, 'class'=> 'form-control text-right', 'id'=>'preco']) !!}</div>
         <div class="col-sm-3">{!! Form::select2UnidadeMedida('codunidademedida', null, ['required' => true,  'class'=> 'form-control', 'campo' => 'unidademedida', 'id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
         
     </div>
@@ -123,7 +119,6 @@ $(document).ready(function() {
             }
         });
     });
-    $('#produto, #codmarca, #preco, #codtributacao, #codtipoproduto, #codncm').prop('required', true);
     $('#importado').bootstrapSwitch('state', <?php echo ($model->importado == 1 ? 'true' : 'false'); ?>);
     $('#site').bootstrapSwitch('state', <?php echo ($model->site == 1 ? 'true' : 'false'); ?>);
     $('input[name="site"]').on('switchChange.bootstrapSwitch', function(event, state) {
@@ -151,44 +146,6 @@ $(document).ready(function() {
     <?php if($model->inativo):?>$('#inativo').val({{ formatadata($model->inativo)}}).change();<?php endif;?>
     $("#produto").Setcase();
     $('#preco').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
-
-    $('#codncm').select2({
-        minimumInputLength:1,
-        allowClear:true,
-        closeOnSelect:true,
-        placeholder:'NCM',
-        formatResult:function(item) {
-            var markup = "";
-            markup    += "<b>" + item.ncm + "</b>&nbsp;";
-            markup    += "<span>" + item.descricao + "</span>";
-            return markup;
-        },
-        formatSelection:function(item) { 
-            return item.ncm + "&nbsp;" + item.descricao; 
-        },
-        ajax:{
-            url:baseUrl+"/ncm/listagem-json",
-            dataType:'json',
-            quietMillis:500,
-            data:function(term, page) { 
-                return {q: term}; 
-            },
-            results:function(data, page) {
-                var more = (page * 20) < data.total;
-                return {results: data.data};
-            }
-        },
-        initSelection:function (element, callback) {
-            $.ajax({
-                type: "GET",
-                url: baseUrl+"/ncm/listagem-json",
-                data: "id="+$('#codncm').val(),
-                dataType: "json",
-                success: function(result) { callback(result); }
-            });
-        },
-        width:'resolve'
-    });
     
     $('#codcest').select2({
         minimumInputLength:0,
@@ -229,22 +186,9 @@ $(document).ready(function() {
         width:'resolve'
     });      
 
-    $('#codtributacao').select2({
-        placeholder: 'Tributação',
-        allowClear: true,
-        closeOnSelect: true
-    });
-
-    $('#codtipoproduto').select2({
-        placeholder: 'Tipo',
-        allowClear: true,
-        closeOnSelect: true
-    });
-
     if($('#codsecaoproduto').val() == '') {
         $('#codsecaoproduto').val({{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto or ''}});
     }
-    
 
     if($('#codfamiliaproduto').val() == '') {
         $('#codfamiliaproduto').val({{ $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codfamiliaproduto or '' }});
