@@ -109,6 +109,7 @@ class ProdutoController extends Controller
         /*
         DB::enableQueryLog();
         */
+        //file_put_contents('/tmp/request.html', '<pre>' . print_r($request) . '</pre>');
         
         $model = Produto::find($id);
         /*
@@ -130,7 +131,21 @@ class ProdutoController extends Controller
         );
          * 
          */
-        $ret = view('produto.show', compact('model', 'nfpbs', 'npbs'));
+        
+        switch ($request->get('_tab'))
+        {
+            case 'tab-variacoes';
+                $view = 'produto.show-variacoes';
+                break;
+            case 'tab-embalagens';
+                $view = 'produto.show-embalagens';
+                break;
+            default:
+                $view = 'produto.show';
+
+        }
+        
+        $ret = view($view, compact('model', 'nfpbs', 'npbs'));
         
         /*
         $queries = DB::getQueryLog();

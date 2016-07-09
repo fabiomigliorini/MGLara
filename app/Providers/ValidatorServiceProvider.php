@@ -120,11 +120,16 @@ class ValidatorServiceProvider extends ServiceProvider
             {
                 $valor = trim($valor);
                 if (!empty($valor))
-                    $query->where($campo, 'ilike', "%$valor%");
+                {
+                    if (is_numeric($valor))
+                        $query->where($campo, '=', $valor);
+                    else
+                        $query->where($campo, 'ilike', $valor);
+                }
                 else
                     $query->whereNull($campo);
             }
-            
+
             $qtd = $query->count();
 
             if ($qtd > 0)
