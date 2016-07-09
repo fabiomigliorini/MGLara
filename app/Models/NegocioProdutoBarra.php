@@ -2,6 +2,7 @@
 
 namespace MGLara\Models;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Campos
@@ -111,15 +112,29 @@ class NegocioProdutoBarra extends MGModel
         return $this->hasMany(NegocioProdutoBarra::class, 'codnegocioprodutobarradevolucao', 'codnegocioprodutobarra');
     }
     
-    public static function search($id, $de, $ate, $codfilial, $operacao, $codpessoa)
+    public static function search($parametros, $registros = 20)
     {
-        return NegocioProdutoBarra::id($id)
-            ->lancamentoDe($de)
-            ->lancamentoAte($ate)
-            ->filial($codfilial)
-            ->operacao($operacao)
-            ->pessoa($codpessoa)
-            ->paginate(5);
+        $query = NegocioProdutoBarra::orderBy('tblnegocio.lancamento', 'DESC');
+        
+        $query = $query->join('tblnegocio', function($join) use ($parametros) {
+            $join->on('tblnegocio.codnegocio', '=', 'tblnegocioprodutobarra.codnegocio');
+        });
+        
+        if (isset($parametros['codproduto']))
+        {
+            $query = $query->join('tblprodutobarra', function($join) use ($parametros) {
+                $join->on('tblprodutobarra.codprodutobarra', '=', 'tblnegocioprodutobarra.codprodutobarra');
+            });
+            $query = $query->join('tblprodutovariacao', function($join) use ($parametros) {
+                $join->on('tblprodutovariacao.codprodutovariacao', '=', 'tblprodutobarra.codprodutovariacao');
+            });
+            $query = $query->where('tblprodutovariacao.codproduto', '=', $parametros['codproduto']);
+        }
+        
+        //dd($query->toSql());
+        
+        return $query->paginate($registros);
+        
     }
     
     public function scopeId($query, $id)

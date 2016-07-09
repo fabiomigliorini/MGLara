@@ -159,16 +159,16 @@
     <div class="col-md-6">
         <div>
             <ul class="nav nav-pills" role="tablist">
-                <li role="presentation" class="active"><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Variações</a></li>
+                <li role="presentation"><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Variações</a></li>
                 <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab" data-toggle="tab">Estoque</a></li>
                 <li role="presentation"><a href="#tab-site" aria-controls="profile" role="tab" data-toggle="tab">Site</a></li>
-                <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">Fiscal</a></li>
-                <li role="presentation"><a href="#tab-npb" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
+                <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">NCM</a></li>
+                <li role="presentation" class='active'><a href="#tab-npb" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
                 <li role="presentation"><a href="#tab-nfpb" aria-controls="messages" role="tab" data-toggle="tab">Notas Fiscais</a></li>
             </ul>
             <br>
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="tab-variacoes">
+                <div role="tabpanel" class="tab-pane fade" id="tab-variacoes">
                     @include('produto.show-variacoes')
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-estoque">
@@ -179,19 +179,12 @@
                     <strong>Divulgado no Site: {{ ($model->site)?'Sim':'Não' }}</strong>
                     <hr>
                     {{ $model->descricaosite }}
-                    <?php
-                    //@include('produto.estoque')
-                    ?>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-fiscal">
-                    <?php
-                    //@include('produto.fiscal')
-                    ?>
+                    @include('produto.show-ncm')
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab-npb">
-                    <?php
-                    @include('negocio-produto-barra.index')
-                    ?>
+                <div role="tabpanel" class="tab-pane fade in active" id="tab-npb">
+                    @include('produto.show-negocios')
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-nfpb">
                     <?php

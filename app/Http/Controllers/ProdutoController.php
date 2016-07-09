@@ -112,6 +112,9 @@ class ProdutoController extends Controller
         //file_put_contents('/tmp/request.html', '<pre>' . print_r($request) . '</pre>');
         
         $model = Produto::find($id);
+        
+        $npbs = NegocioProdutoBarra::search(['codproduto'=>$id], 10);
+        
         /*
         $npbs = NegocioProdutoBarra::search(
             $id,
