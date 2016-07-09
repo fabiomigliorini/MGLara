@@ -143,3 +143,90 @@ END;
     return $campo . $script;    
 });
 
+
+/* FAMÍLIA DE PRODUTO */
+Form::macro('select2FamiliaProduto', function($name, $value = null, $options = [])
+{
+    
+    if (empty($options['id']))
+        $options['id'] = $name;
+    
+    if (empty($options['placeholder']))
+        $options['placeholder'] = 'Família...';
+    
+    if (empty($options['allowClear']))
+        $options['allowClear'] = true;
+    $options['allowClear'] = ($options['allowClear'])?'true':'false';
+    
+    if (empty($options['closeOnSelect']))
+        $options['closeOnSelect'] = true;
+    $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
+    
+    if (empty($options['somenteAtivos']))
+        $options['somenteAtivos'] = true;
+    $options['somenteAtivos'] = ($options['somenteAtivos'])?'true':'false';
+    
+    $script = <<< END
+  
+        <script type="text/javascript">
+            $(document).ready(function() {
+
+                var limpaFamiliaProduto = function(){
+                    $('#codgrupoproduto').select2('val', null);
+                    $('#codsubgrupoproduto').select2('val', null);        
+                }
+
+                $("#codfamiliaproduto").on("select2-removed", function(e) {
+                    limpaFamiliaProduto
+                }).change(limpaFamiliaProduto);
+
+
+                $('#{$options['id']}').select2({
+                    placeholder: '{$options['placeholder']}',
+                    minimumInputLength: 0,
+                    allowClear: {$options['allowClear']},
+                    closeOnSelect: {$options['closeOnSelect']},
+                    formatResult:function(item) {
+                        var markup = "<div class='row-fluid'>";
+                        markup    += item.familiaproduto;
+                        markup    += "</div>";
+                        return markup;
+                    },
+                    formatSelection:function(item) { 
+                        return item.familiaproduto; 
+                    },
+                    ajax:{
+                        url:baseUrl+"/familia-produto/listagem-json",
+                        dataType:'json',
+                        quietMillis:500,
+                        data:function(term, codsecaoproduto, page) { 
+                            return {
+                                q: term,
+                                codsecaoproduto: $('#codsecaoproduto').val()
+                            }; 
+                            console.log($('#codsecaoproduto').val());
+                        },
+                        results:function(data,page) {
+                            var more = (page * 20) < data.total;
+                            return {results: data.items};
+                        }
+                    },
+                    initSelection:function (element, callback) {
+                        $.ajax({
+                            type: "GET",
+                            url: baseUrl+"/familia-produto/listagem-json",
+                            data: "id="+$('#{$options['id']}').val(),
+                            dataType: "json",
+                            success: function(result) { callback(result); }
+                        });
+                    },
+                    width:'resolve'
+                });
+            });
+        </script>
+END;
+
+    $campo = Form::text($name, $value, $options);
+    
+    return $campo . $script;
+});
