@@ -502,78 +502,10 @@ $(document).ready(function() {
             e.preventDefault();
         });   	    
         
-        $('#nfpb_saida_de, #nfpb_saida_ate, #npb_lancamento_de, #npb_lancamento_ate').datetimepicker({
-            useCurrent: false,
-            showClear: true,
-            locale: 'pt-br',
-            format: 'DD/MM/YY'
-        });
-        
         $(document).on('dp.change', '#npb_lancamento_de, #npb_lancamento_de, #npb_codpessoa', function() {
             $('#produto-npb-search').change();
         });
         
-        $('#npb_codpessoa').select2({
-            'minimumInputLength':3,
-            'allowClear':true,
-            'closeOnSelect':true,
-            'placeholder':'Pessoa',
-            'formatResult':function(item) {
-                var css = "div-combo-pessoa";
-                if (item.inativo)
-                    var css = "text-error";
-
-                var css_titulo = "";
-                var css_detalhes = "text-muted";
-                if (item.inativo){
-                    css_titulo = "text-error";
-                    css_detalhes = "text-error";
-                }
-
-                var nome = item.fantasia;
-                var markup = "";
-                markup    += "<strong class='" + css_titulo + "'>" + nome + "</strong>";
-                markup    += "<small class='pull-right " + css_detalhes + "'>#" + formataCodigo(item.id) + "</small>";
-                markup    += "<br>";
-                markup    += "<small class='" + css_detalhes + "'>" + item.pessoa + "</small>";
-                markup    += "<small class='pull-right " + css_detalhes + "'>" + formataCnpjCpf(item.cnpj) + "</small>";
-                return markup;
-            },
-            'formatSelection':function(item) { 
-                return item.fantasia; 
-            },
-            'ajax':{
-                'url':baseUrl+'/pessoa/listagem-json',
-                'dataType':'json',
-                'quietMillis':500,
-                'data':function(term, current_page) { 
-                    return {
-                        q: term, 
-                        per_page: 10, 
-                        current_page: current_page
-                    }; 
-                },
-                'results':function(data,page) {
-                    //var more = (current_page * 20) < data.total;
-                    return {
-                        results: data.data, 
-                        //more: data.mais
-                    };
-                }
-            },
-            'initSelection':function (element, callback) {
-                $.ajax({
-                    type: "GET",
-                    url: baseUrl+'/pessoa/listagem-json',
-                    data: "id=<?php if(isset($_GET['codpessoa'])){echo $_GET['codpessoa'];}?>",
-                    dataType: "json",
-                    success: function(result) { 
-                        callback(result); 
-                    }
-                });
-            },'width':'resolve'
-        });
-
         // PAGINAÇÃO NOTAS FISCAIS PRODUTO BARRA
         $("#produto-nfpb-search").on("change", function (event) {
             var $this = $(this);
@@ -604,68 +536,6 @@ $(document).ready(function() {
         $(document).on('dp.change', '#nfpb_saida_de, #nfpb_saida_ate', function() {
             $('#produto-nfpb-search').change();
         });
-    
-        $('#nfpb_codpessoa').select2({
-            'minimumInputLength':3,
-            'allowClear':true,
-            'closeOnSelect':true,
-            'placeholder':'Pessoa',
-            'formatResult':function(item) {
-                var css = "div-combo-pessoa";
-                if (item.inativo)
-                    var css = "text-error";
-
-                var css_titulo = "";
-                var css_detalhes = "text-muted";
-                if (item.inativo){
-                    css_titulo = "text-error";
-                    css_detalhes = "text-error";
-                }
-
-                var nome = item.fantasia;
-                var markup = "";
-                markup    += "<strong class='" + css_titulo + "'>" + nome + "</strong>";
-                markup    += "<small class='pull-right " + css_detalhes + "'>#" + formataCodigo(item.id) + "</small>";
-                markup    += "<br>";
-                markup    += "<small class='" + css_detalhes + "'>" + item.pessoa + "</small>";
-                markup    += "<small class='pull-right " + css_detalhes + "'>" + formataCnpjCpf(item.cnpj) + "</small>";
-                return markup;
-            },
-            'formatSelection':function(item) { 
-                return item.fantasia; 
-            },
-            'ajax':{
-                'url':baseUrl+'/pessoa/listagem-json',
-                'dataType':'json',
-                'quietMillis':500,
-                'data':function(term, current_page) { 
-                    return {
-                        q: term, 
-                        per_page: 10, 
-                        current_page: current_page
-                    }; 
-                },
-                'results':function(data,page) {
-                    //var more = (current_page * 20) < data.total;
-                    return {
-                        results: data.data, 
-                        //more: data.mais
-                    };
-                }
-            },
-            'initSelection':function (element, callback) {
-                $.ajax({
-                    type: "GET",
-                    url: baseUrl+'/pessoa/listagem-json',
-                    data: "id=<?php if(isset($_GET['codpessoa'])){echo $_GET['codpessoa'];}?>",
-                    dataType: "json",
-                    success: function(result) { 
-                        callback(result); 
-                    }
-                });
-            },'width':'resolve'
-        });
-        
 });
 </script>
 @endsection

@@ -1,28 +1,31 @@
-<div class="search-bar">
-    {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-npb-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
-        <strong>Lançamento</strong>
-        <div class="form-group">
-            <input type="number" pattern="\d+(\.\d{2})?" placeholder="op1" />
 
-            <input type="tel" required="required" maxlength="15" name="valor" pattern="([0-9]{1,3}\.)?[0-9]{1,3},[0-9]{2}$" placeholder="op2" />
+{!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-inline', 'method' => 'GET', 'id' => 'produto-npb-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+        <div class="input-group">
+            <span class="input-group-addon">
+                {!! Form::label('npb_lancamento_de', 'De') !!}
+            </span>
+            {!! Form::date('npb_lancamento_de', null, ['class' => 'form-control', 'id' => 'npb_lancamento_de', 'placeholder' => 'De']) !!}
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon">
+                {!! Form::label('npb_lancamento_ate', 'Até') !!}
+            </span>
+            {!! Form::date('npb_lancamento_ate', null, ['class' => 'form-control', 'id' => 'npb_lancamento_ate', 'placeholder' => 'Até']) !!}
+        </div>
+        <div class="input-group col-md-5">
+            {!! Form::select2Filial('npb_codfilial', null, ['style'=>'width:100%', 'id'=>'npb_codfilial']) !!}
+        </div>
+        <div class="input-group col-md-5">
+            {!! Form::select2NaturezaOperacao('npb_codnaturezaoperacao', null, ['style'=>'width:100%', 'id' => 'npb_codnaturezaoperacao']) !!}
+        </div>
+        <div class='pull-right'>
+            <button type="submit" class='btn btn-primary'><span class='glyphicon glyphicon-search'></span></button>
+        </div>
+{!! Form::hidden('page', 1, ['id'=>'npb_page']) !!}
+{!! Form::close() !!}
 
-            {!! Form::datetimeLocal('npb_lancamento_deTESTE', null, ['class' => 'form-control between', 'id' => 'npb_lancamento_deTESTE', 'placeholder' => 'De']) !!}
-            {!! Form::number('npb_lancamento_deTESTE2', null, ['class' => 'form-control between', 'id' => 'npb_lancamento_deTESTE2', 'placeholder' => 'De']) !!}
-            {!! Form::text('npb_lancamento_de', null, ['class' => 'form-control between', 'id' => 'npb_lancamento_de', 'placeholder' => 'De']) !!}
-            {!! Form::text('npb_lancamento_ate', null, ['class' => 'form-control between', 'id' => 'npb_lancamento_ate', 'placeholder' => 'Até']) !!}
-        </div>
-        <div class="form-group">
-            {!! Form::select('npb_codfilial', $filiais, ['style'=>'width:100px'], ['id'=>'npb_codfilial']) !!}
-        </div>  
-        <div class="form-group">
-            {!! Form::select('npb_codnaturezaoperacao', $naturezaop, ['style'=>'width:100px'], ['id' => 'npb_codnaturezaoperacao']) !!}
-        </div>
-        <div class="form-group">
-            <input type="text" name="npb_codpessoa" id="npb_codpessoa" class="form-control search-pessoa" />
-        </div>    
-        <input name="page" type="hidden" value="1" id="npb_page">
-    {!! Form::close() !!}
-</div>
+<hr>
+
 <div class="panel panel-default" id="div-negocios">
     <div class="list-group group-list-striped group-list-hover" id="npbs">
         @foreach($npbs as $npb)
@@ -36,9 +39,10 @@
                 }
                 ?>
                 <div class='list-group-item'>
-                    <div class='row'>
+                    <div class='row item'>
                         <small>
-                            <div class='col-sm-2'>
+                        <small>
+                            <div class='col-sm-2 '>
                                 <div class='col-sm-12'>
                                     <a href="{{ url('negocio', ['id'=>$npb->codnegocio]) }}">
                                         {{ formataCodigo($npb->codnegocio) }}
@@ -61,6 +65,11 @@
                                 </div>
                             </div>
                             <div class='col-sm-3'>
+                                <div class='col-sm-12 text-muted'>
+                                    <a href='{{ url('filial', ['id'=>$npb->Negocio->codfilial]) }}'>
+                                        {{ $npb->Negocio->Filial->filial }}
+                                    </a>
+                                </div>
                                 <div class='col-sm-12'>
                                     {{ $npb->ProdutoBarra->ProdutoVariacao->variacao }}
                                 </div>
@@ -76,6 +85,7 @@
                                     <small class='pull-left'>{{ $model->UnidadeMedida->sigla }}</small> {{ formataNumero($quantidade, 3) }} 
                                 </div>
                             </div>
+                        </small>
                         </small>
                     </div>
                 </div>

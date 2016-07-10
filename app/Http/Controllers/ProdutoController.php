@@ -112,8 +112,16 @@ class ProdutoController extends Controller
         //file_put_contents('/tmp/request.html', '<pre>' . print_r($request) . '</pre>');
         
         $model = Produto::find($id);
+
+        $parametros = $request->session()->get('produto.show');        
         
-        $npbs = NegocioProdutoBarra::search(['codproduto'=>$id], 10);
+        $parametrosNpb["codproduto"] = $id;
+        $parametrosNpb["lancamento_de"] = $parametros["npb_lancamento_de"];
+        $parametrosNpb["lancamento_ate"] = $parametros["npb_lancamento_ate"];
+        $parametrosNpb["codfilial"] = $parametros["npb_codfilial"];
+        $parametrosNpb["codnaturezaoperacao"] = $parametros["npb_codnaturezaoperacao"];
+        
+        $npbs = NegocioProdutoBarra::search($parametrosNpb, 10);
         
         /*
         $npbs = NegocioProdutoBarra::search(

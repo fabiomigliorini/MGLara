@@ -120,7 +120,13 @@ class NegocioProdutoBarra extends MGModel
             $join->on('tblnegocio.codnegocio', '=', 'tblnegocioprodutobarra.codnegocio');
         });
         
-        if (isset($parametros['codproduto']))
+        if (!empty($parametros['codnaturezaoperacao']))
+            $query = $query->where('tblnegocio.codnaturezaoperacao', '=', $parametros['codnaturezaoperacao']);
+        
+        if (!empty($parametros['codfilial']))
+            $query = $query->where('tblnegocio.codfilial', '=', $parametros['codfilial']);
+        
+        if (!empty($parametros['codproduto']))
         {
             $query = $query->join('tblprodutobarra', function($join) use ($parametros) {
                 $join->on('tblprodutobarra.codprodutobarra', '=', 'tblnegocioprodutobarra.codprodutobarra');

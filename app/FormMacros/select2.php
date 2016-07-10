@@ -476,3 +476,19 @@ Form::macro('select2TipoProduto', function($name, $selected = null, $options = [
     $tipos = [''=>''] + MGLara\Models\TipoProduto::orderBy('tipoproduto')->lists('tipoproduto', 'codtipoproduto')->all();
     return Form::select2($name, $tipos, $selected, $options);
 });
+
+/* FILIAL */
+Form::macro('select2Filial', function($name, $selected = null, $options = [])
+{
+    if (empty($options['placeholder'])) $options['placeholder'] = 'Filial';
+    $regs = [''=>''] + MGLara\Models\Filial::orderBy('codfilial')->lists('filial', 'codfilial')->all();
+    return Form::select2($name, $regs, $selected, $options);
+});
+
+/* NATUREZA OPERACAO */
+Form::macro('select2NaturezaOperacao', function($name, $selected = null, $options = [])
+{
+    if (empty($options['placeholder'])) $options['placeholder'] = 'Natureza de Operação';
+    $regs = [''=>''] + MGLara\Models\NaturezaOperacao::orderBy('naturezaoperacao')->lists('naturezaoperacao', 'codnaturezaoperacao')->all();
+    return Form::select2($name, $regs, $selected, $options);
+});
