@@ -461,8 +461,6 @@ END;
     return $campo . $script;
 });
 
-
-
 /* TRIBUTAÇÃO */
 Form::macro('select2Tributacao', function($name, $selected = null, $options = [])
 {
@@ -491,4 +489,75 @@ Form::macro('select2NaturezaOperacao', function($name, $selected = null, $option
     if (empty($options['placeholder'])) $options['placeholder'] = 'Natureza de Operação';
     $regs = [''=>''] + MGLara\Models\NaturezaOperacao::orderBy('naturezaoperacao')->lists('naturezaoperacao', 'codnaturezaoperacao')->all();
     return Form::select2($name, $regs, $selected, $options);
+});
+
+/* CEST */
+Form::macro('select2Cest', function($name, $value = null, $options = [])
+{
+    if (empty($options['id']))
+        $options['id'] = $name;
+    
+    if (empty($options['placeholder']))
+        $options['placeholder'] = 'CEST...';
+    
+    if (empty($options['allowClear']))
+        $options['allowClear'] = true;
+    $options['allowClear'] = ($options['allowClear'])?'true':'false';
+    
+    if (empty($options['closeOnSelect']))
+        $options['closeOnSelect'] = true;
+    $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
+    
+    if (empty($options['somenteAtivos']))
+        $options['somenteAtivos'] = true;
+    $options['somenteAtivos'] = ($options['somenteAtivos'])?'true':'false';
+    
+    $script = <<< END
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#{$options['id']}').select2({
+                    placeholder: '{$options['placeholder']}',
+                    minimumInputLength: 1,
+                    allowClear: {$options['allowClear']},
+                    closeOnSelect: {$options['closeOnSelect']},
+                    formatResult: function(item) {
+                        var markup = "";
+                        markup    += "<b>" + item.ncm + "</b>/";
+                        markup    += "<b>" + item.cest + "</b>&nbsp;";
+                        markup    += "<span>" + item.descricao + "</span>";
+                        return markup;
+                    },
+                    formatSelection: function(item) { 
+                            return item.ncm + "/" + item.cest + "&nbsp;" + item.descricao; 
+                    },
+                    ajax:{
+                        url:baseUrl+"/cest/listagem-json",
+                        dataType:'json',
+                        quietMillis:500,
+                        data:function(codncm, page) { 
+                            return {codncm: $('#codncm').val()}; 
+                        },
+                        results:function(data, page) {
+                            var more = (page * 20) < data.total;
+                            return {results: data};
+                        }
+                    },
+                    initSelection:function (element, callback) {
+                        $.ajax({
+                            type: "GET",
+                            url: baseUrl+"/cest/listagem-json",
+                            data: "id="+$('#{$options['id']}').val(),
+                            dataType: "json",
+                            success: function(result) { callback(result); }
+                        });
+                    },
+                    width:'resolve'
+                });      
+            });
+        </script>
+END;
+
+    $campo = Form::text($name, $value, $options);
+    
+    return $campo . $script;
 });
