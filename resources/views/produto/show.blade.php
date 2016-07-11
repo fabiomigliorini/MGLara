@@ -40,7 +40,7 @@
                 @endif
             </li> 
             <li>
-                <a href="{{ url("produto/$model->codproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o produto '{{ $model->produto }}'?" data-after-delete="redirecionar();"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                <a href="{{ url("produto/$model->codproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o produto '{{ $model->produto }}'?" data-after-delete="location.replace(baseUrl + '/produto');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
             </li>
         </ul>
     </div>
@@ -158,17 +158,17 @@
     </div>
     <div class="col-md-6">
         <div>
-            <ul class="nav nav-pills" role="tablist">
-                <li role="presentation"><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Variações</a></li>
+            <ul class="nav nav-pills" role="tablist" id='tab-produto'>
+                <li role="presentation" class='active'><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Variações</a></li>
                 <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab" data-toggle="tab">Estoque</a></li>
                 <li role="presentation"><a href="#tab-site" aria-controls="profile" role="tab" data-toggle="tab">Site</a></li>
                 <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">NCM</a></li>
-                <li role="presentation" class='active'><a href="#tab-npb" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
+                <li role="presentation" ><a href="#tab-negocio" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
                 <li role="presentation"><a href="#tab-nfpb" aria-controls="messages" role="tab" data-toggle="tab">Notas Fiscais</a></li>
             </ul>
             <br>
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade" id="tab-variacoes">
+                <div role="tabpanel" class="tab-pane fade in active" id="tab-variacoes">
                     @include('produto.show-variacoes')
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-estoque">
@@ -183,8 +183,50 @@
                 <div role="tabpanel" class="tab-pane fade" id="tab-fiscal">
                     @include('produto.show-ncm')
                 </div>
-                <div role="tabpanel" class="tab-pane fade in active" id="tab-npb">
+                <div role="tabpanel" class="tab-pane fade" id="tab-negocio">
+                    
+                    <!-- BOTAO FILTRO -->
+                    <div class='clearfix'>
+                        <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#filtro-negocio" aria-expanded="false" aria-controls="filtro-negocio">
+                            <span class='glyphicon glyphicon-search'></span>
+                        </a>
+                    </div>
+                    
+                    <!-- FILTRO NEGOCIO -->
+                    <div class="collapse" id="filtro-negocio">
+                        <br>
+                        <div class='well well-sm'>
+                            {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-horizontal', 'method' => 'GET', 'id' => 'produto-negocio-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">{!! Form::label('negocio_lancamento_de', 'De') !!}</div>
+                                    <div class="col-sm-4">{!! Form::date('negocio_lancamento_de', $parametros['negocio_lancamento_de'], ['class' => 'form-control', 'id' => 'negocio_lancamento_de', 'placeholder' => 'De']) !!}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">{!! Form::label('negocio_lancamento_ate', 'Até') !!}</div>
+                                    <div class="col-sm-4">{!! Form::date('negocio_lancamento_ate', $parametros['negocio_lancamento_de'], ['class' => 'form-control', 'id' => 'negocio_lancamento_ate', 'placeholder' => 'Até']) !!}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">{!! Form::label('negocio_codfilial', 'Filial') !!}</div>
+                                    <div class="col-sm-4">{!! Form::select2Filial('negocio_codfilial', $parametros['negocio_codfilial'], ['style'=>'width:100%', 'id'=>'negocio_codfilial']) !!}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">{!! Form::label('negocio_codnaturezaoperacao', 'Natureza de Operação') !!}</div>
+                                    <div class="col-sm-7">{!! Form::select2NaturezaOperacao('negocio_codnaturezaoperacao', $parametros['negocio_codnaturezaoperacao'], ['style'=>'width:100%', 'id' => 'negocio_codnaturezaoperacao']) !!}</div>
+                                </div>
+                            
+                                {!! Form::hidden('_div', 'div-negocios', ['id'=>'negocio_page']) !!}
+                                
+                            {!! Form::close() !!}
+                        </div>
+                    </div>
+
+                    <br>
                     @include('produto.show-negocios')
+                    
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-nfpb">
                     <?php
@@ -256,76 +298,71 @@
     padding: 10px 0;
 }
 
-#produto-search .form-group, 
-#produto-npb-search .form-group {
-    margin-bottom: 5px;
-    position: relative;
-}
-    
 </style>
 
-<script type="text/javascript">var codproduto = {{ $model->codproduto }}</script>
 <script type="text/javascript">
-function redirecionar()
+
+function mostraListagemNegocios()
 {
-    location.replace(baseUrl + '/produto');
+    console.log('mostraListagemNegocios');
+    
+    //Serializa FORM
+    var frmValues = $("#produto-negocio-search").serialize();
+    
+    // Busca Listagem
+    $.ajax({
+        type: 'GET',
+        url: baseUrl + '/produto/' + {{ $model->codproduto }},
+        data: frmValues
+    })
+    .done(function (data) {
+        
+        //Substitui #div-negocios
+        $('#div-negocios').html($(data).html()); 
+        
+        //Ativa InfiniteScroll
+        $('#div-negocios-listagem').infinitescroll({
+            loading : {
+                finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
+                msgText: "<div class='center'>Carregando mais itens...</div>",
+                img: baseUrl + '/public/img/ajax-loader.gif'
+            },
+            navSelector : "#div-negocios .pagination",
+            nextSelector : "#div-negocios .pagination li.active + li a",
+            itemSelector : "#div-negocios-listagem div.list-group-item"
+        });
+        
+    })
+    .fail(function (e) {
+        console.log('Erro no filtro');
+        console.log(e);
+    });
 }
 
 $(document).ready(function() {
+
+    ////////// LISTAGEM DE NEGOCIOS /////////
+    //
+    // Listagem de Negocios -- Troca ABA
+    var listagemNegocioAberta = false;
+    $('a[href="#tab-negocio"]').on('shown.bs.tab', function (e) {
+        if (!listagemNegocioAberta)
+            mostraListagemNegocios();
+        listagemNegocioAberta = true;
+    });
+    
+    // Listagem de Negocios -- Alteração Formulário
+    $("#produto-negocio-search").on("change", function (event) {
+        mostraListagemNegocios();
+        event.preventDefault(); 
+    });
+    /////////////////////////////////////////
+    
     $('#codproduto').change(function (){
         window.location.href = '{{ url("produto/") }}' + $('#codproduto').val();
     });
-    $('#codproduto').select2({
-        minimumInputLength: 3,
-        allowClear: true,
-        closeOnSelect: true,
-        placeholder: 'Pesquisa de produtos',
-        formatResult:function(item) {
-            var markup = "<div class='row'>";
-            markup    += "<small class='text-muted col-md-2'> <small>#" /*+ item.barras + "<br>"*/ + item.id + "</small></small>";
-            markup    += "<div class='col-md-8'>" + item.produto + "<small class='muted text-right pull-right'></small></div>";
-            markup    += "<div><div class='col-md-8 text-right pull-right'><small class='span1 text-muted'></small>" + item.preco + "";
-            markup    += "</div></div>";
-            markup    += "</div>";
-            return markup;
-        },
-        formatSelection:function(item) { 
-            return item.produto + " - " + item.preco; 
-        },
-        ajax: {
-            url: baseUrl+'/produto/listagem-json',
-            dataType: 'json',
-            quietMillis: 500,
-            data: function(term, current_page) { 
-                return {
-                    q: term, 
-                    per_page: 10, 
-                    current_page: current_page
-                }; 
-            },
-            results:function(data,page) {
-                //var more = (current_page * 20) < data.total;
-                return {
-                    results: data, 
-                    //more: data.mais
-                };
-            }
-        },
-        initSelection: function (element, callback) {
-            $.ajax({
-                type: "GET",
-                url: baseUrl+'/produto/listagem-json',
-                data: "id=",
-                dataType: "json",
-                success: function(result) { 
-                    callback(result[0]); 
-                }
-            });
-        },
-        width:'resolve'
-    });
     
-    
+    // IMAGENS
     $('.carousel-inner .item').first().addClass('active');
     $('.carousel').carousel({
         interval:5000
@@ -343,7 +380,6 @@ $(document).ready(function() {
     $('.btn-detalhe, .btn-delete').on('mouseleave', function() {
        $(".carousel").carousel('cycle');
     });
-    
     $('.btn-delete').click(function (e) {
         e.preventDefault();
         var url = $('.btn-delete').attr('href');
@@ -397,145 +433,7 @@ $(document).ready(function() {
         });
     });
     
-    
-    // Notas fiscais e Negócios
-    $('.pagination').removeClass('hide');
-    
-    
-    $('#nfpb_codfilial').select2({
-        allowClear:true,
-        closeOnSelect:true
-    })<?php echo (app('request')->input('nfpb_codfilial') ? ".select2('val'," .app('request')->input('nfpb_codfilial').");" : ';'); ?>
-    
-    $('#npb_codfilial').select2({
-        allowClear:true,
-        closeOnSelect:true
-    })<?php echo (app('request')->input('npb_codfilial') ? ".select2('val'," .app('request')->input('npb_codfilial').");" : ';'); ?>
-    
-    $('#nfpb_codnaturezaoperacao').select2({
-        allowClear:true,
-        closeOnSelect:true
-    })<?php echo (app('request')->input('nfpb_codnaturezaoperacao') ? ".select2('val'," .app('request')->input('nfpb_codnaturezaoperacao').");" : ';'); ?>
-    
-    $('#npb_codnaturezaoperacao').select2({
-        allowClear:true,
-        closeOnSelect:true
-    })<?php echo (app('request')->input('npb_codnaturezaoperacao') ? ".select2('val'," .app('request')->input('npb_codnaturezaoperacao').");" : ';'); ?>
-    
-    
-    
-    // botão delete da embalagem
-	$('delete-barra').click(function(e) {
-            console.log('Ola, clicaram aqui!!');
-            e.preventDefault();
-            var codprodutoembalagem = this.dataset.pe;
-		// pega url para delete
-            var url = $(this).attr('href');
-		//pede confirmacao
-		bootbox.confirm("Excluir este Código de Barras?", function(result) {
-			if (result) {
-				$.ajax({
-					type: 'POST',
-					//url: baseUrl + '/produto-embalagem/' + codprodutoembalagem + '/destroy',
-					url: url,
-					success: function() {
-                        $('#'+codprodutoembalagem).remove();
-					},
-					error: function (XHR, textStatus) {
-						var err;
-						if (XHR.readyState === 0 || XHR.status === 0) {
-							return;
-						}
-						//tipos de erro
-						switch (textStatus) {
-							case 'timeout':
-								err = 'O servidor não responde (timed out)!';
-								break;
-							case 'parsererror':
-								err = 'Erro de parâmetros (Parser error)!';
-								break;
-							case 'error':
-								if (XHR.status && !/^\s*$/.test(XHR.status)) {
-									err = 'Erro ' + XHR.status;
-								} else {
-									err = 'Erro';
-								}
-								if (XHR.responseText && !/^\s*$/.test(XHR.responseText)) {
-									err = err + ': ' + XHR.responseText;
-								}
-								break;
-						}
-						if (err) {
-							bootbox.alert(err);
-						}
-					}
-				});
-			}	
-		});
-	});	
         
-        
-        // PAGINAÇÃO NEGÓCIOS PRODUTO BARRA
-        $("#produto-npb-search").on("change", function (event) {
-            var $this = $(this);
-            var frmValues = $this.serialize();
-            $.ajax({
-                type: 'GET',
-                url: baseUrl + '/produto/' + {{ $model->codproduto }},
-                data: frmValues
-            })
-            .done(function (data) {
-                $('#npbs').html(jQuery(data).find('#npbs').html()); 
-            })
-            .fail(function () {
-                console.log('Erro no filtro');
-            });
-            event.preventDefault(); 
-        });
-    
-        $('#npb_paginacao .pagination a').on('click', function (e) {
-            var page = $(this).attr('href').split('page=')[1];
-            $("#npb_page").val(page);
-            $('#produto-npb-search').change();
-            $('#npb_paginacao .pagination .active').removeClass('active');
-            $(this).parent().addClass('active');
-            e.preventDefault();
-        });   	    
-        
-        $(document).on('dp.change', '#npb_lancamento_de, #npb_lancamento_de, #npb_codpessoa', function() {
-            $('#produto-npb-search').change();
-        });
-        
-        // PAGINAÇÃO NOTAS FISCAIS PRODUTO BARRA
-        $("#produto-nfpb-search").on("change", function (event) {
-            var $this = $(this);
-            var frmValues = $this.serialize();
-            $.ajax({
-                type: 'GET',
-                url: baseUrl + '/produto/' + {{ $model->codproduto }},
-                data: frmValues
-            })
-            .done(function (data) {
-                $('#nfpbs').html(jQuery(data).find('#nfpbs').html()); 
-            })
-            .fail(function () {
-                console.log('Erro no filtro');
-            });
-            event.preventDefault(); 
-        });
-    
-        $('#nfpb_paginacao .pagination a').on('click', function (e) {
-            var page = $(this).attr('href').split('page=')[1];
-            $("#nfpb_page").val(page);
-            $('#produto-nfpb-search').change();
-            $('#nfpb_paginacao .pagination .active').removeClass('active');
-            $(this).parent().addClass('active');
-            e.preventDefault();
-        });   	    
-        
-        $(document).on('dp.change', '#nfpb_saida_de, #nfpb_saida_ate', function() {
-            $('#produto-nfpb-search').change();
-        });
 });
 </script>
 @endsection

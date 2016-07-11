@@ -106,64 +106,51 @@ class ProdutoController extends Controller
 
     public function show(Request $request, $id)
     {
-        /*
         DB::enableQueryLog();
-        */
         //file_put_contents('/tmp/request.html', '<pre>' . print_r($request) . '</pre>');
         
+        $parametros = $request->session()->get('produto.show');
+        
+        //dd($parametros);
+        
         $model = Produto::find($id);
-
-        $parametros = $request->session()->get('produto.show');        
         
-        $parametrosNpb["codproduto"] = $id;
-        $parametrosNpb["lancamento_de"] = $parametros["npb_lancamento_de"];
-        $parametrosNpb["lancamento_ate"] = $parametros["npb_lancamento_ate"];
-        $parametrosNpb["codfilial"] = $parametros["npb_codfilial"];
-        $parametrosNpb["codnaturezaoperacao"] = $parametros["npb_codnaturezaoperacao"];
-        
-        $npbs = NegocioProdutoBarra::search($parametrosNpb, 10);
-        
-        /*
-        $npbs = NegocioProdutoBarra::search(
-            $id,
-            $request->get('npb_lancamento_de'),
-            $request->get('npb_lancamento_ate'),
-            $request->get('npb_codfilial'),
-            $request->get('npb_codnaturezaoperacao'),
-            $request->get('npb_codpessoa')
-        );
-        $nfpbs = NotaFiscalProdutoBarra::search(
-            $id,
-            $request->get('nfpb_saida_de'),
-            $request->get('nfpb_saida_ate'),
-            $request->get('nfpb_codfilial'),
-            $request->get('nfpb_codnaturezaoperacao'),
-            $request->get('nfpb_codpessoa')
-        );
-         * 
-         */
-        
-        switch ($request->get('_tab'))
+        switch ($request->get('_div'))
         {
-            case 'tab-variacoes';
+            case 'div-variacoes';
                 $view = 'produto.show-variacoes';
                 break;
-            case 'tab-embalagens';
+            case 'div-embalagens';
                 $view = 'produto.show-embalagens';
                 break;
+            case 'div-negocios';
+                
+                $parametrosNpb["codproduto"] = $id;
+                
+                if (!empty($parametros["negocio_lancamento_de"]))
+                    $parametrosNpb["lancamento_de"] = new Carbon($parametros["negocio_lancamento_de"]);
+
+                if (!empty($parametros["negocio_lancamento_ate"]))
+                    $parametrosNpb["lancamento_ate"] = new Carbon($parametros["negocio_lancamento_ate"] . ' 23:59:59');
+
+                $parametrosNpb["codfilial"] = $parametros["negocio_codfilial"];
+                $parametrosNpb["codnaturezaoperacao"] = $parametros["negocio_codnaturezaoperacao"];
+
+                $npbs = NegocioProdutoBarra::search($parametrosNpb, 10);
+                
+                $view = 'produto.show-negocios';
+                
+                break;
+                
             default:
                 $view = 'produto.show';
-
         }
+        $ret = view($view, compact('model', 'nfpbs', 'npbs', 'parametros'));
         
-        $ret = view($view, compact('model', 'nfpbs', 'npbs'));
-        
-        /*
         $queries = DB::getQueryLog();
 
-         echo '<hr><h1>queries</h1>';
-        dd($queries);
-        */
+        //echo '<hr><h1>queries</h1>';
+        //dd($queries);
         return $ret;
     }
 
@@ -181,7 +168,8 @@ class ProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id) 
+    {
         $this->converteDatas(['inativo' => $request->input('inativo')], 'd/m/Y');
         $this->converteNumericos(['preco' => $request->input('preco')]);
         
