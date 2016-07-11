@@ -274,7 +274,7 @@ function atualizaFiltro()
 }
     
 $(document).ready(function() {
-    $('ul.pagination').removeClass('hide');
+    //$('ul.pagination').removeClass('hide');
     
     $("#produto-search").on("change", function (event) {
         atualizaFiltro();

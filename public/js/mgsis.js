@@ -162,7 +162,6 @@ $(document).ready(function() {
         itemSelector : "#items div.list-group-item"
     });
     
-    
 });  
 
 

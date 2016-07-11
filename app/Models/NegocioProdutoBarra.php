@@ -126,6 +126,12 @@ class NegocioProdutoBarra extends MGModel
         if (!empty($parametros['codfilial']))
             $query = $query->where('tblnegocio.codfilial', '=', $parametros['codfilial']);
         
+        if (!empty($parametros['lancamento_de']))
+            $query = $query->where('tblnegocio.lancamento', '>=', $parametros['lancamento_de']->format('Y-m-d H:i:s'));
+        
+        if (!empty($parametros['lancamento_ate']))
+            $query = $query->where('tblnegocio.lancamento', '<=', $parametros['lancamento_ate']->format('Y-m-d H:i:s'));
+        
         if (!empty($parametros['codproduto']))
         {
             $query = $query->join('tblprodutobarra', function($join) use ($parametros) {
@@ -141,62 +147,6 @@ class NegocioProdutoBarra extends MGModel
         
         return $query->paginate($registros);
         
-    }
-    
-    public function scopeId($query, $id)
-    {
-        if (trim($id) === '')
-            return;
-        
-        $query->join('tblprodutobarra', 'tblprodutobarra.codprodutobarra', '=', 'tblnegocioprodutobarra.codprodutobarra')
-            ->join('tblnegocio', 'tblnegocio.codnegocio', '=', 'tblnegocioprodutobarra.codnegocio')
-            ->where('tblprodutobarra.codproduto', $id);
-    }
-    
-    public function scopeLancamentoDe($query, $de)
-    {
-        if (trim($de) === '')
-            return;
-        
-        if(!empty($de))
-            $de = Carbon::createFromFormat('d/m/y', $de)->format('Y-m-d').' 23:59:59.9';        
-        
-        $query->where('tblnegocio.lancamento', '>=', $de);
-    }
-
-    public function scopeLancamentoAte($query, $ate)
-    {
-        if (trim($ate) === '')
-            return;
-
-        if(!empty($ate))
-            $ate = Carbon::createFromFormat('d/m/y', $ate)->format('Y-m-d').' 23:59:59.9';        
-        
-        $query->where('tblnegocio.lancamento', '<=', $ate);
-    }
-
-    public function scopeFilial($query, $codfilial)
-    {
-        if (trim($codfilial) === '')
-            return;
-        
-        $query->where('tblnegocio.codfilial', $codfilial);
-    }
-
-    public function scopeOperacao($query, $operacao)
-    {
-        if (trim($operacao) === '')
-            return;
-        
-        $query->where('tblnegocio.codnaturezaoperacao', $operacao);
-    }
-    
-    public function scopePessoa($query, $codpessoa)
-    {
-        if (trim($codpessoa) === '')
-            return;
-        
-        $query->where('tblnegocio.codpessoa', $codpessoa);
     }
     
 }
