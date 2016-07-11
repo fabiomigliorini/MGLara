@@ -102,7 +102,11 @@ $statusStyle = [
 ?>
             @foreach($model as $row)
             <tr class="{{ $statusStyle[$row->NegocioStatus->negociostatus] or '' }}">
-                <td>{{ formataCodigo($row->codnegocio) }}</td>
+                <td>
+                    <a href="{{ URL::route('negocios::view', [$row->codnegocio]) }}">
+                        {{ formataCodigo($row->codnegocio) }}
+                    </a>
+                </td>
                 <td nowrap>{{ formataData($row->lancamento, 'L') }}</td>
                 <td>{{ $row->NaturezaOperacao->naturezaoperacao }}</td>
                 <td>{{ formataNumero($row->valortotal) }}</td>

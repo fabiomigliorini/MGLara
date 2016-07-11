@@ -93,6 +93,51 @@ Negócio # {{ $model->codnegocio }}
             <div class="text-success text-right col-sm-7" style="font-size: xx-large"><strong>R$ 123.12</strong></div>
             </div>
         </div>
+        <table class="table table-striped">
+            <thead>
+                <th><strong>#</strong></th>
+                <th>00411932</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-right" nowrap><strong>Natureza de Operação</strong></td>
+                    <td>Entrada - Compra</td>
+                </tr>
+                <tr>
+                    <td class="text-right" nowrap><strong>Pessoa</strong></td>
+                    <td>Cartorio 1o Oficio Marcelandia - Giocondo</td>
+                </tr>
+                <tr>
+                    <td class="text-right" nowrap><strong>Vendedor</strong></td>
+                    <td>Adilso Alves da Silva</td>
+                </tr>
+                <tr>
+                    <td class="text-right" nowrap><strong>Lançamento</strong></td>
+                    <td>06/07/2016 11:14:22</td>
+                </tr>
+                <tr>
+                    <td class="text-right" nowrap><strong>Status</strong></td>
+                    <td>Aberto</td>
+                </tr>
+                <tr>
+                    <td class="text-right" nowrap><strong>Filial</strong></td>
+                    <td>Casa Guabirobas</td>
+                </tr>
+                <tr>
+                    <td class="text-right" nowrap><strong>Local Estoque</strong></td>
+                    <td>Deposito</td>
+                </tr>
+                <tr>
+                    <td class="text-right" nowrap><strong>Usuário</strong></td>
+                    <td>luciano</td>
+                </tr>
+                <tr>
+                    <td class="text-right" nowrap><strong>Observações</strong></td>
+                    <td>asdasd</td>
+                </tr>
+            </tbody>
+        </table>
+        <small class="muted">Criado em 06/07/2016 11:14:22   por <a href="#">luciano</a> Alterado</small>
     </div>
 </div>
 @endsection
