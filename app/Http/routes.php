@@ -28,7 +28,7 @@ Route::get('estoque/gera-movimento-produto-variacao/{id}','EstoqueController@ger
 Route::get('estoque/gera-movimento-periodo','EstoqueController@geraMovimentoPeriodo');
 
 //Route::get('estoque/gera-saldo-conferencia-negocio/{id}','EstoqueController@geraSaldoConferenciaNegocio');
-Route::get('estoque/zera-saldo-negativo/{id}','EstoqueController@zeraSaldoNegativo');
+Route::get('estoque/zera-saldo-negativo/{id}/{corte}','EstoqueController@zeraSaldoNegativo');
 
 
 
