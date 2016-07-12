@@ -165,4 +165,9 @@ class Negocio extends MGModel
         return parent::validate();
     }
 
+    public function quantidadeDeProdutos()
+    {
+        return self::NegocioProdutoBarraS()->sum('quantidade');
+    }
+
 }
