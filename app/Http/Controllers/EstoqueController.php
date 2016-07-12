@@ -250,7 +250,6 @@ class EstoqueController extends Controller
                 and sld.fiscal = false
                 and lpv.codestoquelocal = $id
                 and mes.mes <= '{$dataCorte->format('Y-m-d')}'
-                and var.codproduto = 366
                 and sld.codestoquesaldo not in (select distinct iq.codestoquesaldo from tblestoquesaldoconferencia iq)
                 group by lpv.codestoquelocal, lpv.codprodutovariacao, sld.fiscal, var.codproduto
                 order by var.codproduto
