@@ -228,6 +228,8 @@ function linha(
             $totais[$el->codestoquelocal]['ultimaconferencia_fisico'] = @max(array_column($saldos, 'ultimaconferencia_fisico'));
             if ($totais[$el->codestoquelocal]['saldoquantidade_fisico'] != 0)
                 $customedio_fisico = $totais[$el->codestoquelocal]['saldovalor_fisico'] / $totais[$el->codestoquelocal]['saldoquantidade_fisico'];
+            else 
+                $customedio_fisico = null;
         }
         
         if (somaArray($saldos, 'codestoquesaldo_fiscal') == 0)
@@ -243,6 +245,8 @@ function linha(
             $totais[$el->codestoquelocal]['ultimaconferencia_fiscal'] = @max(array_column($saldos, 'ultimaconferencia_fiscal'));
             if ($totais[$el->codestoquelocal]['saldoquantidade_fiscal'] != 0)
                 $customedio_fiscal = $totais[$el->codestoquelocal]['saldovalor_fiscal'] / $totais[$el->codestoquelocal]['saldoquantidade_fiscal'];
+            else
+                $customedio_fiscal = null;
         }
             
         
@@ -307,8 +311,10 @@ function linha(
             $customedio_fisico = null;
             $saldoquantidade_fisico = somaArray($totais, 'saldoquantidade_fisico');
             $saldovalor_fisico = somaArray($totais, 'saldovalor_fisico');
-            if ($saldovalor_fisico != 0)
+            if ($saldoquantidade_fisico != 0)
                 $customedio_fisico = $saldovalor_fisico / $saldoquantidade_fisico;
+            else 
+                $customedio_fisico = null;
             ?>
             <div class='col-md-2 text-right'>
                 {{ formataNumero($saldoquantidade_fisico, 3) }}
@@ -325,8 +331,10 @@ function linha(
             $customedio_fiscal = null;
             $saldoquantidade_fiscal = somaArray($totais, 'saldoquantidade_fiscal');
             $saldovalor_fiscal = somaArray($totais, 'saldovalor_fiscal');
-            if ($saldovalor_fiscal != 0)
+            if ($saldoquantidade_fiscal != 0)
                 $customedio_fiscal = $saldovalor_fiscal / $saldoquantidade_fiscal;
+            else
+                $customedio_fiscal = null;
             ?>
             <div class='col-md-2 text-right'>
                 {{ formataNumero($saldoquantidade_fiscal, 3) }}
