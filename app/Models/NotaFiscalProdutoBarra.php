@@ -139,74 +139,44 @@ class NotaFiscalProdutoBarra extends MGModel
     {
         return $this->hasMany(EstoqueMovimento::class, 'codnotafiscalprodutobarra', 'codnotafiscalprodutobarra');
     }
-
-    // Buscas
-    public static function search($id, $de, $ate, $codfilial, $operacao, $codpessoa)
-    {
-        return NotaFiscalProdutoBarra::id($id)
-            ->saidaDe($de)
-            ->saidaAte($ate)
-            ->filial($codfilial)
-            ->operacao($operacao)
-            ->pessoa($codpessoa)
-            ->paginate(5);
-    }
-
-    public function scopeId($query, $id)
-    {
-        if (trim($id) === '')
-            return;
-        
-        $query->join('tblprodutobarra', 'tblprodutobarra.codprodutobarra', '=', 'tblnotafiscalprodutobarra.codprodutobarra')
-            ->join('tblnotafiscal', 'tblnotafiscal.codnotafiscal', '=', 'tblnotafiscalprodutobarra.codnotafiscal')
-            ->where('tblprodutobarra.codproduto', $id);
-    }
     
-    public function scopeSaidaDe($query, $de)
+    public static function search($parametros, $registros = 20)
     {
-        if (trim($de) === '')
-            return;
+        //dd($parametros);
+        $query = NotaFiscalProdutoBarra::orderBy('tblnotafiscal.saida', 'DESC');
         
-        if(!empty($de))
-            $de = Carbon::createFromFormat('d/m/y', $de)->format('Y-m-d').' 23:59:59.9';        
+        $query = $query->join('tblnotafiscal', function($join) use ($parametros) {
+            $join->on('tblnotafiscal.codnotafiscal', '=', 'tblnotafiscalprodutobarra.codnotafiscal');
+        });
         
-        $query->where('tblnotafiscal.saida', '>=', $de);
-    }
-
-    public function scopeSaidaAte($query, $ate)
-    {
-        if (trim($ate) === '')
-            return;
-
-        if(!empty($ate))
-            $ate = Carbon::createFromFormat('d/m/y', $ate)->format('Y-m-d').' 23:59:59.9';        
+        if (!empty($parametros['notasfiscais_codnaturezaoperacao']))
+            $query = $query->where('tblnotafiscal.codnaturezaoperacao', '=', $parametros['notasfiscais_codnaturezaoperacao']);
         
-        $query->where('tblnotafiscal.saida', '<=', $ate);
-    }
-
-    public function scopeFilial($query, $codfilial)
-    {
-        if (trim($codfilial) === '')
-            return;
+        if (!empty($parametros['notasfiscais_codfilial']))
+            $query = $query->where('tblnotafiscal.codfilial', '=', $parametros['notasfiscais_codfilial']);
         
-        $query->where('tblnotafiscal.codfilial', $codfilial);
-    }
-
-    public function scopeOperacao($query, $operacao)
-    {
-        if (trim($operacao) === '')
-            return;
+        if (!empty($parametros['notasfiscais_lancamento_de']))
+            $query = $query->where('tblnotafiscal.saida', '>=', $parametros['notasfiscais_lancamento_de']->format('Y-m-d H:i:s'));
         
-        $query->where('tblnotafiscal.codnaturezaoperacao', $operacao);
-    }
-    
-    public function scopePessoa($query, $codpessoa)
-    {
-        if (trim($codpessoa) === '')
-            return;
+        if (!empty($parametros['notasfiscais_lancamento_ate']))
+            $query = $query->where('tblnotafiscal.saida', '<=', $parametros['notasfiscais_lancamento_ate']->format('Y-m-d H:i:s'));
         
-        $query->where('tblnotafiscal.codpessoa', $codpessoa);
-    }
+        if (!empty($parametros['codproduto']))
+        {
+            $query = $query->join('tblprodutobarra', function($join) use ($parametros) {
+                $join->on('tblprodutobarra.codprodutobarra', '=', 'tblnotafiscalprodutobarra.codprodutobarra');
+            });
+            $query = $query->join('tblprodutovariacao', function($join) use ($parametros) {
+                $join->on('tblprodutovariacao.codprodutovariacao', '=', 'tblprodutobarra.codprodutovariacao');
+            });
+            $query = $query->where('tblprodutovariacao.codproduto', '=', $parametros['codproduto']);
+        }
+        
+        //dd($query->toSql());
+        
+        return $query->paginate($registros);
+        
+    }    
 
     public function quantidadeUnitaria()
     {

@@ -144,7 +144,6 @@ class NegocioProdutoBarra extends MGModel
         }
         
         //dd($query->toSql());
-        
         return $query->paginate($registros);
         
     }

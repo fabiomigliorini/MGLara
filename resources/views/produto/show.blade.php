@@ -163,8 +163,8 @@
                 <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab" data-toggle="tab">Estoque</a></li>
                 <li role="presentation"><a href="#tab-site" aria-controls="profile" role="tab" data-toggle="tab">Site</a></li>
                 <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">NCM</a></li>
-                <li role="presentation" ><a href="#tab-negocio" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
-                <li role="presentation"><a href="#tab-nfpb" aria-controls="messages" role="tab" data-toggle="tab">Notas Fiscais</a></li>
+                <li role="presentation"><a href="#tab-negocio" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
+                <li role="presentation"><a href="#tab-notasfiscais" aria-controls="messages" role="tab" data-toggle="tab">Notas Fiscais</a></li>
             </ul>
             <br>
             <div class="tab-content">
@@ -226,12 +226,51 @@
 
                     <br>
                     @include('produto.show-negocios')
-                    
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab-nfpb">
-                    <?php
-                    //@include('nota-fiscal-produto-barra.index')
-                    ?>
+                <!-- -->
+                <div role="tabpanel" class="tab-pane fade" id="tab-notasfiscais">
+                    
+                    <!-- BOTAO FILTRO -->
+                    <div class='clearfix'>
+                        <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#filtro-notasfiscais" aria-expanded="false" aria-controls="filtro-notasfiscais">
+                            <span class='glyphicon glyphicon-search'></span>
+                        </a>
+                    </div>
+                    
+                    <!-- FILTRO NOTAS FISCAIS -->
+                    <div class="collapse" id="filtro-notasfiscais">
+                        <br>
+                        <div class='well well-sm'>
+                            {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-horizontal', 'method' => 'GET', 'id' => 'produto-notasfiscais-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_lancamento_de', 'De') !!}</div>
+                                    <div class="col-sm-4">{!! Form::date('notasfiscais_lancamento_de', $parametros['notasfiscais_lancamento_de'], ['class' => 'form-control', 'id' => 'notasfiscais_lancamento_de', 'placeholder' => 'De']) !!}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_lancamento_ate', 'Até') !!}</div>
+                                    <div class="col-sm-4">{!! Form::date('notasfiscais_lancamento_ate', $parametros['notasfiscais_lancamento_de'], ['class' => 'form-control', 'id' => 'notasfiscais_lancamento_ate', 'placeholder' => 'Até']) !!}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codfilial', 'Filial') !!}</div>
+                                    <div class="col-sm-4">{!! Form::select2Filial('notasfiscais_codfilial', $parametros['notasfiscais_codfilial'], ['style'=>'width:100%', 'id'=>'notasfiscais_codfilial']) !!}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codnaturezaoperacao', 'Natureza de Operação') !!}</div>
+                                    <div class="col-sm-7">{!! Form::select2NaturezaOperacao('notasfiscais_codnaturezaoperacao', $parametros['notasfiscais_codnaturezaoperacao'], ['style'=>'width:100%', 'id' => 'notasfiscais_codnaturezaoperacao']) !!}</div>
+                                </div>
+                            
+                                {!! Form::hidden('_div', 'div-notasfiscais', ['id'=>'notasfiscais_page']) !!}
+                                
+                            {!! Form::close() !!}
+                        </div>
+                    </div>
+
+                    <br>
+                    @include('produto.show-notasfiscais')
                 </div>
             </div>
         </div>
@@ -339,6 +378,41 @@ function mostraListagemNegocios()
     });
 }
 
+function mostraListagemNotasFiscais()
+{
+    console.log('mostraListagemNotasFiscais');
+    
+    //Serializa FORM
+    var frmValues = $("#produto-notasfiscais-search").serialize();
+    
+    // Busca Listagem
+    $.ajax({
+        type: 'GET',
+        url: baseUrl + '/produto/' + {{ $model->codproduto }},
+        data: frmValues
+    })
+    .done(function (data) {
+        
+        $('#div-notasfiscais').html($(data).html()); 
+        
+        $('#div-notasfiscais-listagem').infinitescroll({
+            loading : {
+                finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
+                msgText: "<div class='center'>Carregando mais itens...</div>",
+                img: baseUrl + '/public/img/ajax-loader.gif'
+            },
+            navSelector : "#div-notasfiscais .pagination",
+            nextSelector : "#div-notasfiscais .pagination li.active + li a",
+            itemSelector : "#div-notasfiscais-listagem div.list-group-item"
+        });
+        
+    })
+    .fail(function (e) {
+        console.log('Erro no filtro');
+        console.log(e);
+    });
+}
+
 $(document).ready(function() {
 
     ////////// LISTAGEM DE NEGOCIOS /////////
@@ -357,6 +431,25 @@ $(document).ready(function() {
         event.preventDefault(); 
     });
     /////////////////////////////////////////
+    
+
+    ////////// LISTAGEM DE NOTAS FISCAIS /////////
+    //
+    // Listagem de Notas Fiscais -- Troca ABA
+    var listagemNotasFiscaisAberta = false;
+    $('a[href="#tab-notasfiscais"]').on('shown.bs.tab', function (e) {
+        if (!listagemNotasFiscaisAberta)
+            mostraListagemNotasFiscais();
+        listagemNotasFiscaisAberta = true;
+    });
+    
+    // Listagem de Negocios -- Alteração Formulário
+    $("#produto-notasfiscais-search").on("change", function (event) {
+        mostraListagemNotasFiscais();
+        event.preventDefault(); 
+    });
+    /////////////////////////////////////////
+    
     
     $('#codproduto').change(function (){
         window.location.href = '{{ url("produto/") }}' + $('#codproduto').val();

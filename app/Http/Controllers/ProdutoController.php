@@ -123,6 +123,20 @@ class ProdutoController extends Controller
         if (!isset($parametros["negocio_codnaturezaoperacao"]))
             $parametros["negocio_codnaturezaoperacao"] = null;
         
+        // Parâmetros nostas fiscais
+        if (!isset($parametros["notasfiscais_lancamento_de"]))
+            $parametros["notasfiscais_lancamento_de"] = null;
+        
+        if (!isset($parametros["notasfiscais_lancamento_ate"]))
+            $parametros["notasfiscais_lancamento_ate"] = null;
+        
+        if (!isset($parametros["notasfiscais_codfilial"]))
+            $parametros["notasfiscais_codfilial"] = null;
+        
+        if (!isset($parametros["notasfiscais_codnaturezaoperacao"]))
+            $parametros["notasfiscais_codnaturezaoperacao"] = null;
+
+        
         $model = Produto::find($id);
         
         switch ($request->get('_div'))
@@ -145,16 +159,27 @@ class ProdutoController extends Controller
 
                 $parametrosNpb["codfilial"] = $parametros["negocio_codfilial"];
                 $parametrosNpb["codnaturezaoperacao"] = $parametros["negocio_codnaturezaoperacao"];
-
                 $npbs = NegocioProdutoBarra::search($parametrosNpb, 10);
-                
                 $view = 'produto.show-negocios';
-                
                 break;
+            case 'div-notasfiscais';
+                $parametrosNfpb["codproduto"] = $id;
                 
+                if (!empty($parametros["notasfiscais_lancamento_de"]))
+                    $parametrosNfpb["notasfiscais_lancamento_de"] = new Carbon($parametros["notasfiscais_lancamento_de"]);
+
+                if (!empty($parametros["notasfiscais_lancamento_ate"]))
+                    $parametrosNfpb["notasfiscais_lancamento_ate"] = new Carbon($parametros["notasfiscais_lancamento_ate"] . ' 23:59:59');
+
+                $parametrosNfpb["notasfiscais_codfilial"] = $parametros["notasfiscais_codfilial"];
+                $parametrosNfpb["notasfiscais_codnaturezaoperacao"] = $parametros["notasfiscais_codnaturezaoperacao"];
+                $nfpbs = NotaFiscalProdutoBarra::search($parametrosNfpb, 10);
+                $view = 'produto.show-notasfiscais';
+                break;
             default:
                 $view = 'produto.show';
         }
+        
         $ret = view($view, compact('model', 'nfpbs', 'npbs', 'parametros'));
         
         $queries = DB::getQueryLog();
