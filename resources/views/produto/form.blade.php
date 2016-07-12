@@ -1,11 +1,3 @@
-<?php
-
-use MGLara\Models\UnidadeMedida;
-use MGLara\Models\SecaoProduto;
-use MGLara\Models\Tributacao;
-use MGLara\Models\TipoProduto;
-
-?>
 <div class='col-md-5'>
     <div class="form-group">
         <label for="codtipoproduto" class="col-sm-3 control-label">{!! Form::label('Tipo:') !!}</label>
@@ -49,7 +41,7 @@ use MGLara\Models\TipoProduto;
 
     <div class="form-group">
         <label for="codcest" class="col-sm-3 control-label">{!! Form::label('CEST:') !!}</label>
-        <div class="col-sm-9">{!! Form::text('codcest', null, ['class'=> 'form-control','id'=>'codcest', 'style'=>'width:100%']) !!}</div>
+        <div class="col-sm-9">{!! Form::select2Cest('codcest', null, ['class' => 'form-control','id'=>'codcest', 'style'=>'width:100%', 'placeholder' => 'CEST']) !!}</div>
     </div>
 
 </div>
@@ -75,7 +67,6 @@ use MGLara\Models\TipoProduto;
         <label for="importado" class="col-sm-3 control-label">{!! Form::label('Importado:') !!}</label>
         <div class="col-sm-9" id="wrapper-importado">{!! Form::checkbox('importado', null, false,[ 'id'=>'importado', 'data-off-text' => 'Nacional', 'data-on-text' => 'Importado']) !!}</div>
     </div>
-
 
     <div class="form-group">
         <label for="site" class="col-sm-3 control-label">{!! Form::label('Disponível no Site:') !!}</label>
@@ -146,45 +137,6 @@ $(document).ready(function() {
     <?php if($model->inativo):?>$('#inativo').val({{ formatadata($model->inativo)}}).change();<?php endif;?>
     $("#produto").Setcase();
     $('#preco').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
-    
-    $('#codcest').select2({
-        minimumInputLength:0,
-        allowClear:true,
-        closeOnSelect:true,
-        placeholder:'CEST',
-        formatResult: function(item) {
-            var markup = "";
-            markup    += "<b>" + item.ncm + "</b>/";
-            markup    += "<b>" + item.cest + "</b>&nbsp;";
-            markup    += "<span>" + item.descricao + "</span>";
-            return markup;
-        },
-        formatSelection: function(item) { 
-                return item.ncm + "/" + item.cest + "&nbsp;" + item.descricao; 
-        },
-        ajax:{
-            url:baseUrl+"/cest/listagem-json",
-            dataType:'json',
-            quietMillis:500,
-            data:function(codncm, page) { 
-                return {codncm: $('#codncm').val()}; 
-            },
-            results:function(data, page) {
-                var more = (page * 20) < data.total;
-                return {results: data};
-            }
-        },
-        initSelection:function (element, callback) {
-            $.ajax({
-                type: "GET",
-                url: baseUrl+"/cest/listagem-json",
-                data: "id="+$('#codcest').val(),
-                dataType: "json",
-                success: function(result) { callback(result); }
-            });
-        },
-        width:'resolve'
-    });      
 
     if($('#codsecaoproduto').val() == '') {
         $('#codsecaoproduto').val({{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto or ''}});
@@ -239,8 +191,6 @@ $(document).ready(function() {
     $('#produto').on('blur',function() {
         $("#produto-descricao").popover('destroy');
     });
-
-
 });
 </script>
 @endsection
