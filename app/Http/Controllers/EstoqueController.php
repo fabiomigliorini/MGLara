@@ -23,6 +23,8 @@ use MGLara\Models\Negocio;
 use MGLara\Models\Produto;
 use MGLara\Models\EstoqueSaldo;
 use MGLara\Models\EstoqueSaldoConferencia;
+use MGLara\Models\EstoqueMovimento;
+use MGLara\Models\EstoqueMovimentoTipo;
 
 class EstoqueController extends Controller
 {
@@ -75,9 +77,9 @@ class EstoqueController extends Controller
         return response()->json(['response' => 'Agendado']);
     }
     
+    /*
     public function geraSaldoConferenciaNegocio(Request $request, $id)
     {
-        
         $obs = "Criado a partir do Negocio " . formataCodigo($id);
         
         if ($esc = EstoqueSaldoConferencia::where('observacoes', $obs)->first())
@@ -229,6 +231,147 @@ class EstoqueController extends Controller
             DB:rollback();
             dd($exc);
         }
+    }
+    */
+    
+    public function zeraSaldoNegativo ($id)
+    {
+        
+        DB::enableQueryLog();
+        
+        $slds = EstoqueSaldo::join('tblestoquelocalprodutovariacao', function($join) {
+            $join->on('tblestoquelocalprodutovariacao.codestoquelocalprodutovariacao', '=', 'tblestoquesaldo.codestoquelocalprodutovariacao');
+        })->where('tblestoquesaldo.saldoquantidade', '<', 0)
+                ->where('tblestoquelocalprodutovariacao.codestoquelocal', $id)
+                ->where('tblestoquesaldo.fiscal', false)
+                ->orderBy('codestoquesaldo')
+                ->limit(100)
+                ->get();
+        
+        $gerados = [];
+        
+        $data = new Carbon('2016-04-01');
+        
+        foreach ($slds as $sld)
+        {
+            $mes = EstoqueMes::buscaOuCria(
+                    $sld->EstoqueLocalProdutoVariacao->codprodutovariacao, 
+                    $sld->EstoqueLocalProdutoVariacao->codestoquelocal, 
+                    $sld->fiscal, 
+                    $data
+                    );
+            $mov = new EstoqueMovimento();
+            
+            $mov->data = $data;
+            $mov->codestoquemes = $mes->codestoquemes;
+            $mov->codestoquemovimentotipo = EstoqueMovimentoTipo::AJUSTE;
+            $mov->manual = true;
+            $mov->entradaquantidade = abs($sld->saldoquantidade);
+            
+            $mov->entradavalor = (double) $sld->customedio;
 
+            // Tenta custo Medio pela ultima compra do estoque
+            if (empty($mov->entradavalor))
+            {
+                $sql = "select em.entradavalor / em.entradaquantidade as custo
+                        from tblestoquemovimento em
+                        inner join tblestoquemes mes on (mes.codestoquemes = em.codestoquemes)
+                        inner join tblestoquesaldo es on (es.codestoquesaldo = mes.codestoquesaldo and es.fiscal = false)
+                        inner join tblestoquelocalprodutovariacao elpv on (elpv.codestoquelocalprodutovariacao = es.codestoquelocalprodutovariacao)
+                        inner join tblprodutovariacao pv on (pv.codprodutovariacao = elpv.codprodutovariacao)
+                        where em.codestoquemovimentotipo = 2001 -- COMPRA
+                        and pv.codproduto = {$sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}
+                        and coalesce(em.entradaquantidade, 0) > 0
+                        order by data desc
+                        limit 1
+                    ";
+
+                if ($custo = DB::select($sql))
+                    $mov->entradavalor = $custo[0]->custo;
+            }
+
+            //Tenta pela media do custo medio fisico
+            if (empty($mov->entradavalor))
+            {
+                $sql = "select avg(es.customedio) as custo
+                        from tblprodutovariacao pv
+                        inner join tblestoquelocalprodutovariacao elpv on (elpv.codprodutovariacao = pv.codprodutovariacao)
+                        inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = false)
+                        where pv.codproduto = {$sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}
+                        and es.customedio is not null
+                        and es.customedio > 0
+                    ";
+
+                if ($custo = DB::select($sql))
+                    $mov->entradavalor = $custo[0]->custo;
+            }
+
+            //Tenta pela media do custo medio fisico
+            if (empty($mov->entradavalor))
+            {
+                $sql = "select avg(es.customedio) as custo
+                        from tblprodutovariacao pv
+                        inner join tblestoquelocalprodutovariacao elpv on (elpv.codprodutovariacao = pv.codprodutovariacao)
+                        inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = true)
+                        where pv.codproduto = {$sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}
+                        and es.customedio is not null
+                        and es.customedio > 0
+                    ";
+
+                if ($custo = DB::select($sql))
+                    $mov->entradavalor = $custo[0]->custo;
+            }
+
+            //Tenta pela ultima nota de compra
+            if (empty($mov->entradavalor))
+            {
+                $sql = "select (((nfpb.valortotal + nfpb.icmsstvalor + nfpb.ipivalor) * (1- (nf.valordesconto / nf.valorprodutos))) / nfpb.quantidade) / coalesce(pe.quantidade, 1) as custo, nf.codnotafiscal
+                        from tblnotafiscal nf
+                        inner join tblnotafiscalprodutobarra nfpb on (nfpb.codnotafiscal = nf.codnotafiscal)
+                        inner join tblprodutobarra pb on (pb.codprodutobarra = nfpb.codprodutobarra)
+                        inner join tblprodutovariacao pv on (pv.codprodutovariacao = pb.codprodutovariacao)
+                        left join tblprodutoembalagem pe on (pe.codprodutoembalagem = pb.codprodutoembalagem)
+                        where nf.codnaturezaoperacao = 4
+                        and pv.codproduto = {$sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}
+                        order by nf.saida desc
+                        limit 1
+                    ";
+
+                if ($custo = DB::select($sql))
+                    $mov->entradavalor = $custo[0]->custo;
+            }
+
+            if (empty($mov->entradavalor))
+                $mov->entradavalor = $sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->preco * 0.571428571; // 75% markup
+            
+            $mov->entradavalor *= $mov->entradaquantidade;
+            
+            $sqls = DB::getQueryLog();
+
+            if ($mov->save())
+            {
+                $gerados[] = [
+                    'codproduto' => $sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto,
+                    'produto' => $sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->produto,
+                    'codprodutovariacao' => $sld->EstoqueLocalProdutoVariacao->codprodutovariacao,
+                    'variacao' => $sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->variacao,
+                    'codestoquemovimento' => $mov->codestoquemovimento,
+                    'codestoquemes' => $mov->codestoquemes,
+                    'entradaquantidade' => $mov->entradaquantidade,
+                    'entradavalor' => $mov->entradavalor,
+                ];
+                $this->dispatch((new EstoqueCalculaCustoMedio($mov->codestoquemes))->onQueue('urgent'));
+            }
+            else 
+            {
+                echo "<h1>Erro ao salvar movimento</h1>";
+                dd($mov);
+            }
+        }
+        
+        
+        $sql = DB::getQueryLog();
+        //dd($sql);
+        dd($gerados);
     }
 }
