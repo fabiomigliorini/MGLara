@@ -111,7 +111,17 @@ class ProdutoController extends Controller
         
         $parametros = $request->session()->get('produto.show');
         
-        //dd($parametros);
+        if (!isset($parametros["negocio_lancamento_de"]))
+            $parametros["negocio_lancamento_de"] = null;
+        
+        if (!isset($parametros["negocio_lancamento_ate"]))
+            $parametros["negocio_lancamento_ate"] = null;
+        
+        if (!isset($parametros["negocio_codfilial"]))
+            $parametros["negocio_codfilial"] = null;
+        
+        if (!isset($parametros["negocio_codnaturezaoperacao"]))
+            $parametros["negocio_codnaturezaoperacao"] = null;
         
         $model = Produto::find($id);
         
