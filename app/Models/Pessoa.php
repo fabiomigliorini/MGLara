@@ -372,8 +372,35 @@ class Pessoa extends MGModel
     public static function search($parametros, $registros = 20)
     {
         $query = Pessoa::orderBy('fantasia', 'ASC');
+        
+        if(!empty($parametros['codpessoa']))
+            $query->id($parametros['codpessoa']);
+            
+        if(!empty($parametros['codgrupocliente']))
+            $query->where('codgrupocliente', $parametros['codgrupocliente']);
+            
         if(!empty($parametros['pessoa']))
             $query->pessoa($parametros['pessoa']);        
+        
+        if(!empty($parametros['telefone'])) {
+            $telefones = explode(' ', $telefones);
+            foreach ($telefones as $str)
+                $query->where('telefone1', 'ILIKE', "%$str%")
+                    ->orWhere('telefone2', 'ILIKE', "%$str%")
+                    ->orWhere('telefone3', 'ILIKE', "%$str%");        
+        }
+        
+        if(!empty($parametros['email'])) {
+            $emails = explode(' ', $emails);
+            foreach ($emails as $str)
+                $query->where('email', 'ILIKE', "%$str%")
+                    ->orWhere('emailnfe', 'ILIKE', "%$str%")
+                    ->orWhere('emailcobranca', 'ILIKE', "%$str%");        
+        }
+            
+        if(!empty($parametros['codcidade']))
+            $query->where('codcidade', $str)
+                    ->orWhere('emailcobranca',  $str);        
         
         if(!empty($parametros['inativo']))
             switch ($parametros['inativo'])
@@ -394,22 +421,7 @@ class Pessoa extends MGModel
         
         return $query->paginate($registros);        
     }
-    
-    // Buscas 
-    public static function filterAndPaginate($id, $pessoa, $cnpj, $email, $telefone, $inativo, $codcidade, $codgrupocliente)
-    {
-        return Pessoa::id(numeroLimpo($id))
-            ->pessoa($pessoa)
-            ->cnpj($cnpj)
-            ->email($email)
-            ->telefone($telefone)
-            ->inativo($inativo)
-            ->cidade($codcidade)
-            ->grupocliente($codgrupocliente)
-            ->orderBy('fantasia', 'ASC')
-            ->paginate(20);
-    }
-    
+
     public function scopeId($query, $id)
     {
         if (trim($id) === '')
@@ -427,57 +439,6 @@ class Pessoa extends MGModel
         foreach ($pessoa as $str)
             $query->where('fantasia', 'ILIKE', "%$str%");
             $query->orWhere('pessoa', 'ILIKE', "%$str%");
-    }
-    
-    public function scopeCnpj($query, $cnpj)
-    {
-        if (trim($cnpj) === '')
-            return;
-        
-        $cnpj = explode(' ', $cnpj);
-        foreach ($cnpj as $str)
-            $query->where('cnpj', 'ILIKE', "%$str%");
-    }
-    
-    public function scopeEmail($query, $email)
-    {
-        if (trim($email) === '')
-            return;
-        
-        $email = explode(' ', $email);
-        foreach ($email as $str)
-            $query->where('email', 'ILIKE', "%$str%");
-            $query->where('emailnfe', 'ILIKE', "%$str%");
-            $query->where('emailcobranca', 'ILIKE', "%$str%");
-    }
-    
-    public function scopeTelefone($query, $telefone)
-    {
-        if (trim($telefone) === '')
-            return;
-        
-        $telefone = explode(' ', $telefone);
-        foreach ($telefone as $str)
-            $query->where('telefone1', 'ILIKE', "%$str%");
-            $query->where('telefone2', 'ILIKE', "%$str%");
-            $query->where('telefone3', 'ILIKE', "%$str%");
-    }
-    
-    public function scopeCidade($query, $codcidade)
-    {
-        if (trim($codcidade) === '')
-            return;
-        
-        $query->where('codcidade', $codcidade);
-        $query->orWhere('codcidadecobranca', $codcidade);
-    }    
-    
-    public function scopeGrupocliente($query, $codgrupocliente)
-    {
-        if (trim($codgrupocliente) === '')
-            return;
-        
-        $query->where('codgrupocliente', $codgrupocliente);
     }
     
     public function scopeInativo($query)
