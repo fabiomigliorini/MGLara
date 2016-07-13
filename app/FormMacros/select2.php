@@ -5,7 +5,6 @@ use Collective\Html\FormFacade;
 
 Form::macro('select2', function($name, $list = [], $selected = null, $options = [])
 {
-    
     if (empty($options['id']))
         $options['id'] = $name;
     
@@ -118,6 +117,13 @@ Form::macro('select2UnidadeMedida', function($name, $selected = null, $options =
         $options['campo'] = 'sigla';
     $medidas = [''=>''] + MGLara\Models\UnidadeMedida::orderBy('unidademedida')->lists($options['campo'], 'codunidademedida')->all();
     return Form::select2($name, $medidas, $selected, $options);
+});
+
+/* GRUPO CLIENTE */
+Form::macro('select2GrupoCliente', function($name, $selected = null, $options = [])
+{
+    $grupos = [''=>''] + MGLara\Models\GrupoCliente::orderBy('grupocliente')->lists('grupocliente', 'codgrupocliente')->all();
+    return Form::select2($name, $grupos, $selected, $options);
 });
 
 /* SEÇÃO DE PRODUTO */
@@ -565,7 +571,6 @@ END;
 /* PESSOA */
 Form::macro('select2Pessoa', function($name, $value = null, $options = [])
 {
-    
     if (empty($options['id']))
         $options['id'] = $name;
     
@@ -652,6 +657,85 @@ Form::macro('select2Pessoa', function($name, $value = null, $options = [])
                             }
                         });
                     },'width':'resolve'
+                });      
+            });            
+        </script>
+END;
+
+    $campo = Form::text($name, $value, $options);
+    
+    return $campo . $script;
+});
+
+/* CIDADE*/
+Form::macro('select2Cidade', function($name, $value = null, $options = [])
+{
+    if (empty($options['id']))
+        $options['id'] = $name;
+    
+    if (empty($options['placeholder']))
+        $options['placeholder'] = 'Cidade';
+    
+    if (empty($options['allowClear']))
+        $options['allowClear'] = true;
+    $options['allowClear'] = ($options['allowClear'])?'true':'false';
+    
+    if (empty($options['closeOnSelect']))
+        $options['closeOnSelect'] = true;
+    $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
+    
+    if (empty($options['somenteAtivos']))
+        $options['somenteAtivos'] = true;
+    $options['somenteAtivos'] = ($options['somenteAtivos'])?'true':'false';
+    
+    $script = <<< END
+  
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#{$options['id']}').select2({
+                    placeholder: '{$options['placeholder']}',
+                    minimumInputLength: 3,
+                    allowClear: {$options['allowClear']},
+                    closeOnSelect: {$options['closeOnSelect']},
+                    formatResult: function(item) {
+                        var markup = "";
+                        markup    += item.cidade + "<span class='pull-right'>" + item.uf + "</span>";
+                        return markup;
+                    },
+                    formatSelection: function(item) { 
+                        return item.cidade; 
+                    },
+                    ajax:{
+                        url: baseUrl+'/cidade/listagem-json',
+                        dataType: 'json',
+                        quietMillis: 500,
+                        data: function(term, current_page) { 
+                            return {
+                                q: term, 
+                                per_page: 10, 
+                                current_page: current_page
+                            }; 
+                        },
+                        results:function(data,page) {
+                            //var more = (current_page * 20) < data.total;
+                            return {
+                                results: data.data, 
+                                //more: data.mais
+                            };
+                        }
+                    },
+                    initSelection: function (element, callback) {
+                        $.ajax({
+                            type: "GET",
+                            url: baseUrl+'/cidade/listagem-json',
+                            data: "id="+$('#{$options['id']}').val(),
+                            dataType: "json",
+                            success: function(result) { 
+                                callback(result); 
+                            }
+                        });
+                    },
+                    width:'resolve'
                 });      
             });            
         </script>

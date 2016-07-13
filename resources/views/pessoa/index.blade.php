@@ -1,9 +1,5 @@
 @extends('layouts.default')
 @section('content')
-<?php
-    use MGLara\Models\GrupoCliente;
-    $grupos = [''=>''] + GrupoCliente::lists('grupocliente', 'codgrupocliente')->all();
-?>
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
@@ -16,7 +12,7 @@
 <h1 class="header">Pessoas</h1>
 <hr>
 <div class="search-bar">
-{!! Form::model(Request::all(), ['route' => 'pessoa.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'pessoa-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+{!! Form::model(Request::session()->get('pessoa.index'), ['route' => 'pessoa.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'pessoa-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
     <div class="form-group">
         {!! Form::text('codpessoa', null, ['class' => 'form-control search-cod', 'placeholder' => '#']) !!}
     </div>
@@ -33,18 +29,13 @@
         {!! Form::text('telefone', null, ['class' => 'form-control', 'placeholder' => 'Fone', ' style'=>'width: 110px']) !!}
     </div>
     <div class="form-group">
-        <select placeholder="Inativo" class="form-control" name="inativo" id="inativo" style="width: 80px;">
-            <option value=""></option>
-            <option value="0">Todos</option>
-            <option value="1">Ativos</option>
-            <option value="2">Inativos</option>
-        </select>
+        {!! Form::select('inativo', ['' => '', 1 => 'Ativos', 2 => 'Inativos'], null, ['style' => 'width: 120px', 'id'=>'inativo']) !!}
     </div>
     <div class="form-group">
-        {!! Form::text('cidade', null, ['class' => 'form-control', 'id'=> 'cidade', 'style'=> 'width: 230px;']) !!}
+        {!! Form::select2Cidade('codcidade', null, ['class' => 'form-control','id'=>'codcidade', 'style'=>'width:230px']) !!}
     </div>
     <div class="form-group">
-        <div style="width: 180px">{!! Form::select('grupocliente', $grupos, ['class'=> 'form-control'], ['id' => 'grupocliente', 'style'=>'width:100%']) !!}</div>
+        {!! Form::select2GrupoCliente('codgrupocliente', null, ['placeholder'=>'Grupo Cliente',  'class'=> 'form-control', 'id' => 'codgrupocliente', 'style'=>'width:180px']) !!}
     </div>        
     <button type="submit" class="btn btn-default">Buscar</button>
 {!! Form::close() !!}
@@ -138,62 +129,31 @@
 </div>
 @section('inscript')
 <script type="text/javascript">
+function atualizaFiltro()
+{
+    var frmValues = $('#pessoa-search').serialize();
+    $.ajax({
+        type: 'GET',
+        url: baseUrl + '/pessoa',
+        data: frmValues
+    })
+    .done(function (data) {
+        $('#items').html(jQuery(data).find('#items').html()); 
+    })
+    .fail(function () {
+        console.log('Erro no filtro');
+    });
+}    
 $(document).ready(function() {
     $('#pessoa-search').change(function() {
-        this.submit();
+        atualizaFiltro()
     });
-    $('#grupocliente').select2({
-        placeholder: 'Grupo de cliente',
-        allowClear:true,
-        closeOnSelect:true
-    })<?php echo (app('request')->input('grupocliente') ? ".select2('val'," .app('request')->input('grupocliente').");" : ';'); ?>    
     
-    $('#cidade').select2({
-        minimumInputLength: 3,
+    $('#inativo').select2({
+        placeholder: 'Inativo',
         allowClear: true,
-        closeOnSelect: true,
-        placeholder:'Cidade',
-        formatResult: function(item) {
-            var markup = "";
-            markup    += item.cidade + "<span class='pull-right'>" + item.uf + "</span>";
-            return markup;
-        },
-        formatSelection: function(item) { 
-            return item.cidade; 
-        },
-        ajax:{
-            url: baseUrl+'/cidade/listagem-json',
-            dataType: 'json',
-            quietMillis: 500,
-            data: function(term, current_page) { 
-                return {
-                    q: term, 
-                    per_page: 10, 
-                    current_page: current_page
-                }; 
-            },
-            results:function(data,page) {
-                //var more = (current_page * 20) < data.total;
-                return {
-                    results: data.data, 
-                    //more: data.mais
-                };
-            }
-        },
-        initSelection: function (element, callback) {
-            $.ajax({
-                type: "GET",
-                url: baseUrl+'/cidade/listagem-json',
-                data: "id=<?php if(isset($_GET['cidade'])){echo $_GET['cidade'];}?>",
-                dataType: "json",
-                success: function(result) { 
-                    callback(result); 
-                }
-            });
-        },
-        width:'resolve'
-    });      
-
+        closeOnSelect: true
+    });
 });
 </script>
 @endsection

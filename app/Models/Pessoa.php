@@ -382,6 +382,13 @@ class Pessoa extends MGModel
         if(!empty($parametros['pessoa']))
             $query->pessoa($parametros['pessoa']);        
         
+        /*
+        if(!empty($parametros['cnpj'])) {
+            $cnpj = $parametros['cnpj'];
+            $query->where('cnpj', 'ILIKE', "%$cnpj%");        
+        }
+        */
+        
         if(!empty($parametros['telefone'])) {
             $telefones = explode(' ', $telefones);
             foreach ($telefones as $str)
