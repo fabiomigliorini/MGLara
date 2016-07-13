@@ -44,7 +44,7 @@ $filtro = Request::session()->get('produto.index');
     </div>
 
     <div class="form-group">
-        {!! Form::select2SecaoProduto('codsecaoproduto', null, ['required' => true, 'class'=> 'form-control', 'id' => 'codsecaoproduto', 'style'=>'width:160px', 'placeholder' => 'Seção']) !!}
+        {!! Form::select2SecaoProduto('codsecaoproduto', null, ['class'=> 'form-control', 'id' => 'codsecaoproduto', 'style'=>'width:160px', 'placeholder' => 'Seção']) !!}
     </div>
 
     <div class="form-group">
