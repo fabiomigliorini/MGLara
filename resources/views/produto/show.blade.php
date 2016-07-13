@@ -6,8 +6,9 @@
     
     $filiais    = [''=>''] + Filial::lists('filial', 'codfilial')->all();
     $naturezaop = [''=>''] + NaturezaOperacao::lists('naturezaoperacao', 'codnaturezaoperacao')->all();
-
+    //dd($model->ProdutoVariacaoS);
 ?>
+
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
@@ -217,8 +218,18 @@
                                     <div class="col-sm-4 control-label">{!! Form::label('negocio_codnaturezaoperacao', 'Natureza de Operação') !!}</div>
                                     <div class="col-sm-7">{!! Form::select2NaturezaOperacao('negocio_codnaturezaoperacao', $parametros['negocio_codnaturezaoperacao'], ['style'=>'width:100%', 'id' => 'negocio_codnaturezaoperacao']) !!}</div>
                                 </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">{!! Form::label('negocio_codprodutovariacao', 'Variação') !!}</div>
+                                    <div class="col-sm-7">{!! Form::select2('negocio_codprodutovariacao', [''=>''] + $model->ProdutoVariacaoS->lists('variacao', 'codprodutovariacao')->all(), $parametros['negocio_codprodutovariacao'], ['style'=>'width:100%', 'id' => 'negocio_codprodutovariacao', 'placeholder'=>'Variaçao']) !!}</div>
+                                </div>
                             
-                                {!! Form::hidden('_div', 'div-negocios', ['id'=>'negocio_page']) !!}
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">{!! Form::label('negocio_codproduto', 'Pessoa') !!}</div>
+                                    <div class="col-sm-7">{!! Form::select2Pessoa('negocio_codpessoa', null, ['class' => 'form-control','id'=>'negocio_codpessoa', 'style'=>'width:100%', 'placeholder' => 'Pessoa']) !!}</div>
+                                </div>                            
+                                
+                            {!! Form::hidden('_div', 'div-negocios', ['id'=>'negocio_page']) !!}
                                 
                             {!! Form::close() !!}
                         </div>
@@ -261,6 +272,16 @@
                                 <div class="form-group">
                                     <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codnaturezaoperacao', 'Natureza de Operação') !!}</div>
                                     <div class="col-sm-7">{!! Form::select2NaturezaOperacao('notasfiscais_codnaturezaoperacao', $parametros['notasfiscais_codnaturezaoperacao'], ['style'=>'width:100%', 'id' => 'notasfiscais_codnaturezaoperacao']) !!}</div>
+                                </div>
+                            
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codprodutovariacao', 'Variação') !!}</div>
+                                    <div class="col-sm-7">{!! Form::select2('notasfiscais_codprodutovariacao', [''=>''] + $model->ProdutoVariacaoS->lists('variacao', 'codprodutovariacao')->all(), $parametros['negocio_codprodutovariacao'], ['style'=>'width:100%', 'id' => 'notasfiscais_codprodutovariacao', 'placeholder'=>'Variaçao']) !!}</div>
+                                </div>
+                            
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codproduto', 'Pessoa') !!}</div>
+                                    <div class="col-sm-7">{!! Form::select2Pessoa('notasfiscais_codpessoa', null, ['class' => 'form-control','id'=>'notasfiscais_codpessoa', 'style'=>'width:100%', 'placeholder' => 'Pessoa']) !!}</div>
                                 </div>
                             
                                 {!! Form::hidden('_div', 'div-notasfiscais', ['id'=>'notasfiscais_page']) !!}

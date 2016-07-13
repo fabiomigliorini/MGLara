@@ -561,3 +561,102 @@ END;
     
     return $campo . $script;
 });
+
+/* PESSOA */
+Form::macro('select2Pessoa', function($name, $value = null, $options = [])
+{
+    
+    if (empty($options['id']))
+        $options['id'] = $name;
+    
+    if (empty($options['placeholder']))
+        $options['placeholder'] = 'Pessoa';
+    
+    if (empty($options['allowClear']))
+        $options['allowClear'] = true;
+    $options['allowClear'] = ($options['allowClear'])?'true':'false';
+    
+    if (empty($options['closeOnSelect']))
+        $options['closeOnSelect'] = true;
+    $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
+    
+    if (empty($options['somenteAtivos']))
+        $options['somenteAtivos'] = true;
+    $options['somenteAtivos'] = ($options['somenteAtivos'])?'true':'false';
+    
+    $script = <<< END
+  
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#{$options['id']}').select2({
+                    placeholder: '{$options['placeholder']}',
+                    minimumInputLength: 3,
+                    allowClear: {$options['allowClear']},
+                    closeOnSelect: {$options['closeOnSelect']},
+                    'formatResult':function(item) {
+                        var css = "div-combo-pessoa";
+                        if (item.inativo)
+                            var css = "text-error";
+
+                        var css_titulo = "";
+                        var css_detalhes = "text-muted";
+                        if (item.inativo){
+                            css_titulo = "text-error";
+                            css_detalhes = "text-error";
+                        }
+
+                        var nome = item.fantasia;
+
+                        //if (item.inclusaoSpc != 0)
+                        //  nome += "&nbsp<span class=\"label label-warning\">" + item.inclusaoSpc + "</span>";
+
+                        var markup = "";
+                        markup    += "<strong class='" + css_titulo + "'>" + nome + "</strong>";
+                        markup    += "<small class='pull-right " + css_detalhes + "'>#" + formataCodigo(item.id) + "</small>";
+                        markup    += "<br>";
+                        markup    += "<small class='" + css_detalhes + "'>" + item.pessoa + "</small>";
+                        markup    += "<small class='pull-right " + css_detalhes + "'>" + formataCnpjCpf(item.cnpj) + "</small>";
+                        return markup;
+                    },
+                    'formatSelection':function(item) { 
+                        return item.fantasia; 
+                    },
+                    'ajax':{
+                        'url':baseUrl+'/pessoa/listagem-json',
+                        'dataType':'json',
+                        'quietMillis':500,
+                        'data':function(term, current_page) { 
+                            return {
+                                q: term, 
+                                per_page: 10, 
+                                current_page: current_page
+                            }; 
+                        },
+                        'results':function(data,page) {
+                            //var more = (current_page * 20) < data.total;
+                            return {
+                                results: data.data, 
+                                //more: data.mais
+                            };
+                        }
+                    },
+                    'initSelection':function (element, callback) {
+                        $.ajax({
+                            type: "GET",
+                            url: baseUrl+'/pessoa/listagem-json',
+                            data: "id="+$('#{$options['id']}').val(),
+                            dataType: "json",
+                            success: function(result) { 
+                                callback(result); 
+                            }
+                        });
+                    },'width':'resolve'
+                });      
+            });            
+        </script>
+END;
+
+    $campo = Form::text($name, $value, $options);
+    
+    return $campo . $script;
+});

@@ -152,6 +152,9 @@ class NotaFiscalProdutoBarra extends MGModel
         if (!empty($parametros['notasfiscais_codnaturezaoperacao']))
             $query = $query->where('tblnotafiscal.codnaturezaoperacao', '=', $parametros['notasfiscais_codnaturezaoperacao']);
         
+        if (!empty($parametros['notasfiscais_codpessoa']))
+            $query = $query->where('tblnotafiscal.codpessoa', '=', $parametros['notasfiscais_codpessoa']);
+        
         if (!empty($parametros['notasfiscais_codfilial']))
             $query = $query->where('tblnotafiscal.codfilial', '=', $parametros['notasfiscais_codfilial']);
         
@@ -169,9 +172,13 @@ class NotaFiscalProdutoBarra extends MGModel
             $query = $query->join('tblprodutovariacao', function($join) use ($parametros) {
                 $join->on('tblprodutovariacao.codprodutovariacao', '=', 'tblprodutobarra.codprodutovariacao');
             });
+            
             $query = $query->where('tblprodutovariacao.codproduto', '=', $parametros['codproduto']);
         }
-        
+
+        if (!empty($parametros['notasfiscais_codprodutovariacao']))
+            $query->where('tblprodutovariacao.codprodutovariacao', '=', $parametros['notasfiscais_codprodutovariacao']);
+
         //dd($query->toSql());
         
         return $query->paginate($registros);

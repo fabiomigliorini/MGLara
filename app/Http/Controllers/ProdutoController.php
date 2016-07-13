@@ -123,6 +123,12 @@ class ProdutoController extends Controller
         if (!isset($parametros["negocio_codnaturezaoperacao"]))
             $parametros["negocio_codnaturezaoperacao"] = null;
         
+        if (!isset($parametros["negocio_codprodutovariacao"]))
+            $parametros["negocio_codprodutovariacao"] = null;
+        
+        if (!isset($parametros["negocio_codpessoa"]))
+            $parametros["negocio_codpessoa"] = null;
+        
         // Parâmetros nostas fiscais
         if (!isset($parametros["notasfiscais_lancamento_de"]))
             $parametros["notasfiscais_lancamento_de"] = null;
@@ -136,6 +142,11 @@ class ProdutoController extends Controller
         if (!isset($parametros["notasfiscais_codnaturezaoperacao"]))
             $parametros["notasfiscais_codnaturezaoperacao"] = null;
 
+        if (!isset($parametros["notasfiscais_codprodutovariacao"]))
+            $parametros["notasfiscais_codprodutovariacao"] = null;
+        
+        if (!isset($parametros["notasfiscais_codpessoa"]))
+            $parametros["notasfiscais_codpessoa"] = null;
         
         $model = Produto::find($id);
         
@@ -159,6 +170,8 @@ class ProdutoController extends Controller
 
                 $parametrosNpb["codfilial"] = $parametros["negocio_codfilial"];
                 $parametrosNpb["codnaturezaoperacao"] = $parametros["negocio_codnaturezaoperacao"];
+                $parametrosNpb["codprodutovariacao"] = $parametros["negocio_codprodutovariacao"];
+                $parametrosNpb["codpessoa"] = $parametros["negocio_codpessoa"];
                 $npbs = NegocioProdutoBarra::search($parametrosNpb, 10);
                 $view = 'produto.show-negocios';
                 break;
@@ -173,6 +186,8 @@ class ProdutoController extends Controller
 
                 $parametrosNfpb["notasfiscais_codfilial"] = $parametros["notasfiscais_codfilial"];
                 $parametrosNfpb["notasfiscais_codnaturezaoperacao"] = $parametros["notasfiscais_codnaturezaoperacao"];
+                $parametrosNfpb["notasfiscais_codprodutovariacao"] = $parametros["notasfiscais_codprodutovariacao"];
+                $parametrosNfpb["notasfiscais_codpessoa"] = $parametros["notasfiscais_codpessoa"];
                 $nfpbs = NotaFiscalProdutoBarra::search($parametrosNfpb, 10);
                 $view = 'produto.show-notasfiscais';
                 break;

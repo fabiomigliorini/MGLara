@@ -56,8 +56,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('permissao','PermissaoController');   
 
     /* Pessoas */
-    Route::resource('pessoa','PessoaController');
     Route::get('pessoa/listagem-json', 'PessoaController@listagemJson');
+    Route::resource('pessoa','PessoaController');
 
     /* Filiais */
     Route::resource('filial','FilialController');
