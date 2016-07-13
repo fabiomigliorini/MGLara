@@ -167,11 +167,12 @@ class PessoaController extends Controller
     public function listagemJson(Request $request)
     {
         if($request->get('q')) {
-            $query = Pessoa::pessoa($request->get('q'))
-                    ->select('codpessoa as id', 'pessoa', 'fantasia', 'cnpj', 'inativo')
-                    ->paginate(10);
-                    //->take(10)->get();
-            return response()->json($query/*['items' => $query]*/);
+            $query = Pessoa::search([
+                'pessoa' => $request->get('q'),
+                'inativo' => $request->get('somenteAtivos'),
+                'select' => ['codpessoa as id', 'pessoa', 'fantasia', 'cnpj', 'inativo']
+            ]);
+            return response()->json($query);
             
         } elseif($request->get('id')) {
             $query = Pessoa::find($request->get('id'));

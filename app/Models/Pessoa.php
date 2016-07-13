@@ -369,6 +369,32 @@ class Pessoa extends MGModel
         return $query;
     }
 
+    public static function search($parametros, $registros = 20)
+    {
+        $query = Pessoa::orderBy('fantasia', 'ASC');
+        if(!empty($parametros['pessoa']))
+            $query->pessoa($parametros['pessoa']);        
+        
+        if(!empty($parametros['inativo']))
+            switch ($parametros['inativo'])
+            {
+                case 1:
+                    $query->ativo();
+                    break;
+                case 2:
+                    $query->inativo();
+                    break;
+                default:
+            }
+        else
+            $query->ativo();
+
+        if(!empty($parametros['select']))
+            $query->select($parametros['select']);
+        
+        return $query->paginate($registros);        
+    }
+    
     // Buscas 
     public static function filterAndPaginate($id, $pessoa, $cnpj, $email, $telefone, $inativo, $codcidade, $codgrupocliente)
     {
@@ -400,7 +426,7 @@ class Pessoa extends MGModel
         $pessoa = explode(' ', $pessoa);
         foreach ($pessoa as $str)
             $query->where('fantasia', 'ILIKE', "%$str%");
-            $query->where('pessoa', 'ILIKE', "%$str%");
+            $query->orWhere('pessoa', 'ILIKE', "%$str%");
     }
     
     public function scopeCnpj($query, $cnpj)
@@ -437,18 +463,6 @@ class Pessoa extends MGModel
             $query->where('telefone3', 'ILIKE', "%$str%");
     }
     
-    public function scopeInativo($query, $inativo)
-    {
-        if (trim($inativo) === '')
-            $query->whereNull('inativo');
-        
-        if($inativo == 1)
-            $query->whereNull('inativo');
-
-        if($inativo == 2)
-            $query->whereNotNull('inativo');
-    }
-    
     public function scopeCidade($query, $codcidade)
     {
         if (trim($codcidade) === '')
@@ -466,8 +480,14 @@ class Pessoa extends MGModel
         $query->where('codgrupocliente', $codgrupocliente);
     }
     
-    public function scopeCobrancaHistorico($query)
+    public function scopeInativo($query)
     {
-        
+        $query->whereNotNull('inativo');
     }
+
+    public function scopeAtivo($query)
+    {
+        $query->whereNull('inativo');
+    }
+    
 }

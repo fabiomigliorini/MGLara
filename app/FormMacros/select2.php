@@ -625,9 +625,10 @@ Form::macro('select2Pessoa', function($name, $value = null, $options = [])
                         'url':baseUrl+'/pessoa/listagem-json',
                         'dataType':'json',
                         'quietMillis':500,
-                        'data':function(term, current_page) { 
+                        'data':function(term, somenteAtivos, current_page) { 
                             return {
                                 q: term, 
+                                somenteAtivos: {$options['somenteAtivos']},
                                 per_page: 10, 
                                 current_page: current_page
                             }; 
