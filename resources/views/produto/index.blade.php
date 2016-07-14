@@ -48,15 +48,15 @@ $filtro = Request::session()->get('produto.index');
     </div>
 
     <div class="form-group">
-        {!! Form::select2FamiliaProduto('codfamiliaproduto', null, ['class' => 'form-control','id'=>'codfamiliaproduto', 'style'=>'width:160px', 'placeholder' => 'Família']) !!}
+        {!! Form::select2FamiliaProduto('codfamiliaproduto', null, ['class' => 'form-control','id'=>'codfamiliaproduto', 'style'=>'width:160px', 'placeholder' => 'Família', 'ativo'=>'9']) !!}
     </div>
 
     <div class="form-group">
-        {!! Form::select2GrupoProduto('codgrupoproduto', null, ['class' => 'form-control','id'=>'codgrupoproduto', 'style'=>'width:160px', 'placeholder' => 'Grupo']) !!}
+        {!! Form::select2GrupoProduto('codgrupoproduto', null, ['class' => 'form-control','id'=>'codgrupoproduto', 'style'=>'width:160px', 'placeholder' => 'Grupo', 'ativo'=>'9']) !!}
     </div>
 
     <div class="form-group">
-        {!! Form::select2SubGrupoProduto('codsubgrupoproduto', null, ['class' => 'form-control','id'=>'codsubgrupoproduto', 'style'=>'width:160px', 'placeholder' => 'Sub Grupo']) !!}
+        {!! Form::select2SubGrupoProduto('codsubgrupoproduto', null, ['class' => 'form-control','id'=>'codsubgrupoproduto', 'style'=>'width:160px', 'placeholder' => 'Sub Grupo', 'ativo'=>'9']) !!}
     </div>
 
     <div class="form-group">
