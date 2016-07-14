@@ -88,18 +88,18 @@ class GrupoProduto extends MGModel
         if(isset($parametros['grupoproduto']))
             $query->grupoProduto($parametros['grupoproduto']);
         
-        if(isset($parametros['inativo']))
-            switch ($parametros['inativo'])
-            {
-                case 9: // Todos
-                    break;
-                case 2: // Inativos
-                    $query->inativo();      break;
-                default:
-                    $query->ativo();        break;
-            }
-        else
-            $query->ativo();
+        switch (isset($parametros['ativo'])?$parametros['ativo']:'9')
+        {
+            case 1: //Ativos
+                $query->ativo();
+                break;
+            case 2: //Inativos
+                $query->inativo();
+                break;
+            case 9; //Todos
+            default:
+        }
+
         
         return $query->paginate($registros);
     }

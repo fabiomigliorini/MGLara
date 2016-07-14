@@ -74,15 +74,7 @@
         {!! Form::text('produto', null, ['class' => 'form-control', 'placeholder' => 'Produto']) !!}
     </div>
     <div class="form-group">
-        {!! Form::select(
-            'inativo', [
-                '9' => 'Todos', 
-                '1' => 'Ativos', 
-                '2' => 'Inativos'
-            ], 
-            Request::session()->get('sub-grupo-produto.show.inativo'),
-            ['class' => 'form-control']
-        ) !!}
+        {!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo', 'style'=>'width:120px']) !!}
     </div>          
     <button type="submit" class="btn btn-default"><i class=" glyphicon glyphicon-search"></i> Buscar</button>
 {!! Form::close() !!}

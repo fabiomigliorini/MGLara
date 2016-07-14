@@ -73,15 +73,7 @@
         {!! Form::text('subgrupoproduto', null, ['class' => 'form-control', 'placeholder' => 'Sub Grupo']) !!}
     </div>
     <div class="form-group">
-        {!! Form::select(
-            'inativo', [
-                '9' => 'Todos', 
-                '1' => 'Ativos', 
-                '2' => 'Inativos'
-            ], 
-            Request::session()->get('grupo-produto.show.inativo'),
-            ['class' => 'form-control']
-        ) !!}
+        {!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo', 'style'=>'width:120px']) !!}
     </div>      
     <button type="submit" class="btn btn-default"><i class=" glyphicon glyphicon-search"></i> Buscar</button>
     <a class="btn btn-default" href="{{ url("sub-grupo-produto/create?codgrupoproduto=$model->codgrupoproduto") }}"><i class=" glyphicon glyphicon-plus"></i> Novo Sub Grupo</a>

@@ -26,7 +26,7 @@ class SecaoProdutoController extends Controller
     public function index(Request $request) {
 
         if (!$request->session()->has('secao-produto.index')) 
-            $request->session()->put('secao-produto.index.inativo', '1');
+            $request->session()->put('secao-produto.index.ativo', '1');
         
         $parametros = $request->session()->get('secao-produto')['index'];
             
@@ -71,7 +71,7 @@ class SecaoProdutoController extends Controller
     public function show(Request $request, $id)
     {
         if (!$request->session()->has('secao-produto.show'))
-            $request->session()->put("secao-produto.show.inativo", '1');
+            $request->session()->put("secao-produto.show.ativo", '1');
         
         $request->session()->put("secao-produto.show.codsecaoproduto", $id);
         $parametros = $request->session()->get('secao-produto')['show'];        

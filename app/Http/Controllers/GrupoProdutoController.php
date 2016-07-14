@@ -69,7 +69,7 @@ class GrupoProdutoController extends Controller
     public function show(Request $request, $id)
     {
         if (!$request->session()->has('grupo-produto.show'))
-            $request->session()->put("grupo-produto.show.inativo", '1');
+            $request->session()->put("grupo-produto.show.ativo", '1');
         
         $request->session()->put("grupo-produto.show.codgrupoproduto", $id);
         $parametros = $request->session()->get('grupo-produto.show');               

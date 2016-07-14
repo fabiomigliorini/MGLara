@@ -69,7 +69,7 @@ class SubGrupoProdutoController extends Controller
     public function show(Request $request, $id)
     {
         if (!$request->session()->has('sub-grupo-produto.show'))
-            $request->session()->put("sub-grupo-produto.show.inativo", '1');
+            $request->session()->put("sub-grupo-produto.show.ativo", '1');
         
         $request->session()->put("sub-grupo-produto.show.codsubgrupoproduto", $id);
         $parametros = $request->session()->get('sub-grupo-produto.show');               

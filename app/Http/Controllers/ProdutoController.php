@@ -38,7 +38,7 @@ class ProdutoController extends Controller
     public function index(Request $request) {
         
         if (!$request->session()->has('produto.index')) 
-            $request->session()->put('produto.index.inativo', '1');
+            $request->session()->put('produto.index.ativo', '1');
         
         $parametros = $request->session()->get('produto.index');        
         $model = Produto::search($parametros);

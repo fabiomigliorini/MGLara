@@ -56,9 +56,8 @@ Form::macro('select2Marca', function($name, $value = null, $options = [])
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
     
-    if (empty($options['somenteAtivos']))
-        $options['somenteAtivos'] = true;
-    $options['somenteAtivos'] = ($options['somenteAtivos'])?'true':'false';
+    if (empty($options['ativo']))
+        $options['ativo'] = 1;
     
     $script = <<< END
   
@@ -84,7 +83,10 @@ Form::macro('select2Marca', function($name, $value = null, $options = [])
                         dataType: 'json',
                         quietMillis: 500,
                         data: function(term,page) { 
-                        return {q: term}; 
+                        return {
+                            q: term, 
+                            ativo: {$options['ativo']}
+                        }; 
                     },
                     results: function(data,page) {
                         var more = (page * 20) < data.total;
@@ -125,6 +127,15 @@ Form::macro('select2GrupoCliente', function($name, $selected = null, $options = 
     $grupos = [''=>''] + MGLara\Models\GrupoCliente::orderBy('grupocliente')->lists('grupocliente', 'codgrupocliente')->all();
     return Form::select2($name, $grupos, $selected, $options);
 });
+
+/* ATIVO */
+Form::macro('select2Ativo', function($name, $selected = null, $options = [])
+{
+    $opcoes = ['' => '', 1 => 'Ativos', 2 => 'Inativos'];
+    $options['placeholder'] = 'Ativos';
+    return Form::select2($name, $opcoes, $selected, $options);
+});
+
 
 /* SEÇÃO DE PRODUTO */
 Form::macro('select2SecaoProduto', function($name, $selected = null, $options = [])
@@ -168,9 +179,8 @@ Form::macro('select2FamiliaProduto', function($name, $value = null, $options = [
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
     
-    if (empty($options['somenteAtivos']))
-        $options['somenteAtivos'] = true;
-    $options['somenteAtivos'] = ($options['somenteAtivos'])?'true':'false';
+    if (empty($options['ativo']))
+        $options['ativo'] = 1;
     
     $script = <<< END
   
@@ -207,7 +217,8 @@ Form::macro('select2FamiliaProduto', function($name, $value = null, $options = [
                         quietMillis:500,
                         data:function(term, codsecaoproduto, page) { 
                             return {
-                                q: term,
+                                q: term, 
+                                ativo: {$options['ativo']},
                                 codsecaoproduto: $('#codsecaoproduto').val()
                             }; 
                             console.log($('#codsecaoproduto').val());
@@ -256,9 +267,8 @@ Form::macro('select2GrupoProduto', function($name, $value = null, $options = [])
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
     
-    if (empty($options['somenteAtivos']))
-        $options['somenteAtivos'] = true;
-    $options['somenteAtivos'] = ($options['somenteAtivos'])?'true':'false';
+    if (empty($options['ativo']))
+        $options['ativo'] = 1;
     
     $script = <<< END
   
@@ -292,7 +302,8 @@ Form::macro('select2GrupoProduto', function($name, $value = null, $options = [])
                         quietMillis:500,
                         data:function(term, codfamiliaproduto, page) { 
                             return {
-                                q: term,
+                                q: term, 
+                                ativo: {$options['ativo']},
                                 codfamiliaproduto: $('#codfamiliaproduto').val()
                             }; 
                         },
@@ -340,9 +351,8 @@ Form::macro('select2SubGrupoProduto', function($name, $value = null, $options = 
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
     
-    if (empty($options['somenteAtivos']))
-        $options['somenteAtivos'] = true;
-    $options['somenteAtivos'] = ($options['somenteAtivos'])?'true':'false';
+    if (empty($options['ativo']))
+        $options['ativo'] = 1;
     
     $script = <<< END
         <script type="text/javascript">
@@ -367,7 +377,8 @@ Form::macro('select2SubGrupoProduto', function($name, $value = null, $options = 
                         quietMillis:500,
                         data:function(term, codgrupoproduto, page) { 
                             return {
-                                q: term,
+                                q: term, 
+                                ativo: {$options['ativo']},
                                 codgrupoproduto: $('#codgrupoproduto').val()
                             }; 
                         },
@@ -414,9 +425,8 @@ Form::macro('select2Ncm', function($name, $value = null, $options = [])
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
     
-    if (empty($options['somenteAtivos']))
-        $options['somenteAtivos'] = true;
-    $options['somenteAtivos'] = ($options['somenteAtivos'])?'true':'false';
+    if (empty($options['ativo']))
+        $options['ativo'] = 1;
     
     $script = <<< END
         <script type="text/javascript">
@@ -440,7 +450,10 @@ Form::macro('select2Ncm', function($name, $value = null, $options = [])
                         dataType:'json',
                         quietMillis:500,
                         data:function(term, page) { 
-                            return {q: term}; 
+                            return {
+                                q: term, 
+                                ativo: {$options['ativo']}
+                            }; 
                         },
                         results:function(data, page) {
                             var more = (page * 20) < data.total;
@@ -514,9 +527,8 @@ Form::macro('select2Cest', function($name, $value = null, $options = [])
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
     
-    if (empty($options['somenteAtivos']))
-        $options['somenteAtivos'] = true;
-    $options['somenteAtivos'] = ($options['somenteAtivos'])?'true':'false';
+    if (empty($options['ativo']))
+        $options['ativo'] = 1;
     
     $script = <<< END
         <script type="text/javascript">
@@ -679,9 +691,8 @@ Form::macro('select2Cidade', function($name, $value = null, $options = [])
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
     
-    if (empty($options['somenteAtivos']))
-        $options['somenteAtivos'] = true;
-    $options['somenteAtivos'] = ($options['somenteAtivos'])?'true':'false';
+    if (empty($options['ativo']))
+        $options['ativo'] = 1;
     
     $script = <<< END
   
@@ -707,6 +718,7 @@ Form::macro('select2Cidade', function($name, $value = null, $options = [])
                         data: function(term, current_page) { 
                             return {
                                 q: term, 
+                                ativo: {$options['ativo']},
                                 per_page: 10, 
                                 current_page: current_page
                             }; 

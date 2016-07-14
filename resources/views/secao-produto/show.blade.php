@@ -68,15 +68,7 @@
         {!! Form::text('familiaproduto', null, ['class' => 'form-control', 'placeholder' => 'Família']) !!}
     </div>
     <div class="form-group">
-        {!! Form::select(
-            'inativo', [
-                '9' => 'Todos', 
-                '1' => 'Ativos', 
-                '2' => 'Inativos'
-            ], 
-            (Request::session()->has('secao-produto.show')['inativo'] ? null : Request::session()->get('secao-produto.show')['inativo']),
-            ['class' => 'form-control']
-        ) !!}
+        {!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo', 'style'=>'width:120px']) !!}
     </div>    
     <button type="submit" class="btn btn-default"><i class=" glyphicon glyphicon-search"></i> Buscar</button>
     <a class="btn btn-default" href="{{ url("familia-produto/create?codsecaoproduto=$model->codsecaoproduto") }}"><i class=" glyphicon glyphicon-plus"></i> Nova Familia</a>

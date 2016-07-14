@@ -64,7 +64,7 @@ $filtro = Request::session()->get('produto.index');
     </div>
 
     <div class="form-group">
-        {!! Form::select('ativo', ['' => '', 1 => 'Ativos', 2 => 'Inativos'], null, ['style' => 'width: 120px', 'id'=>'ativo']) !!}
+        {!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo', 'style'=>'width:120px']) !!}
     </div>
 
     <div class="form-group">
@@ -283,12 +283,6 @@ $(document).ready(function() {
     /*$(document).on('dp.change', '#criacao_de, #criacao_ate, #alteracao_de, #alteracao_ate', function() {
         atualizaFiltro();
     });*/
-    
-    $('#ativo').select2({
-        placeholder: 'Ativo',
-        allowClear: true,
-        closeOnSelect: true
-    });
     
     $('#site').select2({
         placeholder: 'Site',

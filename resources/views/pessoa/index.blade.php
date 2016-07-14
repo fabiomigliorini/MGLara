@@ -29,7 +29,7 @@
         {!! Form::text('telefone', null, ['class' => 'form-control', 'placeholder' => 'Fone', ' style'=>'width: 110px']) !!}
     </div>
     <div class="form-group">
-        {!! Form::select('inativo', ['' => '', 1 => 'Ativos', 2 => 'Inativos'], null, ['style' => 'width: 120px', 'id'=>'inativo']) !!}
+        {!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo', 'style'=>'width:120px']) !!}
     </div>
     <div class="form-group">
         {!! Form::select2Cidade('codcidade', null, ['class' => 'form-control','id'=>'codcidade', 'style'=>'width:230px']) !!}

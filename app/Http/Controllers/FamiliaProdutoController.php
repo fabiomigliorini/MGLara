@@ -69,7 +69,7 @@ class FamiliaProdutoController extends Controller
     public function show(Request $request, $id)
     {
         if (!$request->session()->has('familia-produto.show'))
-            $request->session()->put("familia-produto.show.inativo", '1');
+            $request->session()->put("familia-produto.show.ativo", '1');
         
         $request->session()->put("familia-produto.show.codfamiliaproduto", $id);
         $parametros = $request->session()->get('familia-produto.show');        

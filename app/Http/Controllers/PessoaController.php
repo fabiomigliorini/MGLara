@@ -26,7 +26,7 @@ class PessoaController extends Controller
     public function index(Request $request) {
         
         if (!$request->session()->has('pessoa.index')) 
-            $request->session()->put('pessoa.index.inativo', '1');
+            $request->session()->put('pessoa.index.ativo', '1');
 
         $parametros = $request->session()->get('pessoa.index');        
         $model = Pessoa::search($parametros)->orderBy('fantasia', 'ASC')->paginate(20);
