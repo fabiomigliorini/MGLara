@@ -209,7 +209,10 @@ class Ncm extends MGModel
         if (trim($q) === '')
             return;
 
-        $query->where('descricao', 'ILIKE', "%$q%")
-                ->orWhere('ncm', 'ILIKE', "%$q%");
+        $numero = NumeroLimpo(trim($q));
+        $query->where('descricao', 'ILIKE', "%$q%");
+        
+        if (!empty($numero))
+            $query->orWhere('ncm', 'ILIKE', "%$numero%");
     }   
 }
