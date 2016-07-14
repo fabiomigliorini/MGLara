@@ -66,7 +66,7 @@
 </div>
 <br>
 <div id="registros">
-  <div class="list-group group-list-striped group-list-hover" id="items">
+  <div class="list-group list-group-striped list-group-hover" id="items">
     @foreach($cidades as $row)
       <div class="list-group-item">
         <div class="row item">

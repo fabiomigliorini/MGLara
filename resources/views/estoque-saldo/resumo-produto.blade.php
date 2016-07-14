@@ -62,140 +62,325 @@ function linha(
     }
     
     if (empty($codprodutovariacao))
-        $style = 'border-top: 1px dashed grey';
+        $css = '';
     else
-        $style = '';
+        $css = 'list-group-item-info';
     ?>
-    <div class="col-md-12" style="{{ $style }}">
-        @if (empty($codprodutovariacao))
-            <div class="col-md-4">
-                <a href="#detalhesCodEstoqueLocal{{$codestoquelocal}}" data-toggle="collapse" >
-                    {{ $estoquelocal }}
+    <div class="list-group-item {{$css}}">
+        <div class="row small">
+            @if (empty($codprodutovariacao))
+                <div class="col-md-4">
+                    <a href="#detalhesCodEstoqueLocal{{$codestoquelocal}}" data-toggle="collapse" >
+                        {{ $estoquelocal }}
+                    </a>
+                </div>
+            @else
+                <div class="col-md-4">
+                    @if (!empty($variacao))
+                        {{ $variacao }}
+                    @else
+                        <i class='text-muted'>{ Sem Variação }</i>
+                    @endif
+                </div>
+            @endif
+
+            <!-- FISICO -->
+            <?php
+            $class = ($codestoquesaldo_fisico == $codestoquesaldo_destaque && !empty($codestoquesaldo_destaque))?'bg-warning':'';
+            $url = empty($codestoquesaldo_fisico)?"#detalhesCodEstoqueLocal{$codestoquelocal}":url("estoque-saldo/$codestoquesaldo_fisico");
+            $toggle = empty($codestoquesaldo_fisico)?'data-toggle="collapse"':'';
+            ?>
+            <div class='text-right {{ $class }} col-md-2'>
+                <a href='{{ $url }}' {!! $toggle !!}>
+                    {{ formataNumero($saldoquantidade_fisico, 3) }}&nbsp;
                 </a>
-            </div>
-        @else
-            <div class="col-md-4">
-                @if (!empty($variacao))
-                    {{ $variacao }}
-                @else
-                    <i class='text-muted'>{ Sem Variação }</i>
+                @if (!empty($codprodutovariacao))
+                    <a class="label pull-left {{ $label_fisico }}">
+                        &nbsp;
+                    </a>
                 @endif
             </div>
-        @endif
+            @if (!$somentequantidade)
+                <div class='text-right {{ $class }} col-md-1'>
+                    <a href='{{ $url }}' {!! $toggle !!}>
+                        {{ formataNumero($saldovalor_fisico, 2) }}&nbsp;
+                    </a>
+                </div>
+                <div class='text-right {{ $class }} col-md-1'>
+                    {{ formataNumero($customedio_fisico, 2) }}&nbsp;
+                </div>
+            @endif
 
-        <!-- FISICO -->
-        <?php
-        $class = ($codestoquesaldo_fisico == $codestoquesaldo_destaque && !empty($codestoquesaldo_destaque))?'bg-info':'';
-        $url = empty($codestoquesaldo_fisico)?"#detalhesCodEstoqueLocal{$codestoquelocal}":url("estoque-saldo/$codestoquesaldo_fisico");
-        $toggle = empty($codestoquesaldo_fisico)?'data-toggle="collapse"':'';
-        ?>
-        <div class='text-right {{ $class }} col-md-2'>
-            <a href='{{ $url }}' {!! $toggle !!}>
-                {{ formataNumero($saldoquantidade_fisico, 3) }}&nbsp;
-            </a>
-            @if (!empty($codprodutovariacao))
-                <a class="label pull-left {{ $label_fisico }}">
-                    &nbsp;
+            <!-- FISCAL -->
+            <?php
+            $class = ($codestoquesaldo_fiscal == $codestoquesaldo_destaque && !empty($codestoquesaldo_destaque))?'bg-success':'';
+            $url = empty($codestoquesaldo_fiscal)?"#detalhesCodEstoqueLocal{$codestoquelocal}":url("estoque-saldo/$codestoquesaldo_fiscal");
+            $toggle = empty($codestoquesaldo_fiscal)?'data-toggle="collapse"':'';
+            ?>
+            <div class='text-right {{ $class }} col-md-2'>
+                <a href='{{ $url }}' {!! $toggle !!}>
+                    {{ formataNumero($saldoquantidade_fiscal, 3) }}&nbsp;
                 </a>
+                @if (!empty($codprodutovariacao))
+                    <a class="label pull-left {{ $label_fiscal }}">
+                        &nbsp;
+                    </a>
+                @endif
+            </div>
+            @if (!$somentequantidade)
+                <div class='text-right {{ $class }} col-md-1'>
+                    <a href='{{ $url }}' {!! $toggle !!}>
+                        {{ formataNumero($saldovalor_fiscal, 2) }}&nbsp;
+                    </a>
+                </div>
+                <div class='text-right {{ $class }} col-md-1'>
+                    {{ formataNumero($customedio_fiscal, 2) }}&nbsp;
+                </div>
             @endif
         </div>
-        @if (!$somentequantidade)
-            <div class='text-right {{ $class }} col-md-1'>
-                <a href='{{ $url }}' {!! $toggle !!}>
-                    {{ formataNumero($saldovalor_fisico, 2) }}&nbsp;
-                </a>
-            </div>
-            <div class='text-right {{ $class }} col-md-1'>
-                {{ formataNumero($customedio_fisico, 6) }}&nbsp;
-            </div>
-        @endif
-
-        <!-- FISCAL -->
-        <?php
-        $class = ($codestoquesaldo_fiscal == $codestoquesaldo_destaque && !empty($codestoquesaldo_destaque))?'bg-info':'';
-        $url = empty($codestoquesaldo_fiscal)?"#detalhesCodEstoqueLocal{$codestoquelocal}":url("estoque-saldo/$codestoquesaldo_fiscal");
-        $toggle = empty($codestoquesaldo_fiscal)?'data-toggle="collapse"':'';
-        ?>
-        <div class='text-right {{ $class }} col-md-2'>
-            <a href='{{ $url }}' {!! $toggle !!}>
-                {{ formataNumero($saldoquantidade_fiscal, 3) }}&nbsp;
-            </a>
-            @if (!empty($codprodutovariacao))
-                <a class="label pull-left {{ $label_fiscal }}">
-                    &nbsp;
-                </a>
-            @endif
-        </div>
-        @if (!$somentequantidade)
-            <div class='text-right {{ $class }} col-md-1'>
-                <a href='{{ $url }}' {!! $toggle !!}>
-                    {{ formataNumero($saldovalor_fiscal, 2) }}&nbsp;
-                </a>
-            </div>
-            <div class='text-right {{ $class }} col-md-1'>
-                {{ formataNumero($customedio_fiscal, 6) }}&nbsp;
-            </div>
-        @endif
     </div>
     <?php
 }
 
 
 ?>
-<div class='table-condensed'>
-    <div class="row">
-    <div class="col-md-12">
+
+
+<div class="panel-group">
+  <div class="panel panel-default panel-condensed">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <a data-toggle="collapse" href="#collapse1">
+<div class="row">
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+        </div>            
+        </a>
+    </div>
+    <div id="collapse1" class="panel-collapse collapse">
+      <ul class="list-group list-group-condensed list-group-striped list-group-hover list-group-condensed">
+          <li class="list-group-item">
+<div class="row">
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+            <div class="col-md-1">
+                col1
+            </div>
+</div>              
+          </li>
+        <li class="list-group-item">Two</li>
+        <li class="list-group-item">Three</li>
+      </ul>
+    </div>
+    <div class="panel-body">
+        <a data-toggle="collapse" href="#collapse2">Collapsible list group</a>
+    </div>
+    <div id="collapse2" class="panel-collapse collapse">
+      <ul class="list-group list-group-condensed list-group-striped list-group-condensed">
+        <li class="list-group-item">One</li>
+        <li class="list-group-item">Two</li>
+        <li class="list-group-item">Three</li>
+      </ul>
+    </div>
+    <div class="panel-footer">
+        <a data-toggle="collapse" href="#collapseFooter">Footer</a>
+    </div>
+    <div id="collapseFooter" class="panel-collapse collapse">
+      <ul class="list-group list-group-condensed list-group-striped list-group-condensed">
+        <li class="list-group-item">One</li>
+        <li class="list-group-item">Two</li>
+        <li class="list-group-item">Three</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="list-group list-group-striped list-group-hover list-group-condensed">
+        <div class="list-group-item">
+            <div class="row">
+                <div class="col-md-4">asd</div>
+                
+            </div>
+        </div>
+        <div class="list-group-item">
+            asd
+        </div>
+        <div class="list-group-item">
+            asd
+        </div>
+        <div class="list-group-item">
+            Título
+        </div>
+    </div>
+</div>
+
+
+<div class='panel panel-default'>
+    <div class="list-group list-group-striped list-group-hover list-group-condensed">
         @if (!$somentequantidade)
-            <div class="col-md-12">
-                <div class='col-md-4'>
-                </div>
-                <div class='text-center col-md-4'>
-                    Físico
-                </div>
-                <div class='text-center col-md-4'>
-                    Fiscal
+            <div class="list-group-item">
+                <div class="row">
+                    <div class='col-md-4'>
+                    </div>
+                    <div class='text-center col-md-4'>
+                        <b>Físico</b>
+                    </div>
+                    <div class='text-center col-md-4'>
+                        <b>Fiscal</b>
+                    </div>
                 </div>
             </div>
         @endif
-        <div>
-            <div class='col-md-4 text-right'>
-                Local
-            </div>
-            <div class='col-md-2 text-right'>
+        <div class="list-group-item ">
+            <div class="row">
+                <div class='col-md-4 text-right'>
+                    <b>Local</b>
+                </div>
+                <div class='col-md-2 text-right'>
+                    <b>
+                        @if (!$somentequantidade)
+                            Saldo
+                        @else
+                            Físico
+                        @endif
+                    </b>
+                </div>
                 @if (!$somentequantidade)
-                    Saldo
-                @else
-                    Físico
+                    <div class='col-md-1 text-right'>
+                        <b>Valor</b>
+                    </div>
+                    <div class='col-md-1 text-right'>
+                        <b>Custo</b>
+                    </div>
+                @endif
+                <div class='col-md-2 text-right'>
+                    <b>
+                        @if (!$somentequantidade)
+                            Saldo
+                        @else
+                            Fiscal
+                        @endif
+                    </b>
+                </div>
+                @if (!$somentequantidade)
+                    <div class='col-md-1 text-right'>
+                        <b>Valor</b>
+                    </div>
+                    <div class='col-md-1 text-right'>
+                        <b>Custo</b>
+                    </div>
                 @endif
             </div>
-            @if (!$somentequantidade)
-                <div class='col-md-1 text-right'>
-                    Valor
-                </div>
-                <div class='col-md-1 text-right'>
-                    Custo
-                </div>
-            @endif
-            <div class='col-md-2 text-right'>
-                @if (!$somentequantidade)
-                    Saldo
-                @else
-                    Fiscal
-                @endif
-            </div>
-            @if (!$somentequantidade)
-                <div class='col-md-1 text-right'>
-                    Valor
-                </div>
-                <div class='col-md-1 text-right'>
-                    Custo
-                </div>
-            @endif
         </div>
     </div>
     <?php
 
-    foreach (EstoqueLocal::ativo()->get() as $el)
+    foreach (EstoqueLocal::ativo()->orderBy('codestoquelocal', 'asc')->get() as $el)
     {
         $sql = "select 
             pv.codprodutovariacao,
@@ -349,5 +534,4 @@ function linha(
             @endif
         </div>                
     </div>
-</div>
 </div>

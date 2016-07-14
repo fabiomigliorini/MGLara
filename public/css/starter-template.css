@@ -12,9 +12,11 @@ h1.header {
 .navbar-inverse .navbar-nav > li > a {
     color: #eee;
 }
+/*
 .bg-danger {
     background-color: #f2dede !important;
 }
+*/
 .controls .delete {
   margin-left: 5px;
 }
@@ -44,12 +46,29 @@ h1.header {
 .select2-drop {
     padding: 0 3px;
 }
-.list-group.group-list-striped .list-group-item:nth-child(odd) {
+
+.list-group.list-group-striped .list-group-item:nth-child(odd) {
     background-color: #f9f9f9;
 }
-.list-group.group-list-hover .list-group-item:hover {
+
+.list-group.list-group-hover .list-group-item:hover {
     background-color: #f5f5f5;
 }
+
+.list-group-condensed > .list-group-item {
+  padding: 5px 10px;
+}
+
+.panel-condensed > .panel-body, .panel-heading, .panel-footer {
+  padding: 5px 10px;
+}
+
+.panel-body:nth-child(odd) {
+    background-color: yellow;
+}
+
+
+
 #submenu {
     top: 50px;
     z-index: 10;

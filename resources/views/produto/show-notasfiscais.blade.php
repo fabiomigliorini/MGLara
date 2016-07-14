@@ -1,6 +1,6 @@
 <div id="div-notasfiscais" >
     @if (isset($nfpbs))
-        <div class="list-group group-list-striped group-list-hover" id="div-notasfiscais-listagem">
+        <div class="list-group list-group-striped list-group-hover" id="div-notasfiscais-listagem">
             @foreach($nfpbs as $nfpb)
                 <?php
                 $quantidade = $nfpb->quantidade;

@@ -2,7 +2,7 @@
     <?php
     $pvs = $model->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
     ?>
-    <ul class="list-group group-list-striped group-list-hover">
+    <ul class="list-group list-group-striped list-group-hover">
         @foreach ($pvs as $pv)
             <li class="list-group-item">
                 <strong>
