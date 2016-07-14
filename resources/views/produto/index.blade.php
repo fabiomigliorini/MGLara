@@ -64,7 +64,7 @@ $filtro = Request::session()->get('produto.index');
     </div>
 
     <div class="form-group">
-        {!! Form::select('inativo', ['' => '', 1 => 'Ativos', 2 => 'Inativos'], null, ['style' => 'width: 120px', 'id'=>'inativo']) !!}
+        {!! Form::select('ativo', ['' => '', 1 => 'Ativos', 2 => 'Inativos'], null, ['style' => 'width: 120px', 'id'=>'ativo']) !!}
     </div>
 
     <div class="form-group">
@@ -87,8 +87,8 @@ $filtro = Request::session()->get('produto.index');
 
     <strong>Criação</strong>
     <div class="form-group">
-        {!! Form::text('criacao_de', null, ['class' => 'form-control between', 'id' => 'criacao_de', 'placeholder' => 'De']) !!}
-        {!! Form::text('criacao_ate', null, ['class' => 'form-control between', 'id' => 'criacao_ate', 'placeholder' => 'Até']) !!}
+        {!! Form::date('criacao_de', null, ['class' => 'form-control between', 'id' => 'criacao_de', 'placeholder' => 'De']) !!}
+        {!! Form::date('criacao_ate', null, ['class' => 'form-control between', 'id' => 'criacao_ate', 'placeholder' => 'Até']) !!}
     </div>
 
     <strong>Alteração</strong>
@@ -280,12 +280,12 @@ $(document).ready(function() {
         atualizaFiltro();
     });
     
-    $(document).on('dp.change', '#criacao_de, #criacao_ate, #alteracao_de, #alteracao_ate', function() {
+    /*$(document).on('dp.change', '#criacao_de, #criacao_ate, #alteracao_de, #alteracao_ate', function() {
         atualizaFiltro();
-    });
+    });*/
     
-    $('#inativo').select2({
-        placeholder: 'Inativo',
+    $('#ativo').select2({
+        placeholder: 'Ativo',
         allowClear: true,
         closeOnSelect: true
     });
@@ -297,12 +297,15 @@ $(document).ready(function() {
     });
     
     $('#preco_de, #preco_ate').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.' });
+    
+    /*
     $('#criacao_de, #criacao_ate, #alteracao_de, #alteracao_ate').datetimepicker({
         useCurrent: false,
         showClear: true,
         locale: 'pt-br',
         format: 'DD/MM/YY'
     });
+    */
 });
 </script>
 @endsection

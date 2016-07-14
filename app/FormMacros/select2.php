@@ -585,9 +585,8 @@ Form::macro('select2Pessoa', function($name, $value = null, $options = [])
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
     
-    if (empty($options['somenteAtivos']))
-        $options['somenteAtivos'] = true;
-    $options['somenteAtivos'] = ($options['somenteAtivos'])?'true':'false';
+    if (empty($options['ativo']))
+        $options['ativo'] = 1;
     
     $script = <<< END
   
@@ -599,15 +598,11 @@ Form::macro('select2Pessoa', function($name, $value = null, $options = [])
                     allowClear: {$options['allowClear']},
                     closeOnSelect: {$options['closeOnSelect']},
                     'formatResult':function(item) {
-                        var css = "div-combo-pessoa";
-                        if (item.inativo)
-                            var css = "text-error";
-
                         var css_titulo = "";
                         var css_detalhes = "text-muted";
-                        if (item.inativo){
-                            css_titulo = "text-error";
-                            css_detalhes = "text-error";
+                        if (item.inativo) {
+                            css_titulo = "text-danger";
+                            css_detalhes = "text-danger";
                         }
 
                         var nome = item.fantasia;
@@ -630,10 +625,10 @@ Form::macro('select2Pessoa', function($name, $value = null, $options = [])
                         'url':baseUrl+'/pessoa/listagem-json',
                         'dataType':'json',
                         'quietMillis':500,
-                        'data':function(term, somenteAtivos, current_page) { 
+                        'data':function(term, ativo, current_page) { 
                             return {
                                 q: term, 
-                                somenteAtivos: {$options['somenteAtivos']},
+                                ativo: {$options['ativo']},
                                 per_page: 10, 
                                 current_page: current_page
                             }; 

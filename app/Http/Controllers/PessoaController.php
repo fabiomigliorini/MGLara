@@ -29,7 +29,7 @@ class PessoaController extends Controller
             $request->session()->put('pessoa.index.inativo', '1');
 
         $parametros = $request->session()->get('pessoa.index');        
-        $model = Pessoa::search($parametros);
+        $model = Pessoa::search($parametros)->orderBy('fantasia', 'ASC')->paginate(20);
         
         return view('pessoa.index', compact('model'));
     }
@@ -166,17 +166,23 @@ class PessoaController extends Controller
 
     public function listagemJson(Request $request)
     {
+        
         if($request->get('q')) {
+            
             $query = Pessoa::search([
-                'pessoa' => $request->get('q'),
-                'inativo' => $request->get('somenteAtivos'),
-                'select' => ['codpessoa as id', 'pessoa', 'fantasia', 'cnpj', 'inativo']
-            ]);
+                'busca' => $request->get('q'),
+                'ativo' => ($request->get('somenteAtivos') == 'true') ? 1:9,
+            ])->select('codpessoa as id', 'pessoa', 'fantasia', 'cnpj', 'inativo')
+                ->orderBy('fantasia', 'ASC')
+                ->paginate(20);
+            
             return response()->json($query);
             
         } elseif($request->get('id')) {
             $query = Pessoa::find($request->get('id'));
             return response()->json($query);
         }
+        
+        
     } 
 }

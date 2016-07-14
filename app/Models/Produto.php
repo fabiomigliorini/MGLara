@@ -664,31 +664,28 @@ class Produto extends MGModel
         }
         
         if(isset($parametros['criacao_de']) and !empty($parametros['criacao_de']))
-            $query->where('criacao', '>=', Carbon::createFromFormat('d/m/y', $parametros['criacao_de'])->format('Y-m-d').' 00:00:00.0');
+            $query->where('criacao', '>=', $parametros['criacao_de']);
             
         if(isset($parametros['criacao_ate']) and !empty($parametros['criacao_ate']))
-            $query->where('criacao', '<=', Carbon::createFromFormat('d/m/y', $parametros['criacao_ate'])->format('Y-m-d').' 23:59:59.9');
+            $query->where('criacao', '<=', $parametros['criacao_ate']);
             
         if(isset($parametros['alteracao_de']) and !empty($parametros['alteracao_de']))
-            $query->where('alteracao', '>=', Carbon::createFromFormat('d/m/y', $parametros['alteracao_de'])->format('Y-m-d').' 00:00:00.0');
+            $query->where('alteracao', '>=', $parametros['alteracao_de']);
             
         if(isset($parametros['alteracao_ate']) and !empty($parametros['alteracao_ate']))
-            $query->where('alteracao', '<=', Carbon::createFromFormat('d/m/y', $parametros['alteracao_ate'])->format('Y-m-d').' 23:59:59.9');
-            
-        if(isset($parametros['inativo']))
-            switch ($parametros['inativo'])
-            {
-                case 1: // Todos
-                    $query->ativo();
-                    break;
-                case 2: // Inativos
-                    $query->inativo();
-                    break;
-                default:
-                    //$query->ativo();
-            }
-        else
-            $query->ativo();
+            $query->where('alteracao', '<=', $parametros['alteracao_ate']);
+
+        switch (isset($parametros['ativo'])?$parametros['ativo']:'9')
+        {
+            case 1: //Ativos
+                $query->ativo();
+                break;
+            case 2: //Inativos
+                $query->inativo();
+                break;
+            case 9; //Todos
+            default:
+        }
         
         return $query->paginate($registros);
     }
