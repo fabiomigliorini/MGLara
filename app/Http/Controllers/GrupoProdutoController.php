@@ -156,7 +156,7 @@ class GrupoProdutoController extends Controller
         if($request->get('codfamiliaproduto')) {
             $model = GrupoProduto::where('codfamiliaproduto', $request->get('codfamiliaproduto'))
                 ->grupoproduto($request->get('q'))
-                ->select('codgrupoproduto as id', 'grupoproduto')
+                ->select('codgrupoproduto as id', 'grupoproduto', 'inativo')
                 ->take(10)
                 ->get();
             return response()->json(['items' => $model]);       
