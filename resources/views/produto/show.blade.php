@@ -24,6 +24,7 @@
                 </ul>
             </li>
         
+            <li><a href="<?php echo url("produto/create/?duplicar={$model->codproduto}");?>"><span class="glyphicon glyphicon-duplicate"></span> Duplicar</a></li> 
             <li><a href="<?php echo url("produto/$model->codproduto/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <!--
             <li><a href="<?php echo url("produto/$model->codproduto/juntar-barras");?>"><span class="glyphicon glyphicon-resize-small"></span> Juntar códigosde barra</a></li> 

@@ -50,10 +50,20 @@ class ProdutoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $model = new Produto;
-        $model->codtipoproduto = TipoProduto::MERCADORIA;
+        
+        if ($request->get('duplicar'))
+        {
+            $duplicar = Produto::findOrFail($request->get('duplicar'));
+            $model->fill($duplicar->getAttributes());
+        }
+        else
+        {
+            $model->codtipoproduto = TipoProduto::MERCADORIA;
+        }
+        
         return view('produto.create', compact('model'));
     }
 
