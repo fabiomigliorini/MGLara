@@ -254,7 +254,15 @@ if(!function_exists('formataCep')) {
 if(!function_exists('formataLocalEstoque')) {
     function formataLocalEstoque ($corredor, $prateleira, $coluna, $bloco)
     {
-        return $corredor.'.'.$prateleira.'.'.$coluna.'.'.$bloco;
+        if (($corredor + $prateleira + $coluna + $bloco) > 0)
+        {
+            $corredor = str_pad($corredor, 2, '0', STR_PAD_LEFT);
+            $prateleira = str_pad($prateleira, 2, '0', STR_PAD_LEFT);
+            $coluna = str_pad($coluna, 2, '0', STR_PAD_LEFT);
+            $bloco = str_pad($bloco, 2, '0', STR_PAD_LEFT);
+            return "{$corredor}.{$prateleira}.{$coluna}.{$bloco}";
+        }
+        return '';
     }
 }
 

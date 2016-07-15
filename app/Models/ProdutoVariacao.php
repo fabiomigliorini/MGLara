@@ -22,6 +22,7 @@ namespace MGLara\Models;
  *
  * Tabelas Filhas
  * @property  ProdutoBarra[]                 $ProdutoBarraS
+ * @property  EstoqueLocalProdutoVariacao[]  $EstoqueLocalProdutoVariacaoS
  */
 
 class ProdutoVariacao extends MGModel
@@ -63,9 +64,14 @@ class ProdutoVariacao extends MGModel
 
 
     // Tabelas Filhas
-    public function ProdutobarraS()
+    public function ProdutoBarraS()
     {
         return $this->hasMany(ProdutoBarra::class, 'codprodutovariacao', 'codprodutovariacao');
+    }
+
+    public function EstoqueLocalProdutoVariacaoS()
+    {
+        return $this->hasMany(EstoqueLocalProdutoVariacao::class, 'codprodutovariacao', 'codprodutovariacao');
     }
 
 
