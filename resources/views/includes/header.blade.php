@@ -8,21 +8,16 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="">MGSis</a>
+      <a class="navbar-brand" href="{{ url('home') }}">MGSis</a>
     </div>
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li><a href="<?php echo url('/');?>">Dashboard</a></li>
-        <!-- 
         <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Comercial <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-                <li><a href="<?php echo url('negocio');?>">Negócios</a></li>
-                <li><a href="#">Notas Fiscais</a></li>
-                <li><a href="#">NFe de Terceiros</a></li>
-            </ul>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Comercial <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="{{ URL::route('negocios::index') }}">Negócios</a><li>
+          </ul>
         </li>
-        -->
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Financeiro <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -55,12 +50,12 @@
             <li role="separator" class="divider"></li>
             <li><a href="{{ url('estoque-saldo-conferencia') }}">Conferência Saldo</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="{{ url('marca') }}">Marcas</a><li> 
-            <li><a href="{{ url('secao-produto') }}">Seções de Produto</a><li> 
+            <li><a href="{{ url('marca') }}">Marcas</a><li>
+            <li><a href="{{ url('secao-produto') }}">Seções de Produto</a><li>
             <li><a href="{{ url('tipo-produto') }}">Tipos de produtos</a></li>
             <li><a href="{{ url('unidade-medida') }}">Unidades de medida</a></li>
             <!-- <li><a href="#">NCM</a></li> -->
-            <li><a href="{{ url('imagem') }}">Imagens</a></li> 
+            <li><a href="{{ url('imagem') }}">Imagens</a></li>
           </ul>
         </li>
         <li class="dropdown">
@@ -87,11 +82,11 @@
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ Auth::user()->usuario }} <span class="caret"></span></a>
             <ul class="dropdown-menu">
-                <li><a href="<?php echo url('usuario/'.Auth::user()->codusuario);?>">Perfil</a></li>
-                <li><a href="<?php echo url('auth/logout');?>">Sair</a></li>
+                <li><a href="<?php echo url('usuario/' . Auth::user()->codusuario); ?>">Perfil</a></li>
+                <li><a href="<?php echo url('auth/logout'); ?>">Sair</a></li>
             </ul>
-        </li> 
-      </ul>  
+        </li>
+      </ul>
     </div>
   </div>
 </nav>
