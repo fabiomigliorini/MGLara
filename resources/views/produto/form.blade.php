@@ -153,24 +153,34 @@ $(document).ready(function() {
 
     function mostraPopoverDescricao(produto)
     {
-        $.get(baseUrl + "/produto/descricao", 
-            { 
-                codsubgrupoproduto: $('#codsubgrupoproduto').val(), 
-                q: produto 
-            } 
-        ).done(function( data ) {
-            if(data.data.length > 0){
-                $.each(data.data, function(k, v) {
-                    $('.popover-content').prepend('<li class="produtos-similares small">'+ v.produto +'</li>');
-                });
-            } else {
-                $('.popover-content').prepend('<p>Nenhum produto encontrado</p>');
-            }
+        var codproduto = <?php echo (isset($model->codproduto)?$model->codproduto:'0')?>;
+        var delayTimer;        
+        clearTimeout(delayTimer);
+        delayTimer = setTimeout(function() {        
+            $.get(baseUrl + "/produto/descricao", 
+                { 
+                    codsubgrupoproduto: $('#codsubgrupoproduto').val(), 
+                    q: produto,
+                    codproduto: codproduto
+                } 
+            ).done(function( data ) {
+                if(data.data.length > 0) {
+                    $('.popover-content').empty();
+                    $.each(data.data, function(k, v) {
+                        $('.popover-content').prepend('<li class="produtos-similares small">'+ v.produto +'</li>');
+                    });
+                } else {
+                    $('.popover-content').empty();
+                    $('.popover-content').prepend('<p>Nenhum produto encontrado</p>');
+                }
 
-        }).fail(function(error ) {
-            return console.log(error)
-        });  
-
+            }).fail(function(error ) {
+                return console.log(error)
+            });  
+        }, 1000);
+    }
+    
+    $('#produto').focus(function(){
         $("#produto-descricao").popover({
             title: ' ', 
             content: '', 
@@ -178,13 +188,12 @@ $(document).ready(function() {
             placement: 'bottom'
         });
         $("#produto-descricao").popover('show');
-    }
+    });
     
     $('#produto').on('keyup',function() {
         if($(this).val().length > 2) {
+            // <-- aplicar delay
             mostraPopoverDescricao( $(this).val() );
-        } else {
-            $("#produto-descricao").popover('destroy');
         }
     });
 

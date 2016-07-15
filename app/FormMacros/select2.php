@@ -471,6 +471,12 @@ Form::macro('select2Ncm', function($name, $value = null, $options = [])
                     },
                     width:'resolve'
                 });
+                var limpaNcm = function(){
+                    $('#codcest').select2('val', null);
+                }
+                $('#{$options['id']}').on("select2-removed", function(e) {
+                    limpaNcm;
+                }).change(limpaNcm);                            
             });
         </script>
 END;
@@ -535,7 +541,7 @@ Form::macro('select2Cest', function($name, $value = null, $options = [])
             $(document).ready(function() {
                 $('#{$options['id']}').select2({
                     placeholder: '{$options['placeholder']}',
-                    minimumInputLength: 1,
+                    minimumInputLength: 0,
                     allowClear: {$options['allowClear']},
                     closeOnSelect: {$options['closeOnSelect']},
                     formatResult: function(item) {

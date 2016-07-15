@@ -92,7 +92,7 @@ class Produto extends MGModel
             'codtributacao'     => "required|numeric|validaTributacao:$this->codncm|validaTributacaoSubstituicao:$this->codncm",
             'codtipoproduto'    => 'required|numeric',
             'codncm'            => 'required|numeric|validaNcm',
-            'codcest'           => 'numeric',            
+            'codcest'           => 'numeric|required_if:codtributacao,'.Tributacao::ISENTO,            
         ];
     
         $this->_mensagensErro = [

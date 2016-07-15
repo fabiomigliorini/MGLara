@@ -87,14 +87,14 @@ $filtro = Request::session()->get('produto.index');
 
     <strong>Criação</strong>
     <div class="form-group">
-        {!! Form::date('criacao_de', null, ['class' => 'form-control between', 'id' => 'criacao_de', 'placeholder' => 'De']) !!}
-        {!! Form::date('criacao_ate', null, ['class' => 'form-control between', 'id' => 'criacao_ate', 'placeholder' => 'Até']) !!}
+        {!! Form::date('criacao_de', null, ['class' => 'form-control', 'id' => 'criacao_de', 'placeholder' => 'De']) !!}
+        {!! Form::date('criacao_ate', null, ['class' => 'form-control', 'id' => 'criacao_ate', 'placeholder' => 'Até']) !!}
     </div>
 
     <strong>Alteração</strong>
     <div class="form-group">
-        {!! Form::text('alteracao_de', null, ['class' => 'form-control between', 'id' => 'alteracao_de', 'placeholder' => 'De']) !!}
-        {!! Form::text('alteracao_ate', null, ['class' => 'form-control between', 'id' => 'alteracao_ate', 'placeholder' => 'Até']) !!}
+        {!! Form::date('alteracao_de', null, ['class' => 'form-control', 'id' => 'alteracao_de', 'placeholder' => 'De']) !!}
+        {!! Form::date('alteracao_ate', null, ['class' => 'form-control', 'id' => 'alteracao_ate', 'placeholder' => 'Até']) !!}
     </div>
     <div class="form-group pull-right">
         <button type="submit" class="btn btn-default pull-right">

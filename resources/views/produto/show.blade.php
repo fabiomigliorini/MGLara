@@ -225,7 +225,7 @@
 
                                 <div class="form-group">
                                     <div class="col-sm-4 control-label">{!! Form::label('negocio_codprodutovariacao', 'Variação') !!}</div>
-                                    <div class="col-sm-7">{!! Form::select2('negocio_codprodutovariacao', [''=>''] + $model->ProdutoVariacaoS->lists('variacao', 'codprodutovariacao')->all(), $parametros['negocio_codprodutovariacao'], ['style'=>'width:100%', 'id' => 'negocio_codprodutovariacao', 'placeholder'=>'Variaçao']) !!}</div>
+                                    <div class="col-sm-7">{!! Form::select2('negocio_codprodutovariacao', [''=>''] + $model->ProdutoVariacaoS->lists('variacao', 'codprodutovariacao')->all() + [null=>'Sem variação'], $parametros['negocio_codprodutovariacao'], ['style'=>'width:100%', 'id' => 'negocio_codprodutovariacao', 'placeholder'=>'Variaçao']) !!}</div>
                                 </div>
                             
                                 <div class="form-group">

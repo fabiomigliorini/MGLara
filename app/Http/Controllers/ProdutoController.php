@@ -519,7 +519,9 @@ class ProdutoController extends Controller
         {
             $sql = Produto::produto($request->get('q'))
                     ->where('codsubgrupoproduto', $request->get('codsubgrupoproduto'))
+                    ->where('codproduto', '<>', $request->get('codproduto'))
                     ->select('produto')
+                    ->orderBy('produto', 'DESC')
                     ->paginate(20);
             
             return response()->json($sql);
