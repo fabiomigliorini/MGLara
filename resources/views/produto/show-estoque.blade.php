@@ -1,19 +1,19 @@
 <?php
 
-function decideLabel($data)
+function decideIconeUltimaConferencia($data)
 {
     if ($data == null)
-        return 'label-default';
+        return 'glyphicon-remove-sign text-muted';
     
     $dias = $data->diffInDays();
     
     if ($dias > 30)
-        return 'label-danger';
+        return 'glyphicon-question-sign text-danger';
   
     if ($dias > 15)
-        return 'label-warning';
+        return 'glyphicon-question-sign text-warning';
     
-    return 'label-success';
+    return 'glyphicon-ok-sign text-success';
 }
 
 function divSaldo($arr) {
@@ -25,9 +25,7 @@ function divSaldo($arr) {
     @if (!empty($arr['codestoquesaldo']))
         </a>
     @endif
-    <span class="label {{ decideLabel($arr['ultimaconferencia']) }}">
-        &nbsp;
-    </span>
+    <span class='glyphicon {{ decideIconeUltimaConferencia($arr['ultimaconferencia']) }}'></span>
     <?php
 }
 
@@ -116,16 +114,10 @@ function divDescricao($arr) {
                         <div class="row">
                             {{ divDescricao($arrLocal) }}
                             <div class="col-md-2 text-right">
-                                {{ formataNumero($arrLocal['fisico']['saldoquantidade'], 0) }}
-                                <span class="label {{ decideLabel($arrLocal['fisico']['ultimaconferencia']) }}">
-                                    &nbsp;
-                                </span>
+                                {{ divSaldo($arrLocal['fisico']) }}
                             </div>
                             <div class="col-md-2 text-right">
-                                {{ formataNumero($arrLocal['fiscal']['saldoquantidade'], 0) }}
-                                <span class="label {{ decideLabel($arrLocal['fiscal']['ultimaconferencia']) }}">
-                                    &nbsp;
-                                </span>
+                                {{ divSaldo($arrLocal['fiscal']) }}
                             </div>
                         </div>
                     </a>
