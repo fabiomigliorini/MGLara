@@ -162,13 +162,13 @@ class ProdutoController extends Controller
         
         switch ($request->get('_div'))
         {
-            case 'div-variacoes';
+            case 'div-variacoes':
                 $view = 'produto.show-variacoes';
                 break;
-            case 'div-embalagens';
+            case 'div-embalagens':
                 $view = 'produto.show-embalagens';
                 break;
-            case 'div-negocios';
+            case 'div-negocios':
                 
                 $parametrosNpb["codproduto"] = $id;
                 
@@ -185,7 +185,7 @@ class ProdutoController extends Controller
                 $npbs = NegocioProdutoBarra::search($parametrosNpb, 10);
                 $view = 'produto.show-negocios';
                 break;
-            case 'div-notasfiscais';
+            case 'div-notasfiscais':
                 $parametrosNfpb["codproduto"] = $id;
                 
                 if (!empty($parametros["notasfiscais_lancamento_de"]))
@@ -201,11 +201,16 @@ class ProdutoController extends Controller
                 $nfpbs = NotaFiscalProdutoBarra::search($parametrosNfpb, 10);
                 $view = 'produto.show-notasfiscais';
                 break;
+            case 'div-estoque':
+                $estoque = $model->getSaldoEstoque();
+                $view = 'produto.show-estoque';
+                break;
             default:
                 $view = 'produto.show';
         }
         
-        $ret = view($view, compact('model', 'nfpbs', 'npbs', 'parametros'));
+        
+        $ret = view($view, compact('model', 'nfpbs', 'npbs', 'parametros', 'estoque'));
         
         $queries = DB::getQueryLog();
 

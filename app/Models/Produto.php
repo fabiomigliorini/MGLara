@@ -718,4 +718,249 @@ class Produto extends MGModel
     {
         $query->whereNull('tblproduto.inativo');
     }
+    
+    public function getSaldoEstoque()
+    {
+
+        // Array de Retorno
+        $arrRet = [
+            'local' => [],
+            //'total' => [],
+        ];
+        
+        // Array com Totais
+        $arrTotal = [
+            'estoqueminimo' => null,
+            'estoquemaximo' => null,
+            'fisico' => [
+                'saldoquantidade' => null,
+                'saldovalor' => null,
+                'customedio' => null,
+                'ultimaconferencia' => null,
+            ],
+            'fiscal' => [
+                'saldoquantidade' => null,
+                'saldovalor' => null,
+                'customedio' => null,
+                'ultimaconferencia' => null,
+            ],
+            'variacao' => [],
+        ];
+        
+        // Array com Totais Por Variacao
+        $pvs = $this->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
+        foreach ($pvs as $pv) {
+            $arrTotalVar[$pv->codprodutovariacao] = [
+                'codprodutovariacao' => $pv->codprodutovariacao,
+                'variacao' => $pv->variacao,
+                'estoqueminimo' => null,
+                'estoquemaximo' => null,
+                'corredor' => null,
+                'prateleira' => null,
+                'coluna' => null,
+                'bloco' => null,
+                'fisico' => [
+                    'saldoquantidade' => null,
+                    'saldovalor' => null,
+                    'customedio' => null,
+                    'ultimaconferencia' => null,
+                ],
+                'fiscal' => [
+                    'saldoquantidade' => null,
+                    'saldovalor' => null,
+                    'customedio' => null,
+                    'ultimaconferencia' => null,
+                ],
+            ];
+        }
+        
+        // Percorrre todos os Locais
+        foreach (EstoqueLocal::ativo()->orderBy('codestoquelocal', 'asc')->get() as $el) {
+            
+            // Array com Totais por Local
+            $arrLocal = [
+                'codestoquelocal' => $el->codestoquelocal,
+                'estoquelocal' => $el->estoquelocal,
+                'estoqueminimo' => null,
+                'estoquemaximo' => null,
+                'fisico' => [
+                    'saldoquantidade' => null,
+                    'saldovalor' => null,
+                    'customedio' => null,
+                    'ultimaconferencia' => null,
+                ],
+                'fiscal' => [
+                    'saldoquantidade' => null,
+                    'saldovalor' => null,
+                    'customedio' => null,
+                    'ultimaconferencia' => null,
+                ],
+                'variacao' => [],
+            ];
+            
+            
+            foreach ($pvs as $pv) {
+                
+                // Array com Saldo de Cada EstoqueLocalProdutoVariacao
+                $arrVar = [
+                    'codprodutovariacao' => $pv->codprodutovariacao,
+                    'variacao' => $pv->variacao,
+                    'codestoquelocalprodutovariacao' => null,
+                    'estoqueminimo' => null,
+                    'estoquemaximo' => null,
+                    'corredor' => null,
+                    'prateleira' => null,
+                    'coluna' => null,
+                    'bloco' => null,
+                    'fisico' => [
+                        'codestoquesaldo' => null,
+                        'saldoquantidade' => null,
+                        'saldovalor' => null,
+                        'customedio' => null,
+                        'ultimaconferencia' => null,
+                    ],
+                    'fiscal' => [
+                        'codestoquesaldo' => null,
+                        'saldoquantidade' => null,
+                        'saldovalor' => null,
+                        'customedio' => null,
+                        'ultimaconferencia' => null,
+                    ],
+                ];
+                
+                //Se já existe a combinação de Variacao para o Local
+                if ($elpv = $pv->EstoqueLocalProdutoVariacaoS()->where('codestoquelocal', $el->codestoquelocal)->first()) {
+                    
+                    $arrVar['codestoquelocalprodutovariacao'] = $elpv->codestoquelocalprodutovariacao;
+
+                    //Acumula Estoque Mínimo
+                    $arrVar['estoqueminimo'] = $elpv->estoqueminimo;
+                    if (!empty($elpv->estoqueminimo)) {
+                        $arrLocal['estoqueminimo'] += $elpv->estoqueminimo;
+                        $arrTotal['estoqueminimo'] += $elpv->estoqueminimo;
+                        $arrTotalVar[$pv->codprodutovariacao]['estoqueminimo'] += $elpv->estoqueminimo;
+                    }
+                    
+                    //Acumula Estoque Máximo
+                    $arrVar['estoquemaximo'] = $elpv->estoquemaximo;
+                    if (!empty($elpv->estoquemaximo)) {
+                        $arrLocal['estoquemaximo'] += $elpv->estoquemaximo;
+                        $arrTotal['estoquemaximo'] += $elpv->estoquemaximo;
+                        $arrTotalVar[$pv->codprodutovariacao]['estoquemaximo'] += $elpv->estoquemaximo;
+                    }
+
+                    $arrVar['corredor'] = $elpv->corredor;
+                    if (!empty($elpv->corredor)) {
+                        $arrLocal['corredor'] = $elpv->corredor;
+                    }
+
+                    $arrVar['prateleira'] = $elpv->prateleira;
+                    if (!empty($elpv->prateleira)) {
+                        $arrLocal['prateleira'] = $elpv->prateleira;
+                    }
+
+                    $arrVar['coluna'] = $elpv->coluna;
+                    if (!empty($elpv->coluna)) {
+                        $arrLocal['coluna'] = $elpv->coluna;
+                    }
+
+                    $arrVar['bloco'] = $elpv->bloco;
+                    if (!empty($elpv->bloco)) {
+                        $arrLocal['bloco'] = $elpv->bloco;
+                    }
+                    
+                    //Percorre os Saldos Físico e Fiscal
+                    foreach($elpv->EstoqueSaldoS as $es) {
+                        
+                        $tipo = ($es->fiscal == true)?'fiscal':'fisico';
+                        
+                        $arrVar[$tipo]["codestoquesaldo"] = $es->codestoquesaldo;
+
+                        //Acumula as quantidades de Saldo
+                        $arrVar[$tipo]["saldoquantidade"] = $es->saldoquantidade;
+                        $arrLocal[$tipo]["saldoquantidade"] += $es->saldoquantidade;
+                        $arrTotal[$tipo]["saldoquantidade"] += $es->saldoquantidade;
+                        $arrTotalVar[$pv->codprodutovariacao][$tipo]["saldoquantidade"] += $es->saldoquantidade;
+                        
+                        //Acumula os valores de Saldo
+                        $arrVar[$tipo]["saldovalor"] = $es->saldovalor;
+                        $arrLocal[$tipo]["saldovalor"] += $es->saldovalor;
+                        $arrTotal[$tipo]["saldovalor"] += $es->saldovalor;
+                        $arrTotalVar[$pv->codprodutovariacao][$tipo]["saldovalor"] += $es->saldovalor;
+                        
+                        $arrVar[$tipo]["customedio"] = $es->customedio;
+                        
+                        $arrVar[$tipo]["ultimaconferencia"] = $es->ultimaconferencia;
+                        
+                        //Pega a data de conferência mais antiga para o total do Local
+                        if (empty($arrLocal[$tipo]["ultimaconferencia"])) {
+                            $arrLocal[$tipo]["ultimaconferencia"] = $es->ultimaconferencia;
+                        } elseif (!empty($es->ultimaconferencia) && $es->ultimaconferencia < $arrLocal[$tipo]["ultimaconferencia"]) {
+                            $arrLocal[$tipo]["ultimaconferencia"] = $es->ultimaconferencia;
+                        }
+                        
+                        //Pega a data de conferência mais antiga para o total da variacao
+                        if (empty($arrTotalVar[$pv->codprodutovariacao][$tipo]["ultimaconferencia"])) {
+                            $arrTotalVar[$pv->codprodutovariacao][$tipo]["ultimaconferencia"] = $es->ultimaconferencia;
+                        } elseif (!empty($es->ultimaconferencia) && $es->ultimaconferencia < $arrTotalVar[$pv->codprodutovariacao][$tipo]["ultimaconferencia"]) {
+                            $arrTotalVar[$pv->codprodutovariacao][$tipo]["ultimaconferencia"] = $es->ultimaconferencia;                            
+                        }
+                        
+                        //Pega a data de conferência mais antiga para o total geral
+                        if (empty($arrTotal[$tipo]["ultimaconferencia"])) {
+                            $arrTotal[$tipo]["ultimaconferencia"] = $es->ultimaconferencia;
+                        } elseif (!empty($es->ultimaconferencia) && $es->ultimaconferencia < $arrTotal[$tipo]["ultimaconferencia"]) {
+                            $arrTotal[$tipo]["ultimaconferencia"] = $es->ultimaconferencia;                            
+                        }
+                        
+                    }
+
+                }
+                
+                // Adiciona variacao ao array de locais
+                $arrLocal['variacao'][$pv->codprodutovariacao] = $arrVar;
+                
+            }
+            
+            // Calcula o custo médio do Local
+            if ($arrLocal['fisico']['saldoquantidade'] > 0)
+                $arrLocal['fisico']['customedio'] = $arrLocal['fisico']['saldovalor'] / $arrLocal['fisico']['saldoquantidade'];
+            if ($arrLocal['fiscal']['saldoquantidade'] > 0)
+                $arrLocal['fiscal']['customedio'] = $arrLocal['fiscal']['saldovalor'] / $arrLocal['fiscal']['saldoquantidade'];
+            
+            // Adiciona local no array de retorno
+            $arrRet['local'][$el->codestoquelocal] = $arrLocal;
+            
+        }
+        
+        // Calcula o custo médio dos totais de cada variacao
+        foreach($arrTotalVar as $codvariacao => $arr) {
+            if ($arrTotalVar[$codvariacao]['fisico']['saldoquantidade'] > 0)
+                $arrTotalVar[$codvariacao]['fisico']['customedio'] = $arrTotalVar[$codvariacao]['fisico']['saldovalor'] / $arrTotalVar[$codvariacao]['fisico']['saldoquantidade'];
+            if ($arrTotalVar[$codvariacao]['fiscal']['saldoquantidade'] > 0)
+                $arrTotalVar[$codvariacao]['fiscal']['customedio'] = $arrTotalVar[$codvariacao]['fiscal']['saldovalor'] / $arrTotalVar[$codvariacao]['fiscal']['saldoquantidade'];
+        }
+        
+        // Adiciona totais das variações ao array de totais
+        $arrTotal['variacao'] = $arrTotalVar;
+
+        // calcula o custo médio do total
+        if ($arrTotal['fisico']['saldoquantidade'] > 0)
+            $arrTotal['fisico']['customedio'] = $arrTotal['fisico']['saldovalor'] / $arrTotal['fisico']['saldoquantidade'];
+        if ($arrTotal['fiscal']['saldoquantidade'] > 0)
+            $arrTotal['fiscal']['customedio'] = $arrTotal['fiscal']['saldovalor'] / $arrTotal['fiscal']['saldoquantidade'];
+        
+        // Adiciona totais no array de retorno
+        $arrRet['local']['total'] = $arrTotal;
+        //$arrRet['total'] = $arrTotal;
+
+        /*
+        echo json_encode($arrRet);
+        die();
+        */
+        
+        //retorna
+        return $arrRet;
+
+    }
 }
