@@ -48,7 +48,7 @@
 <div class='col-md-7'>
     <div class="form-group">
         <label for="produto" class="col-sm-3 control-label">{!! Form::label('Descrição:') !!}</label>
-        <div class="col-sm-9" id="produto-descricao">{!! Form::text('produto', null, ['class'=> 'form-control', 'id'=>'produto', 'required'=>'true']) !!}</div>
+        <div class="col-sm-9" id="produto-descricao">{!! Form::text('produto', null, ['class'=> 'typeahead form-control', 'id'=>'produto', 'data-provide'=>'typeahead', 'required'=>'true', 'autocomplete'=>'off']) !!}</div>
     </div>
 
     <div class="form-group">
@@ -86,6 +86,9 @@
 </div>
 
 @section('inscript')
+<script type="text/javascript" src="{{ URL::asset('public/vendor/bootstrap/typeahead.js/typeahead.bundle.js') }}"></script>
+<script type="text/javascript" src="{{ URL::asset('public/vendor/bootstrap/typeahead.js/bloodhound.js') }}"></script>
+
 <style type="text/css">
 .popover {
     max-width: 100%;
@@ -97,7 +100,90 @@
 }
 .popover-title {
     display: none;
-}   
+}
+.typeahead,
+.tt-query,
+.tt-hint {
+  width: 396px;
+  height: 36px;
+  line-height: 36px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.typeahead {
+  background-color: #fff;
+}
+
+.typeahead:focus {
+
+}
+
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+  color: #999
+}
+
+.tt-menu {
+  width: 422px;
+  margin: 4px 0;
+  padding: 4px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+.tt-suggestion {
+  padding: 2px 10px;
+  line-height: 24px;
+}
+
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+
+}
+
+.tt-suggestion p {
+  margin: 0;
+}
+
+#custom-templates .empty-message {
+  padding: 5px 10px;
+ text-align: center;
+}
+
+#multiple-datasets .league-name {
+  margin: 5px;
+  padding: 3px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+#scrollable-dropdown-menu .tt-menu {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+#rtl-support .tt-menu {
+  text-align: right;
+}
 </style>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -150,7 +236,38 @@ $(document).ready(function() {
     if($('#codgrupoproduto').val() == '') {
         $('#codgrupoproduto').val({{ $model->SubGrupoProduto->GrupoProduto->codgrupoproduto or '' }});
     }
+    var codproduto = <?php echo (isset($model->codproduto) ? $model->codproduto:'0')?>;
 
+    var engine = new Bloodhound({
+        remote: {
+            url: baseUrl + "/produto/descricao?q=%QUERY%&codsubgrupoproduto="+$('#codsubgrupoproduto').val()+"&codproduto="+codproduto,
+            wildcard: '%QUERY%'
+        },
+        datumTokenizer: Bloodhound.tokenizers.whitespace('produto'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace
+    });
+
+    $("#produto").typeahead({
+        hint: true,
+        highlight: true,
+        minLength: 1
+    }, {
+        source: engine.ttAdapter(),
+        name: 'produto',
+        templates: {
+            empty: [
+                '<p style="margin: 0; padding: 2px 8px;">Nenhum produto encontrado.</p>'
+            ],
+            header: [
+                //'<div class="list-group search-results-dropdown">'
+            ],
+            suggestion: function (data) {
+                return '<div>' + data + '</div>'
+            }
+        }
+    });
+
+    /*
     function mostraPopoverDescricao(produto)
     {
         var codproduto = <?php echo (isset($model->codproduto)?$model->codproduto:'0')?>;
@@ -200,6 +317,7 @@ $(document).ready(function() {
     $('#produto').on('blur',function() {
         $("#produto-descricao").popover('destroy');
     });
+    */
 });
 </script>
 @endsection
