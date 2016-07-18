@@ -236,36 +236,57 @@ $(document).ready(function() {
     if($('#codgrupoproduto').val() == '') {
         $('#codgrupoproduto').val({{ $model->SubGrupoProduto->GrupoProduto->codgrupoproduto or '' }});
     }
+    
+    
     var codproduto = <?php echo (isset($model->codproduto) ? $model->codproduto:'0')?>;
+    
+    function descricaoProdutoTypeahead(codsubgrupoproduto, codproduto) {
+        var produtoTypeahead = new Bloodhound({
+            remote: {
+                url: baseUrl + "/produto/descricao?q=%QUERY%&codsubgrupoproduto="+ codsubgrupoproduto +"&codproduto="+codproduto,
+                wildcard: '%QUERY%',
+            },
 
-    var engine = new Bloodhound({
-        remote: {
-            url: baseUrl + "/produto/descricao?q=%QUERY%&codsubgrupoproduto="+$('#codsubgrupoproduto').val()+"&codproduto="+codproduto,
-            wildcard: '%QUERY%'
-        },
-        datumTokenizer: Bloodhound.tokenizers.whitespace('produto'),
-        queryTokenizer: Bloodhound.tokenizers.whitespace
-    });
-
-    $("#produto").typeahead({
-        hint: true,
-        highlight: true,
-        minLength: 1
-    }, {
-        source: engine.ttAdapter(),
-        name: 'produto',
-        templates: {
-            empty: [
-                '<p style="margin: 0; padding: 2px 8px;">Nenhum produto encontrado.</p>'
-            ],
-            header: [
-                //'<div class="list-group search-results-dropdown">'
-            ],
-            suggestion: function (data) {
-                return '<div>' + data + '</div>'
+            datumTokenizer: Bloodhound.tokenizers.whitespace('produto'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace
+        });
+        
+        $("#produto").typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        }, {
+            source: produtoTypeahead.ttAdapter(),
+            name: 'produto',
+            templates: {
+                empty: [
+                    '<p style="margin: 0; padding: 2px 8px;">Nenhum produto encontrado!</p>'
+                ],
+                header: [
+                    //'<div class="list-group search-results-dropdown">'
+                ],
+                suggestion: function (data) {
+                    return '<div>' + data + '</div>'
+                }
             }
-        }
+        });        
+    };
+    
+
+    $('#codsubgrupoproduto').change(function() {
+        var codsubgrupoproduto = $(this).val();
+        console.log(codsubgrupoproduto);
+        
+        descricaoProdutoTypeahead(codsubgrupoproduto, codproduto);
     });
+    
+    if($('#codsubgrupoproduto').val() != '') {
+        descricaoProdutoTypeahead($('#codsubgrupoproduto').val(), codproduto);
+    }
+
+
+
+
 
     /*
     function mostraPopoverDescricao(produto)

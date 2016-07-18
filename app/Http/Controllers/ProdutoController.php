@@ -529,11 +529,12 @@ class ProdutoController extends Controller
                     ->orderBy('produto', 'DESC')
                     ->take(20)->get();
             
+            $resultado = [];
             foreach ($sql as $key => $value) {
-                $res[] = $value['produto'];
+                $resultado[] = $value['produto'];
             }
                 
-            return  response()->json($res);
+            return  response()->json($resultado);
         }
 
     public function inativo(Request $request)
