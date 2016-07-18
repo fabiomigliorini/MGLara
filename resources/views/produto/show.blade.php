@@ -174,10 +174,9 @@
                     @include('produto.show-variacoes')
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-estoque">
-                    @include('produto.show-estoque')
-                    <?php
-                    //@include('estoque-saldo.resumo-produto', ['codproduto' => $model->codproduto, 'somentequantidade' => true])
-                    ?>
+                    <div id="div-estoque">
+                        <b>Aguarde...</b>
+                    </div>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-site">
                     <br>
@@ -238,9 +237,10 @@
                             {!! Form::close() !!}
                         </div>
                     </div>
-
                     <br>
-                    @include('produto.show-negocios')
+                    <div id="div-negocios">
+                        <b>Aguarde...</b>
+                    </div>
                 </div>
                 <!-- -->
                 <div role="tabpanel" class="tab-pane fade" id="tab-notasfiscais">
@@ -293,9 +293,10 @@
                             {!! Form::close() !!}
                         </div>
                     </div>
-
                     <br>
-                    @include('produto.show-notasfiscais')
+                    <div id="div-notasfiscais">
+                        <b>Aguarde...</b>
+                    </div>
                 </div>
             </div>
         </div>
@@ -368,8 +369,7 @@
 
 function mostraListagemNegocios()
 {
-    console.log('mostraListagemNegocios');
-    
+
     //Serializa FORM
     var frmValues = $("#produto-negocio-search").serialize();
     
@@ -474,6 +474,12 @@ $(document).ready(function() {
         event.preventDefault(); 
     });
     /////////////////////////////////////////
+
+    var listagemEstoqueAberta = false;
+    $('a[href="#tab-estoque"]').on('shown.bs.tab', function (e) {
+        recarregaDiv('div-estoque');
+        listagemEstoqueAberta = true;
+    });
     
     
     $('#codproduto').change(function (){
