@@ -5,6 +5,7 @@ namespace MGLara\Http\Controllers;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\EstoqueMes;
 use MGLara\Models\EstoqueMovimento;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;

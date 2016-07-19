@@ -56,63 +56,95 @@ class EstoqueSaldoConferenciaController extends Controller
         $es = null;
         $view = 'estoque-saldo-conferencia.create-seleciona';
         
-        if ($request->has('codestoquelocal')) {
-            $request->session()->put('codestoquelocal', $request->codestoquelocal);
-        }
-        $codestoquelocal = $request->session()->get('codestoquelocal', null);
-        
-        if ($request->has('data')) {
-            $request->session()->put('data', $request->data);
-        }
-        $data = $request->session()->get('data', null);
-        
-        if ($request->has('fiscal')) {
-            $request->session()->put('fiscal', $request->fiscal);
-        }
-        $fiscal = (boolean) $request->session()->get('fiscal', null);
+        if ($request->has('codestoquesaldo')) {
             
-        $barras = $request->barras;
-        
-        $codprodutovariacao = $request->codprodutovariacao;
-        
-        if (!empty($codestoquelocal)) {
-            $el = EstoqueLocal::findOrFail($codestoquelocal);
-        }
-        
-        if (!empty($barras)) {
-            if (!($pb = ProdutoBarra::buscaPorBarras($barras))) {
-                Session::flash('flash_danger', "Código de barras '{$barras}' não localizado!");
-            } else {
-                $codprodutovariacao = $pb->codprodutovariacao;
-            }
-        }
-        
-        if (!empty($codprodutovariacao)) {
+            $codestoquesaldo = $request->codestoquesaldo;
+            
+            $es = EstoqueSaldo::findOrFail($codestoquesaldo);
+            
+            $codestoquelocal = $es->EstoqueLocalProdutoVariacao->codestoquelocal;
+            $codprodutovariacao = $es->EstoqueLocalProdutoVariacao->codprodutovariacao;
+            
+            $pv = $es->EstoqueLocalProdutoVariacao->ProdutoVariacao;
+            
+            $estoque = $pv->Produto->getArraySaldoEstoque();
+            
+            
+            $fiscal = $es->fiscal;
+            
+            $elpv = $es->EstoqueLocalProdutoVariacao;
+            
+            $corredor = $elpv->corredor;
+            $prateleira = $elpv->prateleira;
+            $coluna = $elpv->coluna;
+            $bloco = $elpv->bloco;
+            $estoqueminimo =  $elpv->estoqueminimo;
+            $estoquemaximo = $elpv->estoquemaximo;
+            
+            $customedio = $es->customedio;
+            $quantidadeinformada = $es->saldoquantidade;
             
             $view = 'estoque-saldo-conferencia.create';
             
-            $pv = ProdutoVariacao::findOrFail($codprodutovariacao);
-            $estoque = $pv->Produto->getArraySaldoEstoque();
-            
-            if ($elp = $pv->EstoqueLocalProdutoVariacaoS()->where('codestoquelocal', $codestoquelocal)->first()) {
-                
-                $corredor = $elp->corredor;
-                $prateleira = $elp->prateleira;
-                $coluna = $elp->coluna;
-                $bloco = $elp->bloco;
-                $estoqueminimo = $elp->estoqueminimo;
-                $estoquemaximo = $elp->estoquemaximo;
-                
-                if ($es = $elp->EstoqueSaldoS()->where('fiscal', (bool) $fiscal)->first()) {
-                    
-                    $customedio = $es->customedio;
-                    $quantidadeinformada = $es->saldoquantidade;
-                    
-                }
-                
+        } else {
+
+            if ($request->has('codestoquelocal')) {
+                $request->session()->put('codestoquelocal', $request->codestoquelocal);
             }
+            $codestoquelocal = $request->session()->get('codestoquelocal', null);
             
-            
+            if (!empty($codestoquelocal)) {
+                $el = EstoqueLocal::findOrFail($codestoquelocal);
+            }
+
+            if ($request->has('data')) {
+                $request->session()->put('data', $request->data);
+            }
+            $data = $request->session()->get('data', null);
+
+            if ($request->has('fiscal')) {
+                $request->session()->put('fiscal', $request->fiscal);
+            }
+            $fiscal = (boolean) $request->session()->get('fiscal', null);
+
+
+            $codprodutovariacao = $request->codprodutovariacao;
+        
+            $barras = $request->barras;
+            if (!empty($barras)) {
+                if (!($pb = ProdutoBarra::buscaPorBarras($barras))) {
+                    Session::flash('flash_danger', "Código de barras '{$barras}' não localizado!");
+                } else {
+                    $codprodutovariacao = $pb->codprodutovariacao;
+                }
+            }
+        
+            if (!empty($codprodutovariacao)) {
+
+                $view = 'estoque-saldo-conferencia.create';
+
+                $pv = ProdutoVariacao::findOrFail($codprodutovariacao);
+                $estoque = $pv->Produto->getArraySaldoEstoque();
+
+                if ($elp = $pv->EstoqueLocalProdutoVariacaoS()->where('codestoquelocal', $codestoquelocal)->first()) {
+
+                    $corredor = $elp->corredor;
+                    $prateleira = $elp->prateleira;
+                    $coluna = $elp->coluna;
+                    $bloco = $elp->bloco;
+                    $estoqueminimo = $elp->estoqueminimo;
+                    $estoquemaximo = $elp->estoquemaximo;
+
+                    if ($es = $elp->EstoqueSaldoS()->where('fiscal', (bool) $fiscal)->first()) {
+
+                        $customedio = $es->customedio;
+                        $quantidadeinformada = $es->saldoquantidade;
+
+                    }
+
+                }
+
+            }
         }
         
         return view($view, compact(

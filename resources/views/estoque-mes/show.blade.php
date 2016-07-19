@@ -1,5 +1,25 @@
 @extends('layouts.default')
 @section('content')
+<?php
+
+function decideIconeUltimaConferencia($data)
+{
+    if ($data == null)
+        return 'glyphicon-remove-sign text-muted';
+    
+    $dias = $data->diffInDays();
+    
+    if ($dias > 30)
+        return 'glyphicon-question-sign text-danger';
+  
+    if ($dias > 15)
+        return 'glyphicon-question-sign text-warning';
+    
+    return 'glyphicon-ok-sign text-success';
+}
+
+?>
+
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
@@ -26,8 +46,81 @@
                 6
         )
     !!}
+    
+    <button class="btn pull-right" type="button" data-toggle="collapse" data-target="#collapseConferencia" aria-expanded="false" aria-controls="collapseConferencia">
+        <span class='glyphicon {{ decideIconeUltimaConferencia($model->EstoqueSaldo->ultimaconferencia) }}'></span>
+    </button>
+    
 </h1>
 <hr>
+
+<div class="collapse" id="collapseConferencia">
+    <div class="panel panel-info">
+        <div class='panel-heading'>
+            <b>
+                Últimas Conferências de Estoque
+            </b>
+            <a href='{{ url("estoque-saldo-conferencia/create?codestoquesaldo={$model->codestoquesaldo}") }}'>
+                Nova <span class='glyphicon glyphicon-plus'></span>
+            </a>
+        </div>
+        <div class='list-group list-group-condensed list-group-hover list-group-striped'>
+            @foreach($model->EstoqueSaldo->EstoqueSaldoConferenciaS()->orderBy('criacao', 'DESC')->get() as $esc)
+                <div class='list-group-item'>
+                    <div class='row'>
+                        <div class='col-sm-1 text-muted'>
+                            {{ formataCodigo($esc->codestoquesaldoconferencia) }}
+                        </div>
+                        <div class='col-sm-1 text-right text-muted'>
+                            <s>
+                                {{ formataNumero($esc->quantidadesistema, 3) }}
+                            </s>
+                        </div>
+                        <div class='col-sm-1 text-right'>
+                            <b>
+                                {{ formataNumero($esc->quantidadeinformada, 3) }}
+                            </b>
+                        </div>
+                        <div class='col-sm-1 text-right text-muted'>
+                            <s>
+                                {{ formataNumero($esc->customediosistema, 6) }}
+                            </s>
+                        </div>
+                        <div class='col-sm-1 text-right'>
+                            <b>
+                                {{ formataNumero($esc->customedioinformado, 6) }}
+                            </b>
+                        </div>
+                        <div class='col-sm-2 text-center text-muted'>
+                            {{ $esc->data->format('d/m/Y H:i:s') }}
+                        </div>
+                        <div class='col-sm-2 text-center text-muted'>
+                            {{ $esc->criacao->format('d/m/Y H:i:s') }}
+                        </div>
+                        <div class='col-sm-1 text-center text-muted'>
+                            {{ $esc->UsuarioCriacao->usuario }}
+                        </div>
+                        <?php
+                        /*
+                        "codestoquesaldoconferencia" => 698
+                        "codestoquesaldo" => 65370
+                        "data" => "2016-04-01 00:00:00"
+                        "observacoes" => null
+                        "alteracao" => "2016-06-29 16:23:16"
+                        "codusuarioalteracao" => null
+                        "criacao" => "2016-06-29 16:23:16"
+                        "codusuariocriacao" => 10000004    
+                        dd($esc);
+                         * 
+                         */
+                        ?>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+
 <?php
 
     $proximos = $model->buscaProximos(8);
@@ -46,6 +139,7 @@
         <li role="presentation"><a href="<?php echo url("estoque-mes/$em->codestoquemes");?>">{{ formataData($em->mes, 'EC') }}</a></li>
     @endforeach
 </ul>
+
 <br>
 <table class="table table-striped table-bordered table-condensed small">
     <thead>

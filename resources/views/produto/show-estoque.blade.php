@@ -16,20 +16,14 @@ function decideIconeUltimaConferencia($data)
     return 'glyphicon-ok-sign text-success';
 }
 
-function divSaldo($arr, $codestoquelocal, $codprodutovariacao, $fiscal) {
+function divSaldo($arr) {
     ?>
     @if (!empty($arr['codestoquesaldo']))
         <a href="{{ url("estoque-saldo/{$arr['codestoquesaldo']}") }}">
     @endif
     {{ formataNumero($arr['saldoquantidade'], 0) }}
+    <span class='glyphicon {{ decideIconeUltimaConferencia($arr['ultimaconferencia']) }}'></span>
     @if (!empty($arr['codestoquesaldo']))
-        </a>
-    @endif
-    @if (!empty($codprodutovariacao) && (is_numeric($codestoquelocal)))
-        <a href='{{ url("estoque-saldo-conferencia/create?codestoquelocal=$codestoquelocal&codprodutovariacao=$codprodutovariacao&fiscal=$fiscal") }}'>
-    @endif
-        <span class='glyphicon {{ decideIconeUltimaConferencia($arr['ultimaconferencia']) }}'></span>
-    @if (!empty($codprodutovariacao))
         </a>
     @endif
     <?php
@@ -120,10 +114,10 @@ function divDescricao($arr) {
                         <div class="row">
                             {{ divDescricao($arrLocal) }}
                             <div class="col-md-2 text-right">
-                                {{ divSaldo($arrLocal['fisico'], $codestoquelocal, null, null) }}
+                                {{ divSaldo($arrLocal['fisico']) }}
                             </div>
                             <div class="col-md-2 text-right">
-                                {{ divSaldo($arrLocal['fiscal'], $codestoquelocal, null, null) }}
+                                {{ divSaldo($arrLocal['fiscal']) }}
                             </div>
                         </div>
                     </a>
@@ -138,10 +132,10 @@ function divDescricao($arr) {
                                 <div class="row">
                                     {{ divDescricao($arrVar) }}
                                     <div class="col-md-2 text-right">
-                                        {{ divSaldo($arrVar['fisico'], $codestoquelocal, $codprodutovariacao, false) }}
+                                        {{ divSaldo($arrVar['fisico']) }}
                                     </div>
                                     <div class="col-md-2 text-right">
-                                        {{ divSaldo($arrVar['fiscal'], $codestoquelocal, $codprodutovariacao, true) }}
+                                        {{ divSaldo($arrVar['fiscal']) }}
                                     </div>
                                 </div>              
                             </li>
