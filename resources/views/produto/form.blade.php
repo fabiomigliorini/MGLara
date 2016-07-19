@@ -238,7 +238,7 @@ $(document).ready(function() {
     }
     
     
-    var codproduto = <?php echo (isset($model->codproduto) ? $model->codproduto:'0')?>;
+    var codproduto = <?php echo (isset($model->codproduto) ? $model->codproduto:'""')?>;
     
     function descricaoProdutoTypeahead(codsubgrupoproduto, codproduto) {
         var produtoTypeahead = new Bloodhound({
@@ -246,9 +246,10 @@ $(document).ready(function() {
                 url: baseUrl + "/produto/descricao?q=%QUERY%&codsubgrupoproduto="+ codsubgrupoproduto +"&codproduto="+codproduto,
                 wildcard: '%QUERY%',
             },
-
-            datumTokenizer: Bloodhound.tokenizers.whitespace('produto'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace
+            datumTokenizer: function(produtoTypeahead) {
+                return Bloodhound.tokenizers.whitespace(produtoTypeahead.produto);
+            },
+            queryTokenizer: Bloodhound.tokenizers.whitespace       
         });
         
         $("#produto").typeahead({
@@ -257,7 +258,10 @@ $(document).ready(function() {
             minLength: 1
         }, {
             source: produtoTypeahead.ttAdapter(),
-            name: 'produto',
+            name: 'produtoTypeahead',
+            displayKey: function(produtoTypeahead) {
+              return produtoTypeahead.produto;        
+            },            
             templates: {
                 empty: [
                     '<p style="margin: 0; padding: 2px 8px;">Nenhum produto encontrado!</p>'
@@ -266,9 +270,16 @@ $(document).ready(function() {
                     //'<div class="list-group search-results-dropdown">'
                 ],
                 suggestion: function (data) {
-                    return '<div>' + data + '</div>'
+                    return '<div>' + data.produto + '</div>'
                 }
-            }
+            },
+            limit:14
+        });
+        $("#produto").on('typeahead:selected', function(e, data) {
+            var id = data.codproduto;
+            console.log('ID: '+data.codproduto);
+            $("#codsubgrupoproduto").select2('val', 'id='+1251);
+            $("#codsubgrupoproduto").select2('data', {id:1251, text: 'maracatu'});
         });        
     };
     
@@ -280,10 +291,9 @@ $(document).ready(function() {
         descricaoProdutoTypeahead(codsubgrupoproduto, codproduto);
     });
     
-    if($('#codsubgrupoproduto').val() != '') {
+//    if($('#codsubgrupoproduto').val() != '') {
         descricaoProdutoTypeahead($('#codsubgrupoproduto').val(), codproduto);
-    }
-
+//    }
 
 
 

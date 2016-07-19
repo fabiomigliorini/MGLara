@@ -561,7 +561,7 @@ class Produto extends MGModel
         return $query;        
     }
 
-    public static function search($parametros, $registros = 20)
+    public static function search($parametros)
     {
         $query = Produto::orderBy('produto', 'ASC');
             
@@ -687,7 +687,8 @@ class Produto extends MGModel
             default:
         }
         
-        return $query->paginate($registros);
+        //return $query->paginate($registros);
+        return $query;
     }
 
     

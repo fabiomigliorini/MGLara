@@ -41,7 +41,7 @@ class ProdutoController extends Controller
             $request->session()->put('produto.index.ativo', '1');
         
         $parametros = $request->session()->get('produto.index');        
-        $model = Produto::search($parametros);
+        $model = Produto::search($parametros)->paginate(20);
         return view('produto.index', compact('model'));
     }
 
@@ -517,16 +517,22 @@ class ProdutoController extends Controller
         
         public function listagemJsonDescricao(Request $request) 
         {
-            $sql = Produto::produto($request->get('q'))
-                    ->where('codsubgrupoproduto', $request->get('codsubgrupoproduto'))
-                    ->where('codproduto', '<>', $request->get('codproduto'))
-                    ->select('produto')
-                    ->orderBy('produto', 'DESC')
-                    ->take(20)->get();
+            $parametros['produto'] = $request->get('q');
+            $parametros['codproduto'] = $request->get('codproduto');
+            $parametros['codsubgrupoproduto'] = $request->get('codsubgrupoproduto');
+            
+            $sql = Produto::search($parametros)
+                ->select('produto', 'codproduto')
+                ->orderBy('produto', 'DESC')
+                ->limit(15)
+                ->get();
             
             $resultado = [];
             foreach ($sql as $key => $value) {
-                $resultado[] = $value['produto'];
+                $resultado[] = [
+                    'produto' => $value['produto'],
+                    'codproduto' => $value['codproduto']
+                    ];
             }
                 
             return  response()->json($resultado);
