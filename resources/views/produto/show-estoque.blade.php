@@ -16,7 +16,7 @@ function decideIconeUltimaConferencia($data)
     return 'glyphicon-ok-sign text-success';
 }
 
-function divSaldo($arr) {
+function divSaldo($arr, $codestoquelocal, $codprodutovariacao, $fiscal) {
     ?>
     @if (!empty($arr['codestoquesaldo']))
         <a href="{{ url("estoque-saldo/{$arr['codestoquesaldo']}") }}">
@@ -25,7 +25,13 @@ function divSaldo($arr) {
     @if (!empty($arr['codestoquesaldo']))
         </a>
     @endif
-    <span class='glyphicon {{ decideIconeUltimaConferencia($arr['ultimaconferencia']) }}'></span>
+    @if (!empty($codprodutovariacao) && (is_numeric($codestoquelocal)))
+        <a href='{{ url("estoque-saldo-conferencia/create?codestoquelocal=$codestoquelocal&codprodutovariacao=$codprodutovariacao&fiscal=$fiscal") }}'>
+    @endif
+        <span class='glyphicon {{ decideIconeUltimaConferencia($arr['ultimaconferencia']) }}'></span>
+    @if (!empty($codprodutovariacao))
+        </a>
+    @endif
     <?php
 }
 
@@ -114,10 +120,10 @@ function divDescricao($arr) {
                         <div class="row">
                             {{ divDescricao($arrLocal) }}
                             <div class="col-md-2 text-right">
-                                {{ divSaldo($arrLocal['fisico']) }}
+                                {{ divSaldo($arrLocal['fisico'], $codestoquelocal, null, null) }}
                             </div>
                             <div class="col-md-2 text-right">
-                                {{ divSaldo($arrLocal['fiscal']) }}
+                                {{ divSaldo($arrLocal['fiscal'], $codestoquelocal, null, null) }}
                             </div>
                         </div>
                     </a>
@@ -127,15 +133,15 @@ function divDescricao($arr) {
                 <div id="collapseEstoqueLocal{{ $codestoquelocal }}" class="panel-collapse collapse">
                     <ul class="list-group list-group-condensed list-group-striped list-group-hover list-group-condensed">
 
-                        @foreach ($arrLocal['variacao'] as $arrVar)
+                        @foreach ($arrLocal['variacao'] as $codprodutovariacao => $arrVar)
                             <li class="list-group-item">
                                 <div class="row">
                                     {{ divDescricao($arrVar) }}
                                     <div class="col-md-2 text-right">
-                                        {{ divSaldo($arrVar['fisico']) }}
+                                        {{ divSaldo($arrVar['fisico'], $codestoquelocal, $codprodutovariacao, false) }}
                                     </div>
                                     <div class="col-md-2 text-right">
-                                        {{ divSaldo($arrVar['fiscal']) }}
+                                        {{ divSaldo($arrVar['fiscal'], $codestoquelocal, $codprodutovariacao, true) }}
                                     </div>
                                 </div>              
                             </li>

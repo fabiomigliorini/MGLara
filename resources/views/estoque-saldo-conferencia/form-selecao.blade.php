@@ -9,11 +9,11 @@ $fiscal_fmt = (!empty($fiscal) ? 'Fiscal' : 'Físico');
 
 ?>
 <div class='form-group' style='position:relative'>
-        {!! Form::text('data', $data, ['class'=> 'form-control text-center', 'id'=>'data', 'required'=>'required', $disabled=>$disabled, 'placeholder'=>'Data Ajuste']) !!}
+    {!! Form::datetimeLocal('data', $data, ['class'=> 'form-control text-center', 'id'=>'data', 'required'=>'required', $disabled=>$disabled, 'placeholder'=>'Data Ajuste']) !!}
 </div>
 
 <div class='form-group' style='position:relative'>
-    {!! Form::select('codestoquelocal', $locais, $codestoquelocal, ['class'=> 'form-control', 'required'=>'required', 'id'=>'codestoquelocal', 'style'=>'width:150px', $disabled=>$disabled]) !!}
+    {!! Form::select2EstoqueLocal('codestoquelocal', $codestoquelocal, ['class'=> 'form-control', 'required'=>'required', 'id'=>'codestoquelocal', 'style'=>'width:150px', $disabled=>$disabled]) !!}
 </div>
 
 <div class='form-group' style='position:relative'>

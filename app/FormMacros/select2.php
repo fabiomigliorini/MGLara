@@ -508,6 +508,14 @@ Form::macro('select2Filial', function($name, $selected = null, $options = [])
     return Form::select2($name, $regs, $selected, $options);
 });
 
+/* ESTOQUE LOCAL */
+Form::macro('select2EstoqueLocal', function($name, $selected = null, $options = [])
+{
+    if (empty($options['placeholder'])) $options['placeholder'] = 'Local Estoque';
+    $regs = [''=>''] + MGLara\Models\EstoqueLocal::orderBy('codestoquelocal')->lists('estoquelocal', 'codestoquelocal')->all();
+    return Form::select2($name, $regs, $selected, $options);
+});
+
 /* NATUREZA OPERACAO */
 Form::macro('select2NaturezaOperacao', function($name, $selected = null, $options = [])
 {
