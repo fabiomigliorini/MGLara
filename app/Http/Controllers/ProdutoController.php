@@ -522,9 +522,14 @@ class ProdutoController extends Controller
                     ->where('codproduto', '<>', $request->get('codproduto'))
                     ->select('produto')
                     ->orderBy('produto', 'DESC')
-                    ->paginate(20);
+                    ->take(20)->get();
             
-            return response()->json($sql);
+            $resultado = [];
+            foreach ($sql as $key => $value) {
+                $resultado[] = $value['produto'];
+            }
+                
+            return  response()->json($resultado);
         }
 
     public function inativo(Request $request)
