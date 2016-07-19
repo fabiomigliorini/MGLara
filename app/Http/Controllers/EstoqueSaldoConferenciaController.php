@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Session;
 use MGLara\Models\ProdutoBarra;
 use MGLara\Models\EstoqueSaldoConferencia;
 use MGLara\Models\EstoqueSaldo;
+use Carbon\Carbon;
+
+use MGLara\Models\EstoqueLocal;
+use MGLara\Models\EstoqueLocalProdutoVariacao;
+use MGLara\Models\ProdutoVariacao;
 
 use MGLara\Jobs\EstoqueGeraMovimentoConferencia;
 
@@ -23,12 +28,6 @@ class EstoqueSaldoConferenciaController extends Controller
      */
     public function index(Request $request)
     {
-        /*
-        if (!$request->session()->has('estoque-saldo-conferencia.index')) 
-            $request->session()->put('estoque-saldo-conferencia.inativo', '1');
-        
-        $parametros = $request->session()->get('estoque-saldo-conferencia')['index'];
-          */
         $parametros = $request;
         $model = EstoqueSaldoConferencia::search($parametros);
         return view('estoque-saldo-conferencia.index', compact('model'));
@@ -41,31 +40,101 @@ class EstoqueSaldoConferenciaController extends Controller
      */
     public function create(Request $request)
     {
-        $data = $request->data;
+        $codestoquelocal = null;
+        $fiscal = null;
+        $data = null;
+        $corredor = null;
+        $prateleira = null;
+        $coluna = null;
+        $bloco = null;
+        $estoqueminimo = null;
+        $estoquemaximo = null;
+        $customedio = null;
+        $quantidadeinformada = null;
+        $pv = null;
+        $elpv = null;
+        $es = null;
+        $view = 'estoque-saldo-conferencia.create-seleciona';
         
-        $this->converteDatas(['data' => $request->input('data')]);
+        if ($request->has('codestoquelocal')) {
+            $request->session()->put('codestoquelocal', $request->codestoquelocal);
+        }
+        $codestoquelocal = $request->session()->get('codestoquelocal', null);
         
-        $model = new EstoqueSaldoConferencia($request->all());
+        if ($request->has('data')) {
+            $request->session()->put('data', $request->data);
+        }
+        $data = $request->session()->get('data', null);
         
-        $codestoquelocal = $request->codestoquelocal;
+        if ($request->has('fiscal')) {
+            $request->session()->put('fiscal', $request->fiscal);
+        }
+        $fiscal = (boolean) $request->session()->get('fiscal', null);
+            
+        $barras = $request->barras;
         
-        $pb = null;
-        $barras = $request->get('barras');
-        if (!empty($barras))
-            if (!($pb = ProdutoBarra::buscaPorBarras($barras)))
-                Session::flash('flash_danger', "Código de barras '{$barras}' não localizado!");
+        $codprodutovariacao = $request->codprodutovariacao;
         
-        $fiscal = $request->get('fiscal');
-        
-        if ($pb && !empty($codestoquelocal) && !empty($model->data))
-        {
-            $es = EstoqueSaldo::buscaOuCria($pb->codprodutovariacao, $codestoquelocal, (!empty($request->get('fiscal'))));
-            $model->codestoquesaldo = $es->codestoquesaldo;
-            $model->quantidadeinformada = $es->saldoquantidade;
-            $model->customedioinformado = $es->customedio;
+        if (!empty($codestoquelocal)) {
+            $el = EstoqueLocal::findOrFail($codestoquelocal);
         }
         
-        return view('estoque-saldo-conferencia.create', compact('model', 'pb', 'barras', 'data', 'codestoquelocal', 'fiscal'));
+        if (!empty($barras)) {
+            if (!($pb = ProdutoBarra::buscaPorBarras($barras))) {
+                Session::flash('flash_danger', "Código de barras '{$barras}' não localizado!");
+            } else {
+                $codprodutovariacao = $pb->codprodutovariacao;
+            }
+        }
+        
+        if (!empty($codprodutovariacao)) {
+            
+            $view = 'estoque-saldo-conferencia.create';
+            
+            $pv = ProdutoVariacao::findOrFail($codprodutovariacao);
+            $estoque = $pv->Produto->getArraySaldoEstoque();
+            
+            if ($elp = $pv->EstoqueLocalProdutoVariacaoS()->where('codestoquelocal', $codestoquelocal)->first()) {
+                
+                $corredor = $elp->corredor;
+                $prateleira = $elp->prateleira;
+                $coluna = $elp->coluna;
+                $bloco = $elp->bloco;
+                $estoqueminimo = $elp->estoqueminimo;
+                $estoquemaximo = $elp->estoquemaximo;
+                
+                if ($es = $elp->EstoqueSaldoS()->where('fiscal', (bool) $fiscal)->first()) {
+                    
+                    $customedio = $es->customedio;
+                    $quantidadeinformada = $es->saldoquantidade;
+                    
+                }
+                
+            }
+            
+            
+        }
+        
+        return view($view, compact(
+                'data', 
+                'codestoquelocal', 
+                'codprodutovariacao', 
+                'barras', 
+                'fiscal', 
+                'corredor', 
+                'prateleira', 
+                'coluna', 
+                'bloco',
+                'estoque',
+                'estoqueminimo',
+                'estoquemaximo',
+                'customedio',
+                'quantidadeinformada',
+                'pv',
+                'elpv',
+                'es'
+            ));
+        
     }
 
     /**
@@ -76,27 +145,15 @@ class EstoqueSaldoConferenciaController extends Controller
      */
     public function store(Request $request)
     {
-        $this->converteNumericos([
-            'estoquemaximo' => $request->input('estoquemaximo'),
-            'estoqueminimo' => $request->input('estoqueminimo'),
-            'corredor' => $request->input('corredor'),
-            'prateleira' => $request->input('prateleira'),
-            'coluna' => $request->input('coluna'),
-            'bloco' => $request->input('bloco'),
-            'quantidadeinformada' => $request->input('quantidadeinformada'),
-            'customedioinformado' => $request->input('customedioinformado'),
-        ]);
+
+        $es = EstoqueSaldo::buscaOuCria($request->codprodutovariacao, $request->codestoquelocal, (boolean) $request->fiscal);
         
-        //$this->converteDatas(['data' => $request->input('data')]);
-        
-        $es = EstoqueSaldo::findOrFail($request->get('codestoquesaldo'));
-        
-        $es->EstoqueLocalProdutoVariacao->estoquemaximo = $request->get('estoquemaximo');
-        $es->EstoqueLocalProdutoVariacao->estoqueminimo = $request->get('estoqueminimo');
-        $es->EstoqueLocalProdutoVariacao->corredor = $request->get('corredor');
-        $es->EstoqueLocalProdutoVariacao->prateleira = $request->get('prateleira');
-        $es->EstoqueLocalProdutoVariacao->coluna = $request->get('coluna');
-        $es->EstoqueLocalProdutoVariacao->bloco = $request->get('bloco');
+        $es->EstoqueLocalProdutoVariacao->estoquemaximo = $request->estoquemaximo;
+        $es->EstoqueLocalProdutoVariacao->estoqueminimo = $request->estoqueminimo;
+        $es->EstoqueLocalProdutoVariacao->corredor = $request->corredor;
+        $es->EstoqueLocalProdutoVariacao->prateleira = $request->prateleira;
+        $es->EstoqueLocalProdutoVariacao->coluna = $request->coluna;
+        $es->EstoqueLocalProdutoVariacao->bloco = $request->bloco;
         
         $es->EstoqueLocalProdutoVariacao->save();
         
@@ -104,10 +161,12 @@ class EstoqueSaldoConferenciaController extends Controller
         
         $model->codestoquesaldo = $es->codestoquesaldo;
         $model->quantidadesistema = $es->saldoquantidade;
-        $model->quantidadeinformada = $request->get('quantidadeinformada');
+        $model->quantidadeinformada = $request->quantidadeinformada;
         $model->customediosistema = $es->customedio;
-        $model->customedioinformado = $request->get('customedioinformado');
-        $model->data = $request->get('data');
+        $model->customedioinformado = $request->customedioinformado;
+        
+        $model->data = new Carbon($request->data);
+        $request->session()->put('data', $request->data);
         
         $model->save();
         
@@ -121,7 +180,7 @@ class EstoqueSaldoConferenciaController extends Controller
         $data = $model->data->format('d/m/Y H:i:s');
         $fiscal = $es->fiscal;
         $codestoquelocal = $es->EstoqueLocalProdutoVariacao->codestoquelocal;
-        return redirect("estoque-saldo-conferencia/create?data=$data&fiscal=$fiscal&codestoquelocal=$codestoquelocal");
+        return redirect("estoque-saldo-conferencia/create");
         //
     }
 

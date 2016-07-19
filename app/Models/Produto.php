@@ -720,7 +720,7 @@ class Produto extends MGModel
         $query->whereNull('tblproduto.inativo');
     }
     
-    public function getSaldoEstoque()
+    public function getArraySaldoEstoque()
     {
 
         // Array de Retorno

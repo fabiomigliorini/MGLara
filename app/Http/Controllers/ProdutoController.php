@@ -116,11 +116,10 @@ class ProdutoController extends Controller
 
     public function show(Request $request, $id)
     {
-        DB::enableQueryLog();
-        //file_put_contents('/tmp/request.html', '<pre>' . print_r($request) . '</pre>');
         
         $parametros = $request->session()->get('produto.show');
         
+        //Parâmetros Negócios
         if (!isset($parametros["negocio_lancamento_de"]))
             $parametros["negocio_lancamento_de"] = null;
         
@@ -139,7 +138,7 @@ class ProdutoController extends Controller
         if (!isset($parametros["negocio_codpessoa"]))
             $parametros["negocio_codpessoa"] = null;
         
-        // Parâmetros nostas fiscais
+        // Parâmetros Notas Fiscais
         if (!isset($parametros["notasfiscais_lancamento_de"]))
             $parametros["notasfiscais_lancamento_de"] = null;
         
@@ -202,7 +201,7 @@ class ProdutoController extends Controller
                 $view = 'produto.show-notasfiscais';
                 break;
             case 'div-estoque':
-                $estoque = $model->getSaldoEstoque();
+                $estoque = $model->getArraySaldoEstoque();
                 $view = 'produto.show-estoque';
                 break;
             default:
@@ -212,10 +211,6 @@ class ProdutoController extends Controller
         
         $ret = view($view, compact('model', 'nfpbs', 'npbs', 'parametros', 'estoque'));
         
-        $queries = DB::getQueryLog();
-
-        //echo '<hr><h1>queries</h1>';
-        //dd($queries);
         return $ret;
     }
 
