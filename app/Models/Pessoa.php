@@ -369,7 +369,7 @@ class Pessoa extends MGModel
         return $query;
     }
 
-    public static function search($parametros, $registros = 20)
+    public static function search($parametros)
     {
 
         $query = Pessoa::query();

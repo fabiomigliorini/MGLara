@@ -160,7 +160,8 @@ class SubGrupoProdutoController extends Controller
                 ->get();
             return response()->json(['items' => $model]);       
         } elseif($request->get('id')) {
-            $model = SubGrupoProduto::find($request->get('id'));
+            $id = numeroLimpo($request->get('id'));
+            $model = SubGrupoProduto::where('codsubgrupoproduto', $id)->select('codsubgrupoproduto as id', 'subgrupoproduto')->first();
             return response()->json($model);
         }
     } 
