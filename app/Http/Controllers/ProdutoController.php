@@ -41,7 +41,7 @@ class ProdutoController extends Controller
             $request->session()->put('produto.index.ativo', '1');
         
         $parametros = $request->session()->get('produto.index');        
-        $model = Produto::search($parametros)->paginate(20);
+        $model = Produto::search($parametros)->orderBy('produto', 'ASC')->paginate(20);
         return view('produto.index', compact('model'));
     }
 
@@ -530,11 +530,11 @@ class ProdutoController extends Controller
         public function listagemJsonDescricao(Request $request) 
         {
             $parametros['produto'] = $request->get('q');
-            $parametros['codproduto'] = $request->get('codproduto');
             $parametros['codsubgrupoproduto'] = $request->get('codsubgrupoproduto');
             
             $sql = Produto::search($parametros)
                 ->select('produto', 'codproduto')
+                ->where('codproduto', '<>',  ($request->get('codproduto')?$request->get('codproduto'):0))
                 ->orderBy('produto', 'DESC')
                 ->limit(15)
                 ->get();
