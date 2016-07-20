@@ -161,7 +161,8 @@ class GrupoProdutoController extends Controller
                 ->get();
             return response()->json(['items' => $model]);       
         } elseif($request->get('id')) {
-            $model = GrupoProduto::find($request->get('id'));
+            $id = numeroLimpo($request->get('id'));
+            $model = GrupoProduto::where('codgrupoproduto', $id)->select('codgrupoproduto as id', 'grupoproduto')->first();
             return response()->json($model);
         }
     } 

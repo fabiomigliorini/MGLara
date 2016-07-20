@@ -277,6 +277,18 @@ class ProdutoController extends Controller
 
     }
 
+    public function populaSecaoProduto(Request $request) {
+        $model = Produto::find($request->get('id'));
+        $retorno = [
+            'secaoproduto' => $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto,
+            'familiaproduto' => $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codfamiliaproduto,
+            'grupoproduto' => $model->SubGrupoProduto->GrupoProduto->codgrupoproduto,
+            'subgrupoproduto' => $model->SubGrupoProduto->codsubgrupoproduto,
+        ];
+        
+        return response()->json($retorno);
+    }    
+    
     /**
      * Remove the specified resource from storage.
      *

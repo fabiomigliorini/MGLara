@@ -161,7 +161,8 @@ class FamiliaProdutoController extends Controller
                 ->get();
             return response()->json(['items' => $model]);       
         } elseif($request->get('id')) {
-            $model = FamiliaProduto::find($request->get('id'));
+            $id = numeroLimpo($request->get('id'));
+            $model = FamiliaProduto::where('codfamiliaproduto', $id)->select('codfamiliaproduto as id', 'familiaproduto')->first();            
             return response()->json($model);
         }
     } 
