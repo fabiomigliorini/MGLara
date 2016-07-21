@@ -221,7 +221,7 @@ $(document).ready(function() {
         format: 'DD/MM/YYYY'
     });
     <?php if($model->inativo):?>$('#inativo').val({{ formatadata($model->inativo)}}).change();<?php endif;?>
-    $("#produto").Setcase();
+    
     $('#preco').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
 
     if($('#codsecaoproduto').val() == '') {
@@ -296,6 +296,8 @@ $(document).ready(function() {
     });
     
     descricaoProdutoTypeahead($('#codsubgrupoproduto').val(), codproduto);
+    
+    $("#produto").Setcase();
 });
 </script>
 @endsection
