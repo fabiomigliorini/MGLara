@@ -496,33 +496,41 @@ class ProdutoController extends Controller
         public function listagemJsonProduto(Request $request) 
         {
             if($request->get('q')) {
-                $pagina = $request->get('page');
-                $limite = $request->get('per_page');
-                $inativo = $request->get('inativo');
-                // limpa texto
-                $ordem = (strstr($request->get('q'), '$'))?'produto ASC':'produto ASC';
-                $texto = str_replace('$', '', $request->get('q'));
-                $texto  = str_replace(' ', '%', trim($request->get('q')));
-
-                // corrige pagina se veio sujeira
-                if ($pagina < 1) $pagina = 1;
-
-                // calcula de onde continuar a consulta
-                $offset = ($pagina-1)*$limite;
-
-                // inicializa array com resultados
-                $resultados = array();     
-
-                $sql = "SELECT codproduto as id, produto, referencia, preco FROM tblproduto 
-                            WHERE produto ilike '%$texto%'";
-                $sql .= " ORDER BY produto LIMIT $limite OFFSET $offset";
-                $resultados = DB::select($sql);
-                return response()->json($resultados);
+                
+                $query = DB::table('tblproduto')
+                    ->join('tblsubgrupoproduto', function($join) {
+                        $join->on('tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
+                    })
+                    ->join('tblgrupoproduto', function($join) {
+                        $join->on('tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto');
+                    })
+                    ->join('tblfamiliaproduto', function($join) {
+                        $join->on('tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto');
+                    })
+                    ->join('tblsecaoproduto', function($join) {
+                        $join->on('tblsecaoproduto.codsecaoproduto', '=', 'tblfamiliaproduto.codsecaoproduto');
+                    })
+                    ->join('tblmarca', function($join) {
+                        $join->on('tblmarca.codmarca', '=', 'tblproduto.codmarca');
+                    });
+                    
+                    $produto = explode(' ', $request->get('q'));
+                    foreach ($produto as $str) {
+                        $query->where('produto', 'ILIKE', "%$str%");                    
+                    }
+                    
+                    $query->select('codproduto as id', 'produto', 'preco', 'referencia', 'tblproduto.inativo as inativo', 'tblsecaoproduto.secaoproduto as secao', 'tblfamiliaproduto.familiaproduto as familia', 'tblgrupoproduto.grupoproduto as grupo', 'tblsubgrupoproduto.subgrupoproduto as subgrupo', 'tblmarca.marca as marca')
+                        ->orderBy('produto', 'ASC')
+                        ->paginate(15);
+                    
+                return response()->json($query->get());
+                
             } elseif($request->get('id')) {
                 $query = DB::table('tblproduto')
                         ->where('codproduto', '=', $request->get('id'))
                         ->select('codproduto as id', 'produto', 'referencia', 'preco')
-                        ->get();
+                        ->first();
+                
                 return response()->json($query);
             }
         }
