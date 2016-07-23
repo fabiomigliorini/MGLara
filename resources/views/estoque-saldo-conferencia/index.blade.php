@@ -112,7 +112,7 @@
                 {{ formataData($row->data, 'C') }}
             </div>
             <div class="col-md-2 small text-muted">
-                {{ $row->UsuarioCriacao->usuario or '' }} 
+                {{ $row->UsuarioCriacao->usuario }} 
                 <div class='pull-right'>
                     {{ formataData($row->criacao, 'L') }}
                 </div>

@@ -50,7 +50,7 @@ class EstoqueSaldoConferenciaController extends Controller
         
         //dd($parametros['ajuste_ate']);
         
-        $model = EstoqueSaldoConferencia::search($parametros)->orderBy('codestoquesaldoconferencia', 'DESC')->paginate(20);
+        $model = EstoqueSaldoConferencia::search($parametros)->select('tblestoquesaldoconferencia.*')->orderBy('codestoquesaldoconferencia', 'DESC')->paginate(20);
         return view('estoque-saldo-conferencia.index', compact('model'));
     }
 

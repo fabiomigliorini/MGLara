@@ -72,9 +72,9 @@ class EstoqueSaldoConferencia extends MGModel
     public static function search($parametros)
     {
         $query = EstoqueSaldoConferencia::query();
-
+        
         if ( (!empty($parametros['codproduto'])) || (!empty($parametros['codestoquelocal'])) || (!empty($parametros['fiscal'])) ) {
-            
+
             $query->join('tblestoquesaldo', function($join) use ($parametros) {
                 $join->on('tblestoquesaldo.codestoquesaldo', '=', 'tblestoquesaldoconferencia.codestoquesaldo');
             });
@@ -105,7 +105,7 @@ class EstoqueSaldoConferencia extends MGModel
                 }
             }
         }
-               
+        
         if(!empty($parametros['criacao_de'])) {
             $query->where('criacao', '>=', $parametros['criacao_de']);
         }
@@ -125,7 +125,7 @@ class EstoqueSaldoConferencia extends MGModel
         if (isset($parametros['codusuario']) and ! empty($parametros['codusuario'])) {
             $query->where('codusuariocriacao', $parametros['codusuario']);
         }
-
+        
         return $query;
     }
     

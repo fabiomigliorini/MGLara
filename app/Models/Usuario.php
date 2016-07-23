@@ -41,6 +41,10 @@ namespace MGLara\Models;
  * @property  EstoqueMes[]                   $EstoqueMesCriacaoS
  * @property  EstoqueMovimento[]             $EstoqueMovimentoAlteracaoS
  * @property  EstoqueMovimento[]             $EstoqueMovimentoCriacaoS
+ * @property  EstoqueSaldoConferencia[]      $EstoqueSaldoConferenciaS
+ * @property  EstoqueSaldoConferencia[]      $EstoqueSaldoConferenciaS
+ * @property  FamiliaProduto[]               $FamiliaprodutoS
+ * @property  FamiliaProduto[]               $FamiliaprodutoS
  * @property  GrupoUsuario[]                 $GrupoUsuarioAlteracaoS
  * @property  GrupoUsuario[]                 $GrupoUsuarioCriacaoS
  * @property  Permissao[]                    $PermissaoAlteracaoS
@@ -336,6 +340,26 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     {
         return $this->hasMany(EstoqueMovimento::class, 'codusuario', 'codusuariocriacao');
     }
+    
+    public function EstoqueSaldoConferenciaAlteracaoS()
+    {
+        return $this->hasMany(EstoqueSaldoConferencia::class, 'codusuario', 'codusuarioalteracao');
+    }
+
+    public function EstoqueSaldoConferenciaCriacaoS()
+    {
+        return $this->hasMany(EstoqueSaldoConferencia::class, 'codusuario', 'codusuariocriacao');
+    }
+
+    public function FamiliaProdutoAlteracaoS()
+    {
+        return $this->hasMany(FamiliaProduto::class, 'codusuario', 'codusuariocriacao');
+    }
+
+    public function FamiliaProdutoCriacaoS()
+    {
+        return $this->hasMany(FamiliaProduto::class, 'codusuario', 'codusuarioalteracao');
+    }    
 
     public function GrupoUsuarioAlteracaoS()
     {
