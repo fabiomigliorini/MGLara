@@ -57,7 +57,7 @@
                             <a data-toggle="collapse" href="#collapseItem{{ $coditem }}">
                                 <div class='col-md-3'>
                                     <b>
-                                        {{ $item['item'] }}
+                                        {{ ($coditem == 'total')?'Total':$item['item'] }}
                                     </b>
                                 </div>
                                 <div class='col-md-2 text-right'>

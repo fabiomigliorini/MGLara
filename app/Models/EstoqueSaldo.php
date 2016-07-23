@@ -300,6 +300,8 @@ class EstoqueSaldo extends MGModel
             }
         }
         
+        $query->where('tblestoquesaldo.saldoquantidade', '!=', 0);
+        
         $rows = $query->get();
         
         $ret = [];
