@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="MG Papelaria ">
+    <meta name="author" content="MG Papelaria">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" href="{{ URL::asset('favicon.ico') }}">
-    <title>MG papelaria</title>
+    <title>MG Papelaria</title>
     <link href="{{ URL::asset('public/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('public/vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
     <!--<link href="{{ URL::asset('public/vendor/select2/css/select2.min.css') }}" rel="stylesheet">-->
@@ -36,7 +36,7 @@
     <script src="{{ URL::asset('public/js/mgsis.js') }}"></script>
     <script src="{{ URL::asset('public/js/set-case.js') }}"></script>
     <script src="{{ URL::asset('public/vendor/pace/pace.min.js') }}"></script>
-        @yield('inscript')
+    @yield('inscript')
   </head>
 
   <body>

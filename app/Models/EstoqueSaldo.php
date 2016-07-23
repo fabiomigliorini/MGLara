@@ -98,6 +98,323 @@ class EstoqueSaldo extends MGModel
         }
         return $es;
     }
+    
+    public static function totais($agrupamento, $filtros = [])
+    {
+        //$query = DB::table('tblestoquesaldo');
+        $query = DB::table('tblestoquelocalprodutovariacao');
+
+        $query->groupBy('fiscal');
+        $query->groupBy('tblestoquelocal.codestoquelocal');
+        $query->groupBy('tblestoquelocal.estoquelocal');
+        
+        $query->join('tblestoquelocal', 'tblestoquelocal.codestoquelocal', '=', 'tblestoquelocalprodutovariacao.codestoquelocal');
+        $query->join('tblprodutovariacao', 'tblprodutovariacao.codprodutovariacao', '=', 'tblestoquelocalprodutovariacao.codprodutovariacao');
+        $query->join('tblproduto', 'tblproduto.codproduto', '=', 'tblprodutovariacao.codproduto');
+        $query->leftJoin('tblestoquesaldo', 'tblestoquesaldo.codestoquelocalprodutovariacao', '=', 'tblestoquelocalprodutovariacao.codestoquelocalprodutovariacao');
+        $query->leftJoin('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
+        $query->leftJoin('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto');
+        $query->leftJoin('tblfamiliaproduto', 'tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto');
+        
+        
+        switch ($agrupamento) {
+            case 'variacao':
+                $query->select(
+                    DB::raw(
+                        ' sum(saldoquantidade) as saldoquantidade
+                        , sum(saldovalor) as saldovalor
+                        , sum(estoqueminimo) as estoqueminimo
+                        , sum(estoquemaximo) as estoquemaximo
+                        , fiscal
+                        , tblprodutovariacao.codprodutovariacao as coditem
+                        , coalesce(tblprodutovariacao.variacao, \'{ Sem Variação }\') as item
+                        , tblestoquelocal.codestoquelocal
+                        , tblestoquelocal.estoquelocal
+                        '
+                    )
+                );
+                $query->groupBy('tblprodutovariacao.codprodutovariacao');
+                $query->groupBy('tblprodutovariacao.variacao');
+                $query->orderBy('variacao');
+                break;
+            
+            case 'produto':
+                $query->select(
+                    DB::raw(
+                        ' sum(saldoquantidade) as saldoquantidade
+                        , sum(saldovalor) as saldovalor
+                        , sum(estoqueminimo) as estoqueminimo
+                        , sum(estoquemaximo) as estoquemaximo
+                        , fiscal
+                        , tblproduto.codproduto as coditem
+                        , tblproduto.produto as item
+                        , tblestoquelocal.codestoquelocal
+                        , tblestoquelocal.estoquelocal
+                        '
+                    )
+                );
+                $query->groupBy('tblproduto.codproduto');
+                $query->groupBy('tblproduto.produto');
+                $query->orderBy('produto');
+                break;
+            
+            case 'marca':
+                $query->select(
+                    DB::raw(
+                        ' sum(saldoquantidade) as saldoquantidade
+                        , sum(saldovalor) as saldovalor
+                        , sum(estoqueminimo) as estoqueminimo
+                        , sum(estoquemaximo) as estoquemaximo
+                        , fiscal
+                        , tblmarca.codmarca as coditem
+                        , tblmarca.marca as item
+                        , tblestoquelocal.codestoquelocal
+                        , tblestoquelocal.estoquelocal
+                        '
+                    )
+                );
+                $query->leftJoin('tblmarca', 'tblmarca.codmarca', '=', 'tblproduto.codmarca');
+                $query->groupBy('tblmarca.codmarca');
+                $query->groupBy('tblmarca.marca');
+                $query->orderBy('marca');
+                break;
+            
+            case 'subgrupoproduto':
+                $query->select(
+                    DB::raw(
+                        ' sum(saldoquantidade) as saldoquantidade
+                        , sum(saldovalor) as saldovalor
+                        , sum(estoqueminimo) as estoqueminimo
+                        , sum(estoquemaximo) as estoquemaximo
+                        , fiscal
+                        , tblsubgrupoproduto.codsubgrupoproduto as coditem
+                        , tblsubgrupoproduto.subgrupoproduto as item
+                        , tblestoquelocal.codestoquelocal
+                        , tblestoquelocal.estoquelocal
+                        '
+                    )
+                );
+                $query->groupBy('tblsubgrupoproduto.codsubgrupoproduto');
+                $query->groupBy('tblsubgrupoproduto.subgrupoproduto');
+                $query->orderBy('subgrupoproduto');
+                break;
+            
+            case 'grupoproduto':
+                $query->select(
+                    DB::raw(
+                        ' sum(saldoquantidade) as saldoquantidade
+                        , sum(saldovalor) as saldovalor
+                        , sum(estoqueminimo) as estoqueminimo
+                        , sum(estoquemaximo) as estoquemaximo
+                        , fiscal
+                        , tblgrupoproduto.codgrupoproduto as coditem
+                        , tblgrupoproduto.grupoproduto as item
+                        , tblestoquelocal.codestoquelocal
+                        , tblestoquelocal.estoquelocal
+                        '
+                    )
+                );
+                $query->groupBy('tblgrupoproduto.codgrupoproduto');
+                $query->groupBy('tblgrupoproduto.grupoproduto');
+                $query->orderBy('grupoproduto');
+                break;
+            
+            case 'familiaproduto':
+                $query->select(
+                    DB::raw(
+                        ' sum(saldoquantidade) as saldoquantidade
+                        , sum(saldovalor) as saldovalor
+                        , sum(estoqueminimo) as estoqueminimo
+                        , sum(estoquemaximo) as estoquemaximo
+                        , fiscal
+                        , tblfamiliaproduto.codfamiliaproduto as coditem
+                        , tblfamiliaproduto.familiaproduto as item
+                        , tblestoquelocal.codestoquelocal
+                        , tblestoquelocal.estoquelocal
+                        '
+                    )
+                );
+                $query->groupBy('tblfamiliaproduto.codfamiliaproduto');
+                $query->groupBy('tblfamiliaproduto.familiaproduto');
+                $query->orderBy('familiaproduto');
+                break;
+            
+            case 'secaoproduto':
+            default:
+                $query->select(
+                    DB::raw(
+                        ' sum(saldoquantidade) as saldoquantidade
+                        , sum(saldovalor) as saldovalor
+                        , sum(estoqueminimo) as estoqueminimo
+                        , sum(estoquemaximo) as estoquemaximo
+                        , fiscal
+                        , tblsecaoproduto.codsecaoproduto as coditem
+                        , tblsecaoproduto.secaoproduto as item
+                        , tblestoquelocal.codestoquelocal
+                        , tblestoquelocal.estoquelocal
+                        '
+                    )
+                );
+                $query->groupBy('tblsecaoproduto.codsecaoproduto');
+                $query->groupBy('tblsecaoproduto.secaoproduto');
+                $query->leftJoin('tblsecaoproduto', 'tblsecaoproduto.codsecaoproduto', '=', 'tblfamiliaproduto.codsecaoproduto');
+                $query->orderBy('secaoproduto');
+                break;
+        }
+        
+        $query->orderBy('tblestoquelocal.codestoquelocal');
+        
+        foreach($filtros as $chave => $valor)
+        {
+            switch ($chave) {
+                case 'codestoquelocal':
+                    $query->where('tblestoquelocalprodutovariacao.codestoquelocal', '=', $valor);                
+                    break;
+
+                case 'codfamiliaproduto':
+                    $query->where('tblgrupoproduto.codfamiliaproduto', '=', $valor);                
+                    break;
+
+                case 'codproduto':
+                    $query->where('tblprodutovariacao.codproduto', '=', $valor);                
+                    break;
+
+                case 'codgrupoproduto':
+                    $query->where('tblsubgrupoproduto.codgrupoproduto', '=', $valor);                
+                    break;
+
+                case 'codsubgrupoproduto':
+                    $query->where('tblproduto.codsubgrupoproduto', '=', $valor);                
+                    break;
+
+                case 'codmarca':
+                    $query->where(function ($q2) use($valor) {
+                        $q2->orWhere('tblproduto.codmarca', '=', $valor);
+                        $q2->orWhere('tblprodutovariacao.codmarca', '=', $valor);                        
+                    });
+                    break;
+
+                default:
+                    $query->where($chave, '=', $valor);
+                    break;
+            }
+        }
+        
+        $rows = $query->get();
+        
+        $ret = [];
+        
+        $total = [
+            'coditem' => null,
+            'item' => null,
+            'estoquelocal' => [
+                'total' => [
+                    'estoqueminimo' => null,
+                    'estoquemaximo' => null,
+                    'fisico' => [
+                        'saldoquantidade' => null,
+                        'saldovalor' => null,
+                    ],
+                    'fiscal' => [
+                        'saldoquantidade' => null,
+                        'saldovalor' => null,
+                    ]                    
+                ]
+            ]
+        ];
+                
+        foreach($rows as $row) {
+
+            if (!isset($ret[$row->coditem])) {
+                $ret[$row->coditem] = [
+                    'coditem' => $row->coditem,
+                    'item' => $row->item,
+                    'estoquelocal' => [
+                        'total' => [
+                            'estoqueminimo' => null,
+                            'estoquemaximo' => null,                            
+                            'fisico' => [
+                                'saldoquantidade' => null,
+                                'saldovalor' => null,
+                            ],
+                            'fiscal' => [
+                                'saldoquantidade' => null,
+                                'saldovalor' => null,
+                            ]
+                        ]
+                    ]
+                ];
+            }
+
+            if (!isset($ret[$row->coditem]['estoquelocal'][$row->codestoquelocal])) {
+                $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal] = [
+                    'codestoquelocal' => $row->codestoquelocal,
+                    'estoquelocal' => $row->estoquelocal,
+                    'estoqueminimo' => null,
+                    'estoquemaximo' => null,
+                    'fisico' => [
+                        'saldoquantidade' => null,
+                        'saldovalor' => null,
+                    ],
+                    'fiscal' => [
+                        'saldoquantidade' => null,
+                        'saldovalor' => null,
+                    ]
+                ];
+            }
+            
+            if (!isset($total['estoquelocal'][$row->codestoquelocal])) {
+                $total['estoquelocal'][$row->codestoquelocal] = [
+                    'codestoquelocal' => $row->codestoquelocal,
+                    'estoquelocal' => $row->estoquelocal,
+                    'estoqueminimo' => null,
+                    'estoquemaximo' => null,
+                    'fisico' => [
+                        'saldoquantidade' => null,
+                        'saldovalor' => null,
+                    ],
+                    'fiscal' => [
+                        'saldoquantidade' => null,
+                        'saldovalor' => null,
+                    ]                    
+                ];
+            }
+            
+            if  (empty($ret[$row->coditem]['estoquelocal'][$row->codestoquelocal]['estoqueminimo'])) {
+                $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal]['estoqueminimo'] = $row->estoqueminimo;
+                $ret[$row->coditem]['estoquelocal']['total']['estoqueminimo'] += $row->estoqueminimo;
+                $total['estoquelocal'][$row->codestoquelocal]['estoqueminimo'] += $row->estoqueminimo;
+                $total['estoquelocal']['total']['estoqueminimo'] += $row->estoqueminimo;
+            }
+            
+            if  (empty($ret[$row->coditem]['estoquelocal'][$row->codestoquelocal]['estoquemaximo'])) {
+                $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal]['estoquemaximo'] = $row->estoquemaximo;
+                $ret[$row->coditem]['estoquelocal']['total']['estoquemaximo'] += $row->estoquemaximo;
+                $total['estoquelocal'][$row->codestoquelocal]['estoquemaximo'] += $row->estoquemaximo;
+                $total['estoquelocal']['total']['estoquemaximo'] += $row->estoquemaximo;
+            }
+            
+            $fiscal = ($row->fiscal)?'fiscal':'fisico';
+            
+            $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal][$fiscal]['saldoquantidade'] = $row->saldoquantidade;
+            $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal][$fiscal]['saldovalor'] = $row->saldovalor;
+            
+            $ret[$row->coditem]['estoquelocal']['total'][$fiscal]['saldoquantidade'] += $row->saldoquantidade;
+            $ret[$row->coditem]['estoquelocal']['total'][$fiscal]['saldovalor'] += $row->saldovalor;
+            
+            $total['estoquelocal'][$row->codestoquelocal][$fiscal]['saldoquantidade'] += $row->saldoquantidade;
+            $total['estoquelocal'][$row->codestoquelocal][$fiscal]['saldovalor'] += $row->saldovalor;
+
+            $total['estoquelocal']['total'][$fiscal]['saldoquantidade'] += $row->saldoquantidade;
+            $total['estoquelocal']['total'][$fiscal]['saldovalor'] += $row->saldovalor;
+
+        }
+        
+        $ret['total'] = $total;
+        
+        //die(json_encode($ret));
+        return $ret;
+    }
 
     /*
     public static function saldoPorGrupoProduto()

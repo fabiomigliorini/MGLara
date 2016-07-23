@@ -1,0 +1,100 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 23/07/2016, 10:02:11
+    Author     : escmig98
+*/
+
+
+@media print {
+
+    body {
+        -webkit-print-color-adjust: exact;
+    }
+
+    @page {
+        margin: 1cm;
+    }
+
+}
+
+@media screen {
+
+    html {
+        background: #EEEEEE;
+    }
+
+    body {
+
+        background: white;
+
+        border: 1px solid grey;
+        padding: 1.3cm;
+
+        /* to centre page on screen*/
+        margin-left: auto;
+        margin-right: auto;
+    }  
+}
+
+@media all {
+
+    .borda table {
+        border: 1px solid blue;
+        padding: 10px;
+    }
+
+    body {
+        font-family: sans-serif;
+        font-size: 7pt;
+    }
+
+    div.cabecalho, div.rodape {
+        width: 98%;
+        border-top: 4px solid black;
+        padding: 0.2cm;
+        font-size: 20pt;
+        font-weight: bold;
+        margin: 0cm;
+    }
+
+    div.cabecalho {
+        margin-bottom: 0.5cm;
+        border-bottom: 4px solid black;
+    }
+
+    div.rodape {
+        margin-top: 0.5cm;
+    }
+
+    .pull-right {
+        float: right;
+    }
+
+    tbody.zebrada tr:nth-child(even) {
+        background-color: #EEEEEE;
+    }
+
+    tbody.zebrada tr:first-child td {
+        border-top: 2px solid black;
+    }
+
+    td, th {
+        text-align: left;
+        padding: 0.1cm;
+        font-size: 7pt;
+    }
+
+    table {
+        width: 100%;
+        border-spacing: 0.15cm;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+}

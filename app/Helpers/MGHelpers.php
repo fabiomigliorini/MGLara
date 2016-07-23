@@ -365,3 +365,21 @@ if(!function_exists('listagemTitulo')) {
             return $titulo;
     }
 }
+
+
+if(!function_exists('formataEstoqueMinimoMaximo')) {
+    function formataEstoqueMinimoMaximo ($minimo, $maximo, $saldo = null)
+    {
+        $html = '';
+        if (!empty($minimo)) {
+            $class = ($saldo !== null && $saldo < $minimo)?'text-danger':'';
+            $html .= " <span class='$class'>" . formataNumero($minimo, 0) . " <span class='glyphicon glyphicon-arrow-down'></span></span> ";
+        }
+        if (!empty($maximo)) {
+            $class = ($saldo !== null && $saldo > $maximo)?'text-danger':'';
+            $html .= " <span class='$class'>" . formataNumero($maximo, 0) . " <span class='glyphicon glyphicon-arrow-up'></span></span> ";
+        }
+        
+        return $html;
+    }
+}
