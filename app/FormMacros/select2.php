@@ -766,3 +766,98 @@ END;
     
     return $campo . $script;
 });
+
+/* PRODUTO*/
+Form::macro('select2Produto', function($name, $value = null, $options = [])
+{
+    if (empty($options['id']))
+        $options['id'] = $name;
+    
+    if (empty($options['placeholder']))
+        $options['placeholder'] = 'Produto';
+    
+    if (empty($options['allowClear']))
+        $options['allowClear'] = true;
+    $options['allowClear'] = ($options['allowClear'])?'true':'false';
+    
+    if (empty($options['closeOnSelect']))
+        $options['closeOnSelect'] = true;
+    $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
+    
+    if (empty($options['ativo']))
+        $options['ativo'] = 1;
+    
+    $script = <<< END
+  
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#{$options['id']}').select2({
+                    placeholder: '{$options['placeholder']}',
+                    minimumInputLength: 3,
+                    allowClear: {$options['allowClear']},
+                    closeOnSelect: {$options['closeOnSelect']},
+                    'formatResult':function(item) {
+                        var css_titulo = "";
+                        var css_detalhes = "text-muted";
+                        if (item.inativo) {
+                            css_titulo = "text-danger";
+                            css_detalhes = "text-danger";
+                        }
+
+                        var markup = "";
+                        markup    += "<span class="+ css_titulo +">"+ item.produto + "<span class='pull-right'><strong>R$ </strong>" + item.preco + "</span>";
+                        markup    += "<br>";
+                        markup    += "<small class='text-muted" + css_detalhes + "'>";
+                        markup    += item.secao;
+                        markup    += " » " + item.familia;
+                        markup    += " » " + item.grupo;
+                        markup    += " » " + item.subgrupo;
+                        if (item.referencia) {
+                            markup    += " » " + item.referencia;
+                        }
+                        markup    += "</small>";
+                        return markup;
+                    },
+                    'formatSelection':function(item) { 
+                        return item.produto; 
+                    },
+                    'ajax':{
+                        'url':baseUrl+'/produto/listagem-json',
+                        'dataType':'json',
+                        'quietMillis':500,
+                        'data':function(term, ativo, current_page) { 
+                            return {
+                                q: term, 
+                                ativo: {$options['ativo']},
+                                per_page: 10, 
+                                current_page: current_page
+                            }; 
+                        },
+                        'results':function(data,page) {
+                            //var more = (current_page * 20) < data.total;
+                            return {
+                                results: data, 
+                                //more: data.mais
+                            };
+                        }
+                    },
+                    'initSelection':function (element, callback) {
+                        $.ajax({
+                            type: "GET",
+                            url: baseUrl+'/produto/listagem-json',
+                            data: "id="+$('#{$options['id']}').val(),
+                            dataType: "json",
+                            success: function(result) { 
+                                callback(result); 
+                            }
+                        });
+                    },'width':'resolve'
+                });      
+            });            
+        </script>
+END;
+
+    $campo = Form::text($name, $value, $options);
+    
+    return $campo . $script;
+});

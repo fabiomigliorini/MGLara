@@ -69,32 +69,64 @@ class EstoqueSaldoConferencia extends MGModel
         return $this->hasMany(EstoqueMovimento::class, 'codestoquesaldoconferencia', 'codestoquesaldoconferencia');
     }
 
-    public static function search($parametros, $registros = 20)
+    public static function search($parametros)
     {
-        $query = EstoqueSaldoConferencia::orderBy('codestoquesaldoconferencia', 'DESC');
+        $query = EstoqueSaldoConferencia::query();
         
-        /*
-        if(isset($parametros['codsecaoproduto']))
-            $query->id($parametros['codsecaoproduto']);
-        
-        if(isset($parametros['secaoproduto']))
-            $query->secaoProduto($parametros['secaoproduto']);
-        
-        if(isset($parametros['inativo']))
-            switch ($parametros['inativo'])
-            {
-                case 9: // Todos
-                    break;
-                case 2: // Inativos
-                    $query->inativo();      break;
-                default:
-                    $query->ativo();        break;
+        if ( (!empty($parametros['codproduto'])) || (!empty($parametros['codestoquelocal'])) || (!empty($parametros['fiscal'])) ) {
+
+            $query->join('tblestoquesaldo', function($join) use ($parametros) {
+                $join->on('tblestoquesaldo.codestoquesaldo', '=', 'tblestoquesaldoconferencia.codestoquesaldo');
+            });
+            
+            if($parametros['fiscal'] == 'true') {
+                $query->where('tblestoquesaldo.fiscal', true);
+            } else {
+                $query->where('tblestoquesaldo.fiscal', false);
+            }            
+
+            if ( (!empty($parametros['codproduto'])) || (!empty($parametros['codestoquelocal'])) ) {
+                
+                $query->join('tblestoquelocalprodutovariacao', function($join) use ($parametros) {
+                    $join->on('tblestoquelocalprodutovariacao.codestoquelocalprodutovariacao', '=', 'tblestoquesaldo.codestoquelocalprodutovariacao');
+                });
+
+                if(!empty($parametros['codproduto'])) {
+
+                    $query->join('tblprodutovariacao', function($join) use ($parametros) {
+                        $join->on('tblprodutovariacao.codprodutovariacao', '=', 'tblestoquelocalprodutovariacao.codprodutovariacao');
+                    });
+
+                    $query->where('tblprodutovariacao.codproduto', '=', $parametros['codproduto']);
+                }
+
+                if(!empty($parametros['codestoquelocal'])) {
+                    $query->where('tblestoquelocalprodutovariacao.codestoquelocal', '=', $parametros['codestoquelocal']);
+                }
             }
-        else
-            $query->ativo();
-        */
+        }
         
-        return $query->paginate($registros);
+        if(!empty($parametros['criacao_de'])) {
+            $query->where('criacao', '>=', $parametros['criacao_de']);
+        }
+            
+        if (isset($parametros['criacao_ate']) and ! empty($parametros['criacao_ate'])) {
+            $query->where('criacao', '<=', $parametros['criacao_ate']);
+        }
+
+        if (isset($parametros['data_de']) and ! empty($parametros['data_de'])) {
+            $query->where('data', '>=', $parametros['data_de']);
+        }
+
+        if (isset($parametros['data_ate']) and ! empty($parametros['data_ate'])) {
+            $query->where('data', '<=', $parametros['data_ate']);
+        }
+
+        if (isset($parametros['codusuario']) and ! empty($parametros['codusuario'])) {
+            $query->where('codusuariocriacao', $parametros['codusuario']);
+        }
+        
+        return $query;
     }
     
 

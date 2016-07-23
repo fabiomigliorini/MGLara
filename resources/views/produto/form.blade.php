@@ -221,7 +221,7 @@ $(document).ready(function() {
         format: 'DD/MM/YYYY'
     });
     <?php if($model->inativo):?>$('#inativo').val({{ formatadata($model->inativo)}}).change();<?php endif;?>
-    $("#produto").Setcase();
+    
     $('#preco').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
 
     if($('#codsecaoproduto').val() == '') {
@@ -236,7 +236,6 @@ $(document).ready(function() {
     if($('#codgrupoproduto').val() == '') {
         $('#codgrupoproduto').val({{ $model->SubGrupoProduto->GrupoProduto->codgrupoproduto or '' }});
     }
-    
     
     var codproduto = <?php echo (isset($model->codproduto) ? $model->codproduto:'""')?>;
     
@@ -275,80 +274,30 @@ $(document).ready(function() {
             },
             limit:14
         });
+        
         $("#produto").on('typeahead:selected', function(e, data) {
-            var id = data.codproduto;
-            console.log('ID: '+data.codproduto);
-            $("#codsubgrupoproduto").select2('val', 'id='+1251);
-            $("#codsubgrupoproduto").select2('data', {id:1251, text: 'maracatu'});
+            if($('#codsubgrupoproduto').val() == '') {
+                $.getJSON(baseUrl + '/produto/popula-secao-produto', {
+                    id: data.codproduto
+                  }).done(function( data ) {
+                      $("#codsubgrupoproduto").select2('val', 'id='+data.subgrupoproduto);
+                      $("#codgrupoproduto").select2('val', 'id='+data.grupoproduto);
+                      $("#codfamiliaproduto").select2('val', 'id='+data.familiaproduto);
+                      $("#codsecaoproduto").select2('val', data.secaoproduto);
+                });            
+            }
         });        
     };
-    
 
     $('#codsubgrupoproduto').change(function() {
+        $('#produto').typeahead('destroy');
         var codsubgrupoproduto = $(this).val();
-        console.log(codsubgrupoproduto);
-        
         descricaoProdutoTypeahead(codsubgrupoproduto, codproduto);
     });
     
-//    if($('#codsubgrupoproduto').val() != '') {
-        descricaoProdutoTypeahead($('#codsubgrupoproduto').val(), codproduto);
-//    }
-
-
-
-
-    /*
-    function mostraPopoverDescricao(produto)
-    {
-        var codproduto = <?php echo (isset($model->codproduto)?$model->codproduto:'0')?>;
-        var delayTimer;        
-        clearTimeout(delayTimer);
-        delayTimer = setTimeout(function() {        
-            $.get(baseUrl + "/produto/descricao", 
-                { 
-                    codsubgrupoproduto: $('#codsubgrupoproduto').val(), 
-                    q: produto,
-                    codproduto: codproduto
-                } 
-            ).done(function( data ) {
-                if(data.data.length > 0) {
-                    $('.popover-content').empty();
-                    $.each(data.data, function(k, v) {
-                        $('.popover-content').prepend('<li class="produtos-similares small">'+ v.produto +'</li>');
-                    });
-                } else {
-                    $('.popover-content').empty();
-                    $('.popover-content').prepend('<p>Nenhum produto encontrado</p>');
-                }
-
-            }).fail(function(error ) {
-                return console.log(error)
-            });  
-        }, 1000);
-    }
+    descricaoProdutoTypeahead($('#codsubgrupoproduto').val(), codproduto);
     
-    $('#produto').focus(function(){
-        $("#produto-descricao").popover({
-            title: ' ', 
-            content: '', 
-            trigger: 'manual', 
-            placement: 'bottom'
-        });
-        $("#produto-descricao").popover('show');
-    });
-    
-    $('#produto').on('keyup',function() {
-        if($(this).val().length > 2) {
-            // <-- aplicar delay
-            mostraPopoverDescricao( $(this).val() );
-        }
-    });
-
-    $('#produto').on('blur',function() {
-        $("#produto-descricao").popover('destroy');
-    });
-    */
+    $("#produto").Setcase();
 });
 </script>
 @endsection

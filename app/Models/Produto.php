@@ -563,7 +563,7 @@ class Produto extends MGModel
 
     public static function search($parametros)
     {
-        $query = Produto::orderBy('produto', 'ASC');
+        $query = Produto::query();
             
         if(isset($parametros['codproduto']))
             $query->id($parametros['codproduto']);
