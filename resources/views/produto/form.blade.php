@@ -293,6 +293,7 @@ $(document).ready(function() {
         $('#produto').typeahead('destroy');
         var codsubgrupoproduto = $(this).val();
         descricaoProdutoTypeahead(codsubgrupoproduto, codproduto);
+        $("#produto").Setcase();
     });
     
     descricaoProdutoTypeahead($('#codsubgrupoproduto').val(), codproduto);
