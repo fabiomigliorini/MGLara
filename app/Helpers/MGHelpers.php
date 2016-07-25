@@ -383,3 +383,11 @@ if(!function_exists('formataEstoqueMinimoMaximo')) {
         return $html;
     }
 }
+
+if(!function_exists('urlArrGet')) {
+    function urlArrGet ($arrGet = [], $path = null, $parameters = [], $secure = null)
+    {
+        return url($path, $parameters, $secure) . '?' . http_build_query($arrGet);
+    }
+
+}
