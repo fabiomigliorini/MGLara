@@ -36,7 +36,7 @@
     ]
 )!!}
     <div class="form-group">
-        {!! Form::select2Produto('codproduto', null, ['class' => 'form-control','id'=>'codproduto', 'style'=>'width:400px', 'somenteAtivos'=>'9']) !!}
+        {!! Form::select2Produto('codproduto', null, ['class' => 'form-control','id'=>'codproduto', 'style'=>'width:500px', 'somenteAtivos'=>'9']) !!}
     </div>
 
     <div class="form-group">
