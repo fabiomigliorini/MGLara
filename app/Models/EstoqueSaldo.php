@@ -279,6 +279,10 @@ class EstoqueSaldo extends MGModel
                     $query->where('tblprodutovariacao.codproduto', '=', $valor);                
                     break;
 
+                case 'codprodutovariacao':
+                    $query->where('tblestoquelocalprodutovariacao.codprodutovariacao', '=', $valor);                
+                    break;
+
                 case 'codgrupoproduto':
                     $query->where('tblsubgrupoproduto.codgrupoproduto', '=', $valor);                
                     break;

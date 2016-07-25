@@ -6,8 +6,7 @@
     </ul>
   </div>
 </nav>
-<h1 class="header">Saldos de Estoque</h1>
-<hr>
+<h1 class="header">{!! titulo(null, $titulo, null) !!}  </h1>
 <br>
 
 <div id='div-estoque'>
@@ -37,22 +36,23 @@
         </div>
 
         @foreach($itens as $coditem => $item)
+            <?php
+            $parametros[$codigo] = ($coditem=='total')?null:$coditem;
+            ?>
             <div class="panel panel-default panel-condensed">
 
                 <!-- Total Local -->
                 <div class="{{ ($coditem == 'total')?'panel-footer':'panel-body' }}">
                         <div class="row">
                             <div class='col-md-1 text-muted'>
-                                <small>
-                                    @if (!empty($item['coditem']))
+                                @if (!empty($item['coditem']))
+                                    <small>
                                         {{ formataCodigo($item['coditem']) }}
-                                        @if (!empty($link))
-                                            <a href='{{ $link }}{{ $coditem }}' class="pull-right">
+                                        <a href="{{ urlArrGet($parametros, 'estoque-saldo') }}" class="pull-right">
                                                 <span class='glyphicon glyphicon-zoom-in'></span>
-                                            </a>
-                                        @endif
-                                    @endif
-                                </small>
+                                        </a>
+                                    </small>
+                                @endif
                             </div>
                             <a data-toggle="collapse" href="#collapseItem{{ $coditem }}">
                                 <div class='col-md-3'>
@@ -94,11 +94,16 @@
                             <li class="list-group-item">
                                 
                                 <div class="row">
-                                    <div class='col-md-1 text-muted'>
-                                        
+                                    <div class='col-md-2 text-muted'>
                                     </div>
-                                    <div class='col-md-3 text-muted text-right'>
-                                            {{ $local['estoquelocal'] }}
+                                    <div class='col-md-2 text-muted'>
+                                        <small>
+                                            <a href="{{ urlArrGet($parametros + ['codestoquelocal' => $codestoquelocal], 'estoque-saldo') }}" class="">
+                                                    <span class='glyphicon glyphicon-zoom-in'></span>
+                                            </a>
+                                        </small>
+                                        &nbsp;
+                                        {{ $local['estoquelocal'] }}
                                     </div>
                                     <div class='col-md-2 text-right'>
                                         {!! formataEstoqueMinimoMaximo($local['estoqueminimo'], $local['estoquemaximo'], $local['fisico']['saldoquantidade']) !!}
