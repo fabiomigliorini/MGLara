@@ -156,7 +156,6 @@ class SubGrupoProdutoController extends Controller
             $model = SubGrupoProduto::where('codgrupoproduto', $request->get('codgrupoproduto'))
                 ->subgrupoproduto($request->get('q'))
                 ->select('codsubgrupoproduto as id', 'subgrupoproduto', 'inativo')
-                ->take(10)
                 ->get();
             return response()->json(['items' => $model]);       
         } elseif($request->get('id')) {

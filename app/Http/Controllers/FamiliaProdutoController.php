@@ -157,7 +157,6 @@ class FamiliaProdutoController extends Controller
             $model = FamiliaProduto::where('codsecaoproduto', $request->get('codsecaoproduto'))
                 ->familiaproduto($request->get('q'))
                 ->select('codfamiliaproduto as id', 'familiaproduto', 'inativo')
-                ->take(10)
                 ->get();
             return response()->json(['items' => $model]);       
         } elseif($request->get('id')) {
