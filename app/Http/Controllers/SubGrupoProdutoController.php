@@ -75,7 +75,7 @@ class SubGrupoProdutoController extends Controller
         $parametros = $request->session()->get('sub-grupo-produto.show');               
             
         $model = SubGrupoProduto::findOrFail($id);
-        $produtos = Produto::search($parametros);
+        $produtos = Produto::search($parametros)->orderBy('produto', 'ASC')->paginate(15);
         return view('sub-grupo-produto.show', compact('model', 'produtos'));
     }
 
