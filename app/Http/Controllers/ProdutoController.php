@@ -514,17 +514,40 @@ class ProdutoController extends Controller
                         $join->on('tblmarca.codmarca', '=', 'tblproduto.codmarca');
                     });
                     
-                    $produto = explode(' ', $request->get('q'));
-                    foreach ($produto as $str) {
-                        $query->where('produto', 'ILIKE', "%$str%");                    
+                    $produto = $request->get('q');
+                    
+                    if (strlen($produto) == 6 & is_numeric($produto)) {
+                        $query->where('codproduto', '=', $produto);
                     }
-                    
-                    $query->select('codproduto as id', 'produto', 'preco', 'referencia', 'tblproduto.inativo as inativo', 'tblsecaoproduto.secaoproduto as secao', 'tblfamiliaproduto.familiaproduto as familia', 'tblgrupoproduto.grupoproduto as grupo', 'tblsubgrupoproduto.subgrupoproduto as subgrupo', 'tblmarca.marca as marca')
+                    else {
+                        $produto = explode(' ', $produto);
+                        foreach ($produto as $str) {
+                            $query->where('produto', 'ILIKE', "%$str%");                    
+                        }
+                    }
+                    $query->select('codproduto as id', 'produto', 'preco', 'referencia', 'tblproduto.inativo', 'tblsecaoproduto.secaoproduto', 'tblfamiliaproduto.familiaproduto', 'tblgrupoproduto.grupoproduto', 'tblsubgrupoproduto.subgrupoproduto', 'tblmarca.marca')
                         ->orderBy('produto', 'ASC')
-                        ->paginate(15);
+                        ->paginate(20);
                     
-                return response()->json($query->get());
-                
+                $dados = $query->get();
+                $resultado = [];
+                foreach ($dados as $item => $value)
+                {
+                    $resultado[$item]=[
+                        'id'        =>  $value->id,
+                        'codigo'    => formataCodigo($value->id, 6),
+                        'produto'   => $value->produto,
+                        'preco'     => formataNumero($value->preco),
+                        'referencia'=> $value->referencia,
+                        'inativo'   => $value->inativo,
+                        'secaoproduto'     => $value->secaoproduto,
+                        'familiaproduto'   => $value->familiaproduto,
+                        'grupoproduto'     => $value->grupoproduto,
+                        'subgrupoproduto'  => $value->subgrupoproduto,
+                        'marca'     => $value->marca
+                    ];
+                }
+                return response()->json($resultado);
             } elseif($request->get('id')) {
                 $query = DB::table('tblproduto')
                         ->where('codproduto', '=', $request->get('id'))

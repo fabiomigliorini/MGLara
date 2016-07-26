@@ -805,13 +805,14 @@ Form::macro('select2Produto', function($name, $value = null, $options = [])
                         }
 
                         var markup = "";
-                        markup    += "<span class="+ css_titulo +">"+ item.produto + "<span class='pull-right'><strong>R$ </strong>" + item.preco + "</span>";
+                        markup    += "<span class="+ css_titulo +"><small class=\"text-muted\">"+ item.codigo +"</small> "+item.produto + "<span class='pull-right'>R$ " + item.preco + "</span>";
                         markup    += "<br>";
-                        markup    += "<small class='text-muted" + css_detalhes + "'>";
-                        markup    += item.secao;
-                        markup    += " » " + item.familia;
-                        markup    += " » " + item.grupo;
-                        markup    += " » " + item.subgrupo;
+                        markup    += "<small class='" + css_detalhes + "'>";
+                        markup    += item.secaoproduto;
+                        markup    += " » " + item.familiaproduto;
+                        markup    += " » " + item.grupoproduto;
+                        markup    += " » " + item.subgrupoproduto;
+                        markup    += " » " + item.marca;
                         if (item.referencia) {
                             markup    += " » " + item.referencia;
                         }

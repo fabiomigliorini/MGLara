@@ -36,8 +36,6 @@ class EstoqueSaldoConferenciaController extends Controller
         if (!$request->session()->has('estoque-saldo-conferencia.index')) 
             $request->session()->put('estoque-saldo-conferencia.index');
         
-        $parametros = $request->session()->get('estoque-saldo-conferencia.index');
-        
         if (!empty($parametros['data_de']))
             $parametros['data_de'] = new Carbon($parametros['data_de'] . ' 00:00:00');
         if (!empty($parametros['data_ate']))
@@ -48,7 +46,7 @@ class EstoqueSaldoConferenciaController extends Controller
         if (!empty($parametros['criacao_ate']))
             $parametros['criacao_ate'] = new Carbon($parametros['criacao_ate'] . ' 23:59:59');
         
-        //dd($parametros['ajuste_ate']);
+        $parametros = $request->session()->get('estoque-saldo-conferencia.index');
         
         $model = EstoqueSaldoConferencia::search($parametros)->select('tblestoquesaldoconferencia.*')->orderBy('codestoquesaldoconferencia', 'DESC')->paginate(20);
         return view('estoque-saldo-conferencia.index', compact('model'));
