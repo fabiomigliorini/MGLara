@@ -136,6 +136,102 @@ Form::macro('select2Ativo', function($name, $selected = null, $options = [])
     return Form::select2($name, $opcoes, $selected, $options);
 });
 
+/* PRODUTO VARIAÇÃO */
+/*
+Form::macro('select2ProdutoVariacao', function($name, $selected = null, $options = [])
+{
+    $options['placeholder'] = 'Variação';
+    $options['codproduto'] = <<< END
+        <script type="text/javascript">$('#{$options['codproduto']}').val();</script>
+END;
+
+    $produto = \MGLara\Models\Produto::find($options['codproduto']);
+    $opcoes = [null=>'Sem variação'] + $produto->ProdutoVariacaoS->lists('variacao', 'codprodutovariacao')->all();
+
+    echo <<< END
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#{$options['codproduto']}').change(function {
+                    console.log($this.val());
+                });
+            });            
+        </script>
+END;
+    
+    
+    return Form::select2($name, $opcoes, $selected, $options);
+});
+*/
+Form::macro('select2ProdutoVariacao', function($name, $value = null, $options = [])
+{
+    if (empty($options['id']))
+        $options['id'] = $name;
+    
+    if (empty($options['placeholder']))
+        $options['placeholder'] = 'Variação...';
+    
+    if (empty($options['allowClear']))
+        $options['allowClear'] = true;
+    $options['allowClear'] = ($options['allowClear'])?'true':'false';
+    
+    if (empty($options['closeOnSelect']))
+        $options['closeOnSelect'] = true;
+    $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
+    
+    $script = <<< END
+  
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#{$options['id']}').select2({
+                    placeholder: '{$options['placeholder']}',
+                    minimumInputLength: 0,
+                    allowClear: {$options['allowClear']},
+                    closeOnSelect: {$options['closeOnSelect']},
+
+                    formatResult: function(item) {
+                        var markup = "<div class='row-fluid'>";
+                        markup    += item.variacao;
+                        markup    += "</div>";
+                        return markup;
+                    },
+                    formatSelection: function(item) { 
+                        return item.variacao; 
+                    },
+                    ajax:{
+                        url: baseUrl + "/produto/variacao",
+                        dataType: 'json',
+                        quietMillis: 500,
+                        data: function(term,page) { 
+                        return {
+                            q: term, 
+                            codproduto: $('#{$options['codproduto']}').val()
+                        }; 
+                    },
+                    results: function(data,page) {
+                        var more = (page * 20) < data.total;
+                        return {results: data};
+                    }},
+                    initSelection: function (element, callback) {
+                        $.ajax({
+                          type: "GET",
+                          url: baseUrl + "/produto/variacao",
+                          data: "id="+$('#{$options['id']}').val(),
+                          dataType: "json",
+                          success: function(result) { callback(result); }
+                        });
+                    },
+                    width: 'resolve'
+                }); 
+            });            
+        </script>
+END;
+
+    $campo = Form::text($name, $value, $options);
+    
+    return $campo . $script;
+});
+
+
 
 /* SEÇÃO DE PRODUTO */
 Form::macro('select2SecaoProduto', function($name, $selected = null, $options = [])

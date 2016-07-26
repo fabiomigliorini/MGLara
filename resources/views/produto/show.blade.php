@@ -224,13 +224,14 @@
 
                                 <div class="form-group">
                                     <div class="col-sm-4 control-label">{!! Form::label('negocio_codprodutovariacao', 'Variação') !!}</div>
-                                    <div class="col-sm-7">{!! Form::select2('negocio_codprodutovariacao', [''=>''] + $model->ProdutoVariacaoS->lists('variacao', 'codprodutovariacao')->all() + [null=>'Sem variação'], $parametros['negocio_codprodutovariacao'], ['style'=>'width:100%', 'id' => 'negocio_codprodutovariacao', 'placeholder'=>'Variaçao']) !!}</div>
+                                    <div class="col-sm-7">{!! Form::select2ProdutoVariacao('negocio_codprodutovariacao', $parametros['negocio_codprodutovariacao'], ['style'=>'width:100%', 'id' => 'negocio_codprodutovariacao', 'codproduto'=>'negocio_codproduto']) !!}</div>
                                 </div>
                             
                                 <div class="form-group">
                                     <div class="col-sm-4 control-label">{!! Form::label('negocio_codproduto', 'Pessoa') !!}</div>
                                     <div class="col-sm-7">{!! Form::select2Pessoa('negocio_codpessoa', null, ['class' => 'form-control', 'id'=>'negocio_codpessoa', 'style'=>'width:100%', 'placeholder' => 'Pessoa', 'ativo' => 9]) !!}</div>
                                 </div>                            
+                                {!! Form::hidden('negocio_codproduto', $model->codproduto, ['id'=>'negocio_codproduto']) !!}
                                 
                             {!! Form::hidden('_div', 'div-negocios', ['id'=>'negocio_page']) !!}
                                 
@@ -287,7 +288,7 @@
                                     <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codproduto', 'Pessoa') !!}</div>
                                     <div class="col-sm-7">{!! Form::select2Pessoa('notasfiscais_codpessoa', null, ['class' => 'form-control','id'=>'notasfiscais_codpessoa', 'style'=>'width:100%', 'placeholder' => 'Pessoa', 'ativo' => 9]) !!}</div>
                                 </div>
-                            
+                                {!! Form::hidden('notasfiscais_codproduto', $model->codproduto, ['id'=>'notasfiscais_codproduto']) !!}
                                 {!! Form::hidden('_div', 'div-notasfiscais', ['id'=>'notasfiscais_page']) !!}
                                 
                             {!! Form::close() !!}
@@ -557,7 +558,7 @@ $(document).ready(function() {
         });
     });
     
-        
+    console.log($('#negocio_codproduto').val());    
 });
 </script>
 @endsection

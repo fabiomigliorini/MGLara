@@ -491,95 +491,110 @@ class ProdutoController extends Controller
 //                ]
 //            );            
             
-        } 
+    } 
 
-        public function listagemJsonProduto(Request $request) 
-        {
-            if($request->get('q')) {
-                
-                $query = DB::table('tblproduto')
-                    ->join('tblsubgrupoproduto', function($join) {
-                        $join->on('tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
-                    })
-                    ->join('tblgrupoproduto', function($join) {
-                        $join->on('tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto');
-                    })
-                    ->join('tblfamiliaproduto', function($join) {
-                        $join->on('tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto');
-                    })
-                    ->join('tblsecaoproduto', function($join) {
-                        $join->on('tblsecaoproduto.codsecaoproduto', '=', 'tblfamiliaproduto.codsecaoproduto');
-                    })
-                    ->join('tblmarca', function($join) {
-                        $join->on('tblmarca.codmarca', '=', 'tblproduto.codmarca');
-                    });
-                    
-                    $produto = $request->get('q');
-                    
-                    if (strlen($produto) == 6 & is_numeric($produto)) {
-                        $query->where('codproduto', '=', $produto);
-                    }
-                    else {
-                        $produto = explode(' ', $produto);
-                        foreach ($produto as $str) {
-                            $query->where('produto', 'ILIKE', "%$str%");                    
-                        }
-                    }
-                    $query->select('codproduto as id', 'produto', 'preco', 'referencia', 'tblproduto.inativo', 'tblsecaoproduto.secaoproduto', 'tblfamiliaproduto.familiaproduto', 'tblgrupoproduto.grupoproduto', 'tblsubgrupoproduto.subgrupoproduto', 'tblmarca.marca')
-                        ->orderBy('produto', 'ASC')
-                        ->paginate(20);
-                    
-                $dados = $query->get();
-                $resultado = [];
-                foreach ($dados as $item => $value)
-                {
-                    $resultado[$item]=[
-                        'id'        =>  $value->id,
-                        'codigo'    => formataCodigo($value->id, 6),
-                        'produto'   => $value->produto,
-                        'preco'     => formataNumero($value->preco),
-                        'referencia'=> $value->referencia,
-                        'inativo'   => $value->inativo,
-                        'secaoproduto'     => $value->secaoproduto,
-                        'familiaproduto'   => $value->familiaproduto,
-                        'grupoproduto'     => $value->grupoproduto,
-                        'subgrupoproduto'  => $value->subgrupoproduto,
-                        'marca'     => $value->marca
-                    ];
+    public function listagemJsonProduto(Request $request) 
+    {
+        if($request->get('q')) {
+
+            $query = DB::table('tblproduto')
+                ->join('tblsubgrupoproduto', function($join) {
+                    $join->on('tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
+                })
+                ->join('tblgrupoproduto', function($join) {
+                    $join->on('tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto');
+                })
+                ->join('tblfamiliaproduto', function($join) {
+                    $join->on('tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto');
+                })
+                ->join('tblsecaoproduto', function($join) {
+                    $join->on('tblsecaoproduto.codsecaoproduto', '=', 'tblfamiliaproduto.codsecaoproduto');
+                })
+                ->join('tblmarca', function($join) {
+                    $join->on('tblmarca.codmarca', '=', 'tblproduto.codmarca');
+                });
+
+                $produto = $request->get('q');
+
+                if (strlen($produto) == 6 & is_numeric($produto)) {
+                    $query->where('codproduto', '=', $produto);
                 }
-                return response()->json($resultado);
-            } elseif($request->get('id')) {
-                $query = DB::table('tblproduto')
-                        ->where('codproduto', '=', $request->get('id'))
-                        ->select('codproduto as id', 'produto', 'referencia', 'preco')
-                        ->first();
-                
-                return response()->json($query);
-            }
-        }
-        
-        public function listagemJsonDescricao(Request $request) 
-        {
-            $parametros['produto'] = $request->get('q');
-            $parametros['codsubgrupoproduto'] = $request->get('codsubgrupoproduto');
-            
-            $sql = Produto::search($parametros)
-                ->select('produto', 'codproduto')
-                ->where('codproduto', '<>',  ($request->get('codproduto')?$request->get('codproduto'):0))
-                ->orderBy('produto', 'DESC')
-                ->limit(15)
-                ->get();
-            
+                else {
+                    $produto = explode(' ', $produto);
+                    foreach ($produto as $str) {
+                        $query->where('produto', 'ILIKE', "%$str%");                    
+                    }
+                }
+                $query->select('codproduto as id', 'produto', 'preco', 'referencia', 'tblproduto.inativo', 'tblsecaoproduto.secaoproduto', 'tblfamiliaproduto.familiaproduto', 'tblgrupoproduto.grupoproduto', 'tblsubgrupoproduto.subgrupoproduto', 'tblmarca.marca')
+                    ->orderBy('produto', 'ASC')
+                    ->paginate(20);
+
+            $dados = $query->get();
             $resultado = [];
-            foreach ($sql as $key => $value) {
-                $resultado[] = [
-                    'produto' => $value['produto'],
-                    'codproduto' => $value['codproduto']
-                    ];
+            foreach ($dados as $item => $value)
+            {
+                $resultado[$item]=[
+                    'id'        =>  $value->id,
+                    'codigo'    => formataCodigo($value->id, 6),
+                    'produto'   => $value->produto,
+                    'preco'     => formataNumero($value->preco),
+                    'referencia'=> $value->referencia,
+                    'inativo'   => $value->inativo,
+                    'secaoproduto'     => $value->secaoproduto,
+                    'familiaproduto'   => $value->familiaproduto,
+                    'grupoproduto'     => $value->grupoproduto,
+                    'subgrupoproduto'  => $value->subgrupoproduto,
+                    'marca'     => $value->marca
+                ];
             }
-                
-            return  response()->json($resultado);
+            return response()->json($resultado);
+        } elseif($request->get('id')) {
+            $query = DB::table('tblproduto')
+                    ->where('codproduto', '=', $request->get('id'))
+                    ->select('codproduto as id', 'produto', 'referencia', 'preco')
+                    ->first();
+
+            return response()->json($query);
         }
+    }
+
+    public function listagemJsonDescricao(Request $request) 
+    {
+        $parametros['produto'] = $request->get('q');
+        $parametros['codsubgrupoproduto'] = $request->get('codsubgrupoproduto');
+
+        $sql = Produto::search($parametros)
+            ->select('produto', 'codproduto')
+            ->where('codproduto', '<>',  ($request->get('codproduto')?$request->get('codproduto'):0))
+            ->orderBy('produto', 'DESC')
+            ->limit(15)
+            ->get();
+
+        $resultado = [];
+        foreach ($sql as $key => $value) {
+            $resultado[] = [
+                'produto' => $value['produto'],
+                'codproduto' => $value['codproduto']
+                ];
+        }
+
+        return  response()->json($resultado);
+    }
+
+    public function listagemJsonVariacao(Request $request) 
+    {
+        $model = Produto::find($request->get('codproduto'));
+        
+        foreach ($model->ProdutoVariacaoS as $variacao) {
+            $resultado[] =[
+                'id'=> $variacao['codprodutovariacao'], 
+                'variacao' => $variacao['variacao']
+            ];
+        }
+        array_unshift($resultado, ['id' => 0, 'variacao' => 'Sem Variacao']);
+        
+        return  response()->json($resultado);
+    }
 
     public function inativo(Request $request)
     {
