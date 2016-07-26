@@ -237,11 +237,11 @@ class EstoqueMovimentoController extends Controller
             $codestoquemesRecalcular[] = $model->codestoquemes;
             $model->delete();
             
+            DB::commit();
+            
             foreach ($codestoquemesRecalcular as $cod) {
                 $this->dispatch((new EstoqueCalculaCustoMedio($cod))->onQueue('urgent'));
             }
-            
-            DB::commit();
             
             $ret = ['resultado' => true, 'mensagem' => 'Movimento excluído com sucesso!'];
         }

@@ -46,78 +46,71 @@ function decideIconeUltimaConferencia($data)
                 6
         )
     !!}
-    <button class="btn pull-right" type="button" data-toggle="collapse" data-target="#collapseConferencia" aria-expanded="false" aria-controls="collapseConferencia">
+    <button class="btn pull-right" type="button" data-toggle="collapse" data-target="#div-conferencia-collapse" aria-expanded="false" aria-controls="div-conferencia-collapse">
         <span class='glyphicon {{ decideIconeUltimaConferencia($model->EstoqueSaldo->ultimaconferencia) }}'></span>
     </button>
 </h1>
 <hr>
 
-<div class="collapse" id="collapseConferencia">
-    <div class="panel panel-info">
-        <div class='panel-heading'>
-            <b>
-                Últimas Conferências de Estoque
-            </b>
-            <a href='{{ url("estoque-saldo-conferencia/create?codestoquesaldo={$model->codestoquesaldo}") }}'>
-                Nova <span class='glyphicon glyphicon-plus'></span>
-            </a>
-        </div>
-        <div class='list-group list-group-condensed list-group-hover list-group-striped'>
-            @foreach($model->EstoqueSaldo->EstoqueSaldoConferenciaS()->orderBy('criacao', 'DESC')->get() as $esc)
-                <div class='list-group-item'>
-                    <div class='row'>
-                        <div class='col-sm-1 text-muted'>
-                            {{ formataCodigo($esc->codestoquesaldoconferencia) }}
+<small>
+    <div class="collapse" id="div-conferencia-collapse">
+        <div class="panel panel-default">
+            <div class='panel-heading'>
+                <b>
+                    Últimas Conferências de Estoque
+                </b>
+                <a href='{{ url("estoque-saldo-conferencia/create?codestoquesaldo={$model->codestoquesaldo}") }}'>
+                    Nova <span class='glyphicon glyphicon-plus'></span>
+                </a>
+            </div>
+            <div class='list-group list-group-condensed list-group-hover list-group-striped' id='div-conferencia'>
+                @foreach($model->EstoqueSaldo->EstoqueSaldoConferenciaS()->orderBy('criacao', 'DESC')->get() as $esc)
+                    <div class='list-group-item'>
+                        <div class='row'>
+                            <div class='col-sm-1 text-muted'>
+                                {{ formataCodigo($esc->codestoquesaldoconferencia) }}
+                            </div>
+                            <div class='col-sm-1 text-right text-muted'>
+                                <s>
+                                    {{ formataNumero($esc->quantidadesistema, 3) }}
+                                </s>
+                            </div>
+                            <div class='col-sm-1 text-right'>
+                                <b>
+                                    {{ formataNumero($esc->quantidadeinformada, 3) }}
+                                </b>
+                            </div>
+                            <div class='col-sm-1 text-right text-muted'>
+                                <s>
+                                    {{ formataNumero($esc->customediosistema, 6) }}
+                                </s>
+                            </div>
+                            <div class='col-sm-1 text-right'>
+                                <b>
+                                    {{ formataNumero($esc->customedioinformado, 6) }}
+                                </b>
+                            </div>
+                            <div class='col-sm-2 text-center text-muted'>
+                                {{ $esc->data->format('d/m/Y H:i:s') }}
+                            </div>
+                            <div class='col-sm-2 text-center text-muted'>
+                                {{ $esc->criacao->format('d/m/Y H:i:s') }}
+                            </div>
+                            <div class='col-sm-1 text-center text-muted'>
+                                {{ $esc->UsuarioCriacao->usuario }}
+                            </div>
+                            <div class='col-sm-2 text-right'>
+                                <a href="{{ url("estoque-saldo-conferencia/{$esc->codestoquesaldoconferencia}") }}" data-excluir data-pergunta="Tem certeza que deseja excluir?" data-after-delete="recarregaDivS(['div-movimento', 'div-conferencia']);">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
+                            </div>
                         </div>
-                        <div class='col-sm-1 text-right text-muted'>
-                            <s>
-                                {{ formataNumero($esc->quantidadesistema, 3) }}
-                            </s>
-                        </div>
-                        <div class='col-sm-1 text-right'>
-                            <b>
-                                {{ formataNumero($esc->quantidadeinformada, 3) }}
-                            </b>
-                        </div>
-                        <div class='col-sm-1 text-right text-muted'>
-                            <s>
-                                {{ formataNumero($esc->customediosistema, 6) }}
-                            </s>
-                        </div>
-                        <div class='col-sm-1 text-right'>
-                            <b>
-                                {{ formataNumero($esc->customedioinformado, 6) }}
-                            </b>
-                        </div>
-                        <div class='col-sm-2 text-center text-muted'>
-                            {{ $esc->data->format('d/m/Y H:i:s') }}
-                        </div>
-                        <div class='col-sm-2 text-center text-muted'>
-                            {{ $esc->criacao->format('d/m/Y H:i:s') }}
-                        </div>
-                        <div class='col-sm-1 text-center text-muted'>
-                            {{ $esc->UsuarioCriacao->usuario }}
-                        </div>
-                        <?php
-                        /*
-                        "codestoquesaldoconferencia" => 698
-                        "codestoquesaldo" => 65370
-                        "data" => "2016-04-01 00:00:00"
-                        "observacoes" => null
-                        "alteracao" => "2016-06-29 16:23:16"
-                        "codusuarioalteracao" => null
-                        "criacao" => "2016-06-29 16:23:16"
-                        "codusuariocriacao" => 10000004    
-                        dd($esc);
-                         * 
-                         */
-                        ?>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
     </div>
-</div>
+</small>
 
 <?php
 
