@@ -183,7 +183,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('nota-fiscal','NotaFiscalController');
 
     /* Estoque Movimento */
-    Route::post('estoque-movimento/create/{codestoquemes?}','EstoqueMovimentoController@create');
+    Route::get('estoque-movimento/create/{codestoquemes}','EstoqueMovimentoController@create');
     Route::resource('estoque-movimento','EstoqueMovimentoController');
 
     /* Gerador de Codigo */

@@ -23,8 +23,8 @@ function decideIconeUltimaConferencia($data)
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
+            <li><a href="{{ url("estoque-movimento/create/$model->codestoquemes") }}"><span class="glyphicon glyphicon-plus"></span> Novo Movimento Manual</a></li>             
             <!--
-            <li><a href="{{ url("estoque-movimento/create/$model->codestoquemes") }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
             <li><a href="#" id="btnRecalculaMovimentoEstoque"><span class="glyphicon glyphicon-refresh"></span> Recalcular Movimento de Estoque</a></li>
             <li><a href="#" id="btnRecalculaCustoMedio"><span class="glyphicon glyphicon-usd"></span> Recalcular Custo Medio</a></li>
             -->
@@ -46,11 +46,9 @@ function decideIconeUltimaConferencia($data)
                 6
         )
     !!}
-    
     <button class="btn pull-right" type="button" data-toggle="collapse" data-target="#collapseConferencia" aria-expanded="false" aria-controls="collapseConferencia">
         <span class='glyphicon {{ decideIconeUltimaConferencia($model->EstoqueSaldo->ultimaconferencia) }}'></span>
     </button>
-    
 </h1>
 <hr>
 
@@ -141,6 +139,7 @@ function decideIconeUltimaConferencia($data)
 </ul>
 
 <br>
+<div id='div-movimento'>
 <table class="table table-striped table-bordered table-condensed small">
     <thead>
         <tr>
@@ -220,9 +219,14 @@ function decideIconeUltimaConferencia($data)
                 @endif
                 
                 @if($row->manual)
-                <a href="{{ url("estoque-movimento/$row->codestoquemovimento/edit") }}" class="pull-right btn btn-info btn-sm">
-                    <i class="glyphicon glyphicon-pencil"></i>
-                </a>
+                    <div class='pull-right'>
+                        <a href="{{ url("estoque-movimento/$row->codestoquemovimento/edit") }}">
+                            <i class="glyphicon glyphicon-pencil"></i>
+                        </a>
+                        <a href="{{ url("estoque-movimento/$row->codestoquemovimento") }}" data-excluir data-pergunta="Tem certeza que deseja excluir?" data-after-delete="recarregaDiv('div-movimento');">
+                            <i class="glyphicon glyphicon-trash"></i>
+                        </a>
+                    </div>
                 @endif
                 
                 {{ $row->observacoes }}
@@ -249,4 +253,5 @@ function decideIconeUltimaConferencia($data)
     </tfoot>
     </tbody>
 </table>
+</div>
 @stop

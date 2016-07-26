@@ -861,3 +861,21 @@ END;
     
     return $campo . $script;
 });
+
+/* ESTOQUE MOVIMENTO TIPO */
+Form::macro('select2EstoqueMovimentoTipo', function($name, $selected = null, $options = [])
+{
+    if (!isset($options['manual'])) {
+        $options['manual'] = false;
+    }
+        
+    if ($options['manual']) {
+        $op = MGLara\Models\EstoqueMovimentoTipo::where('manual', '=', true)->orderBy('descricao')->lists('descricao', 'codestoquemovimentotipo')->all();
+    } else {
+        $op = MGLara\Models\EstoqueMovimentoTipo::orderBy('descricao')->lists('descricao', 'codestoquemovimentotipo')->all();
+    }
+    
+    $op = [''=>''] + $op;
+    
+    return Form::select2($name, $op, $selected, $options);
+});
