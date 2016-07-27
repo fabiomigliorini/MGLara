@@ -137,31 +137,6 @@ Form::macro('select2Ativo', function($name, $selected = null, $options = [])
 });
 
 /* PRODUTO VARIAÇÃO */
-/*
-Form::macro('select2ProdutoVariacao', function($name, $selected = null, $options = [])
-{
-    $options['placeholder'] = 'Variação';
-    $options['codproduto'] = <<< END
-        <script type="text/javascript">$('#{$options['codproduto']}').val();</script>
-END;
-
-    $produto = \MGLara\Models\Produto::find($options['codproduto']);
-    $opcoes = [null=>'Sem variação'] + $produto->ProdutoVariacaoS->lists('variacao', 'codprodutovariacao')->all();
-
-    echo <<< END
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $('#{$options['codproduto']}').change(function {
-                    console.log($this.val());
-                });
-            });            
-        </script>
-END;
-    
-    
-    return Form::select2($name, $opcoes, $selected, $options);
-});
-*/
 Form::macro('select2ProdutoVariacao', function($name, $value = null, $options = [])
 {
     if (empty($options['id']))
@@ -198,7 +173,7 @@ Form::macro('select2ProdutoVariacao', function($name, $value = null, $options = 
                         return item.variacao; 
                     },
                     ajax:{
-                        url: baseUrl + "/produto/variacao",
+                        url: baseUrl + "/produto-variacao/listagem-json",
                         dataType: 'json',
                         quietMillis: 500,
                         data: function(term,page) { 
@@ -214,7 +189,7 @@ Form::macro('select2ProdutoVariacao', function($name, $value = null, $options = 
                     initSelection: function (element, callback) {
                         $.ajax({
                           type: "GET",
-                          url: baseUrl + "/produto/variacao",
+                          url: baseUrl + "/produto-variacao/listagem-json",
                           data: "id="+$('#{$options['id']}').val(),
                           dataType: "json",
                           success: function(result) { callback(result); }
@@ -222,6 +197,9 @@ Form::macro('select2ProdutoVariacao', function($name, $value = null, $options = 
                     },
                     width: 'resolve'
                 }); 
+                $('#{$options['codproduto']}').change(function () {
+                    $('#{$options['id']}').select2('val', '');
+                });
             });            
         </script>
 END;

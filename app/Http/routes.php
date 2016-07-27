@@ -57,8 +57,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('pessoa','PessoaController');
 
     /* Filiais */
-    Route::resource('filial','FilialController');
     Route::get('filial/listagem-json', 'FilialController@listagemJson');
+    Route::resource('filial','FilialController');
 
     /* Estoque mês */
     Route::resource('estoque-mes','EstoqueMesController');
@@ -99,7 +99,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto/busca-barras','ProdutoController@buscaPorBarras');
     Route::resource('produto/listagem-json','ProdutoController@listagemJsonProduto');
     Route::resource('produto/descricao','ProdutoController@listagemJsonDescricao');
-    Route::resource('produto/variacao','ProdutoController@listagemJsonVariacao');
     Route::resource('produto/popula-secao-produto','ProdutoController@populaSecaoProduto');
     Route::resource('produto/estoque-saldo','ProdutoController@estoqueSaldo');
     Route::resource('produto/inativo','ProdutoController@inativo');
@@ -113,6 +112,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('estoque-saldo-conferencia','EstoqueSaldoConferenciaController');
 
     /* Produto Variacao */
+    Route::get('produto-variacao/listagem-json', 'ProdutoVariacaoController@listagemJson');
     Route::resource('produto-variacao','ProdutoVariacaoController');
 
     /* Produto Barra */

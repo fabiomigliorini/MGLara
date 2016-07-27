@@ -26,7 +26,7 @@
         {!! Form::select2Produto('codprodutoorigem', $codprodutoorigem, ['class'=> 'form-control', 'id'=>'codprodutoorigem']) !!}
     </div>
     <div class="col-md-2">
-        {!! Form::text('codprodutovariacaoorigem', $codprodutovariacaoorigem, ['class'=> 'form-control', 'id'=>'codprodutovariacaoorigem']) !!}
+        {!! Form::select2ProdutoVariacao('codprodutovariacaoorigem', $codprodutovariacaoorigem, ['class'=> 'form-control', 'id'=>'codprodutovariacaoorigem', 'codproduto' => 'codprodutoorigem']) !!}
     </div>
     <div class="col-md-2">
         {!! Form::select2EstoqueLocal('codestoquelocalorigem', $codestoquelocalorigem, ['class'=> 'form-control', 'style'=>'width:100%', 'id'=>'codestoquelocalorigem']) !!}
