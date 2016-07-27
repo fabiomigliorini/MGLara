@@ -172,13 +172,24 @@ class EstoqueMovimentoController extends Controller
                 $origem = EstoqueMovimento::find($origem->codestoquemovimento);
                 
                 $model->codestoquemovimentoorigem = $origem->codestoquemovimento;
-            }         
+            }
+            
+            $em = EstoqueMes::buscaOuCria(
+                    $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codprodutovariacao,
+                    $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal,
+                    $model->EstoqueMes->EstoqueSaldo->fiscal, 
+                    $model->data);
+            
+            if (!empty($model->codestoquemes) && $model->codestoquemes != $em->codestoquemes) {
+                $codestoquemesRecalcular[] = $model->codestoquemes;
+            }
+            $model->codestoquemes = $em->codestoquemes;
+            
+            $codestoquemesRecalcular[] = $model->codestoquemes;
 
             if (!$model->save()) {
                 throw new Exception('Erro ao Salvar Movimento!');
             }
-            
-            $codestoquemesRecalcular[] = $model->codestoquemes;
             
             DB::commit();
             
