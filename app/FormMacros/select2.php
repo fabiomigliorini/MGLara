@@ -214,6 +214,9 @@ END;
 /* SEÇÃO DE PRODUTO */
 Form::macro('select2SecaoProduto', function($name, $selected = null, $options = [])
 {
+    if (empty($options['placeholder']))
+        $options['placeholder'] = 'Seção...';
+    
     $secoes = [''=>''] + MGLara\Models\SecaoProduto::orderBy('secaoproduto')->lists('secaoproduto', 'codsecaoproduto')->all();
     $campo = Form::select2($name, $secoes, $selected, $options);
     $script = <<< END

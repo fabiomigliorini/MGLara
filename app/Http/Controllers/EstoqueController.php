@@ -234,40 +234,57 @@ class EstoqueController extends Controller
     }
     */
     
-    public function zeraSaldoNegativo ($id, $dataCorte)
+    public function zeraSaldo ($id, $tipo)
     {
         
         DB::enableQueryLog();
         
-        $dataCorte = new Carbon($dataCorte);
+        switch ($tipo) {
+            case 'todos':
+                $sldquantidade = 'es.saldoquantidade <> 0';
+                break;
+
+            case 'positivo':
+                $sldquantidade = 'es.saldoquantidade > 0';
+                break;
+
+            case 'negativo':
+            default:
+                $sldquantidade = 'es.saldoquantidade > 0';
+                break;
+        }
         
+        /*
         $sql = "select max(mes) as mes, lpv.codestoquelocal, lpv.codprodutovariacao, sld.fiscal, var.codproduto
                 from tblestoquemes mes
                 join tblestoquesaldo sld on (sld.codestoquesaldo = mes.codestoquesaldo)
                 join tblestoquelocalprodutovariacao lpv on (lpv.codestoquelocalprodutovariacao = sld.codestoquelocalprodutovariacao)
                 join tblprodutovariacao var on (var.codprodutovariacao = lpv.codprodutovariacao)
-                where mes.saldoquantidade < 0
+                where $sldquantidade
                 and sld.fiscal = false
                 and lpv.codestoquelocal = $id
                 and mes.mes <= '{$dataCorte->format('Y-m-d')}'
                 and sld.codestoquesaldo not in (select distinct iq.codestoquesaldo from tblestoquesaldoconferencia iq)
                 group by lpv.codestoquelocal, lpv.codprodutovariacao, sld.fiscal, var.codproduto
                 order by var.codproduto
-                Limit 100";
-        
-        $regs = DB::select($sql);
-        
-        //dd($regs);
-        /*
-        $slds = EstoqueSaldo::join('tblestoquelocalprodutovariacao', function($join) {
-            $join->on('tblestoquelocalprodutovariacao.codestoquelocalprodutovariacao', '=', 'tblestoquesaldo.codestoquelocalprodutovariacao');
-        })->where('tblestoquesaldo.saldoquantidade', '<', 0)
-                ->where('tblestoquelocalprodutovariacao.codestoquelocal', $id)
-                ->where('tblestoquesaldo.fiscal', false)
-                ->orderBy('codestoquesaldo')
-                ->limit(100)
-                ->get();
+                Limit 1000";
         */
+        
+        $sql = "
+            select es.codestoquesaldo, elpv.codestoquelocal, elpv.codprodutovariacao, es.fiscal, pv.codproduto, es.saldoquantidade
+            from tblestoquesaldo es
+            inner join tblestoquelocalprodutovariacao elpv on (elpv.codestoquelocalprodutovariacao = es.codestoquelocalprodutovariacao)
+            inner join tblprodutovariacao pv on (pv.codprodutovariacao = elpv.codprodutovariacao)
+            where $sldquantidade
+            and es.fiscal = false
+            and elpv.codestoquelocal = 104001
+            order by pv.codproduto, pv.codprodutovariacao
+            limit 1000
+            ";
+        
+        //dd($sql);
+                
+        $regs = DB::select($sql);
         
         $gerados = [];
         
@@ -276,13 +293,18 @@ class EstoqueController extends Controller
         foreach ($regs as $reg)
         {
             
+            $sld = EstoqueSaldo::findOrFail($reg->codestoquesaldo);
+            
+            //dd($sld);
+            
+            /*
             $mes = EstoqueMes::buscaOuCria(
                     $reg->codprodutovariacao, 
                     $reg->codestoquelocal, 
                     $reg->fiscal, 
                     new Carbon($reg->mes)
                     );
-            
+            */
             $mesMov = EstoqueMes::buscaOuCria(
                     $reg->codprodutovariacao, 
                     $reg->codestoquelocal, 
@@ -297,20 +319,11 @@ class EstoqueController extends Controller
             $mov->codestoquemovimentotipo = EstoqueMovimentoTipo::AJUSTE;
             $mov->manual = true;
             
-            if ($mes->saldoquantidade <= $mes->EstoqueSaldo->saldoquantidade)
-                $mov->entradaquantidade = abs($mes->saldoquantidade);
-            else
-                $mov->entradaquantidade = abs($mes->EstoqueSaldo->saldoquantidade);
-                
+            $quantidade = abs($sld->saldoquantidade);
+            $valor = (double) $sld->customedio;
             
-            $mov->entradavalor = (double) $mes->customedio;
-            
-            if (empty($mov->entradavalor))
-                $mov->entradavalor = (double) $mes->EstoqueSaldo->customedio;
-            
-
             // Tenta custo Medio pela ultima compra do estoque
-            if (empty($mov->entradavalor))
+            if (empty($valor))
             {
                 $sql = "select em.entradavalor / em.entradaquantidade as custo
                         from tblestoquemovimento em
@@ -319,50 +332,50 @@ class EstoqueController extends Controller
                         inner join tblestoquelocalprodutovariacao elpv on (elpv.codestoquelocalprodutovariacao = es.codestoquelocalprodutovariacao)
                         inner join tblprodutovariacao pv on (pv.codprodutovariacao = elpv.codprodutovariacao)
                         where em.codestoquemovimentotipo = 2001 -- COMPRA
-                        and pv.codproduto = {$mes->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}
+                        and pv.codproduto = {$sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}
                         and coalesce(em.entradaquantidade, 0) > 0
                         order by data desc
                         limit 1
                     ";
 
                 if ($custo = DB::select($sql))
-                    $mov->entradavalor = $custo[0]->custo;
+                    $valor = $custo[0]->custo;
             }
 
             //Tenta pela media do custo medio fisico
-            if (empty($mov->entradavalor))
+            if (empty($valor))
             {
                 $sql = "select avg(es.customedio) as custo
                         from tblprodutovariacao pv
                         inner join tblestoquelocalprodutovariacao elpv on (elpv.codprodutovariacao = pv.codprodutovariacao)
                         inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = false)
-                        where pv.codproduto = {$mes->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}
+                        where pv.codproduto = {$sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}
                         and es.customedio is not null
                         and es.customedio > 0
                     ";
 
                 if ($custo = DB::select($sql))
-                    $mov->entradavalor = $custo[0]->custo;
+                    $valor = $custo[0]->custo;
             }
 
             //Tenta pela media do custo medio fisico
-            if (empty($mov->entradavalor))
+            if (empty($valor))
             {
                 $sql = "select avg(es.customedio) as custo
                         from tblprodutovariacao pv
                         inner join tblestoquelocalprodutovariacao elpv on (elpv.codprodutovariacao = pv.codprodutovariacao)
                         inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = true)
-                        where pv.codproduto = {$mes->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}
+                        where pv.codproduto = {$sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}
                         and es.customedio is not null
                         and es.customedio > 0
                     ";
 
                 if ($custo = DB::select($sql))
-                    $mov->entradavalor = $custo[0]->custo;
+                    $valor = $custo[0]->custo;
             }
 
             //Tenta pela ultima nota de compra
-            if (empty($mov->entradavalor))
+            if (empty($valor))
             {
                 $sql = "select (((nfpb.valortotal + nfpb.icmsstvalor + nfpb.ipivalor) * (1- (nf.valordesconto / nf.valorprodutos))) / nfpb.quantidade) / coalesce(pe.quantidade, 1) as custo, nf.codnotafiscal
                         from tblnotafiscal nf
@@ -371,33 +384,45 @@ class EstoqueController extends Controller
                         inner join tblprodutovariacao pv on (pv.codprodutovariacao = pb.codprodutovariacao)
                         left join tblprodutoembalagem pe on (pe.codprodutoembalagem = pb.codprodutoembalagem)
                         where nf.codnaturezaoperacao = 4
-                        and pv.codproduto = {$mes->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}
+                        and pv.codproduto = {$sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}
                         order by nf.saida desc
                         limit 1
                     ";
 
                 if ($custo = DB::select($sql))
-                    $mov->entradavalor = $custo[0]->custo;
+                    $valor = $custo[0]->custo;
             }
 
-            if (empty($mov->entradavalor))
-                $mov->entradavalor = $mes->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->preco * 0.571428571; // 75% markup
+            if (empty($valor))
+                $valor = $sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->preco * 0.571428571; // 75% markup
             
-            $mov->entradavalor *= $mov->entradaquantidade;
+            $valortotal = $valor * $quantidade;
+            
+            if ($sld->saldoquantidade < 0) {
+                $mov->entradaquantidade = $quantidade;
+                $mov->entradavalor = $valortotal;
+            } else {
+                $mov->saidaquantidade = $quantidade;
+                $mov->saidavalor = $valortotal;
+            }
+            
+            $mov->observacoes = 'Zeramento de Saldo Anterior ao Balanco';
             
             $sqls = DB::getQueryLog();
 
             if ($mov->save())
             {
                 $gerados[] = [
-                    'codproduto' => $mes->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto,
-                    'produto' => $mes->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->produto,
-                    'codprodutovariacao' => $mes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codprodutovariacao,
-                    'variacao' => $mes->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->variacao,
+                    'codproduto' => $sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto,
+                    'produto' => $sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->produto,
+                    'codprodutovariacao' => $sld->EstoqueLocalProdutoVariacao->codprodutovariacao,
+                    'variacao' => $sld->EstoqueLocalProdutoVariacao->ProdutoVariacao->variacao,
                     'codestoquemovimento' => $mov->codestoquemovimento,
                     'codestoquemes' => $mov->codestoquemes,
                     'entradaquantidade' => $mov->entradaquantidade,
                     'entradavalor' => $mov->entradavalor,
+                    'saidaquantidade' => $mov->saidaquantidade,
+                    'saidavalor' => $mov->saidavalor,
                 ];
                 $this->dispatch((new EstoqueCalculaCustoMedio($mov->codestoquemes))->onQueue('urgent'));
             }
@@ -409,7 +434,7 @@ class EstoqueController extends Controller
         }
         
         $sql = DB::getQueryLog();
-        //dd($sql);
+        
         dd($gerados);
     }
 }
