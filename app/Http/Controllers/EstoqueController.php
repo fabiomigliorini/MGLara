@@ -288,7 +288,7 @@ class EstoqueController extends Controller
         
         $gerados = [];
         
-        $dataMov = new Carbon('2016-04-01');
+        $dataMov = new Carbon('2016-07-30');
         
         foreach ($regs as $reg)
         {
