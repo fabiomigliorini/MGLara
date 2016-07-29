@@ -17,7 +17,10 @@ use MGLara\Models\EstoqueLocal;
 use MGLara\Models\EstoqueLocalProdutoVariacao;
 use MGLara\Models\ProdutoVariacao;
 
+use Illuminate\Support\Facades\DB;
+
 use MGLara\Jobs\EstoqueGeraMovimentoConferencia;
+use MGLara\Jobs\EstoqueCalculaCustoMedio;
 
 class EstoqueSaldoConferenciaController extends Controller
 {
@@ -292,6 +295,36 @@ class EstoqueSaldoConferenciaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+            
+            DB::beginTransaction();
+            
+            $model = EstoqueSaldoConferencia::findOrFail($id);
+            
+            $codestoquemesRecalcular = [];
+            
+            foreach($model->EstoqueMovimentoS as $filho) {
+                $codestoquemesRecalcular[] = $filho->codestoquemes;
+                $filho->delete();
+            }
+            
+            $model->delete();
+            
+            $model->EstoqueSaldo->ultimaconferencia = $model->EstoqueSaldo->EstoqueSaldoConferenciaS()->max('criacao');
+            $model->EstoqueSaldo->save();
+            
+            DB::commit();
+            
+            foreach ($codestoquemesRecalcular as $cod) {
+                $this->dispatch((new EstoqueCalculaCustoMedio($cod))->onQueue('urgent'));
+            }
+            
+            $ret = ['resultado' => true, 'mensagem' => 'Conferência de Saldo excluída com sucesso!'];
+        }
+        catch(\Exception $e){
+            DB::rollBack();
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir Conferência de Saldo!', 'exception' => $e];
+        }
+        return json_encode($ret);
     }
 }

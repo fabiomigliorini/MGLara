@@ -5,6 +5,9 @@ namespace MGLara\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use MGLara\Http\Controllers\Controller;
+
+use MGLara\Jobs\EstoqueCalculaCustoMedio;
+
 use MGLara\Models\EstoqueMovimento;
 use MGLara\Models\EstoqueMovimentoTipo;
 use MGLara\Models\EstoqueMes;
@@ -12,6 +15,8 @@ use MGLara\Models\EstoqueLocal;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Input;
+
+use Illuminate\Support\Facades\DB;
 
 class EstoqueMovimentoController extends Controller
 {
@@ -21,30 +26,29 @@ class EstoqueMovimentoController extends Controller
         $this->datas = [];
         $this->numericos = [];
     }    
-    
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create(Request $request, $codestoquemes)
     {
         $model = new EstoqueMovimento();
-        $model->codestoquemes = $request->codestoquemes;
+        $model->codestoquemes = $codestoquemes;
         $model->data = $model->EstoqueMes->mes;
         $model->data = $model->data->modify('last day of this month');
         
-        return view('estoque-movimento.create', compact('model', 'tipos', 'request', 'options', 'el'));
+        $codprodutoorigem = $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto;
+        
+        $codprodutovariacaoorigem = $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codprodutovariacao;
+        
+        $codestoquelocalorigem = $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal;
+        
+        $tipoPrecoInformado = EstoqueMovimentoTipo::where('preco', EstoqueMovimentoTipo::PRECO_INFORMADO)->lists('codestoquemovimentotipo');
+        $tipoOrigem = EstoqueMovimentoTipo::whereNotNull('codestoquemovimentotipoorigem')->lists('codestoquemovimentotipo');
+        
+        return view('estoque-movimento.create',  compact('model', 'tipoPrecoInformado', 'tipoOrigem', 'codprodutoorigem', 'codprodutovariacaoorigem', 'codestoquelocalorigem'));
     }
 
     /**
@@ -55,63 +59,9 @@ class EstoqueMovimentoController extends Controller
      */
     public function store(Request $request)
     {
-        $this->converteDatas(['data' => $request->input('data')]);
-        $this->converteNumericos([
-            'entradaquantidade' => $request->input('entradaquantidade'),
-            'saidaquantidade' => $request->input('saidaquantidade'),
-            'entradavalor' => $request->input('entradavalor'),
-            'saidavalor' => $request->input('saidavalor')
-        ]);
-
-        $model = new EstoqueMovimento($request->all());
-        
-        $em = EstoqueMes::buscaOuCria(
-                $model->EstoqueMes->EstoqueSaldo->codprodutovariacao, 
-                $model->EstoqueMes->EstoqueSaldo->codestoquelocal, 
-                $model->EstoqueMes->EstoqueSaldo->fiscal, 
-                $model->data);
-        
-        $model->codestoquemes = $em->codestoquemes;
-        
-        if (!$model->validate()) {
-            $this->throwValidationException($request, $model->_validator);
-        }
-
-        //Cria registro de Origem
-        if (!empty($model->EstoqueMovimentoTipo->codestoquemovimentotipoorigem))
-        {
-            $origem = new EstoqueMovimento();
-            //$origem = $model->EstoqueMovimentoOrigem;
-
-            $emOrigem = EstoqueMes::buscaOuCria(
-                    $request->input('codprodutovariacao'), 
-                    $request->input('codestoquelocal'), 
-                    $model->EstoqueMes->EstoqueSaldo->fiscal, 
-                    $model->data);
-
-            $origem->codestoquemes = $emOrigem->codestoquemes;
-            $origem->codestoquemovimentotipo = $model->EstoqueMovimentoTipo->codestoquemovimentotipoorigem;
-            $origem->data = $model->data;
-            $origem->entradaquantidade = $model->saidaquantidade;
-            $origem->entradavalor = $model->saidavalor;
-            $origem->saidaquantidade = $model->entradaquantidade;
-            $origem->saidavalor = $model->entradavalor ; 
-            $origem->manual = true;
-            $origem->save();
-            $emOrigem = $origem->EstoqueMes;
-            $model->codestoquemovimentoorigem = $origem->codestoquemovimento;
-        }   
-        
-        $model->manual = TRUE;
-        $model->save();
-        
-        $model->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
-        
-        if (isset($emOrigem))
-            $emOrigem->EstoqueSaldo->recalculaCustoMedio();
-        
-        Session::flash('flash_create', 'Registro inserido.');
-        return redirect("estoque-mes/$model->codestoquemes");
+        $model = new EstoqueMovimento();
+        $model->manual = true;
+        return $this->salva($request, $model);
     }
 
     /**
@@ -134,9 +84,128 @@ class EstoqueMovimentoController extends Controller
      */
     public function edit($id)
     {
+        
         $model = EstoqueMovimento::findOrFail($id);
+        
+        if (isset($model->EstoqueMovimentoS[0])) {
+            return redirect("estoque-movimento/{$model->EstoqueMovimentoS[0]->codestoquemovimento}/edit");
+        }
+        
+        $codprodutoorigem = 
+                empty($model->codestoquemovimentoorigem)
+                ?$model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto
+                :$model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto;
+        
+        $codprodutovariacaoorigem = 
+                empty($model->codestoquemovimentoorigem)
+                ?$model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codprodutovariacao
+                :$model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codprodutovariacao;
+        
+        $codestoquelocalorigem = 
+                empty($model->codestoquemovimentoorigem)
+                ?$model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal
+                :$model->EstoqueMovimentoOrigem->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal;
+        
+        $tipoPrecoInformado = EstoqueMovimentoTipo::where('preco', EstoqueMovimentoTipo::PRECO_INFORMADO)->lists('codestoquemovimentotipo');
+        $tipoOrigem = EstoqueMovimentoTipo::whereNotNull('codestoquemovimentotipoorigem')->lists('codestoquemovimentotipo');
+        
+        return view('estoque-movimento.edit',  compact('model', 'tipoPrecoInformado', 'tipoOrigem', 'codprodutoorigem', 'codprodutovariacaoorigem', 'codestoquelocalorigem'));
+    }
+    
+    public function salva(Request $request, EstoqueMovimento $model)
+    {
+        
+        $dados = $request->all();
+        $dados['data'] = new Carbon($dados['data']);
+        
+        $model->fill($dados);
+        
+        if (!$model->validate()) {
+            $this->throwValidationException($request, $model->_validator);
+        }
+        
+        if (!$model->manual) {
+            $this->throwValidationException('Registro gerado automaticamente pelo sistema, não pode ser atualizado manualmente!');
+        }
+        
+        
+        DB::beginTransaction();
+        
+        $codestoquemesRecalcular = [];
+        
+        try {
+            
+            //Cria registro de Origem
+            if (!empty($model->EstoqueMovimentoTipo->codestoquemovimentotipoorigem))
+            {
+                if (!empty($model->codestoquemovimentoorigem)) {
+                    $origem = $model->EstoqueMovimentoOrigem;
+                } else {
+                    $origem = new EstoqueMovimento;
+                }
 
-        return view('estoque-movimento.edit',  compact('model', 'tipos', 'options', 'el'));        
+                $emOrigem = EstoqueMes::buscaOuCria(
+                        $request->input('codprodutovariacaoorigem'), 
+                        $request->input('codestoquelocalorigem'), 
+                        $model->EstoqueMes->EstoqueSaldo->fiscal, 
+                        $model->data);
+                
+                if (!empty($origem->codestoquemes) && $origem->codestoquemes != $emOrigem->codestoquemes) {
+                    $codestoquemesRecalcular[] = $origem->codestoquemes;
+                }
+
+                $origem->codestoquemes = $emOrigem->codestoquemes;
+                $codestoquemesRecalcular[] = $origem->codestoquemes;
+                
+                $origem->codestoquemovimentotipo = $model->EstoqueMovimentoTipo->codestoquemovimentotipoorigem;
+                $origem->data = $model->data;
+                $origem->entradaquantidade = $model->saidaquantidade;
+                $origem->entradavalor = $model->saidavalor;
+                $origem->saidaquantidade = $model->entradaquantidade;
+                $origem->saidavalor = $model->entradavalor ; 
+                $origem->manual = true;
+                
+                if (!$origem->save()) {
+                    throw new Exception('Erro ao Salvar Movimento de Origem!');
+                }
+
+                $origem = EstoqueMovimento::find($origem->codestoquemovimento);
+                
+                $model->codestoquemovimentoorigem = $origem->codestoquemovimento;
+            }
+            
+            $em = EstoqueMes::buscaOuCria(
+                    $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codprodutovariacao,
+                    $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal,
+                    $model->EstoqueMes->EstoqueSaldo->fiscal, 
+                    $model->data);
+            
+            if (!empty($model->codestoquemes) && $model->codestoquemes != $em->codestoquemes) {
+                $codestoquemesRecalcular[] = $model->codestoquemes;
+            }
+            $model->codestoquemes = $em->codestoquemes;
+            
+            $codestoquemesRecalcular[] = $model->codestoquemes;
+
+            if (!$model->save()) {
+                throw new Exception('Erro ao Salvar Movimento!');
+            }
+            
+            DB::commit();
+            
+            foreach ($codestoquemesRecalcular as $cod) {
+                $this->dispatch((new EstoqueCalculaCustoMedio($cod))->onQueue('urgent'));
+            }
+            
+            Session::flash('flash_success', 'Registro Atualizado!');
+            
+        } catch (Exception $ex) {
+            DB::rollBack();
+            Session::flash('flash_error', "Erro ao salvar registro! {$ex}");
+        }
+        
+        return redirect("estoque-mes/$model->codestoquemes");
+        
     }
 
     /**
@@ -148,70 +217,9 @@ class EstoqueMovimentoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->converteDatas(['data' => $request->input('data')]);
-        $this->converteNumericos([
-            'entradaquantidade' => $request->input('entradaquantidade'),
-            'saidaquantidade' => $request->input('saidaquantidade'),
-            'entradavalor' => $request->input('entradavalor'),
-            'saidavalor' => $request->input('saidavalor')
-        ]);
-        
         $model = EstoqueMovimento::findOrFail($id);
-        $model->fill($request->all());
-        if (!$model->validate()) {
-            $this->throwValidationException($request, $model->_validator);
-        }
         
-        $em = EstoqueMes::buscaOuCria(
-                $model->EstoqueMes->EstoqueSaldo->codprodutovariacao, 
-                $model->EstoqueMes->EstoqueSaldo->codestoquelocal, 
-                $model->EstoqueMes->EstoqueSaldo->fiscal, 
-                $model->data);
-        
-        $model->codestoquemes = $em->codestoquemes;        
-        
-         //Cria registro de Origem
-        if (!empty($model->EstoqueMovimentoTipo->codestoquemovimentotipoorigem))
-        {
-            $origem = $model->EstoqueMovimentoOrigem;
-
-            $emOrigem = EstoqueMes::buscaOuCria(
-                    $request->input('codprodutovariacao'), 
-                    $request->input('codestoquelocal'), 
-                    $model->EstoqueMes->EstoqueSaldo->fiscal, 
-                    $model->data);
-            
-            if ($origem->codestoquemes != $emOrigem->codestoquemes)
-                $emOrigemAnterior = $origem->EstoqueMes;
-
-            $origem->codestoquemes = $emOrigem->codestoquemes;
-            $origem->codestoquemovimentotipo = $model->EstoqueMovimentoTipo->codestoquemovimentotipoorigem;
-            $origem->data = $model->data;
-            $origem->entradaquantidade = $model->saidaquantidade;
-            $origem->entradavalor = $model->saidavalor;
-            $origem->saidaquantidade = $model->entradaquantidade;
-            $origem->saidavalor = $model->entradavalor ; 
-            $origem->manual = true;
-            $origem->save();
-            
-            $origem = EstoqueMovimento::find($origem->codestoquemovimento);
-            $emOrigem = $origem->EstoqueMes;
-            
-            $model->codestoquemovimentoorigem = $origem->codestoquemovimento;
-        }         
-        
-        
-        $model->save();
-        $model->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
-        
-        if (isset($emOrigemAnterior))
-            $emOrigemAnterior->EstoqueSaldo->recalculaCustoMedio();
-
-        if (isset($emOrigem))
-            $emOrigem->EstoqueSaldo->recalculaCustoMedio();
-        
-        Session::flash('flash_update', 'Registro atualizado.');
-        return redirect("estoque-mes/$model->codestoquemes");
+        return $this->salva($request, $model);
     }
 
     /**
@@ -220,36 +228,38 @@ class EstoqueMovimentoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
+    
+    public function destroy($id)
+    {
         try{
-            $model = EstoqueMovimento::find($id);
-            if(!empty($model->codestoquemovimentoorigem))
-            {
-                $origem = $model->EstoqueMovimentoOrigem;
-                
-                $model->delete();
-                $model->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
-                
-                $origem->delete();
-                $origeml->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
-            } else {
-                $filha = $model->EstoqueMovimentoS->first();
-                if(!empty($filha)) {
-                    $filha->delete();
-                    $filha->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
-                    
-                    $model->delete();
-                    $model->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
-                } else {
-                    $model->delete();
-                    $model->EstoqueMes->EstoqueSaldo->recalculaCustoMedio();
-                }
+            DB::beginTransaction();
+            
+            $model = EstoqueMovimento::findOrFail($id);
+            
+            if (!empty($model->codestoquemovimentoorigem)) {
+                $model = $model->EstoqueMovimentoOrigem;
             }
-            Session::flash('flash_delete', 'Registro deletado!');
-            return redirect("estoque-mes/$model->codestoquemes");
+            
+            foreach($model->EstoqueMovimentoS as $filho) {
+                $codestoquemesRecalcular[] = $filho->codestoquemes;
+                $filho->delete();
+            }
+            
+            $codestoquemesRecalcular[] = $model->codestoquemes;
+            $model->delete();
+            
+            DB::commit();
+            
+            foreach ($codestoquemesRecalcular as $cod) {
+                $this->dispatch((new EstoqueCalculaCustoMedio($cod))->onQueue('urgent'));
+            }
+            
+            $ret = ['resultado' => true, 'mensagem' => 'Movimento excluído com sucesso!'];
         }
         catch(\Exception $e){
-            return view('errors.fk');
-        }    
-    }    
+            DB::rollBack();
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir Movimento!', 'exception' => $e];
+        }
+        return json_encode($ret);
+    }
 }

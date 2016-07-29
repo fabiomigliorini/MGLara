@@ -581,21 +581,6 @@ class ProdutoController extends Controller
         return  response()->json($resultado);
     }
 
-    public function listagemJsonVariacao(Request $request) 
-    {
-        $model = Produto::find($request->get('codproduto'));
-        
-        foreach ($model->ProdutoVariacaoS as $variacao) {
-            $resultado[] =[
-                'id'=> $variacao['codprodutovariacao'], 
-                'variacao' => $variacao['variacao']
-            ];
-        }
-        array_unshift($resultado, ['id' => 0, 'variacao' => 'Sem Variacao']);
-        
-        return  response()->json($resultado);
-    }
-
     public function inativo(Request $request)
     {
         $model = Produto::find($request->get('codproduto'));

@@ -125,6 +125,33 @@ function recarregaDiv(div, url)
     });
 }
 
+function recarregaDivS(divs, url)
+{
+    if (url === undefined) {
+        url = $(location).attr('href');
+    };
+    
+    if (!$.isArray(divs)) {
+        divs = [divs];
+        
+        if (url.indexOf("?") == -1) {
+            url += '?';
+        } else {
+            url += '&';
+        }
+
+        url += '_div=' + divs + ' #' + divs + ' > *';
+    }
+
+    $.get(url).done(function (html) {
+        var newDom = $(html);
+        $.each(divs, function (i, div) {
+            $('#'+div).replaceWith($('#'+div, newDom));
+            inicializa('#' + div + ' *');
+        });
+    });
+}
+
 function inicializa(elemento)
 {
     $(elemento).find('a[data-excluir]').click(function(event) {
