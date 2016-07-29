@@ -107,11 +107,11 @@ class EstoqueSaldoConferencia extends MGModel
         }
         
         if(!empty($parametros['criacao_de'])) {
-            $query->where('criacao', '>=', $parametros['criacao_de']);
+            $query->where('criacao', '>=', $parametros['criacao_de'].' 00:00:00');
         }
             
         if (isset($parametros['criacao_ate']) and ! empty($parametros['criacao_ate'])) {
-            $query->where('criacao', '<=', $parametros['criacao_ate']);
+            $query->where('criacao', '<=', $parametros['criacao_ate'].' 23:59:59');
         }
 
         if (isset($parametros['data_de']) and ! empty($parametros['data_de'])) {
