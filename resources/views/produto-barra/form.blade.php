@@ -184,6 +184,7 @@ $(document).ready(function() {
         mostraPopoverBarras();
     });
 
+    $("#variacao").Setcase();
     mostraPopoverBarras();    
     
 });
