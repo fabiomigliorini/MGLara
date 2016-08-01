@@ -33,8 +33,10 @@
                 @foreach ($pbs as $pb)
                     <div class="col-md-6 small">
                         {{ $pb->barras }}
-                        {{ $pb->referencia }}
-                        {{ $pb->variacao }}
+                        <span class='text-muted'>
+                            {{ $pb->referencia }}
+                            {{ $pb->variacao }}
+                        </span>
                         <small class="text-muted pull-right">
                             @if (!empty($pb->codprodutoembalagem))
                                 {{ $pb->ProdutoEmbalagem->descricao }}
