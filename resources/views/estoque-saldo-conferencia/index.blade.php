@@ -15,57 +15,70 @@
     $usuarios = [''=>''] + Usuario::orderBy('usuario', 'ASC')->lists('usuario', 'codusuario')->all();
     $codestoquelocal = [''=>''] + EstoqueLocal::orderBy('estoquelocal', 'ASC')->lists('estoquelocal', 'codestoquelocal')->all();
 ?>
-<h1 class="header">{!! 
-    titulo(
-        NULL ,
-        'Conferência Saldo de Estoque',
-        NULL
-    ) 
-!!}
+<h1 class="header">{!! titulo(NULL, 'Conferência Saldo de Estoque', NULL) !!}
+    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
+        <span class='glyphicon glyphicon-search'></span>
+    </a>
  </h1>
 <hr>
-<div class="search-bar">
-{!! Form::model(Request::session()->get('estoque-saldo-conferencia.index'), 
-    [
-        'route' => 'estoque-saldo-conferencia.index', 
-        'method' => 'GET', 
-        'class' => 'form-inline', 
-        'id' => 'estoque-saldo-conferencia-search', 
-        'role' => 'search', 
-        'autocomplete' => 'off'
-    ]
-)!!}
-    <div class="form-group">
-        {!! Form::select2Produto('codproduto', null, ['class' => 'form-control','id'=>'codproduto', 'style'=>'width:500px', 'somenteAtivos'=>'9']) !!}
+<div class="clearfix"></div>
+<div class='collapse' id='div-filtro'>
+    <div class='well well-sm' style="padding:9px 0">
+        {!! Form::model(Request::session()->get('estoque-saldo-conferencia.index'), 
+            [
+                'route' => 'estoque-saldo-conferencia.index', 
+                'method' => 'GET', 
+                'class' => 'form-horizontal', 
+                'id' => 'estoque-saldo-conferencia-search', 
+                'role' => 'search', 
+                'autocomplete' => 'off'
+            ]
+        )!!}
+        <div class="col-md-6">
+            <div class="form-group">
+                {!! Form::label('codproduto', 'Produto', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-10">{!! Form::select2Produto('codproduto', null, ['class' => 'form-control','id'=>'codproduto', 'somenteAtivos'=>'9']) !!}</div>
+            </div>
+            <div class="form-group">
+                {!! Form::label('codestoquelocal', 'Local', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-6">{!! Form::select('codestoquelocal', $codestoquelocal, null, ['class'=> 'form-control', 'id' => 'codestoquelocal']) !!}</div>            
+            </div>              
+            <div class="form-group">
+                {!! Form::label('fiscal', 'Físico/Fiscal', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-6">{!! Form::select('fiscal', [''=>'', 'false'=>'Fisico', 'true'=>'Fiscal'],  null, ['class' => 'form-control', 'id' => 'fiscal']) !!}</div>
+            </div>
+            <div class="form-group">
+                {!! Form::label('codusuario', 'Usuário', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-6">{!! Form::select('codusuario', $usuarios, null, ['class'=> 'form-control', 'id' => 'codusuario']) !!}</div>
+            </div>         
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                {!! Form::label('data_de', 'Ajuste', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-10">
+                    {!! Form::date('data_de', null, ['class' => 'form-control', 'id' => 'data_de', 'placeholder' => 'De', 'style'=>'width:45%; float:left; margin-right:10px']) !!}
+                    {!! Form::date('data_ate', null, ['class' => 'form-control', 'id' => 'data_ate', 'placeholder' => 'Até', 'style'=>'width:45%; float:left']) !!}
+                </div>
+            </div>
+
+            <div class="form-group">
+                {!! Form::label('criacao_de', 'Criação', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-10">
+                    {!! Form::date('criacao_de', null, ['class' => 'form-control', 'id' => 'criacao_de', 'placeholder' => 'De', 'style'=>'width:45%; float:left; margin-right:10px']) !!}
+                    {!! Form::date('criacao_ate', null, ['class' => 'form-control', 'id' => 'criacao_ate', 'placeholder' => 'Até', 'style'=>'width:45%; float:left']) !!}
+                </div>
+            </div>
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
+            </div>
+
+        </div>
+        {!! Form::close() !!}
+        <div class="clearfix"></div>
     </div>
-
-    <div class="form-group">
-        {!! Form::select('codestoquelocal', $codestoquelocal, null, ['class'=> 'form-control', 'id' => 'codestoquelocal', 'style'=>'width:160px']) !!}
-    </div>    
-
-    <div class="form-group">
-        {!! Form::select('fiscal', [''=>'', 'false'=>'Fisico', 'true'=>'Fiscal'],  null, ['class' => 'form-control', 'id' => 'fiscal', 'style'=>'width:120px']) !!}
-    </div>
-
-    <strong>Data Ajuste</strong>
-    <div class="form-group">
-        {!! Form::date('data_de', null, ['class' => 'form-control', 'id' => 'data_de', 'placeholder' => 'De']) !!}
-        {!! Form::date('data_ate', null, ['class' => 'form-control', 'id' => 'data_ate', 'placeholder' => 'Até']) !!}
-    </div>
-
-    <strong>Criação</strong>
-    <div class="form-group">
-        {!! Form::date('criacao_de', null, ['class' => 'form-control', 'id' => 'criacao_de', 'placeholder' => 'De']) !!}
-        {!! Form::date('criacao_ate', null, ['class' => 'form-control', 'id' => 'criacao_ate', 'placeholder' => 'Até']) !!}
-    </div>
-
-    <div class="form-group">
-        {!! Form::select('codusuario', $usuarios, null, ['class'=> 'form-control', 'id' => 'codusuario', 'style'=>'width:160px']) !!}
-    </div>    
-    
-    <button type="submit" class="btn btn-default">Buscar</button>
-{!! Form::close() !!}
 </div>
+        
 <br>
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
@@ -130,19 +143,20 @@
 <script type="text/javascript">
 function atualizaFiltro()
 {
-    var frmValues = $('#estoque-saldo-conferencia-search').serialize();
+    var frmValues = $('#estoque-saldo-conferencia-search').serialize() + '&page=1';
     $.ajax({
         type: 'GET',
         url: baseUrl + '/estoque-saldo-conferencia',
         data: frmValues
     })
     .done(function (data) {
-        $('#items').html(jQuery(data).find('#items').html());
+        $('#items').html(jQuery(data).find('#items').html(function() {
+            $('#items').infinitescroll({ state: { currPage: 1, isDone: false}});
+        }));
     })
     .fail(function () {
         console.log('Erro no filtro');
     });
-    //event.preventDefault();
 }
 
 $(document).ready(function() {
