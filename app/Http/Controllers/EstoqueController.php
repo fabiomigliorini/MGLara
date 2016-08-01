@@ -77,7 +77,7 @@ class EstoqueController extends Controller
         return response()->json(['response' => 'Agendado']);
     }
     
-    /*
+/*
     public function geraSaldoConferenciaNegocio(Request $request, $id)
     {
         $obs = "Criado a partir do Negocio " . formataCodigo($id);
@@ -106,6 +106,7 @@ class EstoqueController extends Controller
                   ";
 
             $regs = DB::select($sql);
+            //dd($regs);
 
             DB::beginTransaction();
             
@@ -117,7 +118,8 @@ class EstoqueController extends Controller
 
                 $model->codestoquesaldo = $es->codestoquesaldo;
                 $model->quantidadesistema = $es->saldoquantidade;
-                $model->quantidadeinformada = $reg->quantidadeinformada;
+                $model->quantidadeinformada = $es->saldoquantidade + $reg->quantidadeinformada;
+                //$model->quantidadeinformada = $reg->quantidadeinformada;
                 $model->customediosistema = $es->customedio;
 
                 $model->customedioinformado = $es->customedio;
@@ -196,7 +198,7 @@ class EstoqueController extends Controller
                 if (empty($model->customedioinformado))
                     $model->customedioinformado = $es->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->preco * 0.571428571; // 75% markup
                 
-                $model->data = new Carbon('2016-04-01');
+                $model->data = new Carbon();
                 $model->observacoes = $obs;
 
                 if (!$model->save())
@@ -232,8 +234,9 @@ class EstoqueController extends Controller
             dd($exc);
         }
     }
-    */
+*/
     
+/*
     public function zeraSaldo ($id, $tipo)
     {
         
@@ -254,22 +257,6 @@ class EstoqueController extends Controller
                 break;
         }
         
-        /*
-        $sql = "select max(mes) as mes, lpv.codestoquelocal, lpv.codprodutovariacao, sld.fiscal, var.codproduto
-                from tblestoquemes mes
-                join tblestoquesaldo sld on (sld.codestoquesaldo = mes.codestoquesaldo)
-                join tblestoquelocalprodutovariacao lpv on (lpv.codestoquelocalprodutovariacao = sld.codestoquelocalprodutovariacao)
-                join tblprodutovariacao var on (var.codprodutovariacao = lpv.codprodutovariacao)
-                where $sldquantidade
-                and sld.fiscal = false
-                and lpv.codestoquelocal = $id
-                and mes.mes <= '{$dataCorte->format('Y-m-d')}'
-                and sld.codestoquesaldo not in (select distinct iq.codestoquesaldo from tblestoquesaldoconferencia iq)
-                group by lpv.codestoquelocal, lpv.codprodutovariacao, sld.fiscal, var.codproduto
-                order by var.codproduto
-                Limit 1000";
-        */
-        
         $sql = "
             select es.codestoquesaldo, elpv.codestoquelocal, elpv.codprodutovariacao, es.fiscal, pv.codproduto, es.saldoquantidade
             from tblestoquesaldo es
@@ -288,7 +275,7 @@ class EstoqueController extends Controller
         
         $gerados = [];
         
-        $dataMov = new Carbon('2016-07-30');
+        $dataMov = new Carbon();
         
         foreach ($regs as $reg)
         {
@@ -297,20 +284,14 @@ class EstoqueController extends Controller
             
             //dd($sld);
             
-            /*
-            $mes = EstoqueMes::buscaOuCria(
-                    $reg->codprodutovariacao, 
-                    $reg->codestoquelocal, 
-                    $reg->fiscal, 
-                    new Carbon($reg->mes)
-                    );
-            */
             $mesMov = EstoqueMes::buscaOuCria(
                     $reg->codprodutovariacao, 
                     $reg->codestoquelocal, 
                     $reg->fiscal, 
                     $dataMov
                     );
+
+            $dataMov = new Carbon();
             
             $mov = new EstoqueMovimento();
             
@@ -437,4 +418,5 @@ class EstoqueController extends Controller
         
         dd($gerados);
     }
+*/
 }
