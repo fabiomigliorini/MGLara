@@ -39,8 +39,24 @@
 </div>
 @section('inscript')
 <script type="text/javascript">
+function scroll()
+{
+    var loading_options = {
+        finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
+        msgText: "<div class='center'>Carregando mais itens...</div>",
+        img: baseUrl + '/public/img/ajax-loader.gif'
+    };
+
+    $('#items').infinitescroll({
+        loading : loading_options,
+        navSelector : "#registros .pagination",
+        nextSelector : "#registros .pagination li.active + li a",
+        itemSelector : "#items div.list-group-item",
+        debug:true
+    });    
+}
   $(document).ready(function() {
-      
+      scroll();
   });
 </script>
 @endsection

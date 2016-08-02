@@ -143,27 +143,58 @@
 <script type="text/javascript">
 function atualizaFiltro()
 {
-    var frmValues = $('#estoque-saldo-conferencia-search').serialize() + '&page=1';
+    scroll();
+    var frmValues = $('#estoque-saldo-conferencia-search').serialize();
     $.ajax({
         type: 'GET',
         url: baseUrl + '/estoque-saldo-conferencia',
-        data: frmValues
+        data: frmValues,
+        dataType: 'html'
     })
     .done(function (data) {
-        $('#items').html(jQuery(data).find('#items').html(function() {
-            $('#items').infinitescroll({ state: { currPage: 1, isDone: false}});
-        }));
+        $('#items').html(jQuery(data).find('#items').html());
     })
     .fail(function () {
         console.log('Erro no filtro');
     });
+
+    $('#items').infinitescroll('update', {
+        state: {
+            currPage: 1,
+            isDestroyed: false,
+            isDone: false             
+        },
+        path: ['?page=', '&'+frmValues]
+    });
+}
+
+function scroll()
+{
+    var loading_options = {
+        finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
+        msgText: "<div class='center'>Carregando mais itens...</div>",
+        img: baseUrl + '/public/img/ajax-loader.gif'
+    };
+
+    $('#items').infinitescroll({
+        loading : loading_options,
+        navSelector : "#registros .pagination",
+        nextSelector : "#registros .pagination li.active + li a",
+        itemSelector : "#items div.list-group-item",
+    });    
 }
 
 $(document).ready(function() {
+    scroll();
     $("#estoque-saldo-conferencia-search").on("change", function (event) {
+        $('#items').infinitescroll('destroy');
+        atualizaFiltro();
+    }).on('submit', function (event){
+        event.preventDefault();
+        $('#items').infinitescroll('destroy');
         atualizaFiltro();
     });
-
+    
     $('#codusuario').select2({
         placeholder: 'Usuário',
         allowClear:true,
@@ -181,9 +212,6 @@ $(document).ready(function() {
         allowClear:true,
         closeOnSelect:true
     });
-
-
-
 });
 </script>
 @endsection

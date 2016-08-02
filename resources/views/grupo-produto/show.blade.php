@@ -109,28 +109,62 @@
         <h3>Nenhum Sub Grupo encontrado!</h3>
     @endif    
   </div>
-  {!! $subgrupos->appends(Request::all())->render() !!}
+  {!! $subgrupos->appends(Request::session()->get('grupo-produto.show'))->render() !!}
 </div>
 @section('inscript')
 <script type="text/javascript">
-$(document).ready(function() {
-    $("#sub-grupo-produto-search").on("change", function (event) {
-        var $this = $(this);
-        var frmValues = $this.serialize();
-        console.log(frmValues);
-        $.ajax({
-            type: 'GET',
-            url: baseUrl + '/grupo-produto/'+ {{$model->codgrupoproduto}},
-            data: frmValues
-        })
-        .done(function (data) {
-            $('#items').html(jQuery(data).find('#items').html()); 
-        })
-        .fail(function () {
-            console.log('Erro no filtro');
-        });
-        event.preventDefault(); 
+function atualizaFiltro()
+{
+    scroll();
+    var frmValues = $("#sub-grupo-produto-search").serialize();
+    $.ajax({
+        type: 'GET',
+        url: baseUrl + '/grupo-produto/'+ {{$model->codgrupoproduto}},
+        data: frmValues
+    })
+    .done(function (data) {
+        $('#items').html(jQuery(data).find('#items').html()); 
+    })
+    .fail(function () {
+        console.log('Erro no filtro');
     });
+
+    $('#items').infinitescroll('update', {
+        state: {
+            currPage: 1,
+            isDestroyed: false,
+            isDone: false             
+        },
+        path: ['?page=', '&'+frmValues]
+    });
+}
+
+function scroll()
+{
+    var loading_options = {
+        finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
+        msgText: "<div class='center'>Carregando mais itens...</div>",
+        img: baseUrl + '/public/img/ajax-loader.gif'
+    };
+
+    $('#items').infinitescroll({
+        loading : loading_options,
+        navSelector : "#registros .pagination",
+        nextSelector : "#registros .pagination li.active + li a",
+        itemSelector : "#items div.list-group-item",
+    });    
+}
+
+$(document).ready(function() {
+    scroll();
+    $("#sub-grupo-produto-search").on("change", function (event) {
+        $('#items').infinitescroll('destroy');
+        atualizaFiltro();
+    }).on('submit', function (event){
+        event.preventDefault();
+        $('#items').infinitescroll('destroy');
+        atualizaFiltro();
+    });        
     
     $('#inativo-grupo-produto').on("click", function(e) {
         e.preventDefault();

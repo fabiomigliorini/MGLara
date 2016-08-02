@@ -234,7 +234,7 @@ $pbs = $pv->ProdutoBarraS()->leftJoin('tblprodutoembalagem as pe', 'pe.codprodut
         <h3>Nenhum registro encontrado!</h3>
     @endif
   </div>
-  <?php echo $model->appends(Request::all())->render(); ?>
+  <?php echo $model->appends(Request::session()->get('produto.index'))->render(); ?>
 </div>
 @section('inscript')
 <style type="text/css">
@@ -255,11 +255,13 @@ ul.pagination {
 <script type="text/javascript">
 function atualizaFiltro()
 {
+    scroll();
     var frmValues = $('#produto-search').serialize();
     $.ajax({
         type: 'GET',
         url: baseUrl + '/produto',
-        data: frmValues
+        data: frmValues,
+        dataType: 'html'
     })
     .done(function (data) {
         $('#items').html(jQuery(data).find('#items').html());
@@ -267,20 +269,55 @@ function atualizaFiltro()
     .fail(function () {
         console.log('Erro no filtro');
     });
-    event.preventDefault();
 
+    $('#items').infinitescroll('update', {
+        state: {
+            currPage: 1,
+            isDestroyed: false,
+            isDone: false             
+        },
+        path: ['?page=', '&'+frmValues]
+    });
+}
+
+function scroll()
+{
+    var loading_options = {
+        finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
+        msgText: "<div class='center'>Carregando mais itens...</div>",
+        img: baseUrl + '/public/img/ajax-loader.gif'
+    };
+
+    $('#items').infinitescroll({
+        loading : loading_options,
+        navSelector : "#registros .pagination",
+        nextSelector : "#registros .pagination li.active + li a",
+        itemSelector : "#items div.list-group-item",
+    });    
 }
 
 $(document).ready(function() {
-    //$('ul.pagination').removeClass('hide');
+    var loading_options = {
+        finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
+        msgText: "<div class='center'>Carregando mais itens...</div>",
+        img: baseUrl + '/public/img/ajax-loader.gif'
+    };
+
+    $('#items').infinitescroll({
+        loading : loading_options,
+        navSelector : "#registros .pagination",
+        nextSelector : "#registros .pagination li.active + li a",
+        itemSelector : "#items div.list-group-item"
+    });    
 
     $("#produto-search").on("change", function (event) {
+        $('#items').infinitescroll('destroy');
+        atualizaFiltro();
+    }).on('submit', function (event){
+        event.preventDefault();
+        $('#items').infinitescroll('destroy');
         atualizaFiltro();
     });
-
-    /*$(document).on('dp.change', '#criacao_de, #criacao_ate, #alteracao_de, #alteracao_ate', function() {
-        atualizaFiltro();
-    });*/
 
     $('#site').select2({
         placeholder: 'Site',
@@ -290,14 +327,6 @@ $(document).ready(function() {
 
     $('#preco_de, #preco_ate').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.' });
 
-    /*
-    $('#criacao_de, #criacao_ate, #alteracao_de, #alteracao_ate').datetimepicker({
-        useCurrent: false,
-        showClear: true,
-        locale: 'pt-br',
-        format: 'DD/MM/YY'
-    });
-    */
 });
 </script>
 @endsection

@@ -323,6 +323,12 @@
                 this._showdonemsg();
             }
 
+            /* Alteração */
+            if (xhr === 'destroy') {
+                $.removeData(this.element[0]);
+            }
+            /* Fim alteração*/
+
             opts.state.isDone = true;
             opts.state.currPage = 1; // if you need to go back to this instance
             opts.state.isPaused = false;
