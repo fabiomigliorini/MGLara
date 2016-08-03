@@ -1,9 +1,5 @@
 @extends('layouts.default')
 @section('content')
-<?php
-    use MGLara\Models\Usuario;
-    $usuarios = [''=>''] + Usuario::lists('usuario', 'codusuario')->all();
-?>
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
@@ -39,8 +35,8 @@
 
     <strong>Alteração</strong>
     <div class="form-group">
-        {!! Form::text('alteracao_de', null, ['class' => 'form-control between', 'id' => 'alteracao_de', 'placeholder' => 'De']) !!}
-        {!! Form::text('alteracao_ate', null, ['class' => 'form-control between', 'id' => 'alteracao_ate', 'placeholder' => 'Até']) !!}
+        {!! Form::date('alteracao_de', null, ['class' => 'form-control', 'id' => 'alteracao_de', 'placeholder' => 'De']) !!}
+        {!! Form::date('alteracao_ate', null, ['class' => 'form-control', 'id' => 'alteracao_ate', 'placeholder' => 'Até']) !!}
     </div>
     
     <div class="form-group">
@@ -48,7 +44,7 @@
     </div>
 
     <div class="form-group">
-        {!! Form::select('codusuario', $usuarios, null, ['class'=> 'form-control', 'id' => 'codusuario', 'style'=>'width:160px']) !!}
+        {!! Form::select2Usuario('codusuario', null, ['required' => true, 'class'=> 'form-control', 'id' => 'codusuario', 'style'=>'width:160px', 'placeholder' => 'Usuário']) !!}
     </div>
 
     <button type="submit" class="btn btn-default">Buscar</button>
@@ -179,20 +175,6 @@ $(document).ready(function() {
         atualizaFiltro();
     });
 
-    $('#codusuario').select2({
-        placeholder: 'Usuário',
-        allowClear:true,
-        closeOnSelect:true
-    });    
-    $('#alteracao_de, #alteracao_ate').datetimepicker({
-        useCurrent: false,
-        showClear: true,
-        locale: 'pt-br',
-        format: 'DD/MM/YY'
-    });
-    $(document).on('dp.change', '#alteracao_de, #alteracao_ate, #codmarca', function() {
-        atualizaFiltro();
-    });    
 });
 </script>
 @endsection

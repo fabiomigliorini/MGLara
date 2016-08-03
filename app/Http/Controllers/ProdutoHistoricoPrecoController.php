@@ -8,6 +8,7 @@ use MGLara\Http\Requests;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use MGLara\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Auth;
 
 use MGLara\Models\ProdutoHistoricoPreco;
@@ -29,6 +30,15 @@ class ProdutoHistoricoPrecoController extends Controller
             $request->session()->put('produto-historico-preco.index.codusuario', '');
         
         $parametros = $request->session()->get('produto-historico-preco.index');        
+
+        if (!empty($parametros['alteracao_de'])) {
+            $parametros['alteracao_de'] = Carbon::createFromFormat('Y-m-d H:i:s', $parametros['alteracao_de']. ' 00:00:00');
+        }
+        
+        if (!empty($parametros['alteracao_ate'])) {
+            $parametros['alteracao_ate'] = Carbon::createFromFormat('Y-m-d H:i:s', $parametros['alteracao_ate']. '23:59:59');
+        }
+        
         $model = ProdutoHistoricoPreco::search($parametros);
         return view('produto-historico-preco.index', compact('model'));
     }    

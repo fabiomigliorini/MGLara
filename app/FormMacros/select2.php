@@ -121,6 +121,13 @@ Form::macro('select2UnidadeMedida', function($name, $selected = null, $options =
     return Form::select2($name, $medidas, $selected, $options);
 });
 
+/* UNIDADES USUÁRIO */
+Form::macro('select2Usuario', function($name, $selected = null, $options = [])
+{
+    $usuarios = [''=>''] + MGLara\Models\Usuario::orderBy('usuario')->lists('usuario', 'codusuario')->all();
+    return Form::select2($name, $usuarios, $selected, $options);
+});
+
 /* GRUPO CLIENTE */
 Form::macro('select2GrupoCliente', function($name, $selected = null, $options = [])
 {

@@ -1,7 +1,7 @@
 <?php
 
 namespace MGLara\Models;
-use Carbon\Carbon;
+
 
 /**
  * Campos
@@ -84,11 +84,13 @@ class ProdutoHistoricoPreco extends MGModel
                 $q->where('referencia', 'ILIKE', "%$referencia%");
             });
             
-        if(isset($parametros['alteracao_de']) and !empty($parametros['alteracao_de']))
-            $query->where('criacao', '>=', Carbon::createFromFormat('d/m/y', $parametros['alteracao_de'])->format('Y-m-d').' 00:00:00.0');
-            
-        if(isset($parametros['alteracao_ate']) and !empty($parametros['alteracao_ate']))
-            $query->where('criacao', '<=', Carbon::createFromFormat('d/m/y', $parametros['alteracao_ate'])->format('Y-m-d').' 23:59:59.9');
+        if (!empty($parametros['alteracao_de'])) {
+            $query->where('criacao', '>=', $parametros['alteracao_de']);
+        }
+
+        if (!empty($parametros['alteracao_ate'])) {
+            $query->where('criacao', '<=', $parametros['alteracao_ate']);
+        }
 
         if(isset($parametros['codmarca']) and !empty($parametros['codmarca']))
             $query->whereHas('Produto', function($q) use ($parametros) {

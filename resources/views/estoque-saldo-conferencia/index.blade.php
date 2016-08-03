@@ -49,7 +49,7 @@
             </div>
             <div class="form-group">
                 {!! Form::label('codusuario', 'Usuário', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-6">{!! Form::select('codusuario', $usuarios, null, ['class'=> 'form-control', 'id' => 'codusuario']) !!}</div>
+                <div class="col-md-6">{!! Form::select2Usuario('codusuario', null, ['required' => true, 'class'=> 'form-control', 'id' => 'codusuario', 'placeholder' => 'Usuário']) !!}</div>
             </div>         
         </div>
 
