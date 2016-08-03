@@ -40,7 +40,24 @@ class ProdutoController extends Controller
         if (!$request->session()->has('produto.index')) 
             $request->session()->put('produto.index.ativo', '1');
         
-        $parametros = $request->session()->get('produto.index');        
+        $parametros = $request->session()->get('produto.index');  
+        
+        if (!empty($parametros['criacao_de'])) {
+            $parametros['criacao_de'] = Carbon::createFromFormat('Y-m-d H:i:s', $parametros['criacao_de']. ' 00:00:00');
+        }
+        
+        if (!empty($parametros['criacao_ate'])) {
+            $parametros['criacao_ate'] = Carbon::createFromFormat('Y-m-d H:i:s', $parametros['criacao_ate']. '23:59:59');
+        }
+        
+        if (!empty($parametros['alteracao_de'])) {
+            $parametros['alteracao_de'] = Carbon::createFromFormat('Y-m-d H:i:s', $parametros['alteracao_de']. ' 00:00:00');
+        }
+        
+        if (!empty($parametros['alteracao_ate'])) {
+            $parametros['alteracao_ate'] = Carbon::createFromFormat('Y-m-d H:i:s', $parametros['alteracao_ate']. '23:59:59');
+        }
+        
         $model = Produto::search($parametros)->orderBy('produto', 'ASC')->paginate(20);
         return view('produto.index', compact('model'));
     }

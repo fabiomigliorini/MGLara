@@ -663,17 +663,21 @@ class Produto extends MGModel
             $query->whereRaw($sql);
         }
         
-        if(isset($parametros['criacao_de']) and !empty($parametros['criacao_de']))
+        if(!empty($parametros['criacao_de'])) {
             $query->where('criacao', '>=', $parametros['criacao_de']);
-            
-        if(isset($parametros['criacao_ate']) and !empty($parametros['criacao_ate']))
+        }
+
+        if(!empty($parametros['criacao_ate'])) {
             $query->where('criacao', '<=', $parametros['criacao_ate']);
-            
-        if(isset($parametros['alteracao_de']) and !empty($parametros['alteracao_de']))
+        }
+
+        if(!empty($parametros['alteracao_de'])) {
             $query->where('alteracao', '>=', $parametros['alteracao_de']);
-            
-        if(isset($parametros['alteracao_ate']) and !empty($parametros['alteracao_ate']))
+        }
+
+        if(!empty($parametros['alteracao_ate'])) {
             $query->where('alteracao', '<=', $parametros['alteracao_ate']);
+        }
 
         switch (isset($parametros['ativo'])?$parametros['ativo']:'9')
         {
