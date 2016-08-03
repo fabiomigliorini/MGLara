@@ -69,16 +69,16 @@
                     {!! Form::date('criacao_ate', null, ['class' => 'form-control', 'id' => 'criacao_ate', 'placeholder' => 'Até', 'style'=>'width:45%; float:left']) !!}
                 </div>
             </div>
-            <div class="col-md-offset-2 col-md-10">
-                <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
+                </div>
             </div>
-
         </div>
         {!! Form::close() !!}
         <div class="clearfix"></div>
     </div>
 </div>
-        
 <br>
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
