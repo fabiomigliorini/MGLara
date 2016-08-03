@@ -15,15 +15,10 @@
         <span class='glyphicon glyphicon-search'></span>
     </a>
 </h1>
-<hr>
-<?php
-use MGLara\Models\SecaoProduto;
-$filtro = Request::session()->get('produto.index');
-?>
 <div class="clearfix"></div>
 <div class='collapse' id='div-filtro'>
     <div class='well well-sm' style="padding:9px 0">
-    {!! Form::model($filtro,
+    {!! Form::model(Request::session()->get('produto.index'),
     [
         'route' => 'produto.index',
         'method' => 'GET',
@@ -32,7 +27,7 @@ $filtro = Request::session()->get('produto.index');
         'role' => 'search',
         'autocomplete' => 'off'
     ])!!}
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="form-group">
             {!! Form::label('codproduto', '#', ['class' => 'col-sm-2 control-label']) !!}
             <div class="col-md-4">{!! Form::text('codproduto', null, ['class' => 'form-control', 'placeholder' => '#']) !!}</div>
@@ -40,64 +35,17 @@ $filtro = Request::session()->get('produto.index');
 
         <div class="form-group">
             {!! Form::label('barras', 'Barras', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-4">{!! Form::text('barras', null, ['class' => 'form-control', 'placeholder' => 'Barras']) !!}</div>
+            <div class="col-md-6">{!! Form::text('barras', null, ['class' => 'form-control', 'placeholder' => 'Barras']) !!}</div>
         </div>
 
         <div class="form-group">
             {!! Form::label('produto', 'Descrição', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-6">{!! Form::text('produto', null, ['class' => 'form-control', 'placeholder' => 'Descrição']) !!}</div>
+            <div class="col-md-9">{!! Form::text('produto', null, ['class' => 'form-control', 'placeholder' => 'Descrição']) !!}</div>
         </div>
-
-        <div class="form-group">
-            {!! Form::label('codmarca', 'Marca', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-6">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:160px']) !!}</div>
-        </div>
-
-        <div class="form-group">
-            {!! Form::label('codsecaoproduto', 'Seção', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-6">{!! Form::select2SecaoProduto('codsecaoproduto', null, ['class'=> 'form-control', 'id' => 'codsecaoproduto', 'placeholder' => 'Seção']) !!}</div>
-        </div>
-
-        <div class="form-group">
-            {!! Form::label('codfamiliaproduto', 'Família', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-6">{!! Form::select2FamiliaProduto('codfamiliaproduto', null, ['class' => 'form-control','id'=>'codfamiliaproduto', 'placeholder' => 'Família', 'ativo'=>'9']) !!}</div>
-        </div>
-
-        <div class="form-group">
-            {!! Form::label('codgrupoproduto', 'Grupo', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-6">{!! Form::select2GrupoProduto('codgrupoproduto', null, ['class' => 'form-control','id'=>'codgrupoproduto', 'placeholder' => 'Grupo', 'ativo'=>'9']) !!}</div>
-        </div>
-
-        <div class="form-group">
-            {!! Form::label('codsubgrupoproduto', 'Sub Grupo', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-6">{!! Form::select2SubGrupoProduto('codsubgrupoproduto', null, ['class' => 'form-control','id'=>'codsubgrupoproduto', 'placeholder' => 'Sub Grupo', 'ativo'=>'9']) !!}</div>
-        </div>
-
+        
         <div class="form-group">
             {!! Form::label('referencia', 'Referência', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-3">{!! Form::text('referencia', null, ['class' => 'form-control', 'placeholder' => 'Referência']) !!}</div>
-        </div>
-    </div>
-    
-    <div class="col-md-6">
-        <div class="form-group">
-            {!! Form::label('ativo', 'Ativo', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-3">{!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo']) !!}</div>
-        </div>
-
-        <div class="form-group">
-            {!! Form::label('codtributacao', 'Tributação', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-4">{!! Form::select2Tributacao('codtributacao', null, ['placeholder'=>'Tributação',  'class'=> 'form-control', 'id' => 'codtributacao']) !!}</div>
-        </div>
-
-        <div class="form-group">
-            {!! Form::label('site', 'Site', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-3">{!! Form::select('site', ['' => '', 'true' => 'No Site', 'false' => 'Fora do Site'], null, ['id'=>'site', 'style'=>'width:100%;']) !!}</div>
-        </div>
-
-        <div class="form-group">
-            {!! Form::label('codncm', 'NCM', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-10">{!! Form::select2Ncm('codncm', null, ['class' => 'form-control','id'=>'codncm', 'placeholder' => 'NCM']) !!}</div>
+            <div class="col-md-6">{!! Form::text('referencia', null, ['class' => 'form-control', 'placeholder' => 'Referência']) !!}</div>
         </div>
 
         <div class="form-group">
@@ -106,6 +54,56 @@ $filtro = Request::session()->get('produto.index');
                 {!! Form::text('preco_de', null, ['class' => 'form-control text-right pull-left', 'id' => 'preco_de', 'placeholder' => 'De', 'style'=>'width:100px; margin-right:10px']) !!}
                 {!! Form::text('preco_ate', null, ['class' => 'form-control text-right pull-left', 'id' => 'preco_ate', 'placeholder' => 'Até', 'style'=>'width:100px;']) !!}
             </div>
+        </div>
+
+        <div class="form-group">
+            {!! Form::label('ativo', 'Ativo', ['class' => 'col-sm-2 control-label']) !!}
+            <div class="col-md-4">{!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo']) !!}</div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="form-group">
+            {!! Form::label('codsecaoproduto', 'Seção', ['class' => 'col-sm-2 control-label']) !!}
+            <div class="col-md-9">{!! Form::select2SecaoProduto('codsecaoproduto', null, ['class'=> 'form-control', 'id' => 'codsecaoproduto', 'placeholder' => 'Seção']) !!}</div>
+        </div>
+
+        <div class="form-group">
+            {!! Form::label('codfamiliaproduto', 'Família', ['class' => 'col-sm-2 control-label']) !!}
+            <div class="col-md-9">{!! Form::select2FamiliaProduto('codfamiliaproduto', null, ['class' => 'form-control','id'=>'codfamiliaproduto', 'placeholder' => 'Família', 'ativo'=>'9']) !!}</div>
+        </div>
+
+        <div class="form-group">
+            {!! Form::label('codgrupoproduto', 'Grupo', ['class' => 'col-sm-2 control-label']) !!}
+            <div class="col-md-9">{!! Form::select2GrupoProduto('codgrupoproduto', null, ['class' => 'form-control','id'=>'codgrupoproduto', 'placeholder' => 'Grupo', 'ativo'=>'9']) !!}</div>
+        </div>
+
+        <div class="form-group">
+            {!! Form::label('codsubgrupoproduto', 'Sub Grupo', ['class' => 'col-sm-2 control-label']) !!}
+            <div class="col-md-9">{!! Form::select2SubGrupoProduto('codsubgrupoproduto', null, ['class' => 'form-control','id'=>'codsubgrupoproduto', 'placeholder' => 'Sub Grupo', 'ativo'=>'9']) !!}</div>
+        </div>
+
+        <div class="form-group">
+            {!! Form::label('codmarca', 'Marca', ['class' => 'col-sm-2 control-label']) !!}
+            <div class="col-md-9">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:160px']) !!}</div>
+        </div>
+        
+    </div>
+    
+    <div class="col-md-5">
+        <div class="form-group">
+            {!! Form::label('codtributacao', 'Tributação', ['class' => 'col-sm-2 control-label']) !!}
+            <div class="col-md-4">{!! Form::select2Tributacao('codtributacao', null, ['placeholder'=>'Tributação',  'class'=> 'form-control', 'id' => 'codtributacao']) !!}</div>
+        </div>
+
+        <div class="form-group">
+            {!! Form::label('codncm', 'NCM', ['class' => 'col-sm-2 control-label']) !!}
+            <div class="col-md-10">{!! Form::select2Ncm('codncm', null, ['class' => 'form-control','id'=>'codncm', 'placeholder' => 'NCM']) !!}</div>
+        </div>
+
+        <div class="form-group">
+            {!! Form::label('site', 'Site', ['class' => 'col-sm-2 control-label']) !!}
+            <div class="col-md-3">{!! Form::select('site', ['' => '', 'true' => 'No Site', 'false' => 'Fora do Site'], null, ['id'=>'site', 'style'=>'width:100%;']) !!}</div>
         </div>
 
         <div class="form-group">
@@ -134,7 +132,6 @@ $filtro = Request::session()->get('produto.index');
     <div class="clearfix"></div>
     </div>
 </div>
-<br>
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
     @foreach($model as $row)

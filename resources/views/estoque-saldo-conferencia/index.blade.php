@@ -20,7 +20,6 @@
         <span class='glyphicon glyphicon-search'></span>
     </a>
  </h1>
-<hr>
 <div class="clearfix"></div>
 <div class='collapse' id='div-filtro'>
     <div class='well well-sm' style="padding:9px 0">
@@ -41,19 +40,19 @@
             </div>
             <div class="form-group">
                 {!! Form::label('codestoquelocal', 'Local', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-6">{!! Form::select('codestoquelocal', $codestoquelocal, null, ['class'=> 'form-control', 'id' => 'codestoquelocal']) !!}</div>            
+                <div class="col-md-4">{!! Form::select('codestoquelocal', $codestoquelocal, null, ['class'=> 'form-control', 'id' => 'codestoquelocal']) !!}</div>            
             </div>              
             <div class="form-group">
                 {!! Form::label('fiscal', 'Físico/Fiscal', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-6">{!! Form::select('fiscal', [''=>'', 'false'=>'Fisico', 'true'=>'Fiscal'],  null, ['class' => 'form-control', 'id' => 'fiscal']) !!}</div>
+                <div class="col-md-4">{!! Form::select('fiscal', [''=>'', 'false'=>'Fisico', 'true'=>'Fiscal'],  null, ['class' => 'form-control', 'id' => 'fiscal']) !!}</div>
             </div>
-            <div class="form-group">
-                {!! Form::label('codusuario', 'Usuário', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-6">{!! Form::select2Usuario('codusuario', null, ['required' => true, 'class'=> 'form-control', 'id' => 'codusuario', 'placeholder' => 'Usuário']) !!}</div>
-            </div>         
         </div>
 
         <div class="col-md-6">
+            <div class="form-group">
+                {!! Form::label('codusuario', 'Usuário', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-4">{!! Form::select2Usuario('codusuario', null, ['class'=> 'form-control', 'id' => 'codusuario', 'placeholder' => 'Usuário']) !!}</div>
+            </div>         
             <div class="form-group">
                 {!! Form::label('data_de', 'Ajuste', ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-md-10">
@@ -65,8 +64,8 @@
             <div class="form-group">
                 {!! Form::label('criacao_de', 'Criação', ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-md-10">
-                    {!! Form::date('criacao_de', null, ['class' => 'form-control', 'id' => 'criacao_de', 'placeholder' => 'De', 'style'=>'width:45%; float:left; margin-right:10px']) !!}
-                    {!! Form::date('criacao_ate', null, ['class' => 'form-control', 'id' => 'criacao_ate', 'placeholder' => 'Até', 'style'=>'width:45%; float:left']) !!}
+                    {!! Form::datetimeLocal('criacao_de', null, ['class' => 'form-control', 'id' => 'criacao_de', 'time'=>'00:00:00', 'placeholder' => 'De', 'style'=>'width:45%; float:left; margin-right:10px']) !!}
+                    {!! Form::datetimeLocal('criacao_ate', null, ['class' => 'form-control', 'id' => 'criacao_ate', 'time'=>'23:59:59', 'placeholder' => 'Até', 'style'=>'width:45%; float:left']) !!}
                 </div>
             </div>
             <div class="form-group">
@@ -79,7 +78,6 @@
         <div class="clearfix"></div>
     </div>
 </div>
-<br>
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
     @foreach($model as $row)

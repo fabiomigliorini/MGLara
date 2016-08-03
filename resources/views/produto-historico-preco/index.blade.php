@@ -44,7 +44,7 @@
     </div>
 
     <div class="form-group">
-        {!! Form::select2Usuario('codusuario', null, ['required' => true, 'class'=> 'form-control', 'id' => 'codusuario', 'style'=>'width:160px', 'placeholder' => 'Usuário']) !!}
+        {!! Form::select2Usuario('codusuario', null, ['class'=> 'form-control', 'id' => 'codusuario', 'style'=>'width:160px', 'placeholder' => 'Usuário']) !!}
     </div>
 
     <button type="submit" class="btn btn-default">Buscar</button>
