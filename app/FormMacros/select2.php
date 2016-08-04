@@ -226,29 +226,13 @@ Form::macro('select2SecaoProduto', function($name, $selected = null, $options = 
     
     $secoes = [''=>''] + MGLara\Models\SecaoProduto::orderBy('secaoproduto')->lists('secaoproduto', 'codsecaoproduto')->all();
     $campo = Form::select2($name, $secoes, $selected, $options);
-    $script = <<< END
-        <script type="text/javascript">
-            $(document).ready(function() {
-                var limpaSecaoProduto = function(){
-                    $('#codfamiliaproduto').select2('val', null);
-                    $('#codgrupoproduto').select2('val', null);
-                    $('#codsubgrupoproduto').select2('val', null);        
-                }
-                $("#codsecaoproduto").on("select2-removed", function(e) {
-                    limpaSecaoProduto;
-                }).change(limpaSecaoProduto);
-            });            
-        </script>
-END;
-
-    return $campo . $script;    
+    return $campo;    
 });
 
 
 /* FAMÍLIA DE PRODUTO */
 Form::macro('select2FamiliaProduto', function($name, $value = null, $options = [])
 {
-    
     if (empty($options['id']))
         $options['id'] = $name;
     
@@ -270,17 +254,6 @@ Form::macro('select2FamiliaProduto', function($name, $value = null, $options = [
   
         <script type="text/javascript">
             $(document).ready(function() {
-
-                var limpaFamiliaProduto = function(){
-                    $('#codgrupoproduto').select2('val', null);
-                    $('#codsubgrupoproduto').select2('val', null);        
-                }
-
-                $("#codfamiliaproduto").on("select2-removed", function(e) {
-                    limpaFamiliaProduto
-                }).change(limpaFamiliaProduto);
-
-
                 $('#{$options['id']}').select2({
                     placeholder: '{$options['placeholder']}',
                     minimumInputLength: 0,
@@ -323,6 +296,13 @@ Form::macro('select2FamiliaProduto', function($name, $value = null, $options = [
                     },
                     width:'resolve'
                 });
+                $('#{$options['codsecaoproduto']}').on('change', function (e) {
+                    e.preventDefault();
+                    $('#{$options['id']}').select2('val', null).trigger('change');
+                }).on("select2-removed", function(e) { 
+                    e.preventDefault();
+                    $('#{$options['id']}').select2('val', null).trigger('change');
+                });                            
             });
         </script>
 END;
@@ -336,7 +316,6 @@ END;
 /* GRUPO DE PRODUTO */
 Form::macro('select2GrupoProduto', function($name, $value = null, $options = [])
 {
-    
     if (empty($options['id']))
         $options['id'] = $name;
     
@@ -358,14 +337,6 @@ Form::macro('select2GrupoProduto', function($name, $value = null, $options = [])
   
         <script type="text/javascript">
             $(document).ready(function() {
-                var limpaGrupoProduto = function () {
-                    $('#codsubgrupoproduto').select2('val', null);
-                }
-
-                $('#codgrupoproduto').on("select2-removed", function(e) { 
-                    limpaGrupoProduto
-                }).change(limpaGrupoProduto);  
-
                 $('#{$options['id']}').select2({
                     placeholder: '{$options['placeholder']}',
                     minimumInputLength: 0,
@@ -407,6 +378,13 @@ Form::macro('select2GrupoProduto', function($name, $value = null, $options = [])
                     },
                     width:'resolve'
                 });
+                $('#{$options['codfamiliaproduto']}').on('change', function (e) {
+                    e.preventDefault();
+                    $('#{$options['id']}').select2('val', null).trigger('change');
+                }).on("select2-removed", function(e) { 
+                    e.preventDefault();
+                    $('#{$options['id']}').select2('val', null).trigger('change');
+                });                            
             });
         </script>
 END;
@@ -482,6 +460,14 @@ Form::macro('select2SubGrupoProduto', function($name, $value = null, $options = 
                     },
                     width:'resolve'
                 });
+                
+                $('#{$options['codgrupoproduto']}').on('change', function (e) {
+                    e.preventDefault();
+                    $('#{$options['id']}').select2('val', null).trigger('change');
+                }).on("select2-removed", function(e) {
+                    e.preventDefault();
+                    $('#{$options['id']}').select2('val', null).trigger('change');
+                });                            
             });
         </script>
 END;

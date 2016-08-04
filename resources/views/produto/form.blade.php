@@ -17,17 +17,17 @@
 
     <div class="form-group">
         <label for="codfamiliaproduto" class="col-sm-3 control-label">Família</label>
-        <div class="col-sm-6">{!! Form::select2FamiliaProduto('codfamiliaproduto', null, ['required' => true, 'class' => 'form-control','id'=>'codfamiliaproduto', 'style'=>'width:100%', 'placeholder' => 'Família']) !!}</div>
+        <div class="col-sm-6">{!! Form::select2FamiliaProduto('codfamiliaproduto', null, ['required' => true, 'class' => 'form-control','id'=>'codfamiliaproduto', 'style'=>'width:100%', 'placeholder' => 'Família', 'codsecaoproduto'=>'codsecaoproduto']) !!}</div>
     </div>
 
     <div class="form-group">
         <label for="codgrupoproduto" class="col-sm-3 control-label">Grupo Produto</label>
-        <div class="col-sm-6">{!! Form::select2GrupoProduto('codgrupoproduto', null, ['required' => true, 'class' => 'form-control','id'=>'codgrupoproduto', 'style'=>'width:100%', 'placeholder' => 'Grupo']) !!}</div>
+        <div class="col-sm-6">{!! Form::select2GrupoProduto('codgrupoproduto', null, ['required' => true, 'class' => 'form-control','id'=>'codgrupoproduto', 'style'=>'width:100%', 'placeholder' => 'Grupo', 'codfamiliaproduto'=>'codfamiliaproduto']) !!}</div>
     </div>
 
     <div class="form-group">
         <label for="codsubgrupoproduto" class="col-sm-3 control-label">Sub Grupo</label>
-        <div class="col-sm-6">{!! Form::select2SubGrupoProduto('codsubgrupoproduto', null, ['required' => true, 'class' => 'form-control','id'=>'codsubgrupoproduto', 'style'=>'width:100%', 'placeholder' => 'Sub Grupo']) !!}</div>        
+        <div class="col-sm-6">{!! Form::select2SubGrupoProduto('codsubgrupoproduto', null, ['required' => true, 'class' => 'form-control','id'=>'codsubgrupoproduto', 'style'=>'width:100%', 'placeholder' => 'Sub Grupo', 'codgrupoproduto'=>'codgrupoproduto']) !!}</div>        
     </div>
     <div class="form-group">
         <label for="ncm" class="col-sm-3 control-label">{!! Form::label('NCM:') !!}</label>

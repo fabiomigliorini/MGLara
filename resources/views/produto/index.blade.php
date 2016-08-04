@@ -70,17 +70,17 @@
 
         <div class="form-group">
             {!! Form::label('codfamiliaproduto', 'Família', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-9">{!! Form::select2FamiliaProduto('codfamiliaproduto', null, ['class' => 'form-control','id'=>'codfamiliaproduto', 'placeholder' => 'Família', 'ativo'=>'9']) !!}</div>
+            <div class="col-md-9">{!! Form::select2FamiliaProduto('codfamiliaproduto', null, ['class' => 'form-control','id'=>'codfamiliaproduto', 'placeholder' => 'Família', 'codsecaoproduto'=>'codsecaoproduto',  'ativo'=>'9']) !!}</div>
         </div>
 
         <div class="form-group">
             {!! Form::label('codgrupoproduto', 'Grupo', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-9">{!! Form::select2GrupoProduto('codgrupoproduto', null, ['class' => 'form-control','id'=>'codgrupoproduto', 'placeholder' => 'Grupo', 'ativo'=>'9']) !!}</div>
+            <div class="col-md-9">{!! Form::select2GrupoProduto('codgrupoproduto', null, ['class' => 'form-control','id'=>'codgrupoproduto', 'placeholder' => 'Grupo', 'codfamiliaproduto'=>'codfamiliaproduto', 'ativo'=>'9']) !!}</div>
         </div>
 
         <div class="form-group">
-            {!! Form::label('codsubgrupoproduto', 'Sub Grupo', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-9">{!! Form::select2SubGrupoProduto('codsubgrupoproduto', null, ['class' => 'form-control','id'=>'codsubgrupoproduto', 'placeholder' => 'Sub Grupo', 'ativo'=>'9']) !!}</div>
+            {!! Form::label('codsubgrupoproduto', 'SubGrupo', ['class' => 'col-sm-2 control-label']) !!}
+            <div class="col-md-9">{!! Form::select2SubGrupoProduto('codsubgrupoproduto', null, ['class' => 'form-control','id'=>'codsubgrupoproduto', 'placeholder' => 'Sub Grupo', 'codgrupoproduto'=>'codgrupoproduto', 'ativo'=>'9']) !!}</div>
         </div>
 
         <div class="form-group">
@@ -353,6 +353,12 @@ $(document).ready(function() {
     });
 
     $('#preco_de, #preco_ate').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.' });
+
+    $("#codgrupoproduto").on("change", function (event) {
+        event.preventDefault();
+        console.log($('#codgrupoproduto'));
+    });
+    
 
 });
 </script>
