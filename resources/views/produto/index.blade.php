@@ -109,16 +109,16 @@
         <div class="form-group">
             {!! Form::label('criacao_de', 'Criação', ['class' => 'col-sm-2 control-label']) !!}
             <div class="col-md-10">
-                {!! Form::date('criacao_de', null, ['class' => 'form-control pull-left', 'id' => 'criacao_de', 'placeholder' => 'De', 'style'=>'width:48%; margin-right:10px']) !!}
-                {!! Form::date('criacao_ate', null, ['class' => 'form-control pull-left', 'id' => 'criacao_ate', 'placeholder' => 'Até', 'style'=>'width:48%;']) !!}
+                {!! Form::date('criacao_de', null, ['class' => 'form-control pull-left', 'id' => 'criacao_de', 'placeholder' => 'De', 'style'=>'width:160px; margin-right:10px']) !!}
+                {!! Form::date('criacao_ate', null, ['class' => 'form-control pull-left', 'id' => 'criacao_ate', 'placeholder' => 'Até', 'style'=>'width:160px;']) !!}
             </div>
         </div>
 
         <div class="form-group">
             {!! Form::label('alteracao_de', 'Alteração', ['class' => 'col-sm-2 control-label']) !!}
             <div class="col-md-10">
-                {!! Form::date('alteracao_de', null, ['class' => 'form-control pull-left', 'id' => 'alteracao_de', 'placeholder' => 'De', 'style'=>'width:48%; margin-right:10px']) !!}
-                {!! Form::date('alteracao_ate', null, ['class' => 'form-control pull-left', 'id' => 'alteracao_ate', 'placeholder' => 'Até', 'style'=>'width:48%;']) !!}
+                {!! Form::date('alteracao_de', null, ['class' => 'form-control pull-left', 'id' => 'alteracao_de', 'placeholder' => 'De', 'style'=>'width:160px; margin-right:10px']) !!}
+                {!! Form::date('alteracao_ate', null, ['class' => 'form-control pull-left', 'id' => 'alteracao_ate', 'placeholder' => 'Até', 'style'=>'width:160px;']) !!}
             </div>
         </div>
         

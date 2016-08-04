@@ -56,16 +56,16 @@
             <div class="form-group">
                 {!! Form::label('data_de', 'Ajuste', ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-md-10">
-                    {!! Form::date('data_de', null, ['class' => 'form-control', 'id' => 'data_de', 'placeholder' => 'De', 'style'=>'width:45%; float:left; margin-right:10px']) !!}
-                    {!! Form::date('data_ate', null, ['class' => 'form-control', 'id' => 'data_ate', 'placeholder' => 'Até', 'style'=>'width:45%; float:left']) !!}
+                    {!! Form::date('data_de', null, ['class' => 'form-control', 'id' => 'data_de', 'placeholder' => 'De', 'style'=>'width:160px; float:left; margin-right:10px']) !!}
+                    {!! Form::date('data_ate', null, ['class' => 'form-control', 'id' => 'data_ate', 'placeholder' => 'Até', 'style'=>'width:160px; float:left']) !!}
                 </div>
             </div>
 
             <div class="form-group">
                 {!! Form::label('criacao_de', 'Criação', ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-md-10">
-                    {!! Form::datetimeLocal('criacao_de', null, ['class' => 'form-control', 'id' => 'criacao_de', 'time'=>'00:00:00', 'placeholder' => 'De', 'style'=>'width:45%; float:left; margin-right:10px']) !!}
-                    {!! Form::datetimeLocal('criacao_ate', null, ['class' => 'form-control', 'id' => 'criacao_ate', 'time'=>'23:59:59', 'placeholder' => 'Até', 'style'=>'width:45%; float:left']) !!}
+                    {!! Form::date('criacao_de', null, ['class' => 'form-control', 'id' => 'criacao_de', 'placeholder' => 'De', 'style'=>'width:160px; float:left; margin-right:10px']) !!}
+                    {!! Form::date('criacao_ate', null, ['class' => 'form-control', 'id' => 'criacao_ate', 'placeholder' => 'Até', 'style'=>'width:160px; float:left']) !!}
                 </div>
             </div>
             <div class="form-group">
