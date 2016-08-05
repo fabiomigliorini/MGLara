@@ -28,7 +28,7 @@ class ProdutoController extends Controller
         $this->datas = [];
         $this->numericos = [];
         $this->middleware('parametros', ['only' => ['index', 'show']]);
-    }     
+    }
 
     /**
      * Display a listing of the resource.
@@ -37,29 +37,34 @@ class ProdutoController extends Controller
      */
     public function index(Request $request) {
         
-        if (!$request->session()->has('produto.index')) 
+        if (!$request->session()->has('produto.index')) {
             $request->session()->put('produto.index.ativo', '1');
+        }
         
         $parametros = $request->session()->get('produto.index');  
         
         if (!empty($parametros['criacao_de'])) {
-            $parametros['criacao_de'] = Carbon::createFromFormat('Y-m-d H:i:s', $parametros['criacao_de']. ' 00:00:00');
+            $parametros['criacao_de'] = new Carbon($parametros['criacao_de']);
         }
         
         if (!empty($parametros['criacao_ate'])) {
-            $parametros['criacao_ate'] = Carbon::createFromFormat('Y-m-d H:i:s', $parametros['criacao_ate']. '23:59:59');
+            $parametros['criacao_ate'] = new Carbon($parametros['criacao_ate'] . ' 23:59:59');
         }
         
         if (!empty($parametros['alteracao_de'])) {
-            $parametros['alteracao_de'] = Carbon::createFromFormat('Y-m-d H:i:s', $parametros['alteracao_de']. ' 00:00:00');
+            $parametros['alteracao_de'] = new Carbon($parametros['alteracao_de']);
         }
         
         if (!empty($parametros['alteracao_ate'])) {
-            $parametros['alteracao_ate'] = Carbon::createFromFormat('Y-m-d H:i:s', $parametros['alteracao_ate']. '23:59:59');
+            $parametros['alteracao_ate'] = new Carbon($parametros['alteracao_ate'] . ' 23:59:59');
         }
         
+        //DB::EnableQueryLog();
         $model = Produto::search($parametros)->orderBy('produto', 'ASC')->paginate(20);
+        //dd(DB::getQueryLog());
+        
         return view('produto.index', compact('model'));
+        
     }
 
     /**

@@ -565,64 +565,74 @@ class Produto extends MGModel
     {
         $query = Produto::query();
             
-        if(isset($parametros['codproduto']))
+        if(isset($parametros['codproduto'])) {
             $query->id($parametros['codproduto']);
+        }
 
         if(isset($parametros['barras']) and !empty($parametros['barras'])) {
+            
             $barras = $parametros['barras'];
-            $query->whereHas('ProdutoBarraS', function($q) use ($barras) {
-                $q->where('barras', 'ILIKE', "%$barras%");
-            }); 
+            
+            $query->whereIn('codproduto', function ($query) use ($barras) {
+                $query->select('codproduto')
+                    ->from('tblprodutobarra')
+                    ->where('barras', 'ilike', "%$barras%");
+            });
+            
         }
             
-        if(isset($parametros['produto']))
+        if(isset($parametros['produto'])) {
             $query->produto($parametros['produto']);
+        }
 
-        if(isset($parametros['codmarca']) and !empty($parametros['codmarca']))
+        if(isset($parametros['codmarca']) and !empty($parametros['codmarca'])) {
             $query->where('codmarca', $parametros['codmarca']);
+        }
 
-        if(!empty($parametros['codsubgrupoproduto']))
+        if(!empty($parametros['codsubgrupoproduto'])) {
+            
             $query->where('codsubgrupoproduto', $parametros['codsubgrupoproduto']);
-        elseif (!empty($parametros['codgrupoproduto']))
-        {
-            $query->whereHas('SubGrupoProduto', function ($iq) use($parametros) {
-                $iq->where('codgrupoproduto', $parametros['codgrupoproduto']);
-            });
-        }
-        elseif (!empty($parametros['codfamiliaproduto']))
-        {
-            $query->whereHas('SubGrupoProduto', function ($iq) use($parametros) {
-                $iq->whereHas('GrupoProduto', function ($iq2) use($parametros) {
-                    $iq2->where('codfamiliaproduto', $parametros['codfamiliaproduto']);
-                });
-            });
-        }
-        elseif (!empty($parametros['codsecaoproduto']))
-        {
-            $query->whereHas('SubGrupoProduto', function ($iq) use($parametros) {
-                $iq->whereHas('GrupoProduto', function ($iq2) use($parametros) {
-                    $iq2->whereHas('FamiliaProduto', function ($iq3) use($parametros) {
-                        $iq3->where('codsecaoproduto', $parametros['codsecaoproduto']);
-                    });
-                });
-            });
+            
+        } elseif (!empty($parametros['codgrupoproduto'])) {
+            
+            $query->join('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
+            $query->where('tblsubgrupoproduto.codgrupoproduto', $parametros['codgrupoproduto']);
+            
+        } elseif (!empty($parametros['codfamiliaproduto'])) {
+            
+            $query->join('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
+            $query->join('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto');
+            $query->where('tblgrupoproduto.codfamiliaproduto', $parametros['codfamiliaproduto']);
+            
+        } elseif (!empty($parametros['codsecaoproduto'])) {
+            
+            $query->join('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
+            $query->join('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto');
+            $query->join('tblfamiliaproduto', 'tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto');
+            $query->where('tblfamiliaproduto.codsecaoproduto', $parametros['codsecaoproduto']);
+            
         }
 
-        if(isset($parametros['referencia']) and !empty($parametros['referencia']))
+        if(isset($parametros['referencia']) and !empty($parametros['referencia'])) {
             $query->where('referencia', $parametros['referencia']);
+        }
 
-        if(isset($parametros['codtributacao']) and !empty($parametros['codtributacao']))
+        if(isset($parametros['codtributacao']) and !empty($parametros['codtributacao'])) {
             $query->where('codtributacao', $parametros['codtributacao']);
+        }
 
-        if(isset($parametros['site']) and !empty($parametros['site']))
+        if(isset($parametros['site']) and !empty($parametros['site'])) {
             $query->where('site', $parametros['site']);
+        }
 
-        if(isset($parametros['codncm']) and !empty($parametros['codncm']))
+        if(isset($parametros['codncm']) and !empty($parametros['codncm'])) {
             $query->where('codncm', $parametros['codncm']);
+        }
 
-        if(!empty($parametros['preco_de']) && empty($parametros['preco_ate']))
-        {
+        if(!empty($parametros['preco_de']) && empty($parametros['preco_ate'])) {
+            
             $preco_de = converteParaNumerico($parametros['preco_de']);
+            
             $sql = "codproduto in (
                         select pe.codproduto 
                         from tblprodutoembalagem pe 
@@ -631,12 +641,15 @@ class Produto extends MGModel
                         or p.preco >= $preco_de
                     )
                     ";
+            
             $query->whereRaw($sql);
+            
         }
 
-        if(empty($parametros['preco_de']) && !empty($parametros['preco_ate']))
-        {
+        if(empty($parametros['preco_de']) && !empty($parametros['preco_ate'])) {
+            
             $preco_ate = converteParaNumerico($parametros['preco_ate']);
+            
             $sql = "codproduto in (
                         select pe.codproduto 
                         from tblprodutoembalagem pe 
@@ -645,13 +658,16 @@ class Produto extends MGModel
                         or p.preco <= $preco_ate
                     )
                     ";
+            
             $query->whereRaw($sql);
+            
         }
         
-        if(!empty($parametros['preco_de']) && !empty($parametros['preco_ate']))
-        {
+        if(!empty($parametros['preco_de']) && !empty($parametros['preco_ate'])) {
+            
             $preco_de = converteParaNumerico($parametros['preco_de']);
             $preco_ate = converteParaNumerico($parametros['preco_ate']);
+            
             $sql = "codproduto in (
                         select pe.codproduto 
                         from tblprodutoembalagem pe 
@@ -660,7 +676,9 @@ class Produto extends MGModel
                         or p.preco between $preco_de and $preco_ate
                             )
                     ";
+            
             $query->whereRaw($sql);
+            
         }
         
         if(!empty($parametros['criacao_de'])) {
@@ -679,8 +697,7 @@ class Produto extends MGModel
             $query->where('alteracao', '<=', $parametros['alteracao_ate']);
         }
 
-        switch (isset($parametros['ativo'])?$parametros['ativo']:'9')
-        {
+        switch (isset($parametros['ativo'])?$parametros['ativo']:'9') {
             case 1: //Ativos
                 $query->ativo();
                 break;
