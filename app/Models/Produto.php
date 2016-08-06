@@ -631,14 +631,12 @@ class Produto extends MGModel
 
         if(!empty($parametros['preco_de']) && empty($parametros['preco_ate'])) {
             
-            $preco_de = converteParaNumerico($parametros['preco_de']);
-            
             $sql = "codproduto in (
                         select pe.codproduto 
                         from tblprodutoembalagem pe 
                         inner join tblproduto p on (p.codproduto = pe.codproduto) 
-                        where coalesce(pe.preco, pe.quantidade * p.preco) >= $preco_de
-                        or p.preco >= $preco_de
+                        where coalesce(pe.preco, pe.quantidade * p.preco) >= {$parametros['preco_de']}
+                        or p.preco >= {$parametros['preco_de']}
                     )
                     ";
             
@@ -648,14 +646,12 @@ class Produto extends MGModel
 
         if(empty($parametros['preco_de']) && !empty($parametros['preco_ate'])) {
             
-            $preco_ate = converteParaNumerico($parametros['preco_ate']);
-            
             $sql = "codproduto in (
                         select pe.codproduto 
                         from tblprodutoembalagem pe 
                         inner join tblproduto p on (p.codproduto = pe.codproduto) 
-                        where coalesce(pe.preco, pe.quantidade * p.preco) <= $preco_ate
-                        or p.preco <= $preco_ate
+                        where coalesce(pe.preco, pe.quantidade * p.preco) <= {$parametros['preco_ate']}
+                        or p.preco <= {$parametros['preco_ate']}
                     )
                     ";
             
@@ -665,15 +661,12 @@ class Produto extends MGModel
         
         if(!empty($parametros['preco_de']) && !empty($parametros['preco_ate'])) {
             
-            $preco_de = converteParaNumerico($parametros['preco_de']);
-            $preco_ate = converteParaNumerico($parametros['preco_ate']);
-            
             $sql = "codproduto in (
                         select pe.codproduto 
                         from tblprodutoembalagem pe 
                         inner join tblproduto p on (p.codproduto = pe.codproduto) 
-                        where coalesce(pe.preco, pe.quantidade * p.preco) between $preco_de and $preco_ate
-                        or p.preco between $preco_de and $preco_ate
+                        where coalesce(pe.preco, pe.quantidade * p.preco) between {$parametros['preco_de']} and {$parametros['preco_ate']}
+                        or p.preco between {$parametros['preco_de']} and {$parametros['preco_ate']}
                             )
                     ";
             
@@ -708,7 +701,6 @@ class Produto extends MGModel
             default:
         }
         
-        //return $query->paginate($registros);
         return $query;
     }
 

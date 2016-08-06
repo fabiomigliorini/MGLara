@@ -299,9 +299,6 @@ Form::macro('select2FamiliaProduto', function($name, $value = null, $options = [
                 $('#{$options['codsecaoproduto']}').on('change', function (e) {
                     e.preventDefault();
                     $('#{$options['id']}').select2('val', null).trigger('change');
-                }).on("select2-removed", function(e) { 
-                    e.preventDefault();
-                    $('#{$options['id']}').select2('val', null).trigger('change');
                 });                            
             });
         </script>
@@ -379,9 +376,6 @@ Form::macro('select2GrupoProduto', function($name, $value = null, $options = [])
                     width:'resolve'
                 });
                 $('#{$options['codfamiliaproduto']}').on('change', function (e) {
-                    e.preventDefault();
-                    $('#{$options['id']}').select2('val', null).trigger('change');
-                }).on("select2-removed", function(e) { 
                     e.preventDefault();
                     $('#{$options['id']}').select2('val', null).trigger('change');
                 });                            
@@ -464,10 +458,7 @@ Form::macro('select2SubGrupoProduto', function($name, $value = null, $options = 
                 $('#{$options['codgrupoproduto']}').on('change', function (e) {
                     e.preventDefault();
                     $('#{$options['id']}').select2('val', null).trigger('change');
-                }).on("select2-removed", function(e) {
-                    e.preventDefault();
-                    $('#{$options['id']}').select2('val', null).trigger('change');
-                });                            
+                });
             });
         </script>
 END;
@@ -540,13 +531,7 @@ Form::macro('select2Ncm', function($name, $value = null, $options = [])
                         });
                     },
                     width:'resolve'
-                });
-                var limpaNcm = function(){
-                    $('#codcest').select2('val', null);
-                }
-                $('#{$options['id']}').on("select2-removed", function(e) {
-                    limpaNcm;
-                }).change(limpaNcm);                            
+                });                         
             });
         </script>
 END;
@@ -599,6 +584,9 @@ Form::macro('select2Cest', function($name, $value = null, $options = [])
 {
     if (empty($options['id']))
         $options['id'] = $name;
+
+    if (empty($options['codncm']))
+        $options['codncm'] = '';
     
     if (empty($options['placeholder']))
         $options['placeholder'] = 'CEST...';
@@ -654,7 +642,11 @@ Form::macro('select2Cest', function($name, $value = null, $options = [])
                         });
                     },
                     width:'resolve'
-                });      
+                });
+                            
+                $('#{$options['codncm']}').change(function () {
+                    $('#{$options['id']}').select2('val', '');
+                });
             });
         </script>
 END;

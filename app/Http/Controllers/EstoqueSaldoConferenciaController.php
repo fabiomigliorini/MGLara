@@ -44,19 +44,19 @@ class EstoqueSaldoConferenciaController extends Controller
         $parametros = $request->session()->get('estoque-saldo-conferencia.index');
         
         if (!empty($parametros['criacao_de'])) {
-            $parametros['criacao_de'] = Carbon::createFromFormat('Y-m-d h:i:s', $parametros['criacao_de']. ' 00:00:00');
+            $parametros['criacao_de'] = new Carbon($parametros['criacao_de']);
         }
         
         if (!empty($parametros['criacao_ate'])) {
-            $parametros['criacao_ate'] = Carbon::createFromFormat('Y-m-d h:i:s', $parametros['criacao_de']. ' 23:59:59');
+            $parametros['criacao_ate'] = new Carbon($parametros['criacao_ate'] . ' 23:59:59');
         }
         
         if (!empty($parametros['data_de'])) {
-            $parametros['data_de'] = Carbon::createFromFormat('Y-m-d h:i:s', $parametros['data_de']. ' 00:00:00');
+            $parametros['data_de'] = new Carbon($parametros['data_de']);
         }
         
         if (!empty($parametros['data_ate'])) {
-            $parametros['data_ate'] = Carbon::createFromFormat('Y-m-d h:i:s', $parametros['data_de']. ' 23:59:59');
+            $parametros['data_ate'] = new Carbon($parametros['data_ate'] . ' 23:59:59');
         }
         
         $model = EstoqueSaldoConferencia::search($parametros)->select('tblestoquesaldoconferencia.*')->orderBy('codestoquesaldoconferencia', 'DESC')->paginate(20);

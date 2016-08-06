@@ -193,11 +193,7 @@ $(document).ready(function() {
         atualizaFiltro();
     });
     
-    $('#codusuario').select2({
-        placeholder: 'Usuário',
-        allowClear:true,
-        closeOnSelect:true
-    });
+
 
     $('#fiscal').select2({
         placeholder: 'Fiscal',
@@ -205,11 +201,69 @@ $(document).ready(function() {
         closeOnSelect:true
     });
 
-    $('#codestoquelocal').select2({
-        placeholder: 'Local Estoque',
-        allowClear:true,
-        closeOnSelect:true
+    var data_de = $('#data_de').val();
+    if(data_de.length > 0 ){
+        $('#data_ate').attr('min', data_de);
+    }
+    $('#data_de').on('change', function(e) {
+        e.preventDefault();
+        var valor = $(this).val();
+        if(valor.length === 0 ) {
+            $('#data_ate').empty();
+            $('#data_ate').attr('min', '');
+        } else {
+            $('#data_ate').attr('min', valor);
+        }
+        
     });
+    
+    var data_ate = $('#data_ate').val();
+    if(data_ate.length > 0){
+        $('#data_de').attr('max', data_ate);
+    }
+    $('#data_ate').on('change', function(e) {        
+        e.preventDefault();
+        var valor = $(this).val();
+        if(valor.length === 0 ) {
+            $('#data_de').empty();
+            $('#data_de').attr('max', '');
+        } else {
+            $('#data_de').attr('max', valor);
+        }
+    });
+
+    var criacao_de = $('#criacao_de').val();
+    if(criacao_de.length > 0 ){
+        $('#criacao_ate').attr('min', criacao_de);
+    }
+    $('#criacao_de').on('change', function(e) {
+        e.preventDefault();
+        var valor = $(this).val();
+        if(valor.length === 0 ) {
+            $('#criacao_ate').empty();
+            $('#criacao_ate').attr('min', '');
+        } else {
+            $('#criacao_ate').attr('min', valor);
+        }
+        
+    });
+    
+    var criacao_ate = $('#criacao_ate').val();
+    if(criacao_ate.length > 0){
+        $('#criacao_de').attr('max', criacao_ate);
+    }
+    $('#criacao_ate').on('change', function(e) {        
+        e.preventDefault();
+        var valor = $(this).val();
+        if(valor.length === 0 ) {
+            $('#criacao_de').empty();
+            $('#criacao_de').attr('max', '');
+        } else {
+            $('#criacao_de').attr('max', valor);
+        }
+    });
+    
+    
 });
 </script>
 @endsection

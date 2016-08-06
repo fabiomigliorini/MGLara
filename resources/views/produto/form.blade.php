@@ -41,7 +41,7 @@
 
     <div class="form-group">
         <label for="codcest" class="col-sm-3 control-label">{!! Form::label('CEST:') !!}</label>
-        <div class="col-sm-9">{!! Form::select2Cest('codcest', null, ['class' => 'form-control','id'=>'codcest', 'style'=>'width:100%', 'placeholder' => 'CEST']) !!}</div>
+        <div class="col-sm-9">{!! Form::select2Cest('codcest', null, ['class' => 'form-control','id'=>'codcest', 'style'=>'width:100%', 'placeholder' => 'CEST', 'codncm'=>'codncm']) !!}</div>
     </div>
 
 </div>

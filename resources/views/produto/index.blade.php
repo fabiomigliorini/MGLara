@@ -29,62 +29,62 @@
     ])!!}
     <div class="col-md-4">
         <div class="form-group">
-            {!! Form::label('codproduto', '#', ['class' => 'col-sm-2 control-label']) !!}
+            {!! Form::label('codproduto', '#', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-md-4">{!! Form::text('codproduto', null, ['class' => 'form-control', 'placeholder' => '#']) !!}</div>
         </div>
 
         <div class="form-group">
-            {!! Form::label('barras', 'Barras', ['class' => 'col-sm-2 control-label']) !!}
+            {!! Form::label('barras', 'Barras', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-md-6">{!! Form::text('barras', null, ['class' => 'form-control', 'placeholder' => 'Barras']) !!}</div>
         </div>
 
         <div class="form-group">
-            {!! Form::label('produto', 'Descrição', ['class' => 'col-sm-2 control-label']) !!}
+            {!! Form::label('produto', 'Descrição', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-md-9">{!! Form::text('produto', null, ['class' => 'form-control', 'placeholder' => 'Descrição']) !!}</div>
         </div>
         
         <div class="form-group">
-            {!! Form::label('referencia', 'Referência', ['class' => 'col-sm-2 control-label']) !!}
+            {!! Form::label('referencia', 'Referência', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-md-6">{!! Form::text('referencia', null, ['class' => 'form-control', 'placeholder' => 'Referência']) !!}</div>
         </div>
 
         <div class="form-group">
-            {!! Form::label('preco_de', 'Preço', ['class' => 'col-sm-2 control-label']) !!}
-            <div class="col-md-10">
-                {!! Form::text('preco_de', null, ['class' => 'form-control text-right pull-left', 'id' => 'preco_de', 'placeholder' => 'De', 'style'=>'width:100px; margin-right:10px']) !!}
-                {!! Form::text('preco_ate', null, ['class' => 'form-control text-right pull-left', 'id' => 'preco_ate', 'placeholder' => 'Até', 'style'=>'width:100px;']) !!}
+            {!! Form::label('preco_de', 'Preço', ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-md-9">
+                {!! Form::number('preco_de', null, ['class' => 'form-control text-right pull-left', 'id' => 'preco_de', 'placeholder' => 'De', 'style'=>'width:100px; margin-right:10px']) !!}
+                {!! Form::number('preco_ate', null, ['class' => 'form-control text-right pull-left', 'id' => 'preco_ate', 'placeholder' => 'Até', 'style'=>'width:100px;']) !!}
             </div>
         </div>
 
         <div class="form-group">
-            {!! Form::label('ativo', 'Ativo', ['class' => 'col-sm-2 control-label']) !!}
+            {!! Form::label('ativo', 'Ativo', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-md-4">{!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo']) !!}</div>
         </div>
     </div>
     
     <div class="col-md-3">
         <div class="form-group">
-            {!! Form::label('codsecaoproduto', 'Seção', ['class' => 'col-sm-2 control-label']) !!}
+            {!! Form::label('codsecaoproduto', 'Seção', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-md-9">{!! Form::select2SecaoProduto('codsecaoproduto', null, ['class'=> 'form-control', 'id' => 'codsecaoproduto', 'placeholder' => 'Seção']) !!}</div>
         </div>
 
         <div class="form-group">
-            {!! Form::label('codfamiliaproduto', 'Família', ['class' => 'col-sm-2 control-label']) !!}
+            {!! Form::label('codfamiliaproduto', 'Família', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-md-9">{!! Form::select2FamiliaProduto('codfamiliaproduto', null, ['class' => 'form-control','id'=>'codfamiliaproduto', 'placeholder' => 'Família', 'codsecaoproduto'=>'codsecaoproduto',  'ativo'=>'9']) !!}</div>
         </div>
 
         <div class="form-group">
-            {!! Form::label('codgrupoproduto', 'Grupo', ['class' => 'col-sm-2 control-label']) !!}
+            {!! Form::label('codgrupoproduto', 'Grupo', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-md-9">{!! Form::select2GrupoProduto('codgrupoproduto', null, ['class' => 'form-control','id'=>'codgrupoproduto', 'placeholder' => 'Grupo', 'codfamiliaproduto'=>'codfamiliaproduto', 'ativo'=>'9']) !!}</div>
         </div>
 
         <div class="form-group">
-            {!! Form::label('codsubgrupoproduto', 'SubGrupo', ['class' => 'col-sm-2 control-label']) !!}
+            {!! Form::label('codsubgrupoproduto', 'SubGrupo', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-md-9">{!! Form::select2SubGrupoProduto('codsubgrupoproduto', null, ['class' => 'form-control','id'=>'codsubgrupoproduto', 'placeholder' => 'Sub Grupo', 'codgrupoproduto'=>'codgrupoproduto', 'ativo'=>'9']) !!}</div>
         </div>
 
         <div class="form-group">
-            {!! Form::label('codmarca', 'Marca', ['class' => 'col-sm-2 control-label']) !!}
+            {!! Form::label('codmarca', 'Marca', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-md-9">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:160px']) !!}</div>
         </div>
         
@@ -352,13 +352,67 @@ $(document).ready(function() {
         closeOnSelect:true
     });
 
-    $('#preco_de, #preco_ate').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.' });
-
-    $("#codgrupoproduto").on("change", function (event) {
-        event.preventDefault();
-        console.log($('#codgrupoproduto'));
+    var alteracao_de = $('#alteracao_de').val();
+    if(alteracao_de.length > 0 ){
+        $('#alteracao_ate').attr('min', alteracao_de);
+    }
+    $('#alteracao_de').on('change', function(e) {
+        e.preventDefault();
+        var valor = $(this).val();
+        if(valor.length === 0 ) {
+            $('#alteracao_ate').empty();
+            $('#alteracao_ate').attr('min', '');
+        } else {
+            $('#alteracao_ate').attr('min', valor);
+        }
+        
     });
     
+    var alteracao_ate = $('#alteracao_ate').val();
+    if(alteracao_ate.length > 0){
+        $('#alteracao_de').attr('max', alteracao_ate);
+    }
+    $('#alteracao_ate').on('change', function(e) {        
+        e.preventDefault();
+        var valor = $(this).val();
+        if(valor.length === 0 ) {
+            $('#alteracao_de').empty();
+            $('#alteracao_de').attr('max', '');
+        } else {
+            $('#alteracao_de').attr('max', valor);
+        }
+    });
+    
+    var criacao_de = $('#criacao_de').val();
+    if(criacao_de.length > 0 ){
+        $('#criacao_ate').attr('min', criacao_de);
+    }
+    $('#criacao_de').on('change', function(e) {
+        e.preventDefault();
+        var valor = $(this).val();
+        if(valor.length === 0 ) {
+            $('#criacao_ate').empty();
+            $('#criacao_ate').attr('min', '');
+        } else {
+            $('#criacao_ate').attr('min', valor);
+        }
+        
+    });
+    
+    var criacao_ate = $('#criacao_ate').val();
+    if(criacao_ate.length > 0){
+        $('#criacao_de').attr('max', criacao_ate);
+    }
+    $('#criacao_ate').on('change', function(e) {        
+        e.preventDefault();
+        var valor = $(this).val();
+        if(valor.length === 0 ) {
+            $('#criacao_de').empty();
+            $('#criacao_de').attr('max', '');
+        } else {
+            $('#criacao_de').attr('max', valor);
+        }
+    });
 
 });
 </script>
