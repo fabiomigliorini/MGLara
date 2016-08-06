@@ -565,11 +565,11 @@ class Produto extends MGModel
     {
         $query = Produto::query();
             
-        if(isset($parametros['codproduto'])) {
+        if(!empty($parametros['codproduto'])) {
             $query->id($parametros['codproduto']);
         }
 
-        if(isset($parametros['barras']) and !empty($parametros['barras'])) {
+        if(!empty($parametros['barras'])) {
             
             $barras = $parametros['barras'];
             
@@ -581,11 +581,11 @@ class Produto extends MGModel
             
         }
             
-        if(isset($parametros['produto'])) {
+        if(!empty($parametros['produto'])) {
             $query->produto($parametros['produto']);
         }
 
-        if(isset($parametros['codmarca']) and !empty($parametros['codmarca'])) {
+        if(!empty($parametros['codmarca'])) {
             $query->where('codmarca', $parametros['codmarca']);
         }
 
@@ -613,19 +613,19 @@ class Produto extends MGModel
             
         }
 
-        if(isset($parametros['referencia']) and !empty($parametros['referencia'])) {
+        if(!empty($parametros['referencia'])) {
             $query->where('referencia', $parametros['referencia']);
         }
 
-        if(isset($parametros['codtributacao']) and !empty($parametros['codtributacao'])) {
+        if(!empty($parametros['codtributacao'])) {
             $query->where('codtributacao', $parametros['codtributacao']);
         }
 
-        if(isset($parametros['site']) and !empty($parametros['site'])) {
+        if(!empty($parametros['site'])) {
             $query->where('site', $parametros['site']);
         }
 
-        if(isset($parametros['codncm']) and !empty($parametros['codncm'])) {
+        if(!empty($parametros['codncm'])) {
             $query->where('codncm', $parametros['codncm']);
         }
 
