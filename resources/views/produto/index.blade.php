@@ -337,11 +337,27 @@ $(document).ready(function() {
         itemSelector : "#items div.list-group-item"
     });    
 
-    $("#produto-search").on("change", function (event) {
-        $('#items').infinitescroll('destroy');
-        atualizaFiltro();
-    }).on('submit', function (event){
-        event.preventDefault();
+$('#produto-search input').blur(function(e) {
+    var controlgroup = $(e.target.parentNode);
+    if (!e.target.checkValidity()) {
+        controlgroup.addClass('has-error');
+    } else {
+        controlgroup.removeClass('has-error');
+    }
+}); 
+
+    $("#produto-search").on("change", function (e) {
+        //$('#items').infinitescroll('destroy');
+        //atualizaFiltro();
+        
+        if($('#produto-search')[0].checkValidity()){
+            $("#produto-search").submit();
+        }
+        //document.forms["produto-search"].reportValidity();
+        return false;
+        
+    }).on('submit', function (e){
+        e.preventDefault();
         $('#items').infinitescroll('destroy');
         atualizaFiltro();
     });
@@ -413,6 +429,60 @@ $(document).ready(function() {
             $('#criacao_de').attr('max', valor);
         }
     });
+
+    function setPrecoMin() {
+        var valor = $('#preco_de').val();
+        if(valor.length === 0 ) {
+            $('#preco_ate').empty();
+            $('#preco_ate').attr('min', '');
+        } else {
+            $('#preco_ate').attr('min', valor);
+        }
+    };
+
+    $('#preco_de').on('change', function(e) {
+        e.preventDefault();
+        setPrecoMin();
+    }).blur(function () {
+        setPrecoMin();
+    });
+    
+    
+    /*
+    var preco_de = $('#preco_de').val();
+    var preco_ate = $('#preco_ate').val();
+    
+    function precoMin(){
+        if(preco_ate < preco_de) {
+            console.log('preco até deve ser menor igual ou maior que' + preco_de);
+        } 
+    }
+
+    $('#preco_ate').on('blur', function (e) {
+       e.preventDefault();
+       precoMin(); 
+    });
+
+    if(preco_de.length > 0 ){
+        $('#preco_ate').attr('min', preco_de);
+    }
+
+    /*
+    
+    if(preco_ate.length > 0){
+        $('#preco_de').attr('max', preco_ate);
+    }
+    $('#preco_ate').on('change', function(e) {        
+        e.preventDefault();
+        var valor = $(this).val();
+        if(valor.length === 0 ) {
+            $('#preco_de').empty();
+            $('#preco_de').attr('max', '');
+        } else {
+            $('#preco_de').attr('max', valor);
+        }
+    });
+     */
 
 });
 </script>
