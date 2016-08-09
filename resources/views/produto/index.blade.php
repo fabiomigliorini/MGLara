@@ -337,35 +337,32 @@ $(document).ready(function() {
         itemSelector : "#items div.list-group-item"
     });    
 
-$('#produto-search input').blur(function(e) {
-    var controlgroup = $(e.target.parentNode);
-    if (!e.target.checkValidity()) {
-        controlgroup.addClass('has-error');
-    } else {
-        controlgroup.removeClass('has-error');
-    }
-}); 
+    $('#site').select2({
+        placeholder: 'Site',
+        allowClear:true,
+        closeOnSelect:true
+    });
+
+    $('#produto-search input').blur(function(e) {
+        var controlgroup = $(e.target.parentNode);
+        if (!e.target.checkValidity()) {
+            controlgroup.addClass('has-error');
+            target.reportValidity();
+        } else {
+            controlgroup.removeClass('has-error');
+        }
+    }); 
 
     $("#produto-search").on("change", function (e) {
-        //$('#items').infinitescroll('destroy');
-        //atualizaFiltro();
-        
         if($('#produto-search')[0].checkValidity()){
             $("#produto-search").submit();
         }
-        //document.forms["produto-search"].reportValidity();
         return false;
         
     }).on('submit', function (e){
         e.preventDefault();
         $('#items').infinitescroll('destroy');
         atualizaFiltro();
-    });
-
-    $('#site').select2({
-        placeholder: 'Site',
-        allowClear:true,
-        closeOnSelect:true
     });
 
     var alteracao_de = $('#alteracao_de').val();
@@ -440,49 +437,37 @@ $('#produto-search input').blur(function(e) {
         }
     };
 
+    function setPrecoMax() {
+        var preco_de = $('#preco_de').val();
+        var preco_ate = $('#preco_ate').val();
+        if(preco_de.length === 0 ) {
+            $('#preco_de').attr('max', preco_ate);
+        }
+    };
+    
+    var preco_de = $('#preco_de').val();
+    if(preco_de.length > 0 ){
+        $('#preco_ate').attr('min', preco_de);
+    }
+    
+    var preco_ate = $('#preco_ate').val();
+    if(preco_de.length > 0 ){
+        $('#preco_de').attr('min', preco_ate);
+    }
+
     $('#preco_de').on('change', function(e) {
         e.preventDefault();
         setPrecoMin();
     }).blur(function () {
         setPrecoMin();
     });
-    
-    
-    /*
-    var preco_de = $('#preco_de').val();
-    var preco_ate = $('#preco_ate').val();
-    
-    function precoMin(){
-        if(preco_ate < preco_de) {
-            console.log('preco até deve ser menor igual ou maior que' + preco_de);
-        } 
-    }
 
-    $('#preco_ate').on('blur', function (e) {
-       e.preventDefault();
-       precoMin(); 
-    });
-
-    if(preco_de.length > 0 ){
-        $('#preco_ate').attr('min', preco_de);
-    }
-
-    /*
-    
-    if(preco_ate.length > 0){
-        $('#preco_de').attr('max', preco_ate);
-    }
-    $('#preco_ate').on('change', function(e) {        
+    $('#preco_ate').on('change', function(e) {
         e.preventDefault();
-        var valor = $(this).val();
-        if(valor.length === 0 ) {
-            $('#preco_de').empty();
-            $('#preco_de').attr('max', '');
-        } else {
-            $('#preco_de').attr('max', valor);
-        }
+        setPrecoMax();
+    }).blur(function () {
+        setPrecoMax();
     });
-     */
 
 });
 </script>
