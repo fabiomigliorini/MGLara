@@ -13,6 +13,8 @@ use MGLara\Jobs\EstoqueGeraMovimentoProdutoVariacao;
 use MGLara\Models\ProdutoBarra;
 use MGLara\Models\Produto;
 
+use Illuminate\Support\Facades\DB;
+
 class ProdutoBarraController extends Controller
 {
     /**
@@ -38,8 +40,9 @@ class ProdutoBarraController extends Controller
         $model = new ProdutoBarra($request->all());
         $model->codproduto = $request->input('codproduto');
         
-        if ($model->codprodutoembalagem == 0)
+        if ($model->codprodutoembalagem == 0) {
             $model->codprodutoembalagem = null;
+        }
         
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
@@ -75,17 +78,18 @@ class ProdutoBarraController extends Controller
         $codprodutovariacao_original = $model->codprodutovariacao;
         $model->fill($request->all());
         
-        if ($model->codprodutoembalagem == 0)
+        if ($model->codprodutoembalagem == 0) {
             $model->codprodutoembalagem = null;
+        }
         
-        if (!$model->validate())
+        if (!$model->validate()) {
             $this->throwValidationException($request, $model->_validator);
+        }
         
         $model->save();
 
         //Recalcula movimento de estoque caso trocou o codigo de barras de variacao
-        if ($model->codprodutovariacao != $codprodutovariacao_original)
-        {
+        if ($model->codprodutovariacao != $codprodutovariacao_original) {
             $this->dispatch((new EstoqueGeraMovimentoProdutoVariacao($model->codprodutovariacao))->onQueue('medium'));
             $this->dispatch((new EstoqueGeraMovimentoProdutoVariacao($codprodutovariacao_original))->onQueue('medium'));
         }

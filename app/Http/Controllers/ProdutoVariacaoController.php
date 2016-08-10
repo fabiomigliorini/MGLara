@@ -53,11 +53,7 @@ class ProdutoVariacaoController extends Controller
             $pb = new ProdutoBarra();
             $pb->codproduto = $model->codproduto;
             $pb->codprodutovariacao = $model->codprodutovariacao;
-            $pb->barras = str_pad($model->codproduto, 6, '0', STR_PAD_LEFT);
 
-            if (!empty($model->variacao))
-                $pb->barras .= '-' . str_pad($model->codprodutovariacao, 8, '0', STR_PAD_LEFT);
-            
             if (!$pb->save())
                 throw new Exception ('Erro ao Criar Barras!');
             
@@ -68,15 +64,6 @@ class ProdutoVariacaoController extends Controller
                 $pb->codproduto = $model->codproduto;
                 $pb->codprodutovariacao = $model->codprodutovariacao;
                 $pb->codprodutoembalagem = $pe->codprodutoembalagem;
-                $pb->barras = str_pad($model->codproduto, 6, '0', STR_PAD_LEFT);
-                
-                if (!empty($model->variacao))
-                    $pb->barras .= '-' . str_pad($model->codprodutovariacao, 8, '0', STR_PAD_LEFT);
-                
-                $pb->barras .= '-' . formataNumero($pe->quantidade, 0);
-                
-                echo $pb->barras;
-                echo '<hr>';
                 
                 if (!$pb->save())
                     throw new Exception ("Erro ao Criar Barras da embalagem {$pe->descricao}!");

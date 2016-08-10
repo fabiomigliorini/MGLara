@@ -65,19 +65,12 @@ class ProdutoEmbalagemController extends Controller
                 $pb->codproduto = $model->codproduto;
                 $pb->codprodutovariacao = $pv->codprodutovariacao;
                 $pb->codprodutoembalagem = $model->codprodutoembalagem;
-                $pb->barras = str_pad($model->codproduto, 6, '0', STR_PAD_LEFT);
-                
-                if (!empty($pv->variacao))
-                    $pb->barras .= '-' . str_pad($pv->codprodutovariacao, 8, '0', STR_PAD_LEFT);
-                
-                $pb->barras .= '-' . formataNumero($model->quantidade, 0);
                 
                 if (!$pb->save())
                     throw new Exception ('Erro ao Criar Barras!');
                 
                 $i++;
             }
-            
             
             DB::commit();
             Session::flash('flash_success', "Embalagem '{$model->descricao}' criada!");
