@@ -13,16 +13,25 @@ use MGLara\Models\TipoProduto;
 
 class TipoProdutoController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('parametros', ['only' => ['index']]);
+    }
+        
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $model = TipoProduto::filterAndPaginate(
-            $request->get('codtipoproduto'),
-            $request->get('tipoproduto')
-        );
+        
+        if (!$request->session()->has('tipo-produto.index')) {
+            $request->session()->put('tipo-produto.index', []);
+        }
+        
+        $parametros = $request->session()->get('tipo-produto.index');          
+        
+        $model = TipoProduto::search($parametros)->orderBy('tipoproduto', 'ASC')->paginate(20);
         
         return view('tipo-produto.index', compact('model'));
     }

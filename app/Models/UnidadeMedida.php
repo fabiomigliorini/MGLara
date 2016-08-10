@@ -81,21 +81,19 @@ class UnidadeMedida extends MGModel
         return $this->hasMany(ProdutoEmbalagem::class, 'codunidademedida', 'codunidademedida');
     }
     
-    // Buscas 
-    public static function filterAndPaginate($codunidademedida, $unidademedida)
+    public static function search($parametros)
     {
-        return UnidadeMedida::codunidademedida(numeroLimpo($codunidademedida))
-            ->unidademedida($unidademedida)
-            ->orderBy('unidademedida', 'ASC')
-            ->paginate(20);
-    }
-    
-    public function scopeCodunidademedida($query, $codcodunidademedida)
-    {
-        if (trim($codcodunidademedida) === '')
-            return;
-        
-        $query->where('codunidademedida', $codcodunidademedida);
+        $query = UnidadeMedida::query();
+            
+        if(!empty($parametros['codunidademedida'])) {
+            $query->where('codunidademedida', $parametros['codunidademedida']);
+        }
+            
+        if(!empty($parametros['unidademedida'])) {
+            $query->unidademedida($parametros['unidademedida']);
+        }
+
+        return $query;
     }
     
     public function scopeUnidademedida($query, $unidademedida)

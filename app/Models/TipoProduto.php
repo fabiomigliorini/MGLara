@@ -68,21 +68,19 @@ class TipoProduto extends MGModel
         return $this->hasMany(TributacaoNaturezaOperacao::class, 'codtipoproduto', 'codtipoproduto');
     }
     
-    // Buscas 
-    public static function filterAndPaginate($codtipoproduto, $tipoproduto)
+    public static function search($parametros)
     {
-        return tipoproduto::codtipoproduto(numeroLimpo($codtipoproduto))
-            ->tipoproduto($tipoproduto)
-            ->orderBy('tipoproduto', 'ASC')
-            ->paginate(20);
-    }
-    
-    public function scopeCodtipoproduto($query, $codcodtipoproduto)
-    {
-        if (trim($codcodtipoproduto) === '')
-            return;
-        
-        $query->where('codtipoproduto', $codcodtipoproduto);
+        $query = TipoProduto::query();
+            
+        if(!empty($parametros['codtipoproduto'])) {
+            $query->where('codtipoproduto', $parametros['codtipoproduto']);
+        }
+            
+        if(!empty($parametros['tipoproduto'])) {
+            $query->tipoproduto($parametros['tipoproduto']);
+        }
+
+        return $query;
     }
     
     public function scopeTipoproduto($query, $tipoproduto)
