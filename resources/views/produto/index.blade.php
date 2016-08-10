@@ -324,19 +324,7 @@ function scroll()
 }
 
 $(document).ready(function() {
-    var loading_options = {
-        finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
-        msgText: "<div class='center'>Carregando mais itens...</div>",
-        img: baseUrl + '/public/img/ajax-loader.gif'
-    };
-
-    $('#items').infinitescroll({
-        loading : loading_options,
-        navSelector : "#registros .pagination",
-        nextSelector : "#registros .pagination li.active + li a",
-        itemSelector : "#items div.list-group-item"
-    });    
-
+    scroll();
     $('#site').select2({
         placeholder: 'Site',
         allowClear:true,
@@ -347,7 +335,7 @@ $(document).ready(function() {
         var controlgroup = $(e.target.parentNode);
         if (!e.target.checkValidity()) {
             controlgroup.addClass('has-error');
-            target.reportValidity();
+            e.target.reportValidity();
         } else {
             controlgroup.removeClass('has-error');
         }

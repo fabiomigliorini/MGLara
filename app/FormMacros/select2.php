@@ -278,7 +278,6 @@ Form::macro('select2FamiliaProduto', function($name, $value = null, $options = [
                                 ativo: {$options['ativo']},
                                 codsecaoproduto: $('#codsecaoproduto').val()
                             }; 
-                            console.log($('#codsecaoproduto').val());
                         },
                         results:function(data,page) {
                             var more = (page * 20) < data.total;
@@ -295,17 +294,23 @@ Form::macro('select2FamiliaProduto', function($name, $value = null, $options = [
                         });
                     },
                     width:'resolve'
-                });
-                $('#{$options['codsecaoproduto']}').on('change', function (e) {
-                    e.preventDefault();
-                    $('#{$options['id']}').select2('val', null).trigger('change');
-                });                            
+                });                        
             });
         </script>
 END;
-
+    if(isset($options['codsecaoproduto'])) {
+    $script .= <<< END
+    <script type="text/javascript">
+        $(document).ready(function() {     
+            $('#{$options['codsecaoproduto']}').on('change', function (e) {
+                e.preventDefault();
+                $('#{$options['id']}').select2('val', null).trigger('change');
+            });    
+        });
+    </script>            
+END;
+    }
     $campo = Form::text($name, $value, $options);
-    
     return $campo . $script;
 });
 
@@ -375,16 +380,23 @@ Form::macro('select2GrupoProduto', function($name, $value = null, $options = [])
                     },
                     width:'resolve'
                 });
-                $('#{$options['codfamiliaproduto']}').on('change', function (e) {
-                    e.preventDefault();
-                    $('#{$options['id']}').select2('val', null).trigger('change');
-                });                            
+                        
             });
         </script>
 END;
-
+    if(isset($options['codfamiliaproduto'])) {
+    $script .= <<< END
+    <script type="text/javascript">
+        $(document).ready(function() {     
+            $('#{$options['codfamiliaproduto']}').on('change', function (e) {
+                e.preventDefault();
+                $('#{$options['id']}').select2('val', null).trigger('change');
+            });    
+        });
+    </script>            
+END;
+    }
     $campo = Form::text($name, $value, $options);
-    
     return $campo . $script;
 });
 
@@ -454,15 +466,23 @@ Form::macro('select2SubGrupoProduto', function($name, $value = null, $options = 
                     },
                     width:'resolve'
                 });
-                
-                $('#{$options['codgrupoproduto']}').on('change', function (e) {
-                    e.preventDefault();
-                    $('#{$options['id']}').select2('val', null).trigger('change');
-                });
+
             });
         </script>
 END;
-
+    if(isset($options['codgrupoproduto'])) {
+    $script .= <<< END
+    <script type="text/javascript">
+        $(document).ready(function() {     
+            $('#{$options['codgrupoproduto']}').on('change', function (e) {
+                e.preventDefault();
+                $('#{$options['id']}').select2('val', null).trigger('change');
+            });  
+        });
+    </script>            
+END;
+    }
+                    
     $campo = Form::text($name, $value, $options);
     
     return $campo . $script;

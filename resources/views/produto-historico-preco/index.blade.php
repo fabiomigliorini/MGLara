@@ -9,49 +9,65 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Histórico de Preços</h1>
-<hr>
-<div class="search-bar">
-{!! Form::model(Request::session()->get('produto-historico-preco.index'), [
-'route' => 'produto-historico-preco.index', 
-'method' => 'GET', 
-'class' => 'form-inline', 
-'id' => 'produto-historico-preco-search', 
-'role' => 'search', 
-'autocomplete' => 'off'
-])!!}
+<h1 class="header">{!! titulo(NULL, 'Histórico de Preços', NULL) !!}
+    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
+        <span class='glyphicon glyphicon-search'></span>
+    </a>
+ </h1>
+<div class="clearfix"></div>
+<div class='collapse' id='div-filtro'>
+    <div class='well well-sm' style="padding:9px 0">
+    {!! Form::model(Request::session()->get('produto-historico-preco.index'), [
+        'route' => 'produto-historico-preco.index', 
+        'method' => 'GET', 
+        'class' => 'form-horizontal', 
+        'id' => 'produto-historico-preco-search', 
+        'role' => 'search', 
+        'autocomplete' => 'off'
+    ])!!}
+        <div class="col-md-6">
+            <div class="form-group">
+                {!! Form::label('id', '#', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-3">{!! Form::text('id', null, ['class' => 'form-control', 'placeholder' => '#']) !!}</div>
+            </div>
 
-    <div class="form-group">
-        {!! Form::text('id', null, ['class' => 'form-control search-cod', 'placeholder' => '#']) !!}
-    </div>
-    
-    <div class="form-group">
-        {!! Form::text('produto', null, ['class' => 'form-control', 'placeholder' => 'Produto']) !!}
-    </div>
-    
-    <div class="form-group">
-        {!! Form::text('referencia', null, ['class' => 'form-control', 'placeholder' => 'Referencia']) !!}
-    </div>
+            <div class="form-group">
+                {!! Form::label('produto', 'Produto', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-6">{!! Form::text('produto', null, ['class' => 'form-control', 'placeholder' => 'Produto']) !!}</div>
+            </div>
 
-    <strong>Alteração</strong>
-    <div class="form-group">
-        {!! Form::date('alteracao_de', null, ['class' => 'form-control', 'id' => 'alteracao_de', 'placeholder' => 'De']) !!}
-        {!! Form::date('alteracao_ate', null, ['class' => 'form-control', 'id' => 'alteracao_ate', 'placeholder' => 'Até']) !!}
-    </div>
-    
-    <div class="form-group">
-        {!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:160px']) !!}
-    </div>
+            <div class="form-group">
+                {!! Form::label('referencia', 'Referência', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-4">{!! Form::text('referencia', null, ['class' => 'form-control', 'placeholder' => 'Referência']) !!}</div>
+            </div>
+        </div>
 
-    <div class="form-group">
-        {!! Form::select2Usuario('codusuario', null, ['class'=> 'form-control', 'id' => 'codusuario', 'style'=>'width:160px', 'placeholder' => 'Usuário']) !!}
+        <div class="col-md-6">
+            <div class="form-group">
+                {!! Form::label('codmarca', 'Marca', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-4">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'placeholder'=>'Marca']) !!}</div>
+            </div>
+            <div class="form-group">
+                {!! Form::label('codusuario', 'Usuário', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-4">{!! Form::select2Usuario('codusuario', null, ['class'=> 'form-control', 'id' => 'codusuario', 'placeholder' => 'Usuário']) !!}</div>
+            </div>        
+            <div class="form-group">
+                {!! Form::label('alteracao_de', 'Alteração', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-10">
+                    {!! Form::date('alteracao_de', null, ['class' => 'form-control pull-left', 'id' => 'alteracao_de', 'placeholder' => 'De', 'style'=>'width:160px; margin-right:10px']) !!}
+                    {!! Form::date('alteracao_ate', null, ['class' => 'form-control pull-left', 'id' => 'alteracao_ate', 'placeholder' => 'Até', 'style'=>'width:160px;']) !!}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
+                </div>
+            </div>
+        </div>
+        {!! Form::close() !!}
+        <div class="clearfix"></div>    
     </div>
-
-    <button type="submit" class="btn btn-default">Buscar</button>
-{!! Form::close() !!}
 </div>
-
-<br>
 <div id="registros">
   <div class="list-group produto-historico-preco" id="items">
     @foreach($model as $row)
@@ -175,6 +191,36 @@ $(document).ready(function() {
         atualizaFiltro();
     });
 
+    var alteracao_de = $('#alteracao_de').val();
+    if(alteracao_de.length > 0 ){
+        $('#alteracao_ate').attr('min', alteracao_de);
+    }
+    $('#alteracao_de').on('change', function(e) {
+        e.preventDefault();
+        var valor = $(this).val();
+        if(valor.length === 0 ) {
+            $('#alteracao_ate').empty();
+            $('#alteracao_ate').attr('min', '');
+        } else {
+            $('#alteracao_ate').attr('min', valor);
+        }
+        
+    });
+    
+    var alteracao_ate = $('#alteracao_ate').val();
+    if(alteracao_ate.length > 0){
+        $('#alteracao_de').attr('max', alteracao_ate);
+    }
+    $('#alteracao_ate').on('change', function(e) {        
+        e.preventDefault();
+        var valor = $(this).val();
+        if(valor.length === 0 ) {
+            $('#alteracao_de').empty();
+            $('#alteracao_de').attr('max', '');
+        } else {
+            $('#alteracao_de').attr('max', valor);
+        }
+    });
 });
 </script>
 @endsection

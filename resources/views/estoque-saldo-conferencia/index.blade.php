@@ -40,7 +40,7 @@
             </div>
             <div class="form-group">
                 {!! Form::label('codestoquelocal', 'Local', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-4">{!! Form::select('codestoquelocal', $codestoquelocal, null, ['class'=> 'form-control', 'id' => 'codestoquelocal']) !!}</div>            
+                <div class="col-md-4">{!! Form::select2EstoqueLocal('codestoquelocal', null, ['class'=> 'form-control', 'id' => 'codestoquelocal', 'placeholder' => 'Estoque Local']) !!}</div>            
             </div>              
             <div class="form-group">
                 {!! Form::label('fiscal', 'Físico/Fiscal', ['class' => 'col-sm-2 control-label']) !!}
@@ -64,8 +64,8 @@
             <div class="form-group">
                 {!! Form::label('criacao_de', 'Criação', ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-md-10">
-                    {!! Form::date('criacao_de', null, ['class' => 'form-control', 'id' => 'criacao_de', 'placeholder' => 'De', 'style'=>'width:160px; float:left; margin-right:10px']) !!}
-                    {!! Form::date('criacao_ate', null, ['class' => 'form-control', 'id' => 'criacao_ate', 'placeholder' => 'Até', 'style'=>'width:160px; float:left']) !!}
+                    {!! Form::date('criacao_de', null, ['class' => 'form-control pull-left', 'id' => 'criacao_de', 'placeholder' => 'De', 'style'=>'width:160px; margin-right:10px']) !!}
+                    {!! Form::date('criacao_ate', null, ['class' => 'form-control pull-left', 'id' => 'criacao_ate', 'placeholder' => 'Até', 'style'=>'width:160px;']) !!}
                 </div>
             </div>
             <div class="form-group">
@@ -193,8 +193,6 @@ $(document).ready(function() {
         atualizaFiltro();
     });
     
-
-
     $('#fiscal').select2({
         placeholder: 'Fiscal',
         allowClear:true,
@@ -214,7 +212,6 @@ $(document).ready(function() {
         } else {
             $('#data_ate').attr('min', valor);
         }
-        
     });
     
     var data_ate = $('#data_ate').val();
