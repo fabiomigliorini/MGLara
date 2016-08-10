@@ -26,7 +26,7 @@
 </div>
 <div class="form-group">
     <label for="barras" class="col-sm-2 control-label">{!! Form::label('Barras:') !!}</label>
-    <div class="col-sm-2" id="barrasDiv">{!! Form::text('barras', null, ['class'=> 'form-control', 'required'=>true, 'id'=>'barras']) !!}
+    <div class="col-sm-2" id="barrasDiv">{!! Form::text('barras', null, ['class'=> 'form-control', 'id'=>'barras']) !!}
     </div>
 </div>
 <div class="form-group">
@@ -113,13 +113,13 @@ function validaBarrasDigitado()
     
     if (validaGtin(codigo))
         return true;
-    
+    /*
     if (codigo.substring(0, 7) == '{!! str_pad($produto->codproduto, 6, '0', STR_PAD_LEFT)  !!}-')
         return true;
     
     if (codigo.substring(0, 6) == '{!! str_pad($produto->codproduto, 6, '0', STR_PAD_LEFT)  !!}' && codigo.length == 6)
         return true;
-
+    */
     return false;
 }
 
