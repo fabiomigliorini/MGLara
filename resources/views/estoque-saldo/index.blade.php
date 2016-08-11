@@ -15,7 +15,7 @@
 <div class="clearfix"></div>
 <div class='collapse' id='div-filtro'>
     <div class='well well-sm' style="padding:9px 0">
-        {!! Form::model($filtro, ['route' => 'estoque-saldo.index', 'method' => 'GET', 'class' => 'form-horizontal', 'id' => 'saldo-estoque-search', 'role' => 'search', 'autocomplete' => 'off' ]) !!}
+        {!! Form::model($filtro, ['route' => 'estoque-saldo.index', 'method' => 'GET', 'class' => 'form-horizontal', 'id' => 'estoque-saldo-search', 'role' => 'search', 'autocomplete' => 'off' ]) !!}
         <div class='col-md-5'>
             <div class="form-group">
                 {!! Form::label('codestoquelocal', 'Local', ['class' => 'col-sm-2 control-label']) !!}
@@ -84,7 +84,7 @@
             </div>
             <div class="form-group">
                 <div class="col-md-9 col-md-offset-3">
-                    {!! Form::submit('OK', array('class' => 'btn btn-primary')) !!}
+                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
                 </div>
             </div>
         </div>
@@ -246,9 +246,38 @@
 
 @section('inscript')
 <script type="text/javascript">
-  $(document).ready(function() {
-      
-  });
+    
+function atualizaFiltro()
+{
+    var frmValues = $('#estoque-saldo-search').serialize();
+    $.ajax({
+        type: 'GET',
+        url: baseUrl + '/estoque-saldo',
+        data: frmValues,
+        dataType: 'html'
+    })
+    .done(function (data) {
+        $('#div-estoque').html(jQuery(data).find('#div-estoque').html());
+    })
+    .fail(function () {
+        console.log('Erro no filtro');
+    });
+}
+    
+$(document).ready(function() {
+
+    $("#estoque-saldo-search").on("change", function (e) {
+        if($('#estoque-saldo-search')[0].checkValidity()){
+            $("#estoque-saldo-search").submit();
+        }
+        return false;
+        
+    }).on('submit', function (e){
+        e.preventDefault();
+        atualizaFiltro();
+    });
+
+});
 </script>
 @endsection
 @stop

@@ -129,18 +129,14 @@ class EstoqueSaldo extends MGModel
                         , estoquemaximo
                         , fiscal
                         , tblprodutovariacao.codprodutovariacao as coditem
-                        , coalesce(tblprodutovariacao.variacao, \'{ Sem Variação }\') as item
+                        , tblproduto.produto || \' » \' || coalesce(tblprodutovariacao.variacao, \'{ Sem Variação }\') as item
                         , tblestoquelocal.codestoquelocal
                         , tblestoquelocal.estoquelocal
                         , tblestoquesaldo.codestoquesaldo
                         '
                     )
                 );
-                /*
-                $query->groupBy('tblprodutovariacao.codprodutovariacao');
-                $query->groupBy('tblprodutovariacao.variacao');
-                 * 
-                 */
+                $query->orderBy('tblproduto.produto');
                 $query->orderBy('variacao');
                 break;
             
