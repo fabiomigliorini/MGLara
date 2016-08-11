@@ -99,14 +99,16 @@ class EstoqueSaldo extends MGModel
         return $es;
     }
     
-    public static function totais($agrupamento, $filtros = [])
+    public static function totais($agrupamento, $filtro = [])
     {
         //$query = DB::table('tblestoquesaldo');
         $query = DB::table('tblestoquelocalprodutovariacao');
 
-        $query->groupBy('fiscal');
-        $query->groupBy('tblestoquelocal.codestoquelocal');
-        $query->groupBy('tblestoquelocal.estoquelocal');
+        if ($agrupamento != 'variacao') {
+            $query->groupBy('fiscal');
+            $query->groupBy('tblestoquelocal.codestoquelocal');
+            $query->groupBy('tblestoquelocal.estoquelocal');
+        }
         
         $query->join('tblestoquelocal', 'tblestoquelocal.codestoquelocal', '=', 'tblestoquelocalprodutovariacao.codestoquelocal');
         $query->join('tblprodutovariacao', 'tblprodutovariacao.codprodutovariacao', '=', 'tblestoquelocalprodutovariacao.codprodutovariacao');
@@ -121,20 +123,24 @@ class EstoqueSaldo extends MGModel
             case 'variacao':
                 $query->select(
                     DB::raw(
-                        ' sum(saldoquantidade) as saldoquantidade
-                        , sum(saldovalor) as saldovalor
-                        , sum(estoqueminimo) as estoqueminimo
-                        , sum(estoquemaximo) as estoquemaximo
+                        ' saldoquantidade
+                        , saldovalor
+                        , estoqueminimo
+                        , estoquemaximo
                         , fiscal
                         , tblprodutovariacao.codprodutovariacao as coditem
                         , coalesce(tblprodutovariacao.variacao, \'{ Sem Variação }\') as item
                         , tblestoquelocal.codestoquelocal
                         , tblestoquelocal.estoquelocal
+                        , tblestoquesaldo.codestoquesaldo
                         '
                     )
                 );
+                /*
                 $query->groupBy('tblprodutovariacao.codprodutovariacao');
                 $query->groupBy('tblprodutovariacao.variacao');
+                 * 
+                 */
                 $query->orderBy('variacao');
                 break;
             
@@ -264,47 +270,96 @@ class EstoqueSaldo extends MGModel
         
         $query->orderBy('tblestoquelocal.codestoquelocal');
         
-        foreach($filtros as $chave => $valor)
-        {
-            switch ($chave) {
-                case 'codestoquelocal':
-                    $query->where('tblestoquelocalprodutovariacao.codestoquelocal', '=', $valor);                
-                    break;
-
-                case 'codfamiliaproduto':
-                    $query->where('tblgrupoproduto.codfamiliaproduto', '=', $valor);                
-                    break;
-
-                case 'codproduto':
-                    $query->where('tblprodutovariacao.codproduto', '=', $valor);                
-                    break;
-
-                case 'codprodutovariacao':
-                    $query->where('tblestoquelocalprodutovariacao.codprodutovariacao', '=', $valor);                
-                    break;
-
-                case 'codgrupoproduto':
-                    $query->where('tblsubgrupoproduto.codgrupoproduto', '=', $valor);                
-                    break;
-
-                case 'codsubgrupoproduto':
-                    $query->where('tblproduto.codsubgrupoproduto', '=', $valor);                
-                    break;
-
-                case 'codmarca':
-                    $query->where(function ($q2) use($valor) {
-                        $q2->orWhere('tblproduto.codmarca', '=', $valor);
-                        $q2->orWhere('tblprodutovariacao.codmarca', '=', $valor);                        
-                    });
-                    break;
-
-                default:
-                    $query->where($chave, '=', $valor);
-                    break;
-            }
+        if (!empty($filtro['codsecaoproduto'])) {
+            $query->where('tblfamiliaproduto.codsecaoproduto', '=', $filtro['codsecaoproduto']);
         }
         
-        $query->where('tblestoquesaldo.saldoquantidade', '!=', 0);
+        if (!empty($filtro['codestoquelocal'])) {
+            $query->where('tblestoquelocalprodutovariacao.codestoquelocal', '=', $filtro['codestoquelocal']);
+        }
+
+        if (!empty($filtro['codfamiliaproduto'])) {
+            $query->where('tblgrupoproduto.codfamiliaproduto', '=', $filtro['codfamiliaproduto']);
+        }
+
+        if (!empty($filtro['codproduto'])) {
+            $query->where('tblprodutovariacao.codproduto', '=', $filtro['codproduto']);
+        }
+
+        if (!empty($filtro['codprodutovariacao'])) {
+            $query->where('tblestoquelocalprodutovariacao.codprodutovariacao', '=', $filtro['codprodutovariacao']);
+        }
+
+        if (!empty($filtro['codgrupoproduto'])) {
+            $query->where('tblsubgrupoproduto.codgrupoproduto', '=', $filtro['codgrupoproduto']);
+        }
+
+        if (!empty($filtro['codsubgrupoproduto'])) {
+            $query->where('tblproduto.codsubgrupoproduto', '=', $filtro['codsubgrupoproduto']);
+        }
+
+        if (!empty($filtro['corredor'])) {
+            $query->where('tblestoquelocalprodutovariacao.corredor', '=', $filtro['corredor']);
+        }
+
+        if (!empty($filtro['prateleira'])) {
+            $query->where('tblestoquelocalprodutovariacao.prateleira', '=', $filtro['prateleira']);
+        }
+
+        if (!empty($filtro['coluna'])) {
+            $query->where('tblestoquelocalprodutovariacao.coluna', '=', $filtro['coluna']);
+        }
+
+        if (!empty($filtro['bloco'])) {
+            $query->where('tblestoquelocalprodutovariacao.bloco', '=', $filtro['bloco']);
+        }
+
+        if (!empty($filtro['codmarca'])) {
+            $query->where(function ($q2) use($filtro) {
+                $q2->orWhere('tblproduto.codmarca', '=', $filtro['codmarca']);
+                $q2->orWhere('tblprodutovariacao.codmarca', '=', $filtro['codmarca']);                        
+            });
+        }
+
+        if (!empty($filtro['saldo']) || !empty($filtro['minimo']) || !empty($filtro['maximo'])) {
+            
+            $query->whereIn('tblestoquesaldo.codestoquelocalprodutovariacao', function($q2) use ($filtro){
+                
+                $q2->select('tblestoquesaldo.codestoquelocalprodutovariacao')
+                    ->from('tblestoquesaldo')
+                    ->join('tblestoquelocalprodutovariacao', 'tblestoquelocalprodutovariacao.codestoquelocalprodutovariacao', '=', 'tblestoquesaldo.codestoquelocalprodutovariacao')
+                    ->whereRaw('fiscal = false');
+                
+                if (!empty($filtro['minimo'])) {
+                    if ($filtro['minimo'] == -1) {
+                        $q2->whereRaw('saldoquantidade < coalesce(estoqueminimo, 0)');
+                    } else if ($filtro['minimo'] == 1) {
+                        $q2->whereRaw('saldoquantidade >= coalesce(estoqueminimo, 0)');
+                        
+                    }
+                }
+                
+                if (!empty($filtro['maximo'])) {
+                    if ($filtro['maximo'] == -1) {
+                        $q2->whereRaw('saldoquantidade <= coalesce(estoquemaximo, 99999999999999999999)');
+                    } else if ($filtro['maximo'] == 1) {
+                        $q2->whereRaw('saldoquantidade > coalesce(estoquemaximo, 99999999999999999999)');
+                    }
+                }
+                
+                if (!empty($filtro['saldo'])) {
+                    if ($filtro['saldo'] == -1) {
+                        $q2->whereRaw('saldoquantidade < 0');
+                    } else if ($filtro['saldo'] == 1) {
+                        $q2->whereRaw('saldoquantidade > 0');
+                        
+                    }
+                }
+                
+            });
+        }
+
+        $query->whereRaw('tblestoquesaldo.saldoquantidade != 0');
         
         $rows = $query->get();
         
@@ -405,6 +460,10 @@ class EstoqueSaldo extends MGModel
             $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal][$fiscal]['saldoquantidade'] = $row->saldoquantidade;
             $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal][$fiscal]['saldovalor'] = $row->saldovalor;
             
+            if (!empty($row->codestoquesaldo)) {
+                $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal][$fiscal]['codestoquesaldo'] = $row->codestoquesaldo;
+            }
+            
             $ret[$row->coditem]['estoquelocal']['total'][$fiscal]['saldoquantidade'] += $row->saldoquantidade;
             $ret[$row->coditem]['estoquelocal']['total'][$fiscal]['saldovalor'] += $row->saldovalor;
             
@@ -418,7 +477,6 @@ class EstoqueSaldo extends MGModel
         
         $ret['total'] = $total;
         
-        //die(json_encode($ret));
         return $ret;
     }
 
