@@ -25,7 +25,7 @@
 </h1>
 <hr>
 <br>
-{!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'action' => ['UsuarioController@update', $model->codusuario] ]) !!}
+{!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'id'=>'form-usuario', 'action' => ['UsuarioController@update', $model->codusuario] ]) !!}
     @include('errors.form_error')
     @include('usuario.form', ['submitTextButton' => 'Salvar'])
 {!! Form::close() !!}

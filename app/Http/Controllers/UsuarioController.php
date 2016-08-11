@@ -14,6 +14,7 @@ use MGLara\Models\Ecf;
 use MGLara\Models\Filial;
 use MGLara\Models\Operacao;
 use MGLara\Models\Portador;
+use Carbon\Carbon;
 
 class UsuarioController extends Controller
 {
@@ -25,9 +26,6 @@ class UsuarioController extends Controller
         $this->middleware('permissao:usuario.exclusao', ['only' => ['delete', 'destroy']]);
         $this->middleware('parametros', ['only' => ['index']]);
         
-        $this->ecfs       = [''=>''] + Ecf::lists('ecf', 'codecf')->all();
-        $this->ops        = [''=>''] + Operacao::lists('operacao', 'codoperacao')->all();
-        $this->portadores = [''=>''] + Portador::lists('portador', 'codportador')->all();
         $this->prints     = [''=>''] + Usuario::printers();        
     }
     
@@ -46,11 +44,8 @@ class UsuarioController extends Controller
 
     public function create() {
         $model = new Usuario();
-        $ecfs       = $this->ecfs;
-        $ops        = $this->ops;
-        $portadores = $this->portadores;
         $prints     = $this->prints;
-        return view('usuario.create', compact('model', 'ecfs', 'ecfs', 'ops', 'portadores', 'prints'));
+        return view('usuario.create', compact('model', 'prints'));
     }
 
     public function store(Request $request) {
@@ -59,15 +54,12 @@ class UsuarioController extends Controller
             $this->throwValidationException($request, $model->_validator);
         $model->senha = bcrypt($model->senha);
         $model->save();
-        Session::flash('flash_create', 'Registro inserido.');
-        return redirect('usuario');
+        Session::flash('flash_success', 'Usuário Criado!');
+        return redirect("usuario/$model->codusuario");  
     }
 
     public function edit($codusuario) {
         $model = Usuario::findOrFail($codusuario);
-        $ecfs       = $this->ecfs;
-        $ops        = $this->ops;
-        $portadores = $this->portadores;
         $prints     = $this->prints;
         if(!empty(!in_array($model->impressoramatricial, $prints)))
             $prints[$model->impressoramatricial] = $model->impressoramatricial;
@@ -78,20 +70,22 @@ class UsuarioController extends Controller
         if(!empty(!in_array($model->impressoratelanegocio, $prints)))
             $prints[$model->impressoratelanegocio] = $model->impressoratelanegocio;
                 
-        return view('usuario.edit',  compact('model','ecfs', 'ops', 'portadores', 'prints'));
+        return view('usuario.edit',  compact('model', 'prints'));
     }
 
     public function update($codusuario, Request $request) {
         $model = Usuario::findOrFail($codusuario);
         $model->fill($request->all());
-        if (!$model->validate())
+        if (!$model->validate()) {
             $this->throwValidationException($request, $model->_validator);
-        if (isset($model->senha))
-             $model->senha = bcrypt($model->senha);
+        }
+        if (isset($model->senha)) {
+            $model->senha = bcrypt($model->senha);
+        }
         $model->save();
         
-        Session::flash('flash_update', 'Registro atualizado.');
-        return redirect('usuario');
+        Session::flash('flash_success', "Usuário '{$model->usuario}' Atualizado!");
+        return redirect("usuario/$model->codusuario"); 
     }
     
     public function show($codusuario) {
@@ -99,17 +93,41 @@ class UsuarioController extends Controller
         return view('usuario.show', compact('model'));
     }
 
-    public function destroy($codusuario) {
-
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
         try{
-	        Usuario::find($codusuario)->delete();
-	        Session::flash('flash_delete', 'Registro deletado!');
-	        return Redirect::route('usuario.index');
+            Usuario::find($id)->delete();
+            $ret = ['resultado' => true, 'mensagem' => 'Usuário excluído com sucesso!'];
         }
         catch(\Exception $e){
-        	return view('errors.fk');
-        }        
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir usuário!', 'exception' => $e];
+        }
+        return json_encode($ret);
     }
+    
+    public function inativo(Request $request)
+    {
+        $model = Usuario::find($request->get('codusuario'));
+        if($request->get('acao') == 'ativar')
+        {
+            $model->inativo = null;
+            $msg = "Usuário '{$model->usuario}' Reativado!";
+        }
+        else
+        {
+            $model->inativo = Carbon::now();
+            $msg = "Usuário '{$model->usuario}' Inativado!";
+        }
+        
+        $model->save();
+        Session::flash('flash_success', $msg);
+    }    
     
     public function permissao(Request $request, $codusuario) {
         $model = Usuario::find($codusuario);

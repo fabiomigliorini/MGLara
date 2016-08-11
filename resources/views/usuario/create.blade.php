@@ -22,7 +22,7 @@
 !!} 
 </h1>
 <hr>
-{!! Form::open(['route'=>'usuario.store', 'method' => 'POST', 'class' => 'form-horizontal']) !!}
+{!! Form::open(['route'=>'usuario.store', 'method' => 'POST', 'class' => 'form-horizontal', 'id'=>'form-usuario']) !!}
     @include('errors.form_error')
     @include('usuario.form', ['submitTextButton' => 'Salvar'])
  {!! Form::close() !!}    

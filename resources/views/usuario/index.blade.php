@@ -35,7 +35,6 @@
                 <div class="col-md-9">{!! Form::text('usuario', null, ['class' => 'form-control', 'placeholder' => 'Usuário']) !!}</div>
             </div>
         </div>
-
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('codpessoa', 'Pessoa', ['class' => 'col-sm-2 control-label']) !!}

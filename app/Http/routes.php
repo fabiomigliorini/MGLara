@@ -42,6 +42,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     /* Usuários */
     Route::resource('usuario','UsuarioController');
+    Route::post('usuario/inativo','UsuarioController@inativo');
     Route::resource('usuario/{codusuario}/permissao','UsuarioController@permissao');
     Route::resource('usuario/attach-permissao','UsuarioController@attachPermissao');
     Route::resource('usuario/detach-permissao','UsuarioController@detachPermissao');

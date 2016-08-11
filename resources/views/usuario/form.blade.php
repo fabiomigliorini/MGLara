@@ -31,7 +31,7 @@
   	{!! Form::label('ECF', 'ECF:') !!}
   </label>
   <div class="col-md-2 col-xs-4">
-  	{!! Form::select('codecf', $ecfs, ['class'=> 'form-control'], ['style'=>'width:100%', 'id'=>'codecf']) !!}
+        {!! Form::select2Ecf('codecf', null, ['class' => 'form-control', 'id'=>'codecf']) !!}
   </div>
 </div>
 
@@ -49,7 +49,7 @@
   	{!! Form::label('Operação', 'Operação:') !!}
   </label>
   <div class="col-md-2 col-xs-4">
-  	{!! Form::select('codoperacao', $ops, ['class'=> 'form-control'], ['style'=>'width:100%', 'id'=>'codoperacao']) !!}
+        {!! Form::select2Operacao('codoperacao', null, ['class' => 'form-control', 'id'=>'codoperacao']) !!}
   </div>
 </div>
 
@@ -93,8 +93,9 @@
   <label for="codportador" class="col-sm-2 control-label">
   	{!! Form::label('Portador', 'Portador:') !!}
   </label>
-  <div class="col-sm-2">
-  	{!! Form::select('codportador', $portadores, ['class'=> 'form-control'], ['style'=>'width:100%', 'id'=>'codportador']) !!}
+  <div class="col-sm-3">
+        {!! Form::select2Portador('codportador', null, ['class' => 'form-control', 'id'=>'codportador']) !!}
+        
   </div>
 </div>
 
@@ -133,20 +134,17 @@ $(document).ready(function() {
     $("#repetir_senha" ).blur(function() {
       validarSenha();
     });    
-    $('#codecf').select2({
-        allowClear: true,
-        width: 'resolve'
-    })<?php echo (isset($model->codecf) ? ".select2('val', $model->codecf);" : ';');?>
 
-    $('#codoperacao').select2({
-        allowClear: true,
-        width: 'resolve'
-    })<?php echo (isset($model->codoperacao) ? ".select2('val', $model->codoperacao);" : ';');?>
-    $('#codportador').select2({
-        allowClear: true,
-        width: 'resolve'
-    })<?php echo (isset($model->codportador) ? ".select2('val', $model->codportador);" : ';');?>
-
+    $('#form-usuario').on("submit", function(e) {
+        var currentForm = this;
+        e.preventDefault();
+        bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
+            if (result) {
+                currentForm.submit();
+            }
+        });
+    });
+    
     $('#impressoratermica').select2({
         allowClear: true,
         width: 'resolve'

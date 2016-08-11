@@ -8,10 +8,18 @@
             <li><a href="<?php echo url("usuario/$model->codusuario/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li><a href="<?php echo url("usuario/$model->codusuario/permissao");?>"><span class="glyphicon glyphicon-lock"></span> Permissões</a></li> 
             <li>
-                {!! Form::open(['method' => 'DELETE', 'route' => ['usuario.destroy', $model->codusuario]]) !!}
-                <span class="glyphicon glyphicon-trash"></span>
-                {!! Form::submit('Excluir') !!}
-                {!! Form::close() !!}
+                @if(empty($model->inativo))
+                <a href="" id="inativar-usuario">
+                    <span class="glyphicon glyphicon-ban-circle"></span> Inativar
+                </a>
+                @else
+                <a href="" id="inativar-usuario">
+                    <span class="glyphicon glyphicon-ok-sign"></span> Ativar
+                </a>
+                @endif
+            </li> 
+            <li>
+                <a href="{{ url("usuario/$model->codusuario") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o usuario'{{ $model->usuario }}'?" data-after-delete="location.replace(baseUrl + '/usuario');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
             </li>
         </ul>
     </div>
@@ -83,4 +91,37 @@
 </div>
 <hr>
 @include('includes.autor')
+@section('inscript')
+<script type="text/javascript">
+$(document).ready(function() {
+    
+    $('#inativar-usuario').on("click", function(e) {
+        e.preventDefault();
+        var codusuario = {{ $model->codusuario }};
+        var token = '{{ csrf_token() }}';
+        var inativo = '{{ $model->inativo }}';
+        if(inativo.length === 0) {
+            acao = 'inativar';
+        } else {
+            acao = 'ativar';
+        }        
+        bootbox.confirm("Tem certeza que deseja "+acao+"?", function(result) {
+            if(result) {
+                $.post(baseUrl + '/usuario/inativo', {
+                    codusuario: codusuario,
+                    acao: acao,
+                    _token: token
+                }).done(function (data) {
+                    location.reload();
+                }).fail(function (error){
+                  location.reload();          
+              });
+            }  
+        });
+    });
+    
+    console.log($('#negocio_codproduto').val());    
+});
+</script>
+@endsection
 @stop

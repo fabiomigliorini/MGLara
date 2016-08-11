@@ -583,6 +583,30 @@ Form::macro('select2Filial', function($name, $selected = null, $options = [])
     return Form::select2($name, $regs, $selected, $options);
 });
 
+/* ECF */
+Form::macro('select2Ecf', function($name, $selected = null, $options = [])
+{
+    if (empty($options['placeholder'])) $options['placeholder'] = 'ECF';
+    $regs = [''=>''] + MGLara\Models\Ecf::orderBy('codecf')->lists('ecf', 'codecf')->all();
+    return Form::select2($name, $regs, $selected, $options);
+});
+
+/* PORTADORES */
+Form::macro('select2Portador', function($name, $selected = null, $options = [])
+{
+    if (empty($options['placeholder'])) $options['placeholder'] = 'Portador';
+    $regs = [''=>''] + MGLara\Models\Portador::orderBy('codportador')->lists('portador', 'codportador')->all();
+    return Form::select2($name, $regs, $selected, $options);
+});
+
+/* OPERAÇÃO */
+Form::macro('select2Operacao', function($name, $selected = null, $options = [])
+{
+    if (empty($options['placeholder'])) $options['placeholder'] = 'Operação';
+    $regs = [''=>''] + MGLara\Models\Operacao::orderBy('codoperacao')->lists('operacao', 'codoperacao')->all();
+    return Form::select2($name, $regs, $selected, $options);
+});
+
 /* ESTOQUE LOCAL */
 Form::macro('select2EstoqueLocal', function($name, $selected = null, $options = [])
 {
