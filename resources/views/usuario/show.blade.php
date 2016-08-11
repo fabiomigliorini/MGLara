@@ -16,7 +16,18 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">{{ $model->usuario }}</h1>
+<h1 class="header">
+{!! 
+    titulo(
+        $model->codusuario,
+        [
+            url("usuario") => 'Usuários',
+            $model->usuario,
+        ],
+        $model->inativo
+    ) 
+!!}  
+</h1>
 <hr>
 <div class="row">
   <div class="col-lg-12">

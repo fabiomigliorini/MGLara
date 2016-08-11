@@ -23,8 +23,8 @@ class UsuarioController extends Controller
         $this->middleware('permissao:usuario.inclusao', ['only' => ['create', 'store']]);
         $this->middleware('permissao:usuario.alteracao', ['only' => ['edit', 'update']]);
         $this->middleware('permissao:usuario.exclusao', ['only' => ['delete', 'destroy']]);
+        $this->middleware('parametros', ['only' => ['index']]);
         
-        $this->filiais    = [''=>''] + Filial::lists('filial', 'codfilial')->all();
         $this->ecfs       = [''=>''] + Ecf::lists('ecf', 'codecf')->all();
         $this->ops        = [''=>''] + Operacao::lists('operacao', 'codoperacao')->all();
         $this->portadores = [''=>''] + Portador::lists('portador', 'codportador')->all();
@@ -32,23 +32,25 @@ class UsuarioController extends Controller
     }
     
     public function index(Request $request) {
-        $model = Usuario::filterAndPaginate(
-            $request->get('codusuario'),
-            $request->get('usuario'),
-            $request->get('codpessoa'),
-            $request->get('codfilial')
-        );
-        $filiais = Filial::lists('filial', 'codfilial');
-        return view('usuario.index', compact('model', 'filiais'));        
+        
+        if (!$request->session()->has('usuario.index')) {
+            $request->session()->put('usuario.index.ativo', '1');
+        }
+
+        $parametros = $request->session()->get('usuario.index');        
+        
+        $model = Usuario::search($parametros)->orderBy('usuario', 'ASC')->paginate(20);
+ 
+        return view('usuario.index', compact('model'));        
     }
 
     public function create() {
-        $filiais    = $this->filiais;
+        $model = new Usuario();
         $ecfs       = $this->ecfs;
         $ops        = $this->ops;
         $portadores = $this->portadores;
         $prints     = $this->prints;
-        return view('usuario.create', compact('ecfs', 'filiais', 'ecfs', 'ops', 'portadores', 'prints'));
+        return view('usuario.create', compact('model', 'ecfs', 'ecfs', 'ops', 'portadores', 'prints'));
     }
 
     public function store(Request $request) {
@@ -63,7 +65,6 @@ class UsuarioController extends Controller
 
     public function edit($codusuario) {
         $model = Usuario::findOrFail($codusuario);
-        $filiais    = $this->filiais;
         $ecfs       = $this->ecfs;
         $ops        = $this->ops;
         $portadores = $this->portadores;
@@ -77,7 +78,7 @@ class UsuarioController extends Controller
         if(!empty(!in_array($model->impressoratelanegocio, $prints)))
             $prints[$model->impressoratelanegocio] = $model->impressoratelanegocio;
                 
-        return view('usuario.edit',  compact('model','ecfs', 'ops', 'filiais', 'portadores', 'prints'));
+        return view('usuario.edit',  compact('model','ecfs', 'ops', 'portadores', 'prints'));
     }
 
     public function update($codusuario, Request $request) {

@@ -9,7 +9,18 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Usuário</h1>
+<h1 class="header">
+{!! 
+    titulo(
+        null,
+        [
+            url('usuario') => 'Usuários',
+            'Novo usuário'
+        ],
+        $model->inativo
+    ) 
+!!} 
+</h1>
 <hr>
 {!! Form::open(['route'=>'usuario.store', 'method' => 'POST', 'class' => 'form-horizontal']) !!}
     @include('errors.form_error')

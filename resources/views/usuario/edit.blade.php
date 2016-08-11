@@ -10,7 +10,19 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Alterar Usuario #{{$model->codusuario}}</h1>
+<h1 class="header">
+{!! 
+    titulo(
+        $model->codusuario,
+        [
+            url("usuario") => 'Usuários',
+            url("usuario/$model->codusuario") => $model->usuario,
+            'Alterar',
+        ],
+        $model->inativo
+    ) 
+!!} 
+</h1>
 <hr>
 <br>
 {!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'action' => ['UsuarioController@update', $model->codusuario] ]) !!}
