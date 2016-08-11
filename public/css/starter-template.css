@@ -34,11 +34,11 @@ h1.header {
   width: 100%;
   height: 2px;
 }
-/*
+
 .bg-danger {
     background-color: #f2dede !important;
 }
-*/
+
 .controls .delete {
   margin-left: 5px;
 }
@@ -115,7 +115,7 @@ h1.header {
 
 /* Imagens */
 .carregar {
-    margin-top: 40px;
+    margin-top: -11px;
 }
 .foto-item-unico img {
     height: 100%;

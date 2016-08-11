@@ -31,7 +31,7 @@
   	{!! Form::label('ECF', 'ECF:') !!}
   </label>
   <div class="col-md-2 col-xs-4">
-  	{!! Form::select('codecf', $ecfs, ['class'=> 'form-control'], ['style'=>'width:100%', 'id'=>'codecf']) !!}
+        {!! Form::select2Ecf('codecf', null, ['class' => 'form-control', 'id'=>'codecf']) !!}
   </div>
 </div>
 
@@ -40,7 +40,7 @@
   	{!! Form::label('Filial', 'Filial:') !!}
   </label>
   <div class="col-md-2 col-xs-4">
-  	{!! Form::select('codfilial', $filiais, ['class'=> 'form-control'], ['style'=>'width:100%', 'id'=>'codfilial']) !!}
+        {!! Form::select2Filial('codfilial', null, ['class' => 'form-control', 'id'=>'codfilial']) !!}
   </div>
 </div>
 
@@ -49,16 +49,16 @@
   	{!! Form::label('Operação', 'Operação:') !!}
   </label>
   <div class="col-md-2 col-xs-4">
-  	{!! Form::select('codoperacao', $ops, ['class'=> 'form-control'], ['style'=>'width:100%', 'id'=>'codoperacao']) !!}
+        {!! Form::select2Operacao('codoperacao', null, ['class' => 'form-control', 'id'=>'codoperacao']) !!}
   </div>
 </div>
 
 <div class="form-group">
   <label for="codpessoa" class="col-sm-2 control-label">
-  	{!! Form::label('Pessoa', 'Pessoa:') !!}
+  	{!! Form::label('Pessoa', 'Pesso:') !!}
   </label>
   <div class="col-sm-4">
-  	{!! Form::text('codpessoa', null, ['class'=> 'form-control', 'id'=>'codpessoa']) !!}
+        {!! Form::select2Pessoa('codpessoa', null, ['class' => 'form-control', 'id'=>'codpessoa', 'placeholder' => 'Pessoa', 'ativo' => 1]) !!}
   </div>
 </div>
 
@@ -93,17 +93,9 @@
   <label for="codportador" class="col-sm-2 control-label">
   	{!! Form::label('Portador', 'Portador:') !!}
   </label>
-  <div class="col-sm-2">
-  	{!! Form::select('codportador', $portadores, ['class'=> 'form-control'], ['style'=>'width:100%', 'id'=>'codportador']) !!}
-  </div>
-</div>
-
-<div class="form-group">
-  <label for="inativo" class="col-sm-2 control-label">
-  	{!! Form::label('Inativo', 'Inativo:') !!}
-  </label>
-  <div class="col-sm-2">
-  	{!! Form::text('inativo', null, ['class'=> 'form-control', 'id'=>'inativo']) !!}
+  <div class="col-sm-3">
+        {!! Form::select2Portador('codportador', null, ['class' => 'form-control', 'id'=>'codportador']) !!}
+        
   </div>
 </div>
 
@@ -142,91 +134,17 @@ $(document).ready(function() {
     $("#repetir_senha" ).blur(function() {
       validarSenha();
     });    
-    $('#codecf').select2({
-        allowClear: true,
-        width: 'resolve'
-    })<?php echo (isset($model->codecf) ? ".select2('val', $model->codecf);" : ';');?>
-    $('#codfilial').select2({
-        allowClear: true,
-        width: 'resolve'
-    })<?php echo (isset($model->codfilial) ? ".select2('val', $model->codfilial);" : ';');?>
-    $('#codoperacao').select2({
-        allowClear: true,
-        width: 'resolve'
-    })<?php echo (isset($model->codoperacao) ? ".select2('val', $model->codoperacao);" : ';');?>
-    $('#codportador').select2({
-        allowClear: true,
-        width: 'resolve'
-    })<?php echo (isset($model->codportador) ? ".select2('val', $model->codportador);" : ';');?>
-    $('#inativo').datepicker({
-        format: 'dd/mm/yyyy'
-    });  
-    
-    $('#codpessoa').select2({
-        minimumInputLength: 3,
-        allowClear: true,
-        closeOnSelect: true,
-        placeholder: 'Pessoa',
-        formatResult: function(item) {
-            var css = "div-combo-pessoa";
-            if (item.inativo)
-                var css = "text-error";
 
-            var css_titulo = "";
-            var css_detalhes = "text-muted";
-            if (item.inativo){
-                css_titulo = "text-error";
-                css_detalhes = "text-error";
+    $('#form-usuario').on("submit", function(e) {
+        var currentForm = this;
+        e.preventDefault();
+        bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
+            if (result) {
+                currentForm.submit();
             }
-
-            var nome = item.fantasia;
-
-            //if (item.inclusaoSpc != 0)
-            //	nome += "&nbsp<span class=\"label label-warning\">" + item.inclusaoSpc + "</span>";
-
-            var markup = "";
-            markup    += "<strong class='" + css_titulo + "'>" + nome + "</strong>";
-            markup    += "<small class='pull-right " + css_detalhes + "'>#" + formataCodigo(item.id) + "</small>";
-            markup    += "<br>";
-            markup    += "<small class='" + css_detalhes + "'>" + item.pessoa + "</small>";
-            markup    += "<small class='pull-right " + css_detalhes + "'>" + formataCnpjCpf(item.cnpj) + "</small>";
-            return markup;
-        },
-        formatSelection: function(item) { 
-            return item.fantasia; 
-        },
-        ajax: {
-            url: baseUrl+'/pessoa/listagem-json',
-            dataType: 'json',
-            quietMillis: 500,
-            data: function(term, current_page) { 
-                return {
-                    q: term, 
-                    per_page: 10, 
-                    current_page: current_page
-                }; 
-            },
-            results:function(data,page) {
-                //var more = (current_page * 20) < data.total;
-                return {
-                    results: data.data, 
-                    //more: data.mais
-                };
-            }
-        },
-        initSelection: function (element, callback) {
-            $.ajax({
-                type: "GET",
-                url: baseUrl+'/pessoa/listagem-json',
-                data: "id=<?php if(isset($model))echo $model->codpessoa;?>",
-                dataType: "json",
-                success: function(result) { 
-                    callback(result); 
-                }
-            });
-        },
-        width:'resolve'
+        });
     });
+    
     $('#impressoratermica').select2({
         allowClear: true,
         width: 'resolve'

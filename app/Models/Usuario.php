@@ -1162,46 +1162,59 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
         return $printers;
     }    
     
-    # Buscas #
-    public static function filterAndPaginate($codusuario, $usuario, $codpessoa, $codfilial)
-    {
-        return Usuario::codusuario($codusuario)
-            ->usuario($usuario)
-            ->codpessoa($codpessoa)
-            ->codfilial($codfilial)
-            ->orderBy('usuario', 'ASC')
-            ->paginate(20);
-    }
     
-    public function scopeCodusuario($query, $codusuario)
+    public static function search($parametros)
     {
-        if ($codusuario)
-        {
-            $query->where('codusuario', "$codusuario");
+        $query = Usuario::query();
+        
+        if(!empty($parametros['codusuario'])) {
+            $query->where('codusuario', $parametros['codusuario']);
+        }      
+        
+        if(!empty($parametros['usuario'])) {
+            $query->usuario($parametros['usuario']);
+        }        
+        
+        if(!empty($parametros['codfilial'])) {
+            $query->where('codfilial', $parametros['codfilial']);
+        }      
+
+        if(!empty($parametros['codpessoa'])) {
+            $query->where('codpessoa', $parametros['codpessoa']);
+        }      
+        
+        switch (isset($parametros['ativo']) ? $parametros['ativo']:'9') {
+            case 1: //Ativos
+                $query->ativo();
+                break;
+            case 2: //Inativos
+                $query->inativo();
+                break;
+            case 9; //Todos
+            default:
         }
-    }   
-    
+        
+        return $query;
+    }
+
     public function scopeUsuario($query, $usuario)
     {
-        if (trim($usuario) != "")
-        {
-            $query->where('usuario', "ILIKE", "%$usuario%");
-        }
+        if (trim($usuario) === '')
+            return;
+        
+        $usuario = explode(' ', removeAcentos($usuario));
+        foreach ($usuario as $str)
+            $query->where('usuario', 'ILIKE', "%$str%");
+    }
+    
+    public function scopeInativo($query)
+    {
+        $query->whereNotNull('inativo');
+    }
+
+    public function scopeAtivo($query)
+    {
+        $query->whereNull('inativo');
     }    
     
-    public function scopeCodpessoa($query, $codpessoa)
-    {
-        if ($codpessoa)
-        {
-            $query->where('codpessoa', "$codpessoa");
-        }
-    }      
-    
-    public function scopeCodfilial($query, $codfilial)
-    {
-        if ($codfilial)
-        {
-            $query->where('codfilial', "$codfilial");
-        }
-    }      
 }
