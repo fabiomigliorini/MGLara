@@ -7,7 +7,7 @@
   </div>
 </nav>
 <h1 class="header">
-    {!! titulo(null, $titulo, null) !!}  
+    {!! titulo(null, 'Saldos de Estoque', null) !!}  
     <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
         <span class='glyphicon glyphicon-search'></span>
     </a>
@@ -15,16 +15,16 @@
 <div class="clearfix"></div>
 <div class='collapse' id='div-filtro'>
     <div class='well well-sm' style="padding:9px 0">
-        {!! Form::open(['route' => 'produto.index', 'method' => 'GET', 'class' => 'form-horizontal', 'id' => 'saldo-estoque-search', 'role' => 'search', 'autocomplete' => 'off' ]) !!}
-        <div class='col-md-6'>
+        {!! Form::model($filtro, ['route' => 'estoque-saldo.index', 'method' => 'GET', 'class' => 'form-horizontal', 'id' => 'estoque-saldo-search', 'role' => 'search', 'autocomplete' => 'off' ]) !!}
+        <div class='col-md-5'>
             <div class="form-group">
                 {!! Form::label('codestoquelocal', 'Local', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-sm-6">{!! Form::select2EstoqueLocal('codestoquelocal', null, ['class' => 'form-control']) !!}</div>
+                <div class="col-sm-4">{!! Form::select2EstoqueLocal('codestoquelocal', null, ['class' => 'form-control']) !!}</div>
             </div>
             
             <div class="form-group">
                 {!! Form::label('codmarca', 'Marca', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-sm-6">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control']) !!}</div>
+                <div class="col-sm-5">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control']) !!}</div>
             </div>
             
             <div class="form-group">
@@ -32,7 +32,7 @@
                 <div class="col-sm-10">{!! Form::select2Produto('codproduto', null, ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group">
-                {!! Form::label('corredor', 'Localização', ['class' => 'col-sm-2 control-label']) !!}
+                {!! Form::label('corredor', 'Corredor', ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-md-9">
                     {!! Form::number('corredor', null, ['class' => 'form-control pull-left', 'min' => '0', 'step' => 1, 'style'=>'width:60px']) !!}
                     {!! Form::number('prateleira', null, ['class' => 'form-control pull-left', 'min' => '0', 'step' => 1, 'style'=>'width:60px; margin-left:10px']) !!}
@@ -40,6 +40,11 @@
                     {!! Form::number('bloco', null, ['class' => 'form-control pull-left', 'min' => '0', 'step' => 1, 'style'=>'width:60px; margin-left:10px']) !!}
                 </div>
             </div>
+            <div class="form-group">
+                {!! Form::label('agrupamento', 'Por', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-4">{!! Form::select2('agrupamento', $arr_agrupamentos, $agrupamento_atual, ['class' => 'form-control', 'placeholder' => 'Agrupado por...']) !!}</div>
+            </div>
+            
         </div>
         
         <div class='col-md-3'>
@@ -67,17 +72,23 @@
         <div class='col-md-3'>
             <div class="form-group">
                 {!! Form::label('saldo', 'Saldo', ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-md-9">{!! Form::select2('saldo', ['' => '', -1=>'Negativo', 1=>'Positivo'], null, ['class' => 'form-control', 'placeholder' => 'Saldo...']) !!}</div>
+                <div class="col-md-9">{!! Form::select2('saldo', $arr_saldos, null, ['class' => 'form-control', 'placeholder' => 'Saldo...']) !!}</div>
             </div>
             <div class="form-group">
                 {!! Form::label('minimo', 'Mínimo', ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-md-9">{!! Form::select2('minimo', ['' => '', -1=>'Abaixo Mínimo', 1=>'Acima Mínimo'], null, ['class' => 'form-control', 'placeholder' => 'Estoque Mínimo...']) !!}</div>
+                <div class="col-md-9">{!! Form::select2('minimo', $arr_minimo, null, ['class' => 'form-control', 'placeholder' => 'Estoque Mínimo...']) !!}</div>
             </div>
             <div class="form-group">
                 {!! Form::label('maximo', 'Máximo', ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-md-9">{!! Form::select2('maximo', ['' => '', -1=>'Abaixo Máximo', 1=>'Acima Máximo'], null, ['class' => 'form-control', 'placeholder' => 'Estoque Máximo...']) !!}</div>
+                <div class="col-md-9">{!! Form::select2('maximo', $arr_maximo, null, ['class' => 'form-control', 'placeholder' => 'Estoque Máximo...']) !!}</div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-9 col-md-offset-3">
+                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
+                </div>
             </div>
         </div>
+        
         {!! Form::close() !!}
         <div class="clearfix"></div>
     </div>
@@ -111,23 +122,28 @@
 
         @foreach($itens as $coditem => $item)
             <?php
-            $parametros[$codigo] = ($coditem=='total')?null:$coditem;
+            $filtro[$codigo] = ($coditem=='total')?null:$coditem;
+            $filtro['agrupamento'] = ($coditem=='total')?$agrupamento_atual:$agrupamento_proximo;
             ?>
             <div class="panel panel-default panel-condensed">
 
                 <!-- Total Local -->
                 <div class="{{ ($coditem == 'total')?'panel-footer':'panel-body' }}">
                         <div class="row">
-                            <div class='col-md-1 text-muted'>
+                            <small class='col-md-1 text-muted'>
                                 @if (!empty($item['coditem']))
-                                    <small>
-                                        {{ formataCodigo($item['coditem']) }}
-                                        <a href="{{ urlArrGet($parametros, 'estoque-saldo') }}" class="pull-right">
-                                                <span class='glyphicon glyphicon-zoom-in'></span>
-                                        </a>
-                                    </small>
+                                    <a href="{{ url("{$url_detalhes}{$coditem}") }}">
+                                        {{ formataCodigo($item['coditem'], ($codigo=='codproduto')?6:8) }}
+                                    </a>
+                                    @if ($agrupamento_atual != 'variacao')
+                                        <span class='pull-right'>
+                                            <a href="{{ urlArrGet($filtro, 'estoque-saldo') }}">
+                                                    <span class='glyphicon glyphicon-zoom-in'></span>
+                                            </a>
+                                        </span>
+                                    @endif
                                 @endif
-                            </div>
+                            </small>
                             <a data-toggle="collapse" href="#collapseItem{{ $coditem }}">
                                 <div class='col-md-3'>
                                     <b>
@@ -137,15 +153,15 @@
                                 <div class='col-md-2 text-right'>
                                     {!! formataEstoqueMinimoMaximo($item['estoquelocal']['total']['estoqueminimo'], $item['estoquelocal']['total']['estoquemaximo'], $item['estoquelocal']['total']['fisico']['saldoquantidade']) !!}
                                 </div>
-                                <div class='col-md-2 text-right'>
-                                        {{ formataNumero($item['estoquelocal']['total']['fisico']['saldoquantidade'], 0) }}
+                                <div class='col-md-2 text-right {{ ($item['estoquelocal']['total']['fisico']['saldoquantidade'] < 0)?'text-danger':'' }}'>
+                                    {{ formataNumero($item['estoquelocal']['total']['fisico']['saldoquantidade'], 0) }}
                                 </div>
                                 <div class='col-md-1 text-right text-muted'>
                                     <small>
                                         {{ formataNumero($item['estoquelocal']['total']['fisico']['saldovalor'], 2) }}
                                     </small>
                                 </div>
-                                <div class='col-md-2 text-right'>
+                                <div class='col-md-2 text-right {{ ($item['estoquelocal']['total']['fiscal']['saldoquantidade'] < 0)?'text-danger':'' }}'>
                                     {{ formataNumero($item['estoquelocal']['total']['fiscal']['saldoquantidade'], 0) }}
                                 </div>
                                 <div class='col-md-1 text-right text-muted'>
@@ -172,8 +188,8 @@
                                     </div>
                                     <div class='col-md-2 text-muted'>
                                         <small>
-                                            <a href="{{ urlArrGet($parametros + ['codestoquelocal' => $codestoquelocal], 'estoque-saldo') }}" class="">
-                                                    <span class='glyphicon glyphicon-zoom-in'></span>
+                                            <a href="{{ urlArrGet($filtro + ['codestoquelocal' => $codestoquelocal], 'estoque-saldo') }}" class="">
+                                                <span class='glyphicon glyphicon-zoom-in'></span>
                                             </a>
                                         </small>
                                         &nbsp;
@@ -182,7 +198,15 @@
                                     <div class='col-md-2 text-right'>
                                         {!! formataEstoqueMinimoMaximo($local['estoqueminimo'], $local['estoquemaximo'], $local['fisico']['saldoquantidade']) !!}
                                     </div>
-                                    <div class='col-md-2 text-right'>
+                                    <div class='col-md-2 text-right {{ ($local['fisico']['saldoquantidade'] < 0)?'text-danger':'' }}'>
+                                        @if (!empty($local['fisico']['codestoquesaldo']))
+                                            <small>
+                                                <a href="{{ url("estoque-saldo/{$local['fisico']['codestoquesaldo']}") }}" class="">
+                                                    <span class='glyphicon glyphicon-zoom-in'></span>                                                
+                                                </a>
+                                            </small>
+                                            &nbsp;
+                                        @endif
                                         {{ formataNumero($local['fisico']['saldoquantidade'], 0) }}
                                     </div>
                                     <div class='col-md-1 text-right text-muted'>
@@ -190,7 +214,15 @@
                                             {{ formataNumero($local['fisico']['saldovalor'], 2) }}
                                         </small>
                                     </div>
-                                    <div class='col-md-2 text-right'>
+                                    <div class='col-md-2 text-right {{ ($local['fiscal']['saldoquantidade'] < 0)?'text-danger':'' }}'>
+                                        @if (!empty($local['fiscal']['codestoquesaldo']))
+                                            <small>
+                                                <a href="{{ url("estoque-saldo/{$local['fiscal']['codestoquesaldo']}") }}" class="">
+                                                    <span class='glyphicon glyphicon-zoom-in'></span>                                                
+                                                </a>
+                                            </small>
+                                            &nbsp;
+                                        @endif
                                         {{ formataNumero($local['fiscal']['saldoquantidade'], 0) }}
                                     </div>
                                     <div class='col-md-1 text-right text-muted'>
@@ -214,9 +246,38 @@
 
 @section('inscript')
 <script type="text/javascript">
-  $(document).ready(function() {
-      
-  });
+    
+function atualizaFiltro()
+{
+    var frmValues = $('#estoque-saldo-search').serialize();
+    $.ajax({
+        type: 'GET',
+        url: baseUrl + '/estoque-saldo',
+        data: frmValues,
+        dataType: 'html'
+    })
+    .done(function (data) {
+        $('#div-estoque').html(jQuery(data).find('#div-estoque').html());
+    })
+    .fail(function () {
+        console.log('Erro no filtro');
+    });
+}
+    
+$(document).ready(function() {
+
+    $("#estoque-saldo-search").on("change", function (e) {
+        if($('#estoque-saldo-search')[0].checkValidity()){
+            $("#estoque-saldo-search").submit();
+        }
+        return false;
+        
+    }).on('submit', function (e){
+        e.preventDefault();
+        atualizaFiltro();
+    });
+
+});
 </script>
 @endsection
 @stop

@@ -17,6 +17,12 @@ use MGLara\Models\Produto;
 
 class ProdutoVariacaoController extends Controller
 {
+    public function show($id)
+    {
+        $model = ProdutoVariacao::findOrFail($id);
+        return redirect("produto/$model->codproduto");
+    }
+    
     /**
      * Show the form for creating a new resource.
      *

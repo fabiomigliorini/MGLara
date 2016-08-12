@@ -368,17 +368,23 @@ if(!function_exists('listagemTitulo')) {
 
 
 if(!function_exists('formataEstoqueMinimoMaximo')) {
-    function formataEstoqueMinimoMaximo ($minimo, $maximo, $saldo = null)
+    function formataEstoqueMinimoMaximo ($minimo, $maximo, $saldo = 'Vazio')
     {
         $html = '';
         if (!empty($minimo)) {
-            $class = ($saldo !== null && $saldo < $minimo)?'text-danger':'';
+            $class = ($saldo !== 'Vazio' && $saldo < $minimo)?'text-danger':'';
             $html .= " <span class='$class'>" . formataNumero($minimo, 0) . " <span class='glyphicon glyphicon-arrow-down'></span></span> ";
         }
+        
         if (!empty($maximo)) {
-            $class = ($saldo !== null && $saldo > $maximo)?'text-danger':'';
+            $class = ($saldo !== 'Vazio' && $saldo > $maximo)?'text-danger':'';
             $html .= " <span class='$class'>" . formataNumero($maximo, 0) . " <span class='glyphicon glyphicon-arrow-up'></span></span> ";
         }
+        
+        if (empty($html)) {
+            $html = '&nbsp;';
+        }
+            
         
         return $html;
     }
