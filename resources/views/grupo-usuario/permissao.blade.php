@@ -1,22 +1,38 @@
-<h1 class="header">Permissões</h1>
-<div class="search-bar">
-  {!! Form::model(Request::all(), [
-    'method' => 'GET', 
-    'class' => 'form-inline',
-    'id' => 'grupo-usuario-search',
-    'role' => 'search'
-  ])!!}
-  <div class="form-group">
-    {!! Form::text('codpermissao', null, ['class' => 'form-control search-cod', 'placeholder' => '#']) !!}
-  </div>
-  <div class="form-group">
-    {!! Form::text('permissao', null, ['class' => 'form-control', 'placeholder' => 'Permissão']) !!}
-  </div>
-  <button type="submit" class="btn btn-default">Buscar</button>
-{!! Form::close() !!}
+<div class="clearfix"></div>
+<div class='collapse' id='div-filtro'>
+    <div class='well well-sm' style="padding:9px 0">
+        {!! Form::model(Request::all(), [
+            'method' => 'GET', 
+            'class' => 'form-horizontal',
+            'id' => 'grupo-usuario-search',
+            'role' => 'search'
+        ])!!}
+        <div class="col-md-2">
+            <div class="form-group">
+                {!! Form::label('permissao', '#', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-10">{!! Form::text('codpermissao', null, ['class' => 'form-control', 'placeholder' => '#']) !!}</div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="form-group">
+              {!! Form::label('permissao', 'Permissão', ['class' => 'col-sm-2 control-label']) !!}
+              <div class="col-md-9">{!! Form::text('permissao', null, ['class' => 'form-control', 'placeholder' => 'Permissão']) !!}</div>
+            </div>
+        </div>
+        <div class="col-md-3">    
+            <div class="form-group">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-default pull-left">
+                        <i class=" glyphicon glyphicon-search"></i> Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+        {!! Form::close() !!}
+        <div class="clearfix"></div>
+    </div>
+    {!! Form::close() !!}
 </div>
-
-<br>
 <div id="registros">
   <div class="list-group col-md-9" id="items">
     @foreach($permissoes as $permissao)

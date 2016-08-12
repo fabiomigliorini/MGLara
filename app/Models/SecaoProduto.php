@@ -79,14 +79,14 @@ class SecaoProduto extends MGModel
         return $this->hasMany(FamiliaProduto::class, 'codsecaoproduto', 'codsecaoproduto');
     }
     
-    public static function search($parametros, $registros = 20)
+    public static function search($parametros)
     {
         $query = SecaoProduto::orderBy('secaoproduto', 'ASC');
         
-        if(isset($parametros['codsecaoproduto']))
+        if(!empty($parametros['codsecaoproduto']))
             $query->id($parametros['codsecaoproduto']);
         
-        if(isset($parametros['secaoproduto']))
+        if(!empty($parametros['secaoproduto']))
             $query->secaoProduto($parametros['secaoproduto']);
         
         switch (isset($parametros['ativo'])?$parametros['ativo']:'9')
@@ -102,7 +102,7 @@ class SecaoProduto extends MGModel
         }
 
         
-        return $query->paginate($registros);
+        return $query;
     }
 
     public function scopeId($query, $id)

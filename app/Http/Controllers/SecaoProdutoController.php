@@ -30,7 +30,7 @@ class SecaoProdutoController extends Controller
         
         $parametros = $request->session()->get('secao-produto')['index'];
             
-        $model = SecaoProduto::search($parametros);
+        $model = SecaoProduto::search($parametros)->orderBy('secaoproduto', 'ASC')->paginate(20);
         return view('secao-produto.index', compact('model'));
     }
     /**

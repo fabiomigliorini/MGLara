@@ -70,31 +70,30 @@ class Permissao extends MGModel
         return parent::validate();
     }
     
-    
-    # Buscas #
-    public static function filterAndPaginate($codpermissao, $permissao)
+    public static function search($parametros)
     {
-        return Permissao::codpermissao($codpermissao)
-            ->permissao($permissao)    
-            ->orderBy('permissao', 'DESC')
-            ->paginate(20);
-    }
-    
-    public function scopeCodpermissao($query, $codpermissao)
-    {
-        if ($codpermissao)
-        {
-            $query->where('codpermissao', "$codpermissao");
+        $query = Permissao::query();
+        
+        if (!empty($parametros['codpermissao'])) {
+            $query->where('codpermissao', $parametros['codpermissao']);
         }
-    }      
+
+        if (!empty($parametros['permissao'])) {
+            $query->permissao($parametros['permissao']);
+        }
+
+        return $query;
+    }
     
     public function scopePermissao($query, $permissao)
     {
-        if (trim($permissao) != "")
-        {
-            $query->where('permissao', "ILIKE", "%$permissao%");
+        if (trim($permissao) === '')
+            return;
+        
+        $permissao = explode(' ', removeAcentos($permissao));
+        foreach ($permissao as $str) {
+            $query->where('permissao', 'ILIKE', "%$str%");
         }
     }
-
-            
+        
 }

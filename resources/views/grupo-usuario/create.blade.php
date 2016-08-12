@@ -9,7 +9,18 @@
 		</ul>
 	</div>
 </nav>
-<h1 class="header">Grupo de usuário</h1>
+<h1 class="header">
+{!! 
+    titulo(
+        null,
+        [
+            url('produto') => 'Grupo de usuários',
+            'Novo grupo'
+        ],
+        $model->inativo
+    ) 
+!!}     
+</h1>
 <hr>
 {!! Form::open(['route'=>'grupo-usuario.store', 'method' => 'POST', 'class' => 'form-horizontal']) !!}
     @include('errors.form_error')

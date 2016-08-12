@@ -18,13 +18,19 @@ class GrupoUsuarioController extends Controller
         $this->middleware('permissao:grupo-usuario.inclusao', ['only' => ['create', 'store']]);
         $this->middleware('permissao:grupo-usuario.alteracao', ['only' => ['edit', 'update']]);
         $this->middleware('permissao:grupo-usuario.exclusao', ['only' => ['delete', 'destroy']]);
+        
+        $this->middleware('parametros', ['only' => ['index', 'show']]);
     }
     
     public function index(Request $request) {
-        $model = GrupoUsuario::filterAndPaginate(
-            $request->get('codgrupousuario'),
-            $request->get('grupousuario')
-        );
+        
+        if (!$request->session()->has('grupo-usuario.index')) {
+            $request->session()->put('grupo-usuario.index', []);
+        }
+
+        $parametros = $request->session()->get('grupo-usuario.index');
+        
+        $model = GrupoUsuario::search($parametros)->orderBy('grupousuario', 'ASC')->paginate(20);
         return view('grupo-usuario.index', compact('model'));        
     }
 
@@ -57,12 +63,16 @@ class GrupoUsuarioController extends Controller
         return redirect('grupo-usuario');
     }
     
-    public function show($codgrupousuario, Request $request) {
-        $model = GrupoUsuario::find($codgrupousuario);
-        $permissoes = Permissao::filterAndPaginate(
-            $request->get('codpermissao'),
-            $request->get('permissao')
-        );        
+    public function show(Request $request, $id) {
+        
+        if (!$request->session()->has('grupo-usuario.show')) {
+            $request->session()->put("grupo-usuario.show", []);
+        }
+
+        $request->session()->put("grupo-usuario.show.codgrupousuario", $id);
+        $parametros = $request->session()->get('secao-produto.show');   
+        $model = GrupoUsuario::find($id);
+        $permissoes = Permissao::search($parametros)->orderBy('permissao', 'ASC')->paginate(20);        
         return view('grupo-usuario.show', compact('model', 'permissoes'));
     }
 

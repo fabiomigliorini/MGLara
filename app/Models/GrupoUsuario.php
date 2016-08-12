@@ -81,31 +81,53 @@ class GrupoUsuario extends MGModel
         return parent::validate();
     }
     
-    
-    # Buscas #
-    public static function filterAndPaginate($codgrupousuario, $grupousuario)
+    public static function search($parametros)
     {
-        return GrupoUsuario::codgrupousuario($codgrupousuario)
-            ->grupousuario($grupousuario)
-            ->orderBy('grupousuario', 'DESC')
-            ->paginate(20);
+        $query = GrupoUsuario::query();
+        
+        if (!empty($parametros['codgrupousuario'])) {
+            $query->where('codgrupousuario', $parametros['codgrupousuario']);
+        }
+
+        if (!empty($parametros['grupousuario'])) {
+            $query->grupousuario($parametros['grupousuario']);
+        }
+
+        switch (isset($parametros['ativo'])?$parametros['ativo']:'9')
+        {
+            case 1: //Ativos
+                $query->ativo();
+                break;
+            case 2: //Inativos
+                $query->inativo();
+                break;
+            case 9; //Todos
+            default:
+        }
+
+        return $query;
     }
     
-    public function scopeCodgrupousuario($query, $codgrupousuario)
-    {
-        if ($codgrupousuario)
-        {
-            $query->where('codgrupousuario', "$codgrupousuario");
-        }
-    }     
     
     public function scopeGrupoUsuario($query, $grupousuario)
     {
-        if (trim($grupousuario) != "")
-        {
-            $query->where('grupousuario', "ILIKE", "%$grupousuario%");
+        if (trim($grupousuario) === '')
+            return;
+        
+        $grupousuario = explode(' ', removeAcentos($grupousuario));
+        foreach ($grupousuario as $str) {
+            $query->where('grupousuario', 'ILIKE', "%$str%");
         }
     }
+    
+    public function scopeInativo($query)
+    {
+        $query->whereNotNull('inativo');
+    }
 
-            
+    public function scopeAtivo($query)
+    {
+        $query->whereNull('inativo');
+    }
+         
 }

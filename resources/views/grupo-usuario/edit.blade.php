@@ -9,7 +9,18 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Alterar Grupo de usuário #{{$model->codgrupousuario}}</h1>
+<h1 class="header">
+{!! 
+    titulo(
+        $model->codgrupousuario,
+        [
+            url("grupo-usuario/$model->codgrupousuario") => $model->grupousuario,
+            'Alterar',
+        ],
+        $model->inativo
+    ) 
+!!}  
+</h1>
 <hr>
 <br>
 {!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'action' => ['GrupoUsuarioController@update', $model->codgrupousuario] ]) !!}
