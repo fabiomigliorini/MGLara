@@ -24,7 +24,7 @@ class UsuarioController extends Controller
         $this->middleware('permissao:usuario.inclusao', ['only' => ['create', 'store']]);
         $this->middleware('permissao:usuario.alteracao', ['only' => ['edit', 'update']]);
         $this->middleware('permissao:usuario.exclusao', ['only' => ['delete', 'destroy']]);
-        $this->middleware('parametros', ['only' => ['index']]);
+        $this->middleware('parametros', ['only' => ['index', 'permissao']]);
         
         $this->prints     = [''=>''] + Usuario::printers();        
     }
@@ -130,12 +130,15 @@ class UsuarioController extends Controller
     }    
     
     public function permissao(Request $request, $codusuario) {
+        if (!$request->session()->has('usuario.permissao')) {
+            $request->session()->put('usuario.permissao', []);
+        }
+
+        $parametros = $request->session()->get('usuario.permissao');        
+        
         $model = Usuario::find($codusuario);
         $filiais = Filial::orderBy('codfilial', 'asc')->get();
-        $grupos = GrupoUsuario::filterAndPaginate(
-            $request->get('codgrupo'),
-            $request->get('grupousuario')
-        );
+        $grupos = GrupoUsuario::search($parametros)->orderBy('grupousuario', 'ASC')->paginate(20);
         return view('usuario.permissao', compact('model', 'grupos', 'filiais'));
     }
 

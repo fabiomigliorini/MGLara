@@ -71,7 +71,7 @@ class GrupoUsuarioController extends Controller
 
         $parametros = $request->session()->get('grupo-usuario.show');
         $model = GrupoUsuario::find($id);
-        $permissoes = Permissao::search($parametros)->orderBy('permissao', 'ASC')->paginate(5);        
+        $permissoes = Permissao::search($parametros)->orderBy('permissao', 'ASC')->paginate(20);        
         return view('grupo-usuario.show', compact('model', 'permissoes'));
     }
 
@@ -97,11 +97,11 @@ class GrupoUsuarioController extends Controller
     
     public function attachPermissao(Request $request) {
         $model = GrupoUsuario::find($request->get('codgrupousuario'));
-        $model->Permissao()->attach($request->get('codpermissao'));
+        $model->PermissaoS()->attach($request->get('codpermissao'));
     }
     
     public function detachPermissao(Request $request) {
         $model = GrupoUsuario::find($request->get('codgrupousuario'));
-        $model->Permissao()->detach($request->get('codpermissao'));
+        $model->PermissaoS()->detach($request->get('codpermissao'));
     }
 }

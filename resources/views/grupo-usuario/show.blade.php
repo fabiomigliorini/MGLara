@@ -155,7 +155,7 @@ $(document).ready(function() {
         var permissao = this.id;
         var token = '<?php echo csrf_token()?>';
         var action;
-        if(state === true) {
+        if(state === false) {
             action = 'detach-permissao';
         } else {
             action = 'attach-permissao';
