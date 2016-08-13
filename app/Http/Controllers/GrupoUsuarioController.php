@@ -35,7 +35,8 @@ class GrupoUsuarioController extends Controller
     }
 
     public function create() {
-        return view('grupo-usuario.create');
+        $model = new GrupoUsuario;
+        return view('grupo-usuario.create', compact('model'));
     }
 
     public function store(Request $request) {
@@ -43,8 +44,8 @@ class GrupoUsuarioController extends Controller
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         $model->save();
-        Session::flash('flash_create', 'Registro inserido.');
-        return redirect('grupo-usuario');
+        Session::flash('flash_success', 'Grupo de usuário Criado!');
+        return redirect("grupo-usuario/$model->codgrupousuario");  
     }
 
     public function edit($codgrupousuario) {
@@ -59,8 +60,8 @@ class GrupoUsuarioController extends Controller
             $this->throwValidationException($request, $model->_validator);
         $model->save();
         
-        Session::flash('flash_update', 'Registro atualizado.');
-        return redirect('grupo-usuario');
+        Session::flash('flash_success', "Grupo de usuário '{$model->grupousuario}' Atualizado!");
+        return redirect("grupo-usuario/$model->codgrupousuario"); 
     }
     
     public function show(Request $request, $id) {
@@ -75,24 +76,16 @@ class GrupoUsuarioController extends Controller
         return view('grupo-usuario.show', compact('model', 'permissoes'));
     }
 
-//    public function delete($codgrupousuario) {
-//        GrupoUsuario::find($codgrupousuario)->delete();
-//        die('ddd');
-//        Session::flash('flash_message', 'Registro deletado.');
-//        return Redirect::route('grupousuario');
-//    }
-    
-    public function destroy($codgrupousuario) {
-
-    	try{
-            GrupoUsuario::find($codgrupousuario)->delete();
-            Session::flash('flash_delete', 'Registro deletado!');
-            return Redirect::route('grupo-usuario.index');
-    	}
-    	catch(\Exception $e){
-			return view('errors.fk');
-    	}    	
-    	
+    public function destroy($id)
+    {
+        try{
+            GrupoUsuario::find($id)->delete();
+            $ret = ['resultado' => true, 'mensagem' => 'Grupo de usuário excluído com sucesso!'];
+        }
+        catch(\Exception $e){
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir grupo de usuário!', 'exception' => $e];
+        }
+        return json_encode($ret);
     }
     
     public function attachPermissao(Request $request) {

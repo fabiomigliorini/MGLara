@@ -14,7 +14,7 @@
     titulo(
         null,
         [
-            url('produto') => 'Grupo de usuários',
+            url('grupo-usuario') => 'Grupo de usuários',
             'Novo grupo'
         ],
         $model->inativo
@@ -22,7 +22,7 @@
 !!}     
 </h1>
 <hr>
-{!! Form::open(['route'=>'grupo-usuario.store', 'method' => 'POST', 'class' => 'form-horizontal']) !!}
+{!! Form::open(['route'=>'grupo-usuario.store', 'method' => 'POST', 'class' => 'form-horizontal', 'id'=>'form-grupo-usuario']) !!}
     @include('errors.form_error')
     @include('grupo-usuario.form', ['submitTextButton' => 'Salvar'])
  {!! Form::close() !!}    

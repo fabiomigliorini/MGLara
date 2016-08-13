@@ -34,7 +34,8 @@ class PermissaoController extends Controller
     }
 
     public function create() {
-        return view('permissao.create');
+        $model = new Permissao;
+        return view('permissao.create', compact('model'));
     }
 
     public function store(Request $request) {
@@ -42,8 +43,8 @@ class PermissaoController extends Controller
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         $model->save();
-        Session::flash('flash_create', 'Registro inserido.');
-        return redirect('permissao');
+        Session::flash('flash_success', 'Permissão Criada!');
+        return redirect("permissao/$model->codpermissao");  
     }
 
     public function edit($codpermissao) {
@@ -58,8 +59,8 @@ class PermissaoController extends Controller
             $this->throwValidationException($request, $model->_validator);
         $model->save();
         
-        Session::flash('flash_update', 'Registro atualizado.');
-        return redirect('permissao');
+        Session::flash('flash_success', "Permissão '{$model->observacoes}' Atualizada!");
+        return redirect("permissao/$model->codpermissao"); 
     }
     
     public function show($codpermissao) {
@@ -67,22 +68,15 @@ class PermissaoController extends Controller
         return view('permissao.show', compact('model'));
     }
 
-//    public function delete($codpermissao) {
-//        Permissao::find($codpermissao)->delete();
-//        die('ddd');
-//        Session::flash('flash_message', 'Registro deletado.');
-//        return Redirect::route('permissao');
-//    }
-    
-    public function destroy($codpermissao) {
-
+    public function destroy($id)
+    {
         try{
-	        Permissao::find($codpermissao)->delete();
-	        Session::flash('flash_delete', 'Registro deletado!');
-	        return Redirect::route('permissao.index');
+            Permissao::find($id)->delete();
+            $ret = ['resultado' => true, 'mensagem' => 'Permissão excluída com sucesso!'];
         }
         catch(\Exception $e){
-        	return view('errors.fk');
-        }        
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir permissão!', 'exception' => $e];
+        }
+        return json_encode($ret);
     }
 }
