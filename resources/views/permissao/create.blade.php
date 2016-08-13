@@ -9,7 +9,18 @@
 		</ul>
 	</div>
 </nav>
-<h1 class="header">Permissão</h1>
+<h1 class="header">
+{!! 
+    titulo(
+        null,
+        [
+            url("permissao") => 'Permissões',
+            'Nova Permissão',
+        ],
+        $model->inativo
+    ) 
+!!}   
+</h1>
 <hr>
 {!! Form::open(['route'=>'permissao.store', 'method' => 'POST', 'class' => 'form-horizontal']) !!}
     @include('errors.form_error')

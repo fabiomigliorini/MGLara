@@ -17,13 +17,19 @@ class PermissaoController extends Controller
         $this->middleware('permissao:permissao.inclusao', ['only' => ['create', 'store']]);
         $this->middleware('permissao:permissao.alteracao', ['only' => ['edit', 'update']]);
         $this->middleware('permissao:permissao.exclusao', ['only' => ['delete', 'destroy']]);
+        
+        $this->middleware('parametros', ['only' => ['index']]);
     }
     
     public function index(Request $request) {
-        $model = Permissao::filterAndPaginate(
-            $request->get('codpermissao'),
-            $request->get('permissao')
-        );
+        
+        if (!$request->session()->has('permissao.index')) {
+            $request->session()->put('permissao.index', []);
+        }
+
+        $parametros = $request->session()->get('permissao.index');
+        
+        $model = Permissao::search($parametros)->orderBy('permissao', 'ASC')->paginate(20);
         return view('permissao.index', compact('model'));        
     }
 

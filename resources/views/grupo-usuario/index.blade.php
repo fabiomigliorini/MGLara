@@ -57,7 +57,7 @@
       <div class="list-group-item">
         <div class="row item">
           <div class="col-md-1">
-            <a href="<?php echo url("grupo-usuario/$row->codgrupousuario");?>">{{formataCodigo($row->codgrupousuario)}}</a>
+              <a class="small text-muted" href="<?php echo url("grupo-usuario/$row->codgrupousuario");?>">{{formataCodigo($row->codgrupousuario)}}</a>
           </div>                            
           <div class="col-md-11">
             <a href="<?php echo url("grupo-usuario/$row->codgrupousuario");?>">{{$row->grupousuario}}</a>

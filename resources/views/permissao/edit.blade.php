@@ -9,7 +9,18 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Alterar permissão #{{$model->codpermissao}}</h1>
+<h1 class="header">
+{!! 
+    titulo(
+        $model->codpermissao,
+        [
+            url("permissao/$model->codpermissao") => $model->observacoes,
+            'Alterar',
+        ],
+        $model->inativo
+    ) 
+!!}  
+</h1>
 <hr>
 <br>
 {!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'action' => ['PermissaoController@update', $model->codpermissao] ]) !!}

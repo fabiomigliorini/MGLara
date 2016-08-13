@@ -69,10 +69,9 @@ class GrupoUsuarioController extends Controller
             $request->session()->put("grupo-usuario.show", []);
         }
 
-        $request->session()->put("grupo-usuario.show.codgrupousuario", $id);
-        $parametros = $request->session()->get('secao-produto.show');   
+        $parametros = $request->session()->get('grupo-usuario.show');
         $model = GrupoUsuario::find($id);
-        $permissoes = Permissao::search($parametros)->orderBy('permissao', 'ASC')->paginate(20);        
+        $permissoes = Permissao::search($parametros)->orderBy('permissao', 'ASC')->paginate(5);        
         return view('grupo-usuario.show', compact('model', 'permissoes'));
     }
 

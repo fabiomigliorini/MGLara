@@ -15,7 +15,15 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">{{ $model->observacoes }}</h1>
+<h1 class="header">
+    {!! 
+        titulo(
+            $model->codpermissao,
+            $model->observacoes,
+            $model->inativo
+        ) 
+    !!}
+</h1>
 <hr>
 <div class="row">
   <div class="col-lg-12">

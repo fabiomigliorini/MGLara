@@ -34,7 +34,7 @@
         {!! Form::model(Request::session()->get('grupo-usuario.show'), [
             'method' => 'GET', 
             'class' => 'form-horizontal',
-            'id' => 'grupo-usuario-search',
+            'id' => 'permissoes-search',
             'role' => 'search'
         ])!!}
         <div class="col-md-2">
@@ -91,26 +91,75 @@
         <h3>Nenhum registro encontrado!</h3>
     @endif    
   </div>
-  <?php echo $permissoes->appends(Request::session()->get('grupo-usuario.show'))->render();?>
+  {{ $permissoes->appends(Request::session()->get('grupo-usuario.show'))->render() }}
 </div>
 
 @section('inscript')
 <script type="text/javascript">
-  $(document).ready(function() {
-      $('#grupo-usuario-search').change(function() {
-        this.submit();
-      });       
-      $(".check-permissao").bootstrapSwitch('size', 'small');
-      $('.check-permissao').on('switchChange.bootstrapSwitch', function(event, state) {
-          var grupo = '<?php echo $model->codgrupousuario;?>';
-          var permissao = this.id;
-          var token = '<?php echo csrf_token()?>';
-          var action;
-          if(state === true) {
-              action = 'detach-permissao';
-          } else {
-              action = 'attach-permissao';
-          }
+function atualizaFiltro()
+{
+    scroll();
+    var frmValues = $("#permissoes-search").serialize();
+    $.ajax({
+        type: 'GET',
+        url: baseUrl + '/grupo-usuario/' + {{ $model->codgrupousuario }},
+        data: frmValues
+    })
+    .done(function (data) {
+        $('#items').html(jQuery(data).find('#items').html()); 
+    })
+    .fail(function () {
+        console.log('Erro no filtro');
+    });
+
+    $('#items').infinitescroll('update', {
+        state: {
+            currPage: 1,
+            isDestroyed: false,
+            isDone: false             
+        },
+        path: ['?page=', '&'+frmValues]
+    });
+}
+
+function scroll()
+{
+    var loading_options = {
+        finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
+        msgText: "<div class='center'>Carregando mais itens...</div>",
+        img: baseUrl + '/public/img/ajax-loader.gif'
+    };
+
+    $('#items').infinitescroll({
+        loading : loading_options,
+        navSelector : "#registros .pagination",
+        nextSelector : "#registros .pagination li.active + li a",
+        itemSelector : "#items div.list-group-item",
+    });    
+}
+    
+$(document).ready(function() {
+    scroll();
+    $("#permissoes-search").on("change", function (event) {
+        $('#items').infinitescroll('destroy');
+        atualizaFiltro();
+    }).on('submit', function (event){
+        event.preventDefault();
+        $('#items').infinitescroll('destroy');
+        atualizaFiltro();
+    });
+    
+    $(".check-permissao").bootstrapSwitch('size', 'small');
+    $('.check-permissao').on('switchChange.bootstrapSwitch', function(event, state) {
+        var grupo = '<?php echo $model->codgrupousuario;?>';
+        var permissao = this.id;
+        var token = '<?php echo csrf_token()?>';
+        var action;
+        if(state === true) {
+            action = 'detach-permissao';
+        } else {
+            action = 'attach-permissao';
+        }
         $.post( baseUrl+"/grupo-usuario/"+action, {
             codgrupousuario: grupo, 
             codpermissao: permissao,
@@ -119,8 +168,8 @@
         .done(function(data) {
             // ...
         });
-      });      
-  });
+    });      
+});
 </script>
 @endsection
 @stop
