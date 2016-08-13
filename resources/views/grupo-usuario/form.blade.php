@@ -3,7 +3,7 @@
   	{!! Form::label('Grupo de usuário', 'Grupo de usuário:') !!}
   </label>
   <div class="col-md-2 col-xs-4">
-  	{!! Form::text('grupousuario', null, ['class'=> 'form-control', 'required'=>'required'], ['id'=>'grupousuario']) !!}
+  	{!! Form::text('grupousuario', null, ['class'=> 'form-control', 'id'=>'grupousuario', 'required'=>'required']) !!}
   </div>
 </div>
 
@@ -12,3 +12,19 @@
   {!! Form::submit($submitTextButton, array('class' => 'btn btn-primary')) !!}
   </div>
 </div>
+@section('inscript')
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#form-grupo-usuario').on("submit", function(e){
+        var currentForm = this;
+        e.preventDefault();
+        bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
+            if (result) {
+                currentForm.submit();
+            }
+        });
+    });
+    $('#grupousuario').Setcase();     
+});
+</script>
+@endsection

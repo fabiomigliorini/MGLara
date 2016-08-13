@@ -21,7 +21,7 @@
   	{!! Form::label('Observações', 'Observações:') !!}
   </label>
   <div class="col-md-2 col-xs-4">
-  	{!! Form::text('observacoes', null, ['class'=> 'form-control'], ['id'=>'observacoes']) !!}
+  	{!! Form::text('observacoes', null, ['class'=> 'form-control', 'id'=>'observacoes', 'required'=>'required']) !!}
   </div>
 </div>
 
@@ -30,3 +30,19 @@
   {!! Form::submit($submitTextButton, array('class' => 'btn btn-primary')) !!}
   </div>
 </div>
+@section('inscript')
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#form-permissao').on("submit", function(e){
+        var currentForm = this;
+        e.preventDefault();
+        bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
+            if (result) {
+                currentForm.submit();
+            }
+        });
+    });
+    $('#observacoes').Setcase();     
+});
+</script>
+@endsection

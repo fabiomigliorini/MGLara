@@ -7,10 +7,7 @@
             <li><a href="<?php echo url('grupo-usuario/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
             <li><a href="<?php echo url("grupo-usuario/$model->codgrupousuario/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li>
-                {!! Form::open(['method' => 'DELETE', 'route' => ['grupo-usuario.destroy', $model->codgrupousuario]]) !!}
-                <span class="glyphicon glyphicon-trash"></span>
-                {!! Form::submit('Excluir') !!}
-                {!! Form::close() !!}
+                <a href="{{ url("grupo-usuario/$model->codgrupousuario") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o grupo de usuário'{{ $model->grupousuario }}'?" data-after-delete="location.replace(baseUrl + '/grupo-usuario');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
             </li>
         </ul>
     </div>

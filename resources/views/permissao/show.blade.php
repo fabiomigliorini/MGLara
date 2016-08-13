@@ -7,10 +7,7 @@
             <li><a href="<?php echo url('permissao/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
             <li><a href="<?php echo url("permissao/$model->codpermissao/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
             <li>
-                {!! Form::open(['method' => 'DELETE', 'route' => ['permissao.destroy', $model->codpermissao]]) !!}
-                <span class="glyphicon glyphicon-trash"></span>
-                {!! Form::submit('Excluir') !!}
-                {!! Form::close() !!}
+                <a href="{{ url("permissao/$model->codpermissao") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a permissao'{{ $model->observacoes }}'?" data-after-delete="location.replace(baseUrl + '/permissao');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
             </li>
         </ul>
     </div>
