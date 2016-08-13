@@ -105,10 +105,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto/popula-secao-produto','ProdutoController@populaSecaoProduto');
     Route::resource('produto/estoque-saldo','ProdutoController@estoqueSaldo');
     Route::resource('produto/inativo','ProdutoController@inativo');
-    Route::resource('produto/{id}/recalcula-movimento-estoque','ProdutoController@recalculaMovimentoEstoque');
-    Route::resource('produto/{id}/recalcula-custo-medio','ProdutoController@recalculaCustoMedio');
-    Route::resource('produto/{id}/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');
-
+    Route::patch('produto/{id}/transferir-variacao-salvar','ProdutoController@transferirVariacaoSalvar');
+    Route::get('produto/{id}/transferir-variacao','ProdutoController@transferirVariacao');
     Route::resource('produto','ProdutoController');
 
     /* Estoque Saldo Conferencia */

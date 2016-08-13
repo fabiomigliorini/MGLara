@@ -10,11 +10,13 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Produto;
 use MGLara\Models\ProdutoBarra;
 use MGLara\Models\ProdutoVariacao;
+use MGLara\Models\ProdutoEmbalagem;
 use MGLara\Models\NegocioProdutoBarra;
 use MGLara\Models\NotaFiscalProdutoBarra;
 use MGLara\Models\TipoProduto;
@@ -336,97 +338,6 @@ class ProdutoController extends Controller
         return response()->json($barra);
     }
 
-        public function recalculaMovimentoEstoque($id)
-    {
-        $model = Produto::findOrFail($id);
-        $ret = $model->recalculaMovimentoEstoque();
-        return json_encode($ret);
-    }
-    
-    /**
-     * Recalcula preço médio dos estoques
-     * 
-     * @param bigint $id
-     * @return \Illuminate\Http\Response
-     * 
-     */
-    public function recalculaCustoMedio($id)
-    {
-        $model = Produto::findOrFail($id);
-        $ret = $model->recalculaCustoMedio();
-        return json_encode($ret);
-    }
-    
-    /**
-     * Tenta cobrir estoque negativo, transferindo entre EstoqueLocal
-     * 
-     * @param bigint $id
-     * @return \Illuminate\Http\Response
-     * 
-     */
-    public function cobreEstoqueNegativo($id = null)
-    {
-
-        //echo '<meta http-equiv="refresh" content="1; URL=' . url('produto/cobre-estoque-negativo') . '">';
-        $codprodutos = [];
-        $pular = 0;
-        if (isset($_GET['pular']))
-            $pular = $_GET['pular'];
-        
-        if (empty($id))
-        {
-            
-            $itens = 2;
-            if (isset($_GET['itens']))
-                $itens = $_GET['itens'];
-            /*
-            $sql = "
-                    select distinct(es.codproduto) 
-                    from tblestoquesaldo es
-                    where es.fiscal
-                    and es.saldoquantidade < 0
-                    and es.codproduto in (select distinct es2.codproduto from tblestoquesaldo es2 where es2.fiscal and es2.saldoquantidade > 0)
-                    order by es.codproduto
-                    limit $itens
-                    offset $pular
-                    ";
-            */
-            
-            $sql = "
-                    select distinct(es.codproduto) 
-                    from tblestoquesaldo es
-                    where es.fiscal
-                    and es.saldoquantidade < 0
-                    order by es.codproduto
-                    limit $itens
-                    offset $pular
-                    ";
-            
-            $prods = DB::select($sql);
-            
-            foreach($prods as $prod)
-                $codprodutos[] = $prod->codproduto;
-            
-        }
-        else
-        {
-            $codprodutos[] = $id;
-        }
-        
-        $ret = [];
-        foreach ($codprodutos as $codproduto)
-        {
-            $model = Produto::findOrFail($codproduto);
-            $ret[$codproduto] = $model->cobreEstoqueNegativo();
-            if (sizeof($ret[$codproduto]) == 0)
-                $pular++;
-        }
-        
-        if (sizeof($codprodutos)>1)
-            echo '<meta http-equiv="refresh" content="1; URL=' . url('produto/cobre-estoque-negativo') . '?pular=' . $pular . '">';
-        
-        return json_encode($ret);
-    }
     
     public function listagemJson(Request $request)
     //public function listagemJson($texto, $inativo = false, $limite = 20, $pagina = 1) 
@@ -486,14 +397,7 @@ class ProdutoController extends Controller
             #}
 
             //ordena
-            #$sql .= ") ORDER BY $ordem LIMIT $limite OFFSET $offset";
             $sql .= ") ORDER BY $ordem LIMIT $limite OFFSET $offset";
-
-            #$command = Yii::app()->db->createCommand($sql);
-            #$command->params = $params;
-
-            #$resultados = $command->queryAll();
-
             
             $resultados = DB::select($sql);
             
@@ -506,12 +410,6 @@ class ProdutoController extends Controller
             }
 
             return response()->json($resultados);
-//            json_encode([
-//                    'mais' => count($resultados)==$limite?true:false, 
-//                    'pagina' => (int) $pagina, 
-//                    'itens' => $resultados
-//                ]
-//            );            
             
     } 
 
@@ -630,6 +528,76 @@ class ProdutoController extends Controller
         $resultado = $query->get();
 
         return response()->json($resultado);
+    }
+    
+    public function transferirVariacao(Request $request, $id)
+    {
+        $model = Produto::findOrFail($id);
+        return view('produto.transferir-variacao',  compact('model'));
+    }
+        
+    public function transferirVariacaoSalvar(Request $request, $id)
+    {
+        $form = $request->all();
+
+        $validator = Validator::make(
+            $form, 
+            [            
+                'codproduto'           => "required",
+                'codprodutovariacao'   => 'required',
+            ], 
+            [
+                'codproduto.required'           => 'Selecione o produto de destino!',
+                'codprodutovariacao.required'   => 'Selecione uma variação!',
+            ]
+        );
+        
+        if ($validator->fails()) {
+            $this->throwValidationException($request, $validator);
+        }
+        
+        DB::BeginTransaction();
+        
+        foreach($form['codprodutovariacao'] as $codprodutovariacao) {
+
+            $pv = ProdutoVariacao::findOrFail($codprodutovariacao);
+            $pv->codproduto = $form['codproduto'];
+            $pv->save();
+
+            foreach($pv->ProdutoBarraS as $pb) {
+
+                $pb->codproduto = $form['codproduto'];
+
+                if (!empty($pb->codprodutoembalagem)) {
+
+                    $pe = ProdutoEmbalagem::where([
+                        'codproduto' => $form['codproduto'],
+                        'quantidade' => $pb->ProdutoEmbalagem->quantidade,
+                    ])->first();
+
+                    if (!$pe) {
+                        $pe = new ProdutoEmbalagem;
+                        $pe->codproduto = $form['codproduto'];
+                        $pe->quantidade = $pb->ProdutoEmbalagem->quantidade;
+                        $pe->codunidademedida = $pb->ProdutoEmbalagem->codunidademedida;
+                        $pe->preco = $pb->ProdutoEmbalagem->preco;
+                        $pe->save();
+                    }
+
+                    $pb->codprodutoembalagem = $pe->codprodutoembalagem;
+
+                }
+
+                $pb->save();
+            }
+
+        }
+        //DB::rollback();
+        DB::commit();
+
+        return redirect("produto/{$form['codproduto']}");
+        
+        dd($validator);
     }
         
 }
