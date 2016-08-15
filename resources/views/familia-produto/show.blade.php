@@ -16,12 +16,9 @@
                     <span class="glyphicon glyphicon-ok-sign"></span> Ativar
                 </a>
                 @endif
-            </li> 
+            </li>
             <li>
-                {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['familia-produto.destroy', $model->codfamiliaproduto]]) !!}
-                <span class="glyphicon glyphicon-trash"></span>
-                {!! Form::submit('Excluir') !!}
-                {!! Form::close() !!}
+                <a href="{{ url("familia-produto/$model->codfamiliaproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a Família '{{ $model->familiaproduto }}'?" data-after-delete="location.replace(baseUrl + '/secao-produto/{{$model->codsecaoproduto}}');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
             </li>
         </ul>
     </div>
