@@ -9,10 +9,11 @@ use MGLara\Models\Negocio;
 use MGLara\Models\NegocioStatus;
 use MGLara\Models\Pessoa;
 
-class NegociosController extends Controller
+class NegocioController extends Controller
 {
     public function index(Request $request)
     {
+        return redirect()->away("/MGsis/index.php?r=negocio/index");
         $model = Negocio::orderBy('criacao', 'desc')->paginate(20);
 
         return view('negocios.index', compact('model'));
@@ -68,5 +69,10 @@ class NegociosController extends Controller
         $model->save();
 
         return redirect()->route('negocios::view', [$model])->with('status', 'Registro inserido.');
+    }
+    
+    public function show(Request $request, $id) 
+    {
+        return redirect()->away("/MGsis/index.php?r=negocio/view&id=$id");
     }
 }

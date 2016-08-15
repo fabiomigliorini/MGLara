@@ -14,10 +14,10 @@
                 <div class='list-group-item'>
                     <div class='row item'>
                         <small>
-                            <div class='col-sm-2 '>
+                            <div class='col-sm-3'>
                                 <div>
-                                    <a href="{{ url('negocio', ['id'=>$nfpb->codnegocio]) }}">
-                                        {{ formataCodigo($nfpb->codnegocio) }}
+                                    <a href="{{ url('nota-fiscal', ['id'=>$nfpb->codnotafiscal]) }}">
+                                        {{ formataNumeroNota($nfpb->NotaFiscal->emitida, $nfpb->NotaFiscal->serie, $nfpb->NotaFiscal->numero, $nfpb->NotaFiscal->modelo) }}
                                     </a>
                                 </div>
                                 <div class='text-muted'>
@@ -49,7 +49,7 @@
                                     {{ $nfpb->ProdutoBarra->barras }}
                                 </div>
                             </div>
-                            <div class='col-sm-3'>
+                            <div class='col-sm-2'>
                                 <div class='text-right'>
                                     <small class='pull-left'>R$</small> {{ formataNumero($valor, 2) }} 
                                 </div>
