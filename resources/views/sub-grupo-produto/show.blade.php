@@ -16,13 +16,10 @@
                     <span class="glyphicon glyphicon-ok-sign"></span> Ativar
                 </a>
                 @endif
-            </li> 
-            <li>
-                {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['sub-grupo-produto.destroy', $model->codsubgrupoproduto]]) !!}
-                <span class="glyphicon glyphicon-trash"></span>
-                {!! Form::submit('Excluir') !!}
-                {!! Form::close() !!}
             </li>
+            <li>
+                <a href="{{ url("sub-grupo-produto/$model->codsubgrupoproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o Sub Grupo '{{ $model->subgrupoproduto }}'?" data-after-delete="location.replace(baseUrl + '/grupo-produto/{{$model->codgrupoproduto}}');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+            </li>            
         </ul>
     </div>
 </nav>

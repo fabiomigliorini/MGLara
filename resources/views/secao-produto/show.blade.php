@@ -16,12 +16,9 @@
                     <span class="glyphicon glyphicon-ok-sign"></span> Ativar
                 </a>
                 @endif
-            </li> 
+            </li>
             <li>
-                {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['secao-produto.destroy', $model->codsecaoproduto]]) !!}
-                <span class="glyphicon glyphicon-trash"></span>
-                {!! Form::submit('Excluir') !!}
-                {!! Form::close() !!}
+                <a href="{{ url("secao-produto/$model->codsecaoproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a Seção '{{ $model->secaoproduto }}'?" data-after-delete="location.replace(baseUrl + '/secao-produto');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
             </li>
         </ul>
     </div>
@@ -49,6 +46,7 @@
             <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
         </a>
         <span class="caption simple-caption">
+            <a href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
             <a href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
         </span>        
         @endif

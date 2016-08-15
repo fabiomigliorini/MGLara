@@ -121,18 +121,15 @@ class FamiliaProdutoController extends Controller
     public function destroy($id)
     {
         try{
-            $model = FamiliaProduto::find($id);
-            $model->delete();
-            Session::flash('flash_success', "Família '{$model->familiaproduto}' Excluida!");
-            return redirect("secao-produto/$model->codsecaoproduto");
+            FamiliaProduto::find($id)->delete();
+            $ret = ['resultado' => true, 'mensagem' => 'Família excluída com sucesso!'];
         }
         catch(\Exception $e){
-            Session::flash('flash_danger', "Impossível Excluir!");
-            Session::flash('flash_danger_detail', $e->getMessage());
-            return redirect("familia-produto/$id"); 
-        }     
-    }
-    
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir família!', 'exception' => $e];
+        }
+        return json_encode($ret);
+    }    
+
     public function inativo(Request $request)
     {
         $model = FamiliaProduto::find($request->get('codfamiliaproduto'));

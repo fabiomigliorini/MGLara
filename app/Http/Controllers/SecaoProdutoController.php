@@ -123,18 +123,15 @@ class SecaoProdutoController extends Controller
     public function destroy($id)
     {
         try{
-            $model = SecaoProduto::find($id);
-            $model->delete();
-            Session::flash('flash_success', "Seção '{$model->secaoproduto}' Excluida!");
-            return Redirect::route('secao-produto.index');
+            SecaoProduto::find($id)->delete();
+            $ret = ['resultado' => true, 'mensagem' => 'Seção excluída com sucesso!'];
         }
         catch(\Exception $e){
-            Session::flash('flash_danger', "Impossível Excluir!");
-            Session::flash('flash_danger_detail', $e->getMessage());
-            return redirect("secao-produto/$id"); 
-        }     
-    }
-    
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir seção!', 'exception' => $e];
+        }
+        return json_encode($ret);
+    }    
+
     public function inativo(Request $request)
     {
         $model = SecaoProduto::find($request->get('codsecaoproduto'));

@@ -121,18 +121,15 @@ class GrupoProdutoController extends Controller
     public function destroy($id)
     {
         try{
-            $model = SubGrupoProduto::find($id);
-            $model->delete();
-            Session::flash('flash_success', "Sub Grupo '{$model->subgrupoproduto}' Excluido!");
-            return redirect("familia-produto/$model->codfamiliaproduto");
+            GrupoProduto::find($id)->delete();
+            $ret = ['resultado' => true, 'mensagem' => 'Grupo excluído com sucesso!'];
         }
         catch(\Exception $e){
-            Session::flash('flash_danger', "Impossível Excluir!");
-            Session::flash('flash_danger_detail', $e->getMessage());
-            return redirect("grupo-produto/$id"); 
-        }     
-    }
-    
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir grupo!', 'exception' => $e];
+        }
+        return json_encode($ret);
+    }    
+
     public function inativo(Request $request)
     {
         $model = GrupoProduto::find($request->get('codgrupoproduto'));
