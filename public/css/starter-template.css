@@ -29,7 +29,7 @@ h1.header {
 }
 
 .pace .pace-progress {
-  background: yellow;
+  background: red;
   position: fixed;
   z-index: 2000;
   top: 0;
