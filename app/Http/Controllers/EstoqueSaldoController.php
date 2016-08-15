@@ -16,6 +16,12 @@ class EstoqueSaldoController extends Controller
     {
         //$filtro = $request->all();
         $agrupamento_atual = empty($request->agrupamento)?'secaoproduto':$request->agrupamento;
+        $valor = empty($request->valor)?'custo':$request->valor;
+        
+        $arr_valor = [
+            'custo'=>'Custo do Produto', 
+            'venda'=>'Preço de Venda',
+        ];
         
         $arr_saldos = [
             '' => '', 
@@ -173,7 +179,7 @@ class EstoqueSaldoController extends Controller
          * 
          */
         
-        $itens = EstoqueSaldo::totais($agrupamento_atual, $filtro);
+        $itens = EstoqueSaldo::totais($agrupamento_atual, $valor, $filtro);
 
         if (!empty($titulo)) {
             $titulo = [url('estoque-saldo') => 'Saldos de Estoque'] + $titulo;
@@ -189,8 +195,10 @@ class EstoqueSaldoController extends Controller
                     'arr_saldos',
                     'arr_minimo',
                     'arr_maximo',
+                    'arr_valor',
                     'agrupamento_atual',
                     'agrupamento_proximo',
+                    'valor',
                     'url_detalhes',
                     'filtro',
                     'codigo'
