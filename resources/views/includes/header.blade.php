@@ -1,5 +1,5 @@
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-fixed-top" style="background: yellow">
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -8,7 +8,9 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="{{ url('home') }}">MGSis</a>
+        <b>
+      <a class="navbar-brand" href="{{ url('home') }}">MGLara</a>
+      </b>
     </div>
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
@@ -84,6 +86,9 @@
                 <li role="separator" class="divider"></li>
                 <li><a href="{{ url('imagem') }}">Imagens</a></li>
             </ul>
+        </li>
+        <li class="">
+            <a href="/MGsis">MGsis</span></a>
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
