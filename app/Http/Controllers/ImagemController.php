@@ -13,6 +13,10 @@ use Carbon\Carbon;
 
 class ImagemController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('parametros', ['only' => ['index']]);
+    }    
     /**
      * Display a listing of the resource.
      *
@@ -20,9 +24,13 @@ class ImagemController extends Controller
      */
     public function index(Request $request)
     {
-        $model = Imagem::filterAndPaginate(
-            $request->get('inativo')
-        ); 
+        if (!$request->session()->has('imagem.index')) {
+            $request->session()->put('imagem.index.ativo', '1');
+        }
+
+        $parametros = $request->session()->get('imagem.index');
+        
+        $model = Imagem::search($parametros)->orderBy('codimagem', 'DESC')->paginate(20);
         
         return view('imagem.index', compact('model'));
     }
@@ -173,13 +181,14 @@ class ImagemController extends Controller
 
     public function lixeira()
     {
-        $model = Imagem::filterAndPaginate(2); 
+        $parametros['ativo'] = 2;
+        $model = Imagem::search($parametros)->orderBy('codimagem', 'DESC')->paginate(20);
         return view('imagem.lixeira', compact('model'));        
     }
 
     public function esvaziarLixeira()
     {
-        try {
+        try{
             $imagens = Imagem::whereNotNull('inativo')->get();
             Imagem::whereNotNull('inativo')->delete();
 
@@ -187,15 +196,17 @@ class ImagemController extends Controller
             {
                 unlink('./public/imagens/'.$imagem->observacoes);
             }
-            
-            Session::flash('flash_delete', 'Imagens excluidas!');
-            return Redirect::route('imagem.index');
-        } catch (\Exception $e) {
-            return view('errors.fk');
+            Session::flash('flash_success', 'Lixeira esvaziada com sucesso!!');
+            return redirect('imagem/lixeira');
         }
+        catch(\Exception $e){
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao esvaziar lixeira!', 'exception' => $e];
+            return redirect('imagem/lixeira');
+        }
+        //return json_encode($ret);        
     }
 
-        /**
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -207,16 +218,13 @@ class ImagemController extends Controller
             $model = Imagem::find($id);
             $model->delete();
             unlink('./public/imagens/'.$model->observacoes);
-            Session::flash('flash_success', "Imagem '{$model->codimagem}' Excluida!");
-            return Redirect::route('imagem.index');
+            $ret = ['resultado' => true, 'mensagem' => 'Imagem excluída com sucesso!'];
         }
         catch(\Exception $e){
-            Session::flash('flash_danger', "Impossível Excluir!");
-            Session::flash('flash_danger_detail', $e->getMessage());
-            return redirect("imagem/$id"); 
-        }     
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir imagem!', 'exception' => $e];
+        }
+        return json_encode($ret);
     }
-    
     
     public function inativo(Request $request)
     {
@@ -231,5 +239,5 @@ class ImagemController extends Controller
         $model->save();
         $imagem->save();
         Session::flash('flash_success', $msg);
-    }    
+    }
 }

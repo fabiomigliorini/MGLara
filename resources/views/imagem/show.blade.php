@@ -15,32 +15,22 @@
             @endif
             @if($model->inativo)
             <li>
-                {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['imagem.destroy', $model->codimagem]]) !!}
-                <span class="glyphicon glyphicon-trash"></span>
-                {!! Form::submit('Excluir') !!}
-                {!! Form::close() !!}
+                <a href="{{ url("imagem/$model->codimagem") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a imagem '{{ $model->observacoes }}'?" data-after-delete="location.replace(baseUrl + '/imagem');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
             </li>
             @endif
         </ul>
     </div>
 </nav>
 <h1 class="header">
-    @if(!empty($model->inativo))
-        <del>
-    @endif
-    <small>
-        {{ formataCodigo($model->codimagem) }}
-    </small>
-    {{ $model->codimagem }}
-    @if(!empty($model->inativo))
-        </del>
-    @endif
-    @if(!empty($model->inativo))
-        <small class="text-danger" >Inativo desde {{formataData($model->inativo, 'L')}}!</small>
-    @endif
+    {!! 
+        titulo(
+            $model->codimagem,
+            $model->observacoes,
+            $model->inativo
+        ) 
+    !!}
 </h1>
 @include('includes.autor')
-<hr>
 <div>
     <div class="col-xs-6">
     @if(empty($model->inativo))    

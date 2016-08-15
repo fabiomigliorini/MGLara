@@ -9,22 +9,42 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Imagens</h1>
-<hr>
-<div class="search-bar">
-{!! Form::model(Request::all(), ['route' => 'imagem.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'imagem-search', 'role' => 'search'])!!}
-    <div class="form-group">
-        <select class="form-control" name="inativo" id="inativo">
-            <option value="0">Todos</option>
-            <option value="1" selected="selected">Ativos</option>
-            <option value="2">Inativos</option>
-        </select>
-    </div>      
-    <button type="submit" class="btn btn-default">Buscar</button>
-{!! Form::close() !!}
+<h1 class="header">
+    {!! titulo(null, 'Imagens', null) !!}
+    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
+        <span class='glyphicon glyphicon-search'></span>
+    </a>    
+</h1>
+<div class="clearfix"></div>
+<div class='collapse' id='div-filtro'>
+    <div class='well well-sm' style="padding:9px 0">
+{!! Form::model(
+    Request::session()->get('imagem.index'), 
+    [
+        'route' => 'imagem.index', 
+        'method' => 'GET', 
+        'class' => 'form-horizontal', 
+        'id' => 'imagem-search', 
+        'role' => 'search'
+    ])
+!!}
+        <div class="col-md-2">      
+            <div class="form-group">
+                {!! Form::label('ativo', 'Ativo', ['class' => 'col-sm-4 control-label']) !!}
+                <div class="col-md-8">{!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo']) !!}</div>
+            </div>      
+        </div>
+        <div class="col-md-2">      
+            <div class="form-group">
+                <div class=" col-md-10">
+                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    {!! Form::close() !!}
 </div>
-
-<br>
 <div id="registros">
     <div id="imagens" class="row">
     @foreach($model as $row)
@@ -38,7 +58,7 @@
         <h3>Nenhuma imagem encontrada!</h3>
     @endif    
   </div>
-  <?php echo $model->appends(Request::all())->render();?>
+  {{ $model->appends(Request::session()->get('imagem.index'))->render() }}
 </div>
 @section('inscript')
 <style type="text/css">

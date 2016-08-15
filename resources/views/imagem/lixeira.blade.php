@@ -12,8 +12,18 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Lixeira</h1>
-<hr>
+<h1>
+    {!! 
+        titulo(
+            null,
+            [
+                url("imagem") => 'Imagens',
+                'Lixeira'
+            ],
+            null
+        ) 
+    !!}    
+</h1>
 <div id="registros">
     <div id="imagens" class="row">
     @foreach($model as $row)
@@ -24,7 +34,7 @@
         </div>          
     @endforeach
     @if (count($model) === 0)
-        <h3>Nenhum registro encontrado!</h3>
+        <h3>Nenhuma imagem na lixeira!</h3>
     @endif    
   </div>
   <?php echo $model->appends(Request::all())->render();?>
@@ -40,7 +50,6 @@
 </style>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('.pagination').addClass('hide');
     var loading_options = {
         finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
         msgText: "<div class='center'>Carregando mais itens...</div>",
@@ -56,7 +65,7 @@ $(document).ready(function() {
     $('#esvaziar-lixeira').click(function (e) {
         e.preventDefault();
         var url = $('#esvaziar-lixeira').attr('href');
-        bootbox.confirm("Tem certeza que deseja deletar essas imagens", function(result) {
+        bootbox.confirm("Tem certeza que deseja deletar todas essas imagens", function(result) {
             if (result) {
                 window.location.href = url;
             }

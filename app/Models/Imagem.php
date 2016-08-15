@@ -76,23 +76,32 @@ class Imagem extends MGModel
 
     
     // Buscas 
-    public static function filterAndPaginate($inativo)
+    public static function search($parametros)
     {
-        return Imagem::inativo($inativo)
-            ->orderBy('codimagem', 'DESC')
-            ->paginate(20);
+        $query = Imagem::query();
+        switch (isset($parametros['ativo']) ? $parametros['ativo']:'9')
+        {
+            case 1: //Ativos
+                $query->ativo();
+                break;
+            case 2: //Inativos
+                $query->inativo();
+                break;
+            case 9; //Todos
+            default:
+        }
+        
+        return $query;
     }
     
-    public function scopeInativo($query, $inativo)
+    public function scopeInativo($query)
     {
-        if (trim($inativo) === '')
-            $query->whereNull('inativo');
-        
-        if($inativo == 1)
-            $query->whereNull('inativo');
+        $query->whereNotNull('inativo');
+    }
 
-        if($inativo == 2)
-            $query->whereNotNull('inativo');
+    public function scopeAtivo($query)
+    {
+        $query->whereNull('inativo');
     }
 
     public static function relacionamentos($id)
