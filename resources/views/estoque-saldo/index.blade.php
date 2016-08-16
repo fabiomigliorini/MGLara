@@ -83,6 +83,10 @@
                 <div class="col-md-9">{!! Form::select2('maximo', $arr_maximo, null, ['class' => 'form-control', 'placeholder' => 'Estoque Máximo...']) !!}</div>
             </div>
             <div class="form-group">
+                {!! Form::label('valor', 'Valor', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::select2('valor', $arr_valor, $valor, ['class' => 'form-control', 'placeholder' => 'Valorização...']) !!}</div>
+            </div>
+            <div class="form-group">
                 <div class="col-md-9 col-md-offset-3">
                     <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
                 </div>

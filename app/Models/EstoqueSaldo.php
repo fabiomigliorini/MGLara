@@ -99,7 +99,7 @@ class EstoqueSaldo extends MGModel
         return $es;
     }
     
-    public static function totais($agrupamento, $filtro = [])
+    public static function totais($agrupamento, $valor = 'custo', $filtro = [])
     {
         //$query = DB::table('tblestoquesaldo');
         $query = DB::table('tblestoquelocalprodutovariacao');
@@ -124,7 +124,7 @@ class EstoqueSaldo extends MGModel
                 $query->select(
                     DB::raw(
                         ' saldoquantidade
-                        , saldovalor
+                        , ' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ' as saldovalor
                         , estoqueminimo
                         , estoquemaximo
                         , fiscal
@@ -144,7 +144,7 @@ class EstoqueSaldo extends MGModel
                 $query->select(
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
-                        , sum(saldovalor) as saldovalor
+                        , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
                         , sum(estoqueminimo) as estoqueminimo
                         , sum(estoquemaximo) as estoquemaximo
                         , fiscal
@@ -164,7 +164,7 @@ class EstoqueSaldo extends MGModel
                 $query->select(
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
-                        , sum(saldovalor) as saldovalor
+                        , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
                         , sum(estoqueminimo) as estoqueminimo
                         , sum(estoquemaximo) as estoquemaximo
                         , fiscal
@@ -185,7 +185,7 @@ class EstoqueSaldo extends MGModel
                 $query->select(
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
-                        , sum(saldovalor) as saldovalor
+                        , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
                         , sum(estoqueminimo) as estoqueminimo
                         , sum(estoquemaximo) as estoquemaximo
                         , fiscal
@@ -205,7 +205,7 @@ class EstoqueSaldo extends MGModel
                 $query->select(
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
-                        , sum(saldovalor) as saldovalor
+                        , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
                         , sum(estoqueminimo) as estoqueminimo
                         , sum(estoquemaximo) as estoquemaximo
                         , fiscal
@@ -225,7 +225,7 @@ class EstoqueSaldo extends MGModel
                 $query->select(
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
-                        , sum(saldovalor) as saldovalor
+                        , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
                         , sum(estoqueminimo) as estoqueminimo
                         , sum(estoquemaximo) as estoquemaximo
                         , fiscal
@@ -246,7 +246,7 @@ class EstoqueSaldo extends MGModel
                 $query->select(
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
-                        , sum(saldovalor) as saldovalor
+                        , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
                         , sum(estoqueminimo) as estoqueminimo
                         , sum(estoquemaximo) as estoquemaximo
                         , fiscal

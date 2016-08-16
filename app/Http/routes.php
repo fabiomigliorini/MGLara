@@ -180,9 +180,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('imagem/inativo','ImagemController@inativo');
     Route::resource('imagem','ImagemController');
 
-
     /* Nota Fiscal */
     Route::resource('nota-fiscal','NotaFiscalController');
+
+    /* Negocio */
+    Route::resource('negocio','NegocioController');
 
     /* Estoque Movimento */
     Route::get('estoque-movimento/create/{codestoquemes}','EstoqueMovimentoController@create');
@@ -197,6 +199,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('printers','UsuarioController@printers');
 });
 
+/*
 Route::group(['prefix' => 'negocios', 'as' => 'negocios::', 'middleware' => 'auth'], function () {
     Route::get('/', ['as' => 'index', 'uses' => 'NegociosController@index']);
 
@@ -205,3 +208,5 @@ Route::group(['prefix' => 'negocios', 'as' => 'negocios::', 'middleware' => 'aut
 
     Route::get('/{id}', ['as' => 'view', 'uses' => 'NegociosController@view']);
 });
+
+*/
