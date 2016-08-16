@@ -32,11 +32,11 @@ class ProdutoHistoricoPrecoController extends Controller
         $parametros = $request->session()->get('produto-historico-preco.index');        
 
         if (!empty($parametros['alteracao_de'])) {
-            $parametros['alteracao_de'] = Carbon::createFromFormat('Y-m-d H:i:s', $parametros['alteracao_de']. ' 00:00:00');
+            $parametros['alteracao_de'] = new Carbon($parametros['alteracao_de']);
         }
         
         if (!empty($parametros['alteracao_ate'])) {
-            $parametros['alteracao_ate'] = Carbon::createFromFormat('Y-m-d H:i:s', $parametros['alteracao_ate']. '23:59:59');
+            $parametros['alteracao_ate'] = new Carbon($parametros['alteracao_ate'] . ' 23:59:59');
         }
         
         $model = ProdutoHistoricoPreco::search($parametros);

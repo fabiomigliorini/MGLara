@@ -25,24 +25,24 @@
         'role' => 'search', 
         'autocomplete' => 'off'
     ])!!}
-        <div class="col-md-6">
+        <div class="col-md-5">
             <div class="form-group">
-                {!! Form::label('id', '#', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-3">{!! Form::text('id', null, ['class' => 'form-control', 'placeholder' => '#']) !!}</div>
+                {!! Form::label('id', '#', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-4">{!! Form::text('id', null, ['class' => 'form-control', 'placeholder' => '#']) !!}</div>
             </div>
 
             <div class="form-group">
-                {!! Form::label('produto', 'Produto', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-6">{!! Form::text('produto', null, ['class' => 'form-control', 'placeholder' => 'Produto']) !!}</div>
+                {!! Form::label('produto', 'Produto', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::text('produto', null, ['class' => 'form-control', 'placeholder' => 'Produto']) !!}</div>
             </div>
 
             <div class="form-group">
-                {!! Form::label('referencia', 'Referência', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-4">{!! Form::text('referencia', null, ['class' => 'form-control', 'placeholder' => 'Referência']) !!}</div>
+                {!! Form::label('referencia', 'Referência', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-6">{!! Form::text('referencia', null, ['class' => 'form-control', 'placeholder' => 'Referência']) !!}</div>
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-7">
             <div class="form-group">
                 {!! Form::label('codmarca', 'Marca', ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-md-4">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'placeholder'=>'Marca']) !!}</div>
@@ -54,8 +54,8 @@
             <div class="form-group">
                 {!! Form::label('alteracao_de', 'Alteração', ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-md-10">
-                    {!! Form::date('alteracao_de', null, ['class' => 'form-control pull-left', 'id' => 'alteracao_de', 'placeholder' => 'De', 'style'=>'width:160px; margin-right:10px']) !!}
-                    {!! Form::date('alteracao_ate', null, ['class' => 'form-control pull-left', 'id' => 'alteracao_ate', 'placeholder' => 'Até', 'style'=>'width:160px;']) !!}
+                    {!! Form::datetimeLocal('alteracao_de', null, ['class' => 'form-control pull-left', 'id' => 'alteracao_de', 'placeholder' => 'De', 'style'=>'width:210px; margin-right:10px']) !!}
+                    {!! Form::datetimeLocal('alteracao_ate', null, ['class' => 'form-control pull-left', 'id' => 'alteracao_ate', 'placeholder' => 'Até', 'style'=>'width:210px;']) !!}
                 </div>
             </div>
             <div class="form-group">
