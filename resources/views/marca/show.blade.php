@@ -48,7 +48,18 @@
     </div>
 </h1>
 @include('includes.autor')
-
+<div class="row">
+  <div class="col-lg-12">
+      <table class="detail-view table table-striped table-condensed"> 
+        <tbody>  
+          <tr> 
+            <th class="col-md-2">Descrição site</th> 
+            <td class="col-md-10">{{ $model->observacoes }}</td> 
+          </tr>
+        </tbody> 
+      </table>
+  </div>    
+</div>
 @section('inscript')
 <script type="text/javascript">
 function atualizaFiltro()
