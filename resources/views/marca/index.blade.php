@@ -1,187 +1,152 @@
 @extends('layouts.default')
 @section('content')
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
-  <div class="container-fluid"> 
-    <ul class="nav navbar-nav">
-        <li><a href="<?php echo url('marca/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li> 
-    </ul>
-  </div>
-</nav>
-<h1 class="header">Marcas</h1>
-<hr>
-<div class="row">
-    <div class="col-md-6">
-        <div class="marcas-pagination pull-left">{!! $model->appends(Request::all())->render() !!}</div>
+    <div class="container-fluid"> 
+        <ul class="nav navbar-nav">
+            <li>
+                <a href="{{ url("marca/create") }}"><span class="glyphicon glyphicon-plus"></span> Novo</a>
+            </li> 
+        </ul>
     </div>
-<?php
-
-foreach($ess as $es)
-{
-    $arr_saldos[$es->codmarca][$es->codestoquelocal][$es->fiscal] = [
-        'saldoquantidade' => $es->saldoquantidade,
-        'saldovalor' => $es->saldovalor,
-    ];
-    
-    if (!isset($arr_totais[$es->codestoquelocal][$es->fiscal]))
-        $arr_totais[$es->codestoquelocal][$es->fiscal] = [
-            'saldoquantidade' => 0,
-            'saldovalor' => 0
-        ];
-    
-    $arr_totais[$es->codestoquelocal][$es->fiscal]['saldoquantidade'] += $es->saldoquantidade;
-    $arr_totais[$es->codestoquelocal][$es->fiscal]['saldovalor'] += $es->saldovalor;
-}
-
-//dd($arr_saldos);
-?>
-    <div class="col-md-6">
-    {!! Form::model(Request::all(), ['route' => 'marca.index', 'method' => 'GET', 'class' => 'navbar-form navbar-right pull-right', 'id'=> 'marca-search', 'role' => 'search', 'style'=>'margin:0']) !!}
-        <div class="form-group">
-            <div class="col-md-2">
-                {!! Form::select2Marca('codmarca', null, ['class' => 'form-control', 'placeholder' => '#', 'style'=>'width:100px']) !!}
+</nav>
+<h1 class="header">
+    {!! titulo(null, 'Marcas', null) !!}
+    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
+        <span class='glyphicon glyphicon-search'></span>
+    </a>    
+</h1>
+<div class="clearfix"></div>
+<div class='collapse' id='div-filtro'>
+    <div class='well well-sm' style="padding:9px 0">
+    {!! Form::model(
+        Request::session()->get('marca.index'), 
+        [
+            'route' => 'marca.index', 
+            'method' => 'GET', 
+            'class' => 'form-horizontal', 
+            'id' => 'marca-search', 
+            'role' => 'search', 
+            'autocomplete' => 'off'
+        ]
+    )!!}
+        <div class="col-md-2">
+            <div class="form-group">
+                {!! Form::label('codmarca', '#', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-8">{!! Form::text('codmarca', null, ['class' => 'form-control', 'placeholder' => '#']) !!}</div>
             </div>
         </div>
-        <div class="form-group">
-          {!! Form::text('marca', null, ['class' => 'form-control', 'placeholder' => 'Nome da marca']) !!}
+        <div class="col-md-4">
+            <div class="form-group">
+                {!! Form::label('marca', 'Marca', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-10">{!! Form::text('marca', null, ['class' => 'form-control', 'placeholder' => 'Marca']) !!}</div>
+            </div>
         </div>
-        <div class="form-group">
-            <select class="form-control" name="inativo" id="inativo">
-                <option value=""></option>
-                <option value="0">Todos</option>
-                <option value="1">Ativos</option>
-                <option value="2">Inativos</option>
-            </select>
-        </div>    
-      <button type="submit" class="btn btn-default">Buscar</button>
-    {!! Form::close() !!}
+        <div class="col-md-2">      
+            <div class="form-group">
+                {!! Form::label('ativo', 'Ativo', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo']) !!}</div>
+            </div>      
+        </div>
+        <div class="col-md-2">      
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
     </div>
+    {!! Form::close() !!}
 </div>
-
-<hr>
-@if (count($model) > 0)
-<table class="table table-striped table-condensed table-hover table-bordered">
-    <thead>
-        <th colspan="2">
-            Marcas
-        </th>
-        @foreach ($els as $el)
-        <th colspan='2' class='text-center' style='border-left-width: 2px'>
-            {{ $el->estoquelocal }}
-        </th>
-        @endforeach
-    </thead>
-    
-    <tbody>
-        @foreach($model as $row)
-        <tr>
-            <th rowspan="2">
-                @if(!empty($row->codimagem))
-                    <div class="pull-right foto-item-listagem">
-                        <img class="img-responsive pull-right" alt="{{$row->marca}}" title="{{$row->marca}}" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>
-                    </div>
-                @endif                
-                <a href="{{ url("marca/$row->codmarca") }}">{{$row->marca}}</a>
-                @if(!empty($row->inativo))
-                <br>
-                <span class="label label-danger">Inativado em {{ formataData($row->inativo, 'L')}} </span>
-                @endif
-            </th>
-            <th>
-                Físico
-            </th>
-            @foreach ($els as $el)
-            <td class='text-right' style='border-left-width: 2px'>
-                @if (isset($arr_saldos[$row->codmarca][$el->codestoquelocal][0]))
-                    {{ formataNumero($arr_saldos[$row->codmarca][$el->codestoquelocal][0]['saldoquantidade'], 0) }}
-                @endif
-            </td>
-            <td class='text-right'>
-                @if (isset($arr_saldos[$row->codmarca][$el->codestoquelocal][0]))
-                    {{ formataNumero($arr_saldos[$row->codmarca][$el->codestoquelocal][0]['saldovalor'], 2) }}
-                @endif
-            </td>
-            @endforeach
-        </tr>
-        <tr>
-            <th>
-                Fiscal
-            </th>
-            @foreach ($els as $el)
-            <td class='text-right' style='border-left-width: 2px'>
-                @if (isset($arr_saldos[$row->codmarca][$el->codestoquelocal][1]))
-                    {{ formataNumero($arr_saldos[$row->codmarca][$el->codestoquelocal][1]['saldoquantidade'], 0) }}
-                @endif
-            </td>
-            <td class='text-right'>
-                @if (isset($arr_saldos[$row->codmarca][$el->codestoquelocal][1]))
-                    {{ formataNumero($arr_saldos[$row->codmarca][$el->codestoquelocal][1]['saldovalor'], 2) }}
-                @endif
-            </td>
-            @endforeach
-        </tr>
-        @endforeach
-    </tbody>
-    <tfoot>
-        <tr>
-            <th rowspan="2">
-                Totais
-            </th>
-            <th>
-                Físico
-            </th>
-            @foreach ($els as $el)
-            <th class='text-right' style='border-left-width: 2px'>
-                @if (isset($arr_totais[$el->codestoquelocal][0]))
-                    {{ formataNumero($arr_totais[$el->codestoquelocal][0]['saldoquantidade'], 0) }}
-                @endif
-            </th>
-            <th class='text-right'>
-                @if (isset($arr_totais[$el->codestoquelocal][0]))
-                    {{ formataNumero($arr_totais[$el->codestoquelocal][0]['saldovalor'], 2) }}
-                @endif
-            </th>
-            @endforeach
-        </tr>
-        <tr>
-            <th>
-                Fiscal
-            </th>
-            @foreach ($els as $el)
-            <th class='text-right' style='border-left-width: 2px'>
-                @if (isset($arr_totais[$el->codestoquelocal][1]))
-                    {{ formataNumero($arr_totais[$el->codestoquelocal][1]['saldoquantidade'], 0) }}
-                @endif
-            </th>
-            <th class='text-right'>
-                @if (isset($arr_totais[$el->codestoquelocal][1]))
-                    {{ formataNumero($arr_totais[$el->codestoquelocal][1]['saldovalor'], 2) }}
-                @endif
-            </th>
-            @endforeach
-        </tr>
-    </tfoot>
-</table>
-@endif 
-
-@if (count($model) === 0)
-    <h3>Nenhum registro encontrado!</h3>
-@endif    
-
+<div id="registros">
+  <div class="list-group list-group-striped list-group-hover" id="items">
+    @foreach($model as $row)
+      <div class="list-group-item @if(!empty($row->inativo)) bg-danger @endif">
+        <div class="row item">
+            <div class="col-md-1">
+                <a class="small text-muted" href="{{ url("marca/$row->codmarca") }}">
+                {{ formataCodigo($row->codmarca)}}
+                </a>          
+            </div>                            
+            <div class="col-md-7">
+            <a href="{{ url("marca/$row->codmarca") }}">
+                {!! listagemTitulo($row->marca, $row->inativo) !!}
+            </a>
+            </div>                            
+            <div class="col-md-2">
+                {!! inativo($row->inativo) !!}
+            </div>
+            <div class="col-md-2">
+            @if(!empty($row->codimagem))
+                <div class="pull-right foto-item-listagem">
+                    <img class="img-responsive pull-right" alt="{{$row->marca}}" title="{{$row->marca}}" src='<?php echo URL::asset('public/imagens/'.$row->Imagem->observacoes);?>'>
+                </div>
+            @endif             
+            </div>                            
+        </div>
+      </div>    
+    @endforeach
+    @if (count($model) === 0)
+        <h3>Nenhum registro encontrado!</h3>
+    @endif    
+  </div>
+  <?php echo $model->appends(Request::session()->get('marca.index'))->render();?>
+</div>
 @section('inscript')
-<style type="text/css">
-    ul.pagination {
-        margin: 0;
-    }
-</style>
 <script type="text/javascript">
-  $(document).ready(function() {
-    $('ul.pagination').removeClass('hide');
-    $('#marca-search').change(function() {
-        this.submit();
+function atualizaFiltro()
+{
+    scroll();
+    var frmValues = $("#marca-search").serialize();
+    $.ajax({
+        type: 'GET',
+        url: baseUrl + '/marca',
+        data: frmValues
+    })
+    .done(function (data) {
+        $('#items').html(jQuery(data).find('#items').html()); 
+    })
+    .fail(function () {
+        console.log('Erro no filtro');
     });
-        
-  });
+
+    $('#items').infinitescroll('update', {
+        state: {
+            currPage: 1,
+            isDestroyed: false,
+            isDone: false             
+        },
+        path: ['?page=', '&'+frmValues]
+    });
+}
+
+function scroll()
+{
+    var loading_options = {
+        finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
+        msgText: "<div class='center'>Carregando mais itens...</div>",
+        img: baseUrl + '/public/img/ajax-loader.gif'
+    };
+
+    $('#items').infinitescroll({
+        loading : loading_options,
+        navSelector : "#registros .pagination",
+        nextSelector : "#registros .pagination li.active + li a",
+        itemSelector : "#items div.list-group-item",
+    });    
+}
+$(document).ready(function() {
+    scroll();
+    $("#marca-search").on("change", function (event) {
+        $('#items').infinitescroll('destroy');
+        atualizaFiltro();
+    }).on('submit', function (event){
+        event.preventDefault();
+        $('#items').infinitescroll('destroy');
+        atualizaFiltro();
+    });        
+
+});
 </script>
 @endsection
 @stop
-

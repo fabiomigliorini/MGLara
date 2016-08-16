@@ -9,7 +9,18 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Alterar Marca: {{$model->marca}}</h1>
+<h1 class="header">
+{!! 
+    titulo(
+        $model->codmarca,
+        [
+            url("marca/$model->codmarca") => $model->marca,
+            'Alterar',
+        ],
+        $model->inativo
+    ) 
+!!}  
+</h1>
 <hr>
 <br>
 {!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'id' => 'form-marca', 'action' => ['MarcaController@update', $model->codmarca] ]) !!}

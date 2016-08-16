@@ -15,21 +15,25 @@ use Carbon\Carbon;
 
 class MarcaController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('parametros', ['only' => ['index']]);
+    }
+    
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {      
-        $model = Marca::filterAndPaginate(
-            $request->get('codmarca'),
-            $request->get('marca'),
-            $request->get('inativo')    
-        ); 
-        $ess = EstoqueSaldo::saldoPorMarca();
-        $els = EstoqueLocal::where('inativo', null)->orderBy('codestoquelocal')->get();
-        return view('marca.index', compact('model', 'ess', 'els'));
+    {
+        if (!$request->session()->has('marca.index')) {
+            $request->session()->put('marca.index.ativo', '1');
+        }
+
+        $parametros = $request->session()->get('marca.index');
+        $model = Marca::search($parametros)->orderBy('marca', 'ASC')->paginate(20);
+        return view('marca.index', compact('model'));
     }
 
     /**
@@ -39,7 +43,7 @@ class MarcaController extends Controller
      */
     public function create()
     {
-        $model = Marca::class;
+        $model = new Marca();
         return view('marca.create', compact('model'));
     }
 
@@ -55,8 +59,8 @@ class MarcaController extends Controller
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         $model->save();
-        Session::flash('flash_create', 'Registro inserido.');
-        return redirect('marca');
+        Session::flash('flash_success', 'Marca Criada!');
+        return redirect("marca/$model->codmarca"); 
     }
 
     /**
@@ -68,9 +72,7 @@ class MarcaController extends Controller
     public function show($id)
     {
         $model = Marca::findOrFail($id);
-        $ess = EstoqueSaldo::saldoPorProdutoMarca($model->codmarca);
-        $els = EstoqueLocal::where('inativo', null)->orderBy('codestoquelocal')->get();
-        return view('marca.show', compact('model', 'ess', 'els'));
+        return view('marca.show', compact('model'));
     }
 
 
@@ -100,8 +102,9 @@ class MarcaController extends Controller
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
         $model->save();
-        Session::flash('flash_update', 'Registro atualizado.');
-        return redirect("marca/$id");        
+
+        Session::flash('flash_success', "Marca '{$model->marca}' Atualizada!");
+        return redirect("marca/$model->codmarca");         
     }
 
     /**
@@ -113,14 +116,14 @@ class MarcaController extends Controller
     public function destroy($id)
     {
         try{
-	        Marca::find($id)->delete();
-	        Session::flash('flash_delete', 'Registro deletado!');
-	        return Redirect::route('marca.index');
+            Marca::find($id)->delete();
+            $ret = ['resultado' => true, 'mensagem' => 'Marca excluída com sucesso!'];
         }
         catch(\Exception $e){
-        	return view('errors.fk');
-        }     
-    }
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir marca!', 'exception' => $e];
+        }
+        return json_encode($ret);
+    } 
     
     public function listagemJson(Request $request) 
     {
@@ -152,10 +155,17 @@ class MarcaController extends Controller
     {
         $model = Marca::find($request->get('codmarca'));
         if($request->get('acao') == 'ativar')
+        {
             $model->inativo = null;
+            $msg = "Marca '{$model->marca}' Reativada!";
+        }
         else
+        {
             $model->inativo = Carbon::now();
+            $msg = "Marca '{$model->marca}' Inativada!";
+        }
         
         $model->save();
-    }    
+        Session::flash('flash_success', $msg);
+    }     
 }

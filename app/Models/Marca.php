@@ -41,15 +41,12 @@ class Marca extends MGModel
     public function validate() {
         
         $this->_regrasValidacao = [
-            'marca' => 'required|min:10', 
-            'descricaosite' => 'required|min:50', 
+            'marca' => 'required|min:1', 
         ];
     
         $this->_mensagensErro = [
             'marca.required' => 'O campo Marca não pode ser vazio',
-            'marca.min' => 'O campo Marca deve ter mais de 9 caracteres',
-            'descricaosite.required' => 'O campo Descrição não pode ser vazio',
-            'descricaosite.min' => 'O campo Descrição deve ter mais de 39 caracteres',
+            'marca.min' => 'O campo Marca deve ter mais de 1 caracteres',
         ];
         
         return parent::validate();
@@ -83,45 +80,52 @@ class Marca extends MGModel
         return $this->hasMany(Produto::class, 'codmarca', 'codmarca')->orderBy('produto');
     }
 
-    // Buscas 
-    public static function filterAndPaginate($codmarca, $marca, $inativo)
+    public static function search($parametros)
     {
-        return Marca::codmarca(numeroLimpo($codmarca))
-            ->marca($marca)
-            ->inativo($inativo)
-            ->orderBy('marca', 'ASC')
-            ->paginate(20);
-    }
-    
-    public function scopeCodmarca($query, $codmarca)
-    {
-        if (trim($codmarca) === '')
-            return;
+        $query = Marca::query();
         
-        $query->where('codmarca', $codmarca);
+        if (!empty($parametros['codmarca'])) {
+            $query->where('codmarca', $parametros['codmarca']);
+        }
+
+        if (!empty($parametros['marca'])) {
+            $query->marca($parametros['marca']);
+        }
+
+        switch (isset($parametros['ativo']) ? $parametros['ativo']:'9')
+        {
+            case 1: //Ativos
+                $query->ativo();
+                break;
+            case 2: //Inativos
+                $query->inativo();
+                break;
+            case 9; //Todos
+            default:
+        }
+        
+        return $query;
     }
-    
+
     public function scopeMarca($query, $marca)
     {
         if (trim($marca) === '')
             return;
         
         $marca = explode(' ', $marca);
-        foreach ($marca as $str)
+        foreach ($marca as $str) {
             $query->where('marca', 'ILIKE', "%$str%");
+        }
     }
-    
-    public function scopeInativo($query, $inativo)
-    {
-        if (trim($inativo) === '')
-            $query->whereNull('inativo');
-        
-        if($inativo == 1)
-            $query->whereNull('inativo');
 
-        if($inativo == 2)
-            $query->whereNotNull('inativo');
+    public function scopeInativo($query)
+    {
+        $query->whereNotNull('inativo');
     }
-      
+
+    public function scopeAtivo($query)
+    {
+        $query->whereNull('inativo');
+    }
     
 }

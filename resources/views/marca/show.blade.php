@@ -1,339 +1,109 @@
 @extends('layouts.default')
 @section('content')
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
-  <div class="container-fluid"> 
-    <ul class="nav navbar-nav">
-        <li>
-            <a href="{{ url('marca') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a>
-        </li>
-        <li>
-            <a href="#" id="btnBuscaCodProduto"><span class="glyphicon glyphicon-refresh"></span> Recalcular Movimento de Estoque</a>
-        </li>
-        <li><a href="<?php echo url('marca/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li> 
-        <li><a href="<?php echo url("marca/$model->codmarca/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
-        <li>
-            @if(empty($model->inativo))
-            <a href="" id="inativar-marca">
-                <span class="glyphicon glyphicon-ban-circle"></span> Inativar
-            </a>
-            @else
-            <a href="" id="inativar-marca">
-                <span class="glyphicon glyphicon-ok-sign"></span> Ativar
-            </a>
-            @endif
-        </li> 
-        <li>
-            {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['marca.destroy', $model->codmarca]]) !!}
-            <span class="glyphicon glyphicon-trash"></span>
-            {!! Form::submit('Excluir') !!}
-            {!! Form::close() !!}
-        </li>        
-    </ul>
-  </div>
+    <div class="container-fluid"> 
+        <ul class="nav navbar-nav">
+            <li><a href="{{ url('marca') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
+            <li><a href="{{ url('marca/create') }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
+            <li><a href="{{ url("marca/$model->codmarca/edit") }}"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
+            <li>
+                @if(empty($model->inativo))
+                <a href="" id="inativo-marca">
+                    <span class="glyphicon glyphicon-ban-circle"></span> Inativar
+                </a>
+                @else
+                <a href="" id="inativo-marca">
+                    <span class="glyphicon glyphicon-ok-sign"></span> Ativar
+                </a>
+                @endif
+            </li>
+            <li>
+                <a href="{{ url("marca/$model->codmarca") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a Marca '{{ $model->marca }}'?" data-after-delete="location.replace(baseUrl + '/marca');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+            </li>
+        </ul>
+    </div>
 </nav>
-@if(!empty($model->inativo))
-    <br>
-    <div class="alert alert-danger" role="alert">Inativado em {{formataData($model->inativo, 'L')}}</div>
-@endif
-<div class="row">
-    <div class="col-md-6">
-        <h1 class="header">{{ $model->marca }}</h1>
-    </div>    
+<h1 class="header">
+    {!! 
+        titulo(
+            $model->codmarca,
+            $model->marca,
+            $model->inativo
+        ) 
+    !!} 
     <div class="pull-right foto-item-unico">
         @if(empty($model->codimagem))
             <a class="btn btn-default carregar" href="{{ url("/imagem/edit?id=$model->codmarca&model=Marca") }}">
                 <i class="glyphicon glyphicon-picture"></i>
-                 Carregar imagem
+                Carregar imagem
             </a>
         @else
-        <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
+        <a href="{{ url("imagem/{$model->Imagem->codimagem}") }}">
+            <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
+        </a>
         <span class="caption simple-caption">
             <a href="{{ url("/imagem/edit?id=$model->codmarca&model=Marca") }}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
         </span>        
         @endif
     </div>
-</div>
-<br>
-<?php
-foreach($model->ProdutoS as $prod)
-{
-    foreach ($prod->EstoqueLocalProdutoVariacaoS as $es)
-    {
-        $arr_saldos[$prod->codproduto][$es->codestoquelocal][$es->EstoqueSaldoS->first()->fiscal] = [
-            'codestoquesaldo'   => $es->EstoqueSaldoS->first()->codestoquesaldo,
-            'saldoquantidade'   => $es->EstoqueSaldoS->first()->saldoquantidade,
-            'saldovalor'        => $es->EstoqueSaldoS->first()->saldovalor,
-            'customedio'        => $es->EstoqueSaldoS->first()->customedio,
-        ];
-        
-        if (!isset($arr_totais[$es->codestoquelocal][$es->EstoqueSaldoS->first()->fiscal]))
-            $arr_totais[$es->codestoquelocal][$es->EstoqueSaldoS->first()->fiscal] = [
-                'saldoquantidade'   => 0,
-                'saldovalor'        => 0
-            ];
-
-        $arr_totais[$es->codestoquelocal][$es->EstoqueSaldoS->first()->fiscal]['saldoquantidade'] += $es->EstoqueSaldoS->first()->saldoquantidade;
-        $arr_totais[$es->codestoquelocal][$es->EstoqueSaldoS->first()->fiscal]['saldovalor'] += $es->EstoqueSaldoS->first()->saldovalor;
-    }
-}
-?>
-
-<table class="table table-striped table-condensed table-hover table-bordered small">
-    <thead>
-        <th colspan="2" class="col-sm-4">
-            Produtos
-        </th>
-        @foreach ($els as $el)
-        <th colspan='3' class='text-center col-sm-1' style='border-left-width: 2px'>
-            {{ $el->estoquelocal }}
-        </th>
-        @endforeach
-    </thead>
-    
-    <tbody>
-        @foreach($model->ProdutoS as $row)
-        <?php
-        if (!isset($arr_saldos[$row->codproduto]))
-            continue;
-        ?>
-        <tr>
-            <th rowspan="2">
-                <small class='text-muted'>
-                    {{ formataCodigo($row->codproduto, 6) }}                    
-                </small>
-                <a href="{{ url("produto/$row->codproduto") }}">{{$row->produto}}</a>
-                <div class='pull-right'>
-                    {{ formataNumero($row->preco) }}
-                </div>
-                <br>
-                @if (isset($row->codmarca))
-                    {{ $row->Marca->marca }}
-                @endif
-            </th>
-            <th>
-                Físico
-            </th>
-            @foreach ($els as $el)
-            <td class='text-right' style='border-left-width: 2px'>
-                @if (isset($arr_saldos[$row->codproduto][$el->codestoquelocal][0]))
-                    <?php $codestoquesaldo = $arr_saldos[$row->codproduto][$el->codestoquelocal][0]['codestoquesaldo']; ?>
-                    <a href="{{ url("estoque-saldo/$codestoquesaldo") }}">
-                        {{ formataNumero($arr_saldos[$row->codproduto][$el->codestoquelocal][0]['saldoquantidade'], 0) }}
-                    </a>
-                @endif
-            </td>
-            <td class='text-right'>
-                @if (isset($arr_saldos[$row->codproduto][$el->codestoquelocal][0]))
-                    <?php $codestoquesaldo = $arr_saldos[$row->codproduto][$el->codestoquelocal][0]['codestoquesaldo']; ?>
-                    <a href="{{ url("estoque-saldo/$codestoquesaldo") }}">
-                        {{ formataNumero($arr_saldos[$row->codproduto][$el->codestoquelocal][0]['customedio'], 2) }}
-                    </a>
-                @endif
-            </td>
-            <td class='text-right'>
-                @if (isset($arr_saldos[$row->codproduto][$el->codestoquelocal][0]))
-                    <?php $codestoquesaldo = $arr_saldos[$row->codproduto][$el->codestoquelocal][0]['codestoquesaldo']; ?>
-                    <a href="{{ url("estoque-saldo/$codestoquesaldo") }}">
-                        {{ formataNumero($arr_saldos[$row->codproduto][$el->codestoquelocal][0]['saldovalor'], 2) }}
-                    </a>
-                @endif
-            </td>
-            @endforeach
-        </tr>
-        <tr>
-            <th>
-                Fiscal
-            </th>
-            @foreach ($els as $el)
-            <td class='text-right' style='border-left-width: 2px'>
-                @if (isset($arr_saldos[$row->codproduto][$el->codestoquelocal][1]))
-                    <?php $codestoquesaldo = $arr_saldos[$row->codproduto][$el->codestoquelocal][1]['codestoquesaldo']; ?>
-                    <a href="{{ url("estoque-saldo/$codestoquesaldo") }}">
-                        {{ formataNumero($arr_saldos[$row->codproduto][$el->codestoquelocal][1]['saldoquantidade'], 0) }}
-                    </a>
-                @endif
-            </td>
-            <td class='text-right'>
-                @if (isset($arr_saldos[$row->codproduto][$el->codestoquelocal][1]))
-                    <?php $codestoquesaldo = $arr_saldos[$row->codproduto][$el->codestoquelocal][1]['codestoquesaldo']; ?>
-                    <a href="{{ url("estoque-saldo/$codestoquesaldo") }}">
-                        {{ formataNumero($arr_saldos[$row->codproduto][$el->codestoquelocal][1]['customedio'], 2) }}
-                    </a>
-                @endif
-            </td>
-            <td class='text-right'>
-                @if (isset($arr_saldos[$row->codproduto][$el->codestoquelocal][1]))
-                    <?php $codestoquesaldo = $arr_saldos[$row->codproduto][$el->codestoquelocal][1]['codestoquesaldo']; ?>
-                    <a href="{{ url("estoque-saldo/$codestoquesaldo") }}">
-                        {{ formataNumero($arr_saldos[$row->codproduto][$el->codestoquelocal][1]['saldovalor'], 2) }}
-                    </a>
-                @endif
-            </td>
-            @endforeach
-        </tr>
-        @endforeach
-    </tbody>
-    
-    <tfoot>
-        <tr>
-            <th rowspan="2">
-                Totais
-            </th>
-            <th>
-                Físico
-            </th>
-            @foreach ($els as $el)
-            <th class='text-right' style='border-left-width: 2px'>
-                @if (isset($arr_totais[$el->codestoquelocal][0]))
-                    {{ formataNumero($arr_totais[$el->codestoquelocal][0]['saldoquantidade'], 0) }}
-                @endif
-            </th>
-            <th>
-            </th>
-            <th class='text-right'>
-                @if (isset($arr_totais[$el->codestoquelocal][0]))
-                    {{ formataNumero($arr_totais[$el->codestoquelocal][0]['saldovalor'], 2) }}
-                @endif
-            </th>
-            @endforeach
-        </tr>
-        <tr>
-            <th>
-                Fiscal
-            </th>
-            @foreach ($els as $el)
-            <th class='text-right' style='border-left-width: 2px'>
-                @if (isset($arr_totais[$el->codestoquelocal][1]))
-                    {{ formataNumero($arr_totais[$el->codestoquelocal][1]['saldoquantidade'], 0) }}
-                @endif
-            </th>
-            <th>
-            </th>
-            <th class='text-right'>
-                @if (isset($arr_totais[$el->codestoquelocal][1]))
-                    {{ formataNumero($arr_totais[$el->codestoquelocal][1]['saldovalor'], 2) }}
-                @endif
-            </th>
-            @endforeach
-        </tr>
-    </tfoot>
-</table>
-
-
-<div id="modalrecalculaMovimentoEstoque" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">
-                    Recálculo Estoque marca:
-                    <a href="{{ url("marca/$model->codmarca") }}">
-                        {{ $model->marca }} 
-                    </a>
-                </h4>
-            </div>
-            <div class="modal-body">
-                <div class="progress">
-                    <div class="progress-bar progress-bar-striped active" role="progressbar" id="pbrecalculaMovimentoEstoque" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                    </div>
-                </div>
-                <div class='row-fluid text-center' id='labelPbrecalculaMovimentoEstoque'></div>
-                <br>
-                <pre class='row-fluid hidden' id='logPbrecalculaMovimentoEstoque' style='height: 400px'></pre>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" disabled id="btnRecalculaMovimentoEstoque">Iniciar</button>
-                <button type="button" class="btn btn-default" id="btnFechaModalrecalculaMovimentoEstoque" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+</h1>
+@include('includes.autor')
 
 @section('inscript')
 <script type="text/javascript">
+function atualizaFiltro()
+{
+    scroll();
+    var frmValues = $("#familia-produto-search").serialize();
+    $.ajax({
+        type: 'GET',
+        url: baseUrl + '/marca/'+ {{$model->codmarca}},
+        data: frmValues
+    })
+    .done(function (data) {
+        $('#items').html(jQuery(data).find('#items').html()); 
+    })
+    .fail(function () {
+        console.log('Erro no filtro');
+    });
 
-var codprodutos;
-var i_codprodutos = 0;
-
-function recalculaMovimentoEstoque() {
-    
-    var codproduto = codprodutos[i_codprodutos];
-    
-    var url = '{{ url('produto/{id}/recalcula-movimento-estoque' )}}';
-    url = url.replace('{id}', codproduto);
-        
-    $.getJSON(url)
-        .done(function(data) 
-        {
-            console.log(data);
-            var mensagem = 'OK';
-            
-            if (!data.resultado)
-                mensagem = 'Erro - ' + data.mensagem;
-            
-            $('#logPbrecalculaMovimentoEstoque').prepend(codproduto + ': ' + mensagem + '<br>');
-            
-            i_codprodutos++;
-            atualizaPbrecalculaMovimentoEstoque();
-            
-            if (i_codprodutos <= (codprodutos.length -1))
-                recalculaMovimentoEstoque();
-            else
-            {
-                $('#btnRecalculaMovimentoEstoque').removeAttr('disabled');
-                $('#btnFechaModalrecalculaMovimentoEstoque').removeAttr('disabled');
-            }
-        })
-        .fail(function( jqxhr, textStatus, error ) 
-        {
-            bootbox.alert(error);
-        });	
+    $('#items').infinitescroll('update', {
+        state: {
+            currPage: 1,
+            isDestroyed: false,
+            isDone: false             
+        },
+        path: ['?page=', '&'+frmValues]
+    });
 }
 
-function atualizaPbrecalculaMovimentoEstoque () {
-    var perc = (i_codprodutos / codprodutos.length) * 100;
-    $('#pbrecalculaMovimentoEstoque').addClass('active');
-    $('#pbrecalculaMovimentoEstoque').css('width', perc + '%');
-    $('#labelPbrecalculaMovimentoEstoque').text(i_codprodutos + ' de ' + codprodutos.length + ' produtos!');
-    if (i_codprodutos >= (codprodutos.length-1))
-    {
-        $('#pbrecalculaMovimentoEstoque').removeClass('active');
-        $('#labelPbrecalculaMovimentoEstoque').text(codprodutos.length + ' produtos Processados!');
-    }
-}
+function scroll()
+{
+    var loading_options = {
+        finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
+        msgText: "<div class='center'>Carregando mais itens...</div>",
+        img: baseUrl + '/public/img/ajax-loader.gif'
+    };
 
-function buscaCodProduto() {
-    $.getJSON("<?php echo url("marca/{$model->codmarca}/busca-codproduto"); ?>")
-        .done(function(data) 
-        {
-            codprodutos = data;
-            atualizaPbrecalculaMovimentoEstoque();
-            $('#modalrecalculaMovimentoEstoque').modal('show');
-            $('#btnRecalculaMovimentoEstoque').removeAttr('disabled');
-        })
-        .fail(function( jqxhr, textStatus, error ) 
-        {
-            bootbox.alert(error);
-        });	
-    
+    $('#items').infinitescroll({
+        loading : loading_options,
+        navSelector : "#registros .pagination",
+        nextSelector : "#registros .pagination li.active + li a",
+        itemSelector : "#items div.list-group-item",
+    });    
 }
-
 $(document).ready(function() {
-    $('#btnBuscaCodProduto').click(function (e) {
-        buscaCodProduto();
-    });
+    scroll();
+    $("#familia-produto-search").on("change", function (event) {
+        $('#items').infinitescroll('destroy');
+        atualizaFiltro();
+    }).on('submit', function (event){
+        event.preventDefault();
+        $('#items').infinitescroll('destroy');
+        atualizaFiltro();
+    });        
     
-    $('#btnRecalculaMovimentoEstoque').click(function (e) {
-        
-        i_codprodutos = 0;
-        $('#logPbrecalculaMovimentoEstoque').html('');
-        $('#btnRecalculaMovimentoEstoque').attr('disabled', 'disabled');
-        $('#btnFechaModalrecalculaMovimentoEstoque').attr('disabled', 'disabled');
-        $('#logPbrecalculaMovimentoEstoque').removeClass('hidden');
-        recalculaMovimentoEstoque();
-    });
-    
-    $('#inativar-marca').on("click", function(e) {
+    $('#inativo-marca').on("click", function(e) {
         e.preventDefault();
         var codmarca = {{ $model->codmarca }};
         var token = '{{ csrf_token() }}';
@@ -357,6 +127,7 @@ $(document).ready(function() {
             }  
         });
     });
+
 });
 </script>
 @endsection
