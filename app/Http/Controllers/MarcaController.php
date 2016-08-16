@@ -129,10 +129,12 @@ class MarcaController extends Controller
     {
         if($request->get('q')) 
         {
-            $marcas = Marca::marca($request->get('q'))
+            $parametros['marca'] = $request->get('q');
+            $parametros['ativo'] = $request->get('ativo');
+            $marcas = Marca::search($parametros)
                     ->select('codmarca as id', 'marca')
-                    ->inativo($request->get('inativo'))
-                    ->take(10)->get();
+                    ->take(10)
+                    ->get();
             
             return response()->json(['items' => $marcas]);       
             
