@@ -9,21 +9,49 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Tipos de produto</h1>
-<hr>
-<div class="search-bar">
-{!! Form::model(Request::session()->get('tipo-produto.index'), ['route' => 'tipo-produto.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'tipo-produto-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
-    <div class="form-group">
-        {!! Form::text('codtipoproduto', null, ['class' => 'form-control search-cod', 'placeholder' => '#']) !!}
+<h1 class="header">
+    {!! titulo(null, 'Tipos de produto', null) !!}
+    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
+        <span class='glyphicon glyphicon-search'></span>
+    </a> 
+</h1>
+<div class="clearfix"></div>
+<div class='collapse' id='div-filtro'>
+    <div class='well well-sm' style="padding:9px 0">
+    {!! Form::model(
+        Request::session()->get('tipo-produto.index'), 
+        [
+            'route' => 'tipo-produto.index', 
+            'method' => 'GET', 
+            'class' => 'form-horizontal', 
+            'id' => 'tipo-produto-search', 
+            'role' => 'search', 
+            'autocomplete' => 'off']
+        )
+    !!}
+        <div class="col-md-2">
+            <div class="form-group">
+                {!! Form::label('codtipoproduto', '#', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-8">{!! Form::text('codtipoproduto', null, ['class' => 'form-control', 'placeholder' => '#']) !!}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                {!! Form::label('tipoproduto', 'Tipo', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-8">{!! Form::text('tipoproduto', null, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}</div>
+            </div>    
+        </div>    
+        <div class="col-md-2">      
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
     </div>
-    <div class="form-group">
-        {!! Form::text('tipoproduto', null, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}
-    </div>    
-    <button type="submit" class="btn btn-default">Buscar</button>
-{!! Form::close() !!}
+    {!! Form::close() !!}
 </div>
-
-<br>
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
     @foreach($model as $row)

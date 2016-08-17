@@ -9,21 +9,50 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Unidades de medida</h1>
-<hr>
-<div class="search-bar">
-{!! Form::model(Request::session()->get('unidade-medida.index'), ['route' => 'unidade-medida.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'unidade-medida-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
-    <div class="form-group">
-        {!! Form::text('codunidademedida', null, ['class' => 'form-control search-cod', 'placeholder' => '#']) !!}
-    </div>    
-    <div class="form-group">
-        {!! Form::text('unidademedida', null, ['class' => 'form-control', 'placeholder' => 'Unidade de medida']) !!}
-    </div>
-    <button type="submit" class="btn btn-default">Buscar</button>
-{!! Form::close() !!}
-</div>
+<h1 class="header">
+    {!! titulo(null, 'Unidades de medida', null) !!}
+    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
+        <span class='glyphicon glyphicon-search'></span>
+    </a>     
+</h1>
+<div class="clearfix"></div>
+<div class='collapse' id='div-filtro'>
+    <div class='well well-sm' style="padding:9px 0">
+    {!! Form::model(
+        Request::session()->get('unidade-medida.index'), 
+        [
+            'route' => 'unidade-medida.index', 
+            'method' => 'GET', 
+            'class' => 'form-horizontal', 
+            'id' => 'unidade-medida-search', 
+            'role' => 'search', 
+            'autocomplete' => 'off']
+        )
+    !!}
+        <div class="col-md-2">
+            <div class="form-group">
+                {!! Form::label('codunidademedida', '#', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-8">{!! Form::text('codunidademedida', null, ['class' => 'form-control', 'placeholder' => '#']) !!}</div>
+            </div>    
+        </div>    
 
-<br>
+        <div class="col-md-6">
+            <div class="form-group">
+                {!! Form::label('unidademedida', 'Unidade de medida', ['class' => 'col-sm-4 control-label']) !!}
+                <div class="col-md-8">{!! Form::text('unidademedida', null, ['class' => 'form-control', 'placeholder' => 'Unidade de medida']) !!}</div>
+            </div>
+        </div>
+        <div class="col-md-2">      
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    {!! Form::close() !!}
+</div>
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
     @foreach($model as $row)
