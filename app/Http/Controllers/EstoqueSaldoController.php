@@ -163,7 +163,7 @@ class EstoqueSaldoController extends Controller
          * 
          */
         
-        $dados = EstoqueSaldo::relatorioAnalise('subgrupo', $filtro);
+        $dados = EstoqueSaldo::relatorioAnalise($agrupamento, $filtro);
         return view('estoque-saldo.relatorio-analise', compact('dados'));
     }
 
