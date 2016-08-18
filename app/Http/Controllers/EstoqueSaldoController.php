@@ -149,13 +149,20 @@ class EstoqueSaldoController extends Controller
     
     public function relatorioAnalise(Request $request)
     {
+        $filtro = $request->all();
         
+        $agrupamento = $request->agrupamento;
+        
+        /*
         $filtro = [
-            //'codproduto' => 100,
+            'codproduto' => 109763,
             'codmarca' => 30000020,
             //'codsubgrupoproduto' => 1566,
             'ativo' => 1,
         ];
+         * 
+         */
+        
         $dados = EstoqueSaldo::relatorioAnalise('subgrupo', $filtro);
         return view('estoque-saldo.relatorio-analise', compact('dados'));
     }

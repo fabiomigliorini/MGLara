@@ -700,6 +700,7 @@ class EstoqueSaldo extends MGModel
                         $qVenda->where('tblnegocio.codnegociostatus', '=', NegocioStatus::FECHADO);
                         $qVenda->where('tblprodutobarra.codprodutovariacao', '=', $retVar['codprodutovariacao']);
                         $qVenda->where('tblnegocio.lancamento', '>=', $data);
+                        $qVenda->where('tblnaturezaoperacao.venda', '=', true);
                         if ($venda = $qVenda->get()) {
                             $retLocal[$campo] = $venda[0]->quantidade;
                         }
