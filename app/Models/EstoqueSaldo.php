@@ -475,4 +475,329 @@ class EstoqueSaldo extends MGModel
         
         return $ret;
     }
+    
+    public static function relatorioAnalise($agrupamento, $filtro) 
+    {
+        $camposVenda = [
+            'vendabimestre' => new Carbon('-2 months'),
+            'vendasemestre' => new Carbon('-6 months'),
+            'vendaano' =>  new Carbon('-1 year'),
+        ];
+        
+        $diasSemestre = $camposVenda['vendasemestre']->diffInDays();
+        
+        $qProd = Produto::query();
+        /*
+        ,
+         * 
+         */
+        $qProd->select([
+            'tblproduto.codproduto', 
+            'tblproduto.produto',
+            'tblproduto.inativo',
+            'tblproduto.preco',
+            'tblproduto.referencia',
+            'tblproduto.codunidademedida',
+            'tblunidademedida.sigla',
+            'tblproduto.codmarca',
+            'tblmarca.marca',
+            'tblsubgrupoproduto.codsubgrupoproduto',
+            'tblsubgrupoproduto.subgrupoproduto',
+            'tblgrupoproduto.codgrupoproduto',
+            'tblgrupoproduto.grupoproduto',
+            'tblfamiliaproduto.codfamiliaproduto',
+            'tblfamiliaproduto.familiaproduto',
+            'tblsecaoproduto.codsecaoproduto',
+            'tblsecaoproduto.secaoproduto',
+        ]);
+        
+        $qProd->leftJoin('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
+        $qProd->leftJoin('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto');
+        $qProd->leftJoin('tblfamiliaproduto', 'tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto');
+        $qProd->leftJoin('tblsecaoproduto', 'tblsecaoproduto.codsecaoproduto', '=', 'tblfamiliaproduto.codsecaoproduto');
+        $qProd->leftJoin('tblmarca', 'tblmarca.codmarca', '=', 'tblproduto.codmarca');
+        $qProd->leftJoin('tblunidademedida', 'tblunidademedida.codunidademedida', '=', 'tblproduto.codunidademedida');
+        
+        if (!empty($filtro['codproduto'])) {
+            $qProd->where('tblproduto.codproduto', $filtro['codproduto']);
+        }
+        
+        if (!empty($filtro['codmarca'])) {
+            $qProd->where('tblproduto.codmarca', $filtro['codmarca']);
+        }
+        
+        if (!empty($filtro['codsubgrupoproduto'])) {
+            $qProd->where('tblproduto.codsubgrupoproduto', $filtro['codsubgrupoproduto']);
+        }
+        
+        if (empty($filtro['fiscal'])) {
+            $filtro['fiscal'] = false;
+        }
+        
+        switch (isset($filtro['ativo'])?$filtro['ativo']:'9') {
+            case 1: //Ativos
+                $qProd->whereNull('tblproduto.inativo');
+                break;
+            case 2: //Inativos
+                $qProd->whereNotNull('tblproduto.inativo');
+                break;
+            case 9; //Todos
+            default:
+        }
+        
+        $qProd->orderBy('tblsecaoproduto.secaoproduto', 'ASC');
+        $qProd->orderBy('tblfamiliaproduto.familiaproduto', 'ASC');
+        $qProd->orderBy('tblgrupoproduto.grupoproduto', 'ASC');
+        $qProd->orderBy('tblsubgrupoproduto.subgrupoproduto', 'ASC');
+        $qProd->orderBy('tblproduto.produto', 'ASC');
+
+        foreach ($qProd->get() as $prod) {
+            $retProd = [
+                'codproduto' => $prod->codproduto,
+                'produto' => $prod->produto,
+                'codmarca' => $prod->codmarca,
+                'marca' => $prod->marca,
+                'preco' => $prod->preco,
+                'codunidademedida' => $prod->codunidademedida,
+                'sigla' => $prod->sigla,
+                'referencia' => $prod->referencia,
+
+                'codsubgrupoproduto' => $prod->codsubgrupoproduto,
+                'subgrupoproduto' => $prod->subgrupoproduto,
+                'codgrupoproduto' => $prod->codgrupoproduto,
+                'grupoproduto' => $prod->grupoproduto,
+                'codfamiliaproduto' => $prod->codfamiliaproduto,
+                'familiaproduto' => $prod->familiaproduto,
+                'codsecaoproduto' => $prod->codsecaoproduto,
+                'secaoproduto' => $prod->secaoproduto,
+                
+                'quantidadecompra' => null,
+                'custocompra' => null,
+                'valortotalcompra' => null,
+
+                'estoqueminimo' => null,
+                'estoquemaximo' => null,
+                'saldoquantidade' => null,
+                'saldodias' => null,
+                
+                'saldovalor' => null,
+                'customedio' => null,
+                'vendaprevisaoquinzena' => null,
+                'vendabimestre' => null,
+                'vendasemestre' => null,
+                'vendaano' => null,
+                //'vendabienio' => null,
+                
+                'variacoes' => [],
+            ];
+            
+            foreach ($prod->ProdutoVariacaoS as $var) {
+                
+                $retVar = [
+                    'codprodutovariacao' => $var->codprodutovariacao,
+                    'variacao' => $var->variacao,
+                    'referencia' => $var->referencia,
+                    'ultimacompra' => null,
+                    
+                    'quantidadecompra' => null,
+                    'custocompra' => null,
+                    'valortotalcompra' => null,
+                    
+                    'estoqueminimo' => null,
+                    'estoquemaximo' => null,
+                    'saldoquantidade' => null,
+                    'saldodias' => null,
+                    
+                    'saldovalor' => null,
+                    'customedio' => null,
+                    'vendaprevisaoquinzena' => null,
+                    'vendabimestre' => null,
+                    'vendasemestre' => null,
+                    'vendaano' => null,
+                    //'vendabienio' => null,
+                    
+                    'locais' => [],
+                ];
+                
+                $qCompra = DB::table('tblprodutobarra');
+                $qCompra->selectRaw('tblnotafiscal.emissao, sum(tblnotafiscalprodutobarra.quantidade * coalesce(tblprodutoembalagem.quantidade, 1)) as quantidade, sum(tblnotafiscalprodutobarra.valortotal) as valortotal');
+                $qCompra->leftJoin('tblprodutoembalagem', 'tblprodutoembalagem.codprodutoembalagem', '=', 'tblprodutobarra.codprodutoembalagem');
+                $qCompra->join('tblnotafiscalprodutobarra', 'tblnotafiscalprodutobarra.codprodutobarra', '=', 'tblprodutobarra.codprodutobarra');
+                $qCompra->join('tblnotafiscal', 'tblnotafiscal.codnotafiscal', '=', 'tblnotafiscalprodutobarra.codnotafiscal');
+                $qCompra->join('tblnaturezaoperacao', 'tblnaturezaoperacao.codnaturezaoperacao', '=', 'tblnotafiscal.codnaturezaoperacao');
+                $qCompra->where('tblprodutobarra.codprodutovariacao', '=', $var->codprodutovariacao);
+                $qCompra->where('tblnaturezaoperacao.compra', '=', true);
+                $qCompra->groupBy('tblnotafiscal.emissao');
+                $qCompra->orderBy('tblnotafiscal.emissao', 'DESC');
+                if ($compra = $qCompra->first()) {
+                    $retVar['ultimacompra'] = new Carbon($compra->emissao);
+                    $retVar['quantidadecompra'] = $compra->quantidade;
+                    $retVar['valortotalcompra'] = $compra->valortotal;
+                    $retVar['custocompra'] = $compra->valortotal;
+                    if ($compra->quantidade > 0) {
+                        $retVar['custocompra'] /= $compra->quantidade;
+                    }
+                }
+                
+                $qSaldo = DB::table('tblestoquelocal');
+                $qSaldo->selectRaw('
+                    tblestoquelocal.codestoquelocal,
+                    tblestoquelocal.sigla,
+                    tblestoquelocalprodutovariacao.corredor,
+                    tblestoquelocalprodutovariacao.prateleira,
+                    tblestoquelocalprodutovariacao.coluna,
+                    tblestoquelocalprodutovariacao.bloco,
+                    tblestoquelocalprodutovariacao.estoqueminimo,
+                    tblestoquelocalprodutovariacao.estoquemaximo,
+                    tblestoquesaldo.codestoquesaldo,
+                    tblestoquesaldo.saldoquantidade,
+                    tblestoquesaldo.saldovalor,
+                    tblestoquesaldo.customedio
+                ');
+                $qSaldo->leftJoin('tblestoquelocalprodutovariacao', function($join) use ($var) {
+                    $join->on('tblestoquelocalprodutovariacao.codestoquelocal', '=', 'tblestoquelocal.codestoquelocal');
+                    $join->on('tblestoquelocalprodutovariacao.codprodutovariacao', '=', DB::raw($var->codprodutovariacao));
+                });
+                $qSaldo->leftJoin('tblestoquesaldo', function ($join) use ($filtro) {
+                    $join->on('tblestoquesaldo.codestoquelocalprodutovariacao', '=', 'tblestoquelocalprodutovariacao.codestoquelocalprodutovariacao');
+                    $join->on('tblestoquesaldo.fiscal', '=', DB::raw($filtro['fiscal']?'true':'false'));
+                });
+                $qSaldo->whereNull('tblestoquelocal.inativo');
+                $qSaldo->orderBy('tblestoquelocal.codestoquelocal');
+                
+                foreach ($qSaldo->get() as $sld) {
+                    
+                    $retLocal = [
+                        'codestoquelocal' => $sld->codestoquelocal,
+                        'estoquelocal' => $sld->sigla,
+                        'corredor' => $sld->corredor,
+                        'prateleira' => $sld->prateleira,
+                        'coluna' => $sld->coluna,
+                        'bloco' => $sld->bloco,
+                        'codestoquesaldo' => $sld->codestoquesaldo,
+                        'estoqueminimo' => $sld->estoqueminimo,
+                        'estoquemaximo' => $sld->estoquemaximo,
+                        'saldoquantidade' => $sld->saldoquantidade,
+                        'saldodias' => null,
+                        'saldovalor' => $sld->saldovalor,
+                        'customedio' => $sld->customedio,
+                        'vendaprevisaoquinzena' => null,
+                        'vendabimestre' => null,
+                        'vendasemestre' => null,
+                        'vendaano' => null,
+                        //'vendabienio' => null,
+                    ];
+                    
+                    // Calcula vendas do Bimestre/Semestre/Ano/UltimaCompra
+                    foreach ($camposVenda as $campo => $data) {
+                        $qVenda = DB::table('tblnegocioprodutobarra');
+                        $qVenda->selectRaw('sum(tblnegocioprodutobarra.quantidade * coalesce(tblprodutoembalagem.quantidade, 1)) as quantidade');
+                        $qVenda->join('tblnegocio', 'tblnegocio.codnegocio', '=', 'tblnegocioprodutobarra.codnegocio');
+                        $qVenda->join('tblprodutobarra', 'tblprodutobarra.codprodutobarra', '=', 'tblnegocioprodutobarra.codprodutobarra');
+                        $qVenda->join('tblnaturezaoperacao', 'tblnaturezaoperacao.codnaturezaoperacao', '=', 'tblnegocio.codnaturezaoperacao');
+                        $qVenda->leftJoin('tblprodutoembalagem', 'tblprodutoembalagem.codprodutoembalagem', '=', 'tblprodutobarra.codprodutoembalagem');
+                        $qVenda->where('tblnegocio.codestoquelocal', '=', $retLocal['codestoquelocal']);
+                        $qVenda->where('tblnegocio.codnegociostatus', '=', NegocioStatus::FECHADO);
+                        $qVenda->where('tblprodutobarra.codprodutovariacao', '=', $retVar['codprodutovariacao']);
+                        $qVenda->where('tblnegocio.lancamento', '>=', $data);
+                        if ($venda = $qVenda->get()) {
+                            $retLocal[$campo] = $venda[0]->quantidade;
+                        }
+                    }
+                    
+                    // Calcula para quantos dias dura o estoque, baseado na venda do semestre
+                    if (!empty($retLocal['vendasemestre'])) {
+                        $retLocal['saldodias'] = floor($retLocal['saldoquantidade'] / ($retLocal['vendasemestre'] / $diasSemestre));
+                    }
+                    
+                    // Calcula previsao de venda para quinzena, baseado na venda do semestre
+                    if (!empty($retLocal['vendasemestre'])) {
+                        $retLocal['vendaprevisaoquinzena'] = ceil(15 * ($retLocal['vendasemestre'] / $diasSemestre));
+                    }
+                    
+                    $retVar['locais'][$sld->codestoquelocal] = $retLocal;
+                }
+                
+                //Totaliza Locais
+                $retVar['estoqueminimo'] = array_sum(array_column($retVar['locais'], 'estoqueminimo'));
+                $retVar['estoquemaximo'] = array_sum(array_column($retVar['locais'], 'estoquemaximo'));
+                $retVar['saldoquantidade'] = array_sum(array_column($retVar['locais'], 'saldoquantidade'));
+                $retVar['saldovalor'] = array_sum(array_column($retVar['locais'], 'saldovalor'));
+                $retVar['vendaprevisaoquinzena'] = array_sum(array_column($retVar['locais'], 'vendaprevisaoquinzena'));
+                $retVar['vendabimestre'] = array_sum(array_column($retVar['locais'], 'vendabimestre'));
+                $retVar['vendasemestre'] = array_sum(array_column($retVar['locais'], 'vendasemestre'));
+                $retVar['vendaano'] = array_sum(array_column($retVar['locais'], 'vendaano'));
+                //$retVar['vendabienio'] = array_sum(array_column($retVar['locais'], 'vendabienio'));
+
+                // Calcula para quantos dias dura o estoque, baseado na venda do semestre
+                if (!empty($retVar['vendasemestre'])) {
+                    $retVar['saldodias'] = floor($retVar['saldoquantidade'] / ($retVar['vendasemestre'] / $diasSemestre));
+                }
+
+                // Custo Médio do Estoque
+                if (!empty($retVar['saldoquantidade'])) {
+                    $retVar['customedio'] = $retVar['saldovalor'] / $retVar['saldoquantidade'];
+                }
+                
+                $retProd['variacoes'][$var->codprodutovariacao] = $retVar;
+            }
+                
+            //Totaliza Variacoes
+            $retProd['estoqueminimo'] = array_sum(array_column($retProd['variacoes'], 'estoqueminimo'));
+            $retProd['estoquemaximo'] = array_sum(array_column($retProd['variacoes'], 'estoquemaximo'));
+            $retProd['saldoquantidade'] = array_sum(array_column($retProd['variacoes'], 'saldoquantidade'));
+            $retProd['saldovalor'] = array_sum(array_column($retProd['variacoes'], 'saldovalor'));
+            $retProd['vendaprevisaoquinzena'] = array_sum(array_column($retProd['variacoes'], 'vendaprevisaoquinzena'));
+            $retProd['vendabimestre'] = array_sum(array_column($retProd['variacoes'], 'vendabimestre'));
+            $retProd['vendasemestre'] = array_sum(array_column($retProd['variacoes'], 'vendasemestre'));
+            $retProd['vendaano'] = array_sum(array_column($retProd['variacoes'], 'vendaano'));
+            //$retProd['vendabienio'] = array_sum(array_column($retProd['variacoes'], 'vendabienio'));
+
+            if (!empty($retProd['saldoquantidade'])) {
+                $retProd['customedio'] = $retProd['saldovalor'] / $retProd['saldoquantidade'];
+            }
+            
+            // Calcula para quantos dias dura o estoque, baseado na venda do semestre
+            if (!empty($retProd['vendasemestre'])) {
+                $retProd['saldodias'] = floor($retProd['saldoquantidade'] / ($retProd['vendasemestre'] / $diasSemestre));
+            }
+            
+            $retProd['valortotalcompra'] = array_sum(array_column($retProd['variacoes'], 'valortotalcompra'));
+            $retProd['quantidadecompra'] = array_sum(array_column($retProd['variacoes'], 'quantidadecompra'));
+            
+            if (!empty($retProd['quantidadecompra'])) {
+                $retProd['custocompra'] = $retProd['valortotalcompra'] / $retProd['quantidadecompra'];
+            }
+            
+            $itens[$prod->codproduto] = $retProd;
+            
+        }
+        
+        foreach ($itens as $item) {
+            switch ($agrupamento) {
+                case 'marca':
+                    $ret[$item['codmarca']]['codigo'] = $item['codmarca'];
+                    $ret[$item['codmarca']]['descricao'] = $item['marca'];
+                    $ret[$item['codmarca']]['produtos'][$item['codproduto']] = $item;
+                    break;
+                case 'subgrupoproduto':
+                default:
+                    $ret[$item['codsubgrupoproduto']]['codigo'] = $item['codsubgrupoproduto'];
+                    $ret[$item['codsubgrupoproduto']]['descricao'] =
+                        "{$item['secaoproduto']} » {$item['familiaproduto']} » {$item['grupoproduto']} » {$item['subgrupoproduto']}";
+                    $ret[$item['codsubgrupoproduto']]['produtos'][$item['codproduto']] = $item;
+                    break;
+            }
+        }
+        
+        
+        //$query->leftJoin('tblprodutovariacao', 'tblprodutovariacao.codproduto', '=', 'tblproduto.codproduto');
+        //$query->leftJoin('tblestoquelocalprodutovariacao', '')
+        
+        return $ret;
+        
+        //header('Content-Type: application/json');
+        //echo json_encode($ret);
+        //die();
+    }
 }
