@@ -530,6 +530,18 @@ class EstoqueSaldo extends MGModel
             $qProd->where('tblproduto.codsubgrupoproduto', $filtro['codsubgrupoproduto']);
         }
         
+        if (!empty($filtro['codgrupoproduto'])) {
+            $qProd->where('tblsubgrupoproduto.codgrupoproduto', $filtro['codgrupoproduto']);
+        }
+        
+        if (!empty($filtro['codfamiliaproduto'])) {
+            $qProd->where('tblgrupoproduto.codfamiliaproduto', $filtro['codfamiliaproduto']);
+        }
+        
+        if (!empty($filtro['codsecaoproduto'])) {
+            $qProd->where('tblfamiliaproduto.codsecaoproduto', $filtro['codsecaoproduto']);
+        }
+        
         if (empty($filtro['fiscal'])) {
             $filtro['fiscal'] = false;
         }
