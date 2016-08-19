@@ -3,6 +3,10 @@
 if(!function_exists('formataData')) {
     function formataData($data, $formato = 'C') {
         
+        if (empty($data)) {
+            return null;
+        }
+        
         if(!$data instanceof Carbon\Carbon) {
             $data = new Carbon\Carbon($data);
         }

@@ -99,86 +99,6 @@ class EstoqueSaldoController extends Controller
         
         $filtro = $request->all();
         
-        /*
-        $titulo = [];
-        $filtro = [];
-
-        // Secao
-        if (!empty($request->codsecaoproduto)) {
-            $model = \MGLara\Models\SecaoProduto::findOrFail($request->codsecaoproduto);
-            $filtro['codsecaoproduto'] = $model->codsecaoproduto;
-            $titulo[url("secao-produto/{$model->codsecaoproduto}")] = $model->secaoproduto;
-        }
-        
-        // Familia
-        if (!empty($request->codfamiliaproduto)) {
-            $model = \MGLara\Models\FamiliaProduto::findOrFail($request->codfamiliaproduto);
-            $filtro['codfamiliaproduto'] = $model->codfamiliaproduto;
-            $titulo[url("familia-produto/{$model->codfamiliaproduto}")] = $model->familiaproduto;
-        }
-        
-        // Grupo
-        if (!empty($request->codgrupoproduto)) {
-            $model = \MGLara\Models\GrupoProduto::findOrFail($request->codgrupoproduto);
-            $filtro['codgrupoproduto'] = $model->codgrupoproduto;
-            $titulo[url("grupo-produto/{$model->codgrupoproduto}")] = $model->grupoproduto;
-        }
-
-        // Sub-Grupo
-        if (!empty($request->codsubgrupoproduto)) {
-            $model = \MGLara\Models\SubGrupoProduto::findOrFail($request->codsubgrupoproduto);
-            $filtro['codsubgrupoproduto'] = $model->codsubgrupoproduto;
-            $titulo[url("sub-grupo-produto/{$model->codsubgrupoproduto}")] = $model->subgrupoproduto;
-        } 
-        
-        // Marca
-        if (!empty($request->codmarca)) {
-            $model = \MGLara\Models\Marca::findOrFail($request->codmarca);
-            $filtro['codmarca'] = $model->codmarca;
-            $titulo[url("marca/{$model->codmarca}")] = $model->marca;
-        }
-            
-        // Produto
-        if (!empty($request->codproduto)) {
-            $model = \MGLara\Models\Produto::findOrFail($request->codproduto);
-            $filtro['codproduto'] = $model->codproduto;
-            $titulo[url("produto/{$model->codproduto}")] = $model->produto;
-        }
-        
-        // Variacao
-        if (!empty($request->codprodutovariacao)) {
-            $model = \MGLara\Models\ProdutoVariacao::findOrFail($request->codprodutovariacao);
-            $titulo[url("produto/{$model->codproduto}#{$model->codprodutovariacao}")] = empty($model->variacao)?'{ Sem Variação }':$model->variacao;
-            $filtro['codprodutovariacao'] = $model->codprodutovariacao;
-        }
-        
-        // Local
-        if (!empty($request->codestoquelocal)) {
-            $model = \MGLara\Models\EstoqueLocal::findOrFail($request->codestoquelocal);
-            $filtro['codestoquelocal'] = $model->codestoquelocal;
-            $titulo[url("estoque-local/{$model->codestoquelocal}")] = $model->estoquelocal;
-        }
-        
-        // Saldo Negativo / Positivo
-        if (!empty($request->saldo)) {
-            $filtro['saldo'] = $request->saldo;
-            $titulo[] = $arr_saldos[$request->saldo];
-        }
-        
-        // Estoque Minimo
-        if (!empty($request->minimo)) {
-            $filtro['minimo'] = $request->minimo;
-            $titulo[] = $arr_minimo[$request->minimo];
-        }
-        
-        // Estoque Maximo
-        if (!empty($request->maximo)) {
-            $filtro['maximo'] = $request->maximo;
-            $titulo[] = $arr_maximo[$request->maximo];
-        }
-         * 
-         */
-        
         $itens = EstoqueSaldo::totais($agrupamento_atual, $valor, $filtro);
 
         if (!empty($titulo)) {
@@ -227,9 +147,52 @@ class EstoqueSaldoController extends Controller
         return json_encode($model->zera());
     }
     
-    public function relatorio(Request $request)
+    public function relatorioAnaliseFiltro(Request $request)
     {
-        return view('estoque-saldo.relatorio', []);
+        
+        $filtro = $request->all();
+        
+        $arr_saldos = [
+            '' => '', 
+            -1=>'Negativo', 
+            1=>'Positivo',
+        ];
+        
+        $arr_minimo = [
+            '' => '', 
+            -1=>'Abaixo Mínimo', 
+            1=>'Acima Mínimo'
+        ];
+        
+        $arr_maximo = [
+            '' => '', 
+            -1=>'Abaixo Máximo', 
+            1=>'Acima Máximo'
+        ];
+        
+        $arr_agrupamentos = [
+            'subgrupoproduto' => 'Sub-Grupo',
+            'marca' => 'Marca',
+        ];
+        
+        $arr_ativo = [
+            '1' => 'Ativos',
+            '2' => 'Inativos',
+            '9' => 'Todos',
+        ];
+        
+        return view('estoque-saldo.relatorio-analise-filtro', compact('arr_ativo', 'arr_valor', 'arr_saldos', 'arr_minimo', 'arr_maximo', 'arr_agrupamentos', 'filtro'));
+    }
+    
+    public function relatorioAnalise(Request $request)
+    {
+        $filtro = $request->all();
+        
+        $agrupamento = $request->agrupamento;
+        
+        $dados = EstoqueSaldo::relatorioAnalise($agrupamento, $filtro);
+        
+        return view('estoque-saldo.relatorio-analise', compact('dados'));
     }
 
 }

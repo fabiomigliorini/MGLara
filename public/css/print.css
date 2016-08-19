@@ -78,14 +78,27 @@ and open the template in the editor.
         background-color: #EEEEEE;
     }
 
+    /*
     tbody.zebrada tr:first-child td {
         border-top: 2px solid black;
     }
-
+    */
+    
     td, th {
         text-align: left;
-        padding: 0.1cm;
+        padding: 0.02cm;
         font-size: 7pt;
+        vertical-align: top;
+    }
+    
+    th {
+        border-bottom: 1px solid black;
+        text-align: center;
+    }
+    
+    td.total {
+        border-top: 1px solid black;
+        font-weight: bold;
     }
 
     table {
@@ -95,6 +108,14 @@ and open the template in the editor.
 
     .text-right {
         text-align: right;
+    }
+    
+    .text-center {
+        text-align: center;
+    }
+    
+    a {
+        text-decoration: none;
     }
 
 }

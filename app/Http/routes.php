@@ -67,7 +67,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('estoque-mes','EstoqueMesController');
 
     /* EstoqueSaldo */
-    Route::get('estoque-saldo/relatorio','EstoqueSaldoController@relatorio');
+    Route::get('estoque-saldo/relatorio-analise-filtro','EstoqueSaldoController@relatorioAnaliseFiltro');
+    Route::get('estoque-saldo/relatorio-analise','EstoqueSaldoController@relatorioAnalise');
     Route::resource('estoque-saldo','EstoqueSaldoController');
     Route::get('estoque-saldo/{id}/zera','EstoqueSaldoController@zera');
 
