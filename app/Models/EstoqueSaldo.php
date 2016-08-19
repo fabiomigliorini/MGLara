@@ -16,10 +16,10 @@ use Illuminate\Support\Facades\DB;
  * @property  bigint                         $codestoquesaldo                    NOT NULL DEFAULT nextval('tblestoquesaldo_codestoquesaldo_seq'::regclass)
  * @property  bigint                         $codestoquelocalprodutovariacao             NOT NULL
  * @property  boolean                        $fiscal                             NOT NULL
- * @property  timestamp                      $ultimaconferencia
  * @property  numeric(14,3)                  $saldoquantidade                    
  * @property  numeric(14,2)                  $saldovalor                         
  * @property  numeric(14,6)                  $customedio                 
+ * @property  timestamp                      $dataentrada
  * @property  timestamp                      $ultimaconferencia
  * @property  timestamp                      $alteracao                          
  * @property  bigint                         $codusuarioalteracao                
@@ -54,6 +54,7 @@ class EstoqueSaldo extends MGModel
         'alteracao',
         'criacao',
         'ultimaconferencia',
+        'dataentrada',
     ];
     
     // Chaves Estrangeiras
