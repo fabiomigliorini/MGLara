@@ -816,6 +816,7 @@ class EstoqueSaldo extends MGModel
                     tblestoquelocalprodutovariacao.estoqueminimo,
                     tblestoquelocalprodutovariacao.estoquemaximo,
                     tblestoquesaldo.codestoquesaldo,
+                    tblestoquesaldo.dataentrada,
                     tblestoquesaldo.saldoquantidade,
                     tblestoquesaldo.saldovalor,
                     tblestoquesaldo.customedio
@@ -888,6 +889,7 @@ class EstoqueSaldo extends MGModel
                         'coluna' => $sld->coluna,
                         'bloco' => $sld->bloco,
                         'codestoquesaldo' => $sld->codestoquesaldo,
+                        'dataentrada' => empty($sld->dataentrada)?null:new Carbon($sld->dataentrada),
                         'estoqueminimo' => $sld->estoqueminimo,
                         'estoquemaximo' => $sld->estoquemaximo,
                         'saldoquantidade' => $sld->saldoquantidade,

@@ -17,7 +17,7 @@
                     <th colspan="5">Produto</th>
                     <th colspan="2">Variação</th>
                     <th colspan="3">Última Compra</th>
-                    <th colspan="7">Estoque</th>
+                    <th colspan="8">Estoque</th>
                     <th colspan="3">Vendas</th>
                     <th colspan="1">Prev</th>
                 </tr>
@@ -37,6 +37,7 @@
                     <th>Saldo</th>
                     <th>Dias</th>
                     <th>Médio</th>
+                    <th>Data</th>
                     <th>Mín</th>
                     <th>Máx</th>
                     <th>Bim</th>
@@ -86,6 +87,7 @@
                                         </td>
                                         <td class='text-right'>{{ formataNumero($loc['saldodias'], 0) }}</td>
                                         <td class='text-right'>{{ formataNumero($loc['customedio'], 4) }}</td>
+                                        <td class='text-right'>{{ formataData($loc['dataentrada']) }}</td>
                                         <td class='text-right'>{{ formataNumero($loc['estoqueminimo'], 0) }}</td>
                                         <td class='text-right'>{{ formataNumero($loc['estoquemaximo'], 0) }}</td>
                                         <td class='text-right'>{{ formataNumero($loc['vendabimestre'], 0) }}</td>
@@ -105,6 +107,7 @@
                                         <td class='total text-right'>{{ formataNumero($var['saldoquantidade'], 0) }}</td>
                                         <td class='total text-right'>{{ formataNumero($var['saldodias'], 0) }}</td>
                                         <td class='total text-right'>{{ formataNumero($var['customedio'], 4) }}</td>
+                                        <td class='total'></td>
                                         <td class='total text-right'>{{ formataNumero($var['estoqueminimo'], 0) }}</td>
                                         <td class='total text-right'>{{ formataNumero($var['estoquemaximo'], 0) }}</td>
                                         <td class='total text-right'>{{ formataNumero($var['vendabimestre'], 0) }}</td>
@@ -123,6 +126,7 @@
                                 <td class='total text-right'>{{ formataNumero($prod['saldoquantidade'], 0) }}</td>
                                 <td class='total text-right'>{{ formataNumero($prod['saldodias'], 0) }}</td>
                                 <td class='total text-right'>{{ formataNumero($prod['customedio'], 4) }}</td>
+                                <td class='total'></td>
                                 <td class='total text-right'>{{ formataNumero($prod['estoqueminimo'], 0) }}</td>
                                 <td class='total text-right'>{{ formataNumero($prod['estoquemaximo'], 0) }}</td>
                                 <td class='total text-right'>{{ formataNumero($prod['vendabimestre'], 0) }}</td>
