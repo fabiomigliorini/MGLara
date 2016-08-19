@@ -264,9 +264,10 @@ class EstoqueController extends Controller
             inner join tblprodutovariacao pv on (pv.codprodutovariacao = elpv.codprodutovariacao)
             where $sldquantidade
             and es.fiscal = false
-            and elpv.codestoquelocal = 104001
+            and elpv.codestoquelocal = $id
+            and es.codestoquesaldo not in (select esc.codestoquesaldo from tblestoquesaldoconferencia esc)
             order by pv.codproduto, pv.codprodutovariacao
-            limit 1000
+            limit 10000
             ";
         
         //dd($sql);
