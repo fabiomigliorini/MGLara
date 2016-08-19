@@ -11,14 +11,25 @@ use MGLara\Models\Ncm;
 
 class NcmController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('parametros', ['only' => ['index']]);
+    }    
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if (!$request->session()->has('ncm.index')) {
+            $request->session()->put('ncm.index.ativo', []);
+        }
+
+        //$parametros = $request->session()->get('ncm.index');
+        $model = Ncm::whereNull('codncmpai')->orderBy('ncm', 'ASC')->paginate(20);
+        $ncms = Ncm::find($request->get('codncm'));
+        return view('ncm.index', compact('model', 'ncms'));        
     }
 
     /**
@@ -28,7 +39,8 @@ class NcmController extends Controller
      */
     public function create()
     {
-        //
+        $model = new Ncm();
+        return view('ncm.create', compact('model'));
     }
 
     /**
@@ -39,7 +51,15 @@ class NcmController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $model = new Ncm($request->all());
+        
+        if (!$model->validate()) {
+            $this->throwValidationException($request, $model->_validator);
+        }
+
+        $model->save();
+        Session::flash('flash_success', 'NCM Criada!');
+        return redirect("ncm/$model->codncm"); 
     }
 
     /**
@@ -50,8 +70,11 @@ class NcmController extends Controller
      */
     public function show($id)
     {
-        //
+        $model = Ncm::findOrFail($id);
+        $filhos = $model->NcmS()->paginate(10);
+        return view('ncm.show', compact('model', 'filhos'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -61,7 +84,8 @@ class NcmController extends Controller
      */
     public function edit($id)
     {
-        //
+        $model = Ncm::findOrFail($id);
+        return view('ncm.edit',  compact('model'));
     }
 
     /**
@@ -73,7 +97,17 @@ class NcmController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $model = Ncm::findOrFail($id);
+        $model->fill($request->all());
+        
+        if (!$model->validate()) {
+            $this->throwValidationException($request, $model->_validator);
+        }
+
+        $model->save();
+
+        Session::flash('flash_success', "NCM '{$model->descricao}' Atualizada!");
+        return redirect("ncm/$model->codncm");         
     }
 
     /**
@@ -84,8 +118,15 @@ class NcmController extends Controller
      */
     public function destroy($id)
     {
-        //
-    }
+        try{
+            Ncm::find($id)->delete();
+            $ret = ['resultado' => true, 'mensagem' => 'NCM excluída com sucesso!'];
+        }
+        catch(\Exception $e){
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir NCM!', 'exception' => $e];
+        }
+        return json_encode($ret);
+    } 
     
     public function listagemJson(Request $request) {
         if($request->get('q')) {

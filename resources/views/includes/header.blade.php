@@ -60,7 +60,7 @@
             <li><a href="{{ url('secao-produto') }}">Seções de Produto</a><li>
             <li><a href="{{ url('tipo-produto') }}">Tipos de produtos</a></li>
             <li><a href="{{ url('unidade-medida') }}">Unidades de medida</a></li>
-            <!-- <li><a href="#">NCM</a></li> -->
+            <li><a href="{{ url('ncm') }}">NCM</a></li>
           </ul>
         </li>
         <!--

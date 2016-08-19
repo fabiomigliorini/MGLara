@@ -83,7 +83,9 @@ h1.header {
 .list-group-condensed > .list-group-item {
   padding: 5px 10px;
 }
-
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+    background: #337ab7 !important;
+}
 .panel-condensed > .panel-body, .panel-heading, .panel-footer {
   padding: 5px 10px;
 }
