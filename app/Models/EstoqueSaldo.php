@@ -928,7 +928,13 @@ class EstoqueSaldo extends MGModel
                         $retLocal['vendaprevisaoquinzena'] = ceil(15 * ($retLocal['vendasemestre'] / $diasSemestre));
                     }
                     
-                    $retVar['locais'][$sld->codestoquelocal] = $retLocal;
+                    if (!empty($retLocal['vendabimestre'])
+                            || !empty($retLocal['vendasemestre'])
+                            || !empty($retLocal['vendaano'])
+                            || !empty($retLocal['saldoquantidade'])
+                    ) {
+                        $retVar['locais'][$sld->codestoquelocal] = $retLocal;
+                    }
                 }
                 
                 //Totaliza Locais

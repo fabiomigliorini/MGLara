@@ -97,7 +97,10 @@
                                         <tr>
                                     @endif
                                 @endforeach
-                                @if ($rowspanVariacao > 1)
+                                @if ($qtdLocais == 0)
+                                        <td colspan='11' class='text-center'> --- Sem Movimento --- </td>
+                                    </tr>
+                                @elseif ($rowspanVariacao > 1)
                                         <td class='total' colspan='2'>Sub-Total Variação</td>
                                         <td class='total text-right'>{{ formataNumero($var['saldoquantidade'], 0) }}</td>
                                         <td class='total text-right'>{{ formataNumero($var['saldodias'], 0) }}</td>
