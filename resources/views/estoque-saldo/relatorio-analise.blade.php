@@ -45,38 +45,37 @@
                     <th>Qui</th>
                 </tr>
             </thead>
-            <tbody class=''>
+            <tbody class='zebrada'>
                 @foreach($quebra['produtos'] as $codproduto => $prod)
                     <?php
-                    $rowspan = 0;
+                    $qtdVariacoes = sizeof($prod['variacoes']);
+                    $qtdLocaisTotal = 0;
                     foreach ($prod['variacoes'] as $codprodutovariacao => $var) {
-                        $rowspan += sizeof($var['locais']);
-                        $rowspan ++;
+                        $qtdLocais = sizeof($var['locais']);
+                        $qtdLocaisTotal += ($qtdLocais > 1)?$qtdLocais+1:1;
                     }
-                    $rowspan ++;
+                    $rowspanProduto = ($qtdVariacoes > 1)?$qtdLocaisTotal+1:$qtdLocaisTotal;
                     ?>
                     <tr>
-                        <td rowspan='{{ $rowspan }}'>{{ formataCodigo($codproduto, 6) }}</td>
-                        <td rowspan='{{ $rowspan }}'>
+                        <td rowspan='{{ $rowspanProduto }}'>{{ formataCodigo($codproduto, 6) }}</td>
+                        <td rowspan='{{ $rowspanProduto }}'>
                             <a href='{{ url("produto/{$codproduto}") }}'>
                                 {{ $prod['produto'] }}
                             </a>
                         </td>
-                        <td rowspan='{{ $rowspan }}' class='text-right'>{{ formataNumero($prod['preco'], 2) }}</td>
-                        <td rowspan='{{ $rowspan }}'>{{ $prod['sigla'] }}</td>
-                        <td rowspan='{{ $rowspan }}'>{{ $prod['marca'] }}</td>
+                        <td rowspan='{{ $rowspanProduto }}' class='text-right'>{{ formataNumero($prod['preco'], 2) }}</td>
+                        <td rowspan='{{ $rowspanProduto }}'>{{ $prod['sigla'] }}</td>
+                        <td rowspan='{{ $rowspanProduto }}'>{{ $prod['marca'] }}</td>
                         @foreach ($prod['variacoes'] as $codprodutovariacao => $var)
                             <?php
-                            $rowspan = sizeof($var['locais']) + 1;
-                            if ($rowspan == 0 )
-                                continue;
-                            $rowspan = ($rowspan>0)?$rowspan:1;
+                            $qtdLocais = sizeof($var['locais']);
+                            $rowspanVariacao = ($qtdLocais > 1)?$qtdLocais+1:1;
                             ?>
-                                <td rowspan='{{ $rowspan }}'>{{ $var['variacao'] }}</td>
-                                <td rowspan='{{ $rowspan }}'>{{ $var['referencia'] }}</td>
-                                <td rowspan='{{ $rowspan }}' class='text-right'>{{ formataData($var['ultimacompra']) }}</td>
-                                <td rowspan='{{ $rowspan }}' class='text-right'>{{ formataNumero($var['quantidadecompra'], 0) }}</td>
-                                <td rowspan='{{ $rowspan }}' class='text-right'>{{ formataNumero($var['custocompra']) }}</td>
+                                <td rowspan='{{ $rowspanVariacao }}'>{{ $var['variacao'] }}</td>
+                                <td rowspan='{{ $rowspanVariacao }}'>{{ $var['referencia'] }}</td>
+                                <td rowspan='{{ $rowspanVariacao }}' class='text-right'>{{ formataData($var['ultimacompra']) }}</td>
+                                <td rowspan='{{ $rowspanVariacao }}' class='text-right'>{{ formataNumero($var['quantidadecompra'], 0) }}</td>
+                                <td rowspan='{{ $rowspanVariacao }}' class='text-right'>{{ formataNumero($var['custocompra']) }}</td>
                                 @foreach ($var['locais'] as $codestoquelocal => $loc)
                                         <td>{{ $loc['estoquelocal'] }}</td>
                                         <td>{{ formataLocalEstoque($loc['corredor'], $loc['prateleira'], $loc['coluna'], $loc['bloco']) }}</td>
@@ -94,35 +93,41 @@
                                         <td class='text-right'>{{ formataNumero($loc['vendaano'], 0) }}</td>
                                         <td class='text-right'>{{ formataNumero($loc['vendaprevisaoquinzena'], 0) }}</td>
                                     </tr>
-                                    <tr>
+                                    @if ($qtdLocais > 1)
+                                        <tr>
+                                    @endif
                                 @endforeach
-                                <td class='total' colspan='2'>Total</td>
-                                <td class='total text-right'>{{ formataNumero($var['saldoquantidade'], 0) }}</td>
-                                <td class='total text-right'>{{ formataNumero($var['saldodias'], 0) }}</td>
-                                <td class='total text-right'>{{ formataNumero($var['customedio'], 4) }}</td>
-                                <td class='total text-right'>{{ formataNumero($var['estoqueminimo'], 0) }}</td>
-                                <td class='total text-right'>{{ formataNumero($var['estoquemaximo'], 0) }}</td>
-                                <td class='total text-right'>{{ formataNumero($var['vendabimestre'], 0) }}</td>
-                                <td class='total text-right'>{{ formataNumero($var['vendasemestre'], 0) }}</td>
-                                <td class='total text-right'>{{ formataNumero($var['vendaano'], 0) }}</td>
-                                <td class='total text-right'>{{ formataNumero($var['vendaprevisaoquinzena'], 0) }}</td>
-                            </tr>
-                            <tr>
+                                @if ($rowspanVariacao > 1)
+                                        <td class='total' colspan='2'>Sub-Total Variação</td>
+                                        <td class='total text-right'>{{ formataNumero($var['saldoquantidade'], 0) }}</td>
+                                        <td class='total text-right'>{{ formataNumero($var['saldodias'], 0) }}</td>
+                                        <td class='total text-right'>{{ formataNumero($var['customedio'], 4) }}</td>
+                                        <td class='total text-right'>{{ formataNumero($var['estoqueminimo'], 0) }}</td>
+                                        <td class='total text-right'>{{ formataNumero($var['estoquemaximo'], 0) }}</td>
+                                        <td class='total text-right'>{{ formataNumero($var['vendabimestre'], 0) }}</td>
+                                        <td class='total text-right'>{{ formataNumero($var['vendasemestre'], 0) }}</td>
+                                        <td class='total text-right'>{{ formataNumero($var['vendaano'], 0) }}</td>
+                                        <td class='total text-right'>{{ formataNumero($var['vendaprevisaoquinzena'], 0) }}</td>
+                                    </tr>
+                                @endif
                         @endforeach
-                        <td class='total' colspan='3'>Total</td>
-                        <td class='total text-right'>{{ formataNumero($prod['quantidadecompra'], 0) }}</td>
-                        <td class='total text-right'>{{ formataNumero($prod['custocompra']) }}</td>
-                        <td class='total' colspan='2'></td>
-                        <td class='total text-right'>{{ formataNumero($prod['saldoquantidade'], 0) }}</td>
-                        <td class='total text-right'>{{ formataNumero($prod['saldodias'], 0) }}</td>
-                        <td class='total text-right'>{{ formataNumero($prod['customedio'], 4) }}</td>
-                        <td class='total text-right'>{{ formataNumero($prod['estoqueminimo'], 0) }}</td>
-                        <td class='total text-right'>{{ formataNumero($prod['estoquemaximo'], 0) }}</td>
-                        <td class='total text-right'>{{ formataNumero($prod['vendabimestre'], 0) }}</td>
-                        <td class='total text-right'>{{ formataNumero($prod['vendasemestre'], 0) }}</td>
-                        <td class='total text-right'>{{ formataNumero($prod['vendaano'], 0) }}</td>
-                        <td class='total text-right'>{{ formataNumero($prod['vendaprevisaoquinzena'], 0) }}</td>
-                    </tr>
+                        @if ($qtdVariacoes > 1)
+                            <tr>
+                                <td class='total' colspan='3'>Sub-Total Produto</td>
+                                <td class='total text-right'>{{ formataNumero($prod['quantidadecompra'], 0) }}</td>
+                                <td class='total text-right'>{{ formataNumero($prod['custocompra']) }}</td>
+                                <td class='total' colspan='2'></td>
+                                <td class='total text-right'>{{ formataNumero($prod['saldoquantidade'], 0) }}</td>
+                                <td class='total text-right'>{{ formataNumero($prod['saldodias'], 0) }}</td>
+                                <td class='total text-right'>{{ formataNumero($prod['customedio'], 4) }}</td>
+                                <td class='total text-right'>{{ formataNumero($prod['estoqueminimo'], 0) }}</td>
+                                <td class='total text-right'>{{ formataNumero($prod['estoquemaximo'], 0) }}</td>
+                                <td class='total text-right'>{{ formataNumero($prod['vendabimestre'], 0) }}</td>
+                                <td class='total text-right'>{{ formataNumero($prod['vendasemestre'], 0) }}</td>
+                                <td class='total text-right'>{{ formataNumero($prod['vendaano'], 0) }}</td>
+                                <td class='total text-right'>{{ formataNumero($prod['vendaprevisaoquinzena'], 0) }}</td>
+                            </tr>
+                        @endif
                 @endforeach
             </tbody>
         </table>
