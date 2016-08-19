@@ -54,6 +54,7 @@
             <li><a href="{{ url('produto-historico-preco') }}">Histórico de Preços</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="{{ url('estoque-saldo') }}">Saldos de Estoque</a></li>
+            <li><a href="{{ url('estoque-saldo/relatorio-analise-filtro') }}">Relatório Análise Saldos de Estoque</a></li>
             <li><a href="{{ url('estoque-saldo-conferencia') }}">Conferência de Saldos</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="{{ url('marca') }}">Marcas</a><li>

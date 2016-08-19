@@ -147,23 +147,51 @@ class EstoqueSaldoController extends Controller
         return json_encode($model->zera());
     }
     
+    public function relatorioAnaliseFiltro(Request $request)
+    {
+        
+        $filtro = $request->all();
+        
+        $arr_saldos = [
+            '' => '', 
+            -1=>'Negativo', 
+            1=>'Positivo',
+        ];
+        
+        $arr_minimo = [
+            '' => '', 
+            -1=>'Abaixo Mínimo', 
+            1=>'Acima Mínimo'
+        ];
+        
+        $arr_maximo = [
+            '' => '', 
+            -1=>'Abaixo Máximo', 
+            1=>'Acima Máximo'
+        ];
+        
+        $arr_agrupamentos = [
+            'subgrupoproduto' => 'Sub-Grupo',
+            'marca' => 'Marca',
+        ];
+        
+        $arr_ativo = [
+            '1' => 'Ativos',
+            '2' => 'Inativos',
+            '9' => 'Todos',
+        ];
+        
+        return view('estoque-saldo.relatorio-analise-filtro', compact('arr_ativo', 'arr_valor', 'arr_saldos', 'arr_minimo', 'arr_maximo', 'arr_agrupamentos', 'filtro'));
+    }
+    
     public function relatorioAnalise(Request $request)
     {
         $filtro = $request->all();
         
         $agrupamento = $request->agrupamento;
         
-        /*
-        $filtro = [
-            'codproduto' => 109763,
-            'codmarca' => 30000020,
-            //'codsubgrupoproduto' => 1566,
-            'ativo' => 1,
-        ];
-         * 
-         */
-        
         $dados = EstoqueSaldo::relatorioAnalise($agrupamento, $filtro);
+        
         return view('estoque-saldo.relatorio-analise', compact('dados'));
     }
 
