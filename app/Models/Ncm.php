@@ -71,7 +71,7 @@ class Ncm extends MGModel
 
     public function NcmS()
     {
-        return $this->hasMany(Ncm::class, 'codncm', 'codncmpai');
+        return $this->hasMany(Ncm::class, 'codncmpai', 'codncm')->orderBy('ncm', 'ASC');
     }
 
     public function ProdutoS()
@@ -202,7 +202,29 @@ class Ncm extends MGModel
         }
         
         return response()->json(['data' => $itens]);
-    }    
+    }
+
+    public static function search($parametros)
+    {
+        $query = Ncm::query();
+        
+        if (!empty($parametros['codncm'])) {
+            $query->where('codncm', $parametros['codncm']);
+        }
+
+        if (!empty($parametros['ncm']) || !empty($parametros['descricao'])) {
+
+            $numero = NumeroLimpo(trim($parametros['ncm']));
+            $query->where('descricao', 'ILIKE', "%{$parametros['descricao']}%");
+
+            if (!empty($numero)) {
+                $query->orWhere('ncm', 'ILIKE', "%$numero%");
+            }
+        }
+
+        return $query;
+    }
+    
     
     public function scopeBuscaNcm($query, $q)
     {
