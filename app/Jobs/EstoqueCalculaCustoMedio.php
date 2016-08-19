@@ -166,6 +166,31 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
             $mes->EstoqueSaldo->saldovalor = $mes->saldovalor;
             $mes->EstoqueSaldo->customedio = $mes->customedio;
             $mes->EstoqueSaldo->save();
+            
+            //atualiza 'dataentrada'
+            DB::update(DB::raw("
+                update tblestoquesaldo
+                set dataentrada = (
+                        select 
+                                x.data 
+                        from (
+                                select 
+                                        mov.data
+                                        , mov.entradaquantidade
+                                        , sum(mov.entradaquantidade) over (order by mov.data desc) as soma
+                                from tblestoquemes mes
+                                inner join tblestoquemovimento mov on (mov.codestoquemes = mes.codestoquemes)
+                                inner join tblestoquemovimentotipo tipo on (tipo.codestoquemovimentotipo = mov.codestoquemovimentotipo)
+                                where mes.codestoquesaldo = tblestoquesaldo.codestoquesaldo
+                                and mov.entradaquantidade is not null
+                                and tipo.atualizaultimaentrada = true
+                                ) x
+                        where soma >= tblestoquesaldo.saldoquantidade
+                        order by data DESC
+                        limit 1
+                )
+                where tblestoquesaldo.codestoquesaldo = {$mes->codestoquesaldo}
+            "));
         }
         
         foreach ($mesesRecalcular as $mes)
