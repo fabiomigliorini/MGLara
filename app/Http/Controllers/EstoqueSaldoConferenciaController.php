@@ -99,7 +99,6 @@ class EstoqueSaldoConferenciaController extends Controller
             
             $estoque = $pv->Produto->getArraySaldoEstoque();
             
-            
             $fiscal = $es->fiscal;
             
             $elpv = $es->EstoqueLocalProdutoVariacao;
@@ -175,6 +174,10 @@ class EstoqueSaldoConferenciaController extends Controller
                 }
 
             }
+        }
+        
+        if ($quantidadeinformada == 0) {
+            $quantidadeinformada = null;
         }
         
         return view($view, compact(
