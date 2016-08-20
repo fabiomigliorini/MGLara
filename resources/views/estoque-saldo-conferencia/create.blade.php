@@ -275,13 +275,16 @@ function divLocalizacao ($arr)
 @section('inscript')
 <script type="text/javascript">
 $(document).ready(function() {
-
+    
     $('#form-estoque-saldo-conferencia').on("submit", function(e){
+        $('#btnSubmit').attr('disabled', 'disabled');
         var currentForm = this;
         e.preventDefault();
         bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
             if (result) {
                 currentForm.submit();
+            } else {
+                $('#btnSubmit').removeAttr('disabled');
             }
         });
     });    
