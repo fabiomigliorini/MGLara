@@ -82,7 +82,7 @@ function divLocalizacao ($arr)
 {
     ?>
     <div class="col-md-2 text-muted">
-        @if (isset($arr['corredor']))
+        @if (isset($arr['corredor']) && isset($arr['prateleira']) && isset($arr['coluna']) && isset($arr['bloco']))
             {{ formataLocalEstoque($arr['corredor'], $arr['prateleira'], $arr['coluna'], $arr['bloco']) }}
         @endif
         <div class='pull-right'>
