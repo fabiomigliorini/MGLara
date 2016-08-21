@@ -109,6 +109,7 @@ class EstoqueController extends Controller
             //dd($regs);
 
             DB::beginTransaction();
+            $gerados = [];
             
             foreach ($regs as $reg)
             {
