@@ -82,7 +82,7 @@ function divLocalizacao ($arr)
 {
     ?>
     <div class="col-md-2 text-muted">
-        @if (isset($arr['corredor']))
+        @if (isset($arr['corredor']) && isset($arr['prateleira']) && isset($arr['coluna']) && isset($arr['bloco']))
             {{ formataLocalEstoque($arr['corredor'], $arr['prateleira'], $arr['coluna'], $arr['bloco']) }}
         @endif
         <div class='pull-right'>
@@ -275,13 +275,16 @@ function divLocalizacao ($arr)
 @section('inscript')
 <script type="text/javascript">
 $(document).ready(function() {
-
+    
     $('#form-estoque-saldo-conferencia').on("submit", function(e){
+        $('#btnSubmit').attr('disabled', 'disabled');
         var currentForm = this;
         e.preventDefault();
         bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
             if (result) {
                 currentForm.submit();
+            } else {
+                $('#btnSubmit').removeAttr('disabled');
             }
         });
     });    

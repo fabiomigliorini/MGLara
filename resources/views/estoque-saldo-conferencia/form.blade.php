@@ -77,7 +77,7 @@
 
 <div class="form-group">
     <div class="col-md-offset-4 col-md-9">
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" id="btnSubmit" class="btn btn-primary">
             Salvar
         </button>
         <a href='{{ url('estoque-saldo-conferencia/create') }}' class='btn btn-danger'>
