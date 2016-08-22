@@ -96,14 +96,12 @@ class CestController extends Controller
             $resultados = [];
             foreach($cests as $cest)
             {
-                foreach ($cest as $value) {
-                    $resultados[] = array(
-                        'id'        => $value->codcest,
-                        'ncm'       => formataNcm($value->Ncm->ncm),
-                        'cest'      => formataCest($value->cest),
-                        'descricao' => $value->descricao,
-                    );
-                }
+                $resultados[] = array(
+                    'id'        => $cest['codcest'],
+                    'ncm'       => formataNcm($cest['ncm']),
+                    'cest'      => formataCest($cest['cest']),
+                    'descricao' => $cest['descricao'],
+                );
             }            
             return response()->json($resultados);
             

@@ -125,12 +125,14 @@ class Ncm extends MGModel
     public function cestsDisponiveis()
     {
         $cests = [];
-        if ($this->Ncm)
-            $cests = array_merge ($cests, $this->Ncm->cestsDisponiveis());
+        if (sizeof($this->CestS) > 0) {
+            $cests = array_merge($cests, $this->CestS->toArray());
+        }
 
-        if (sizeof($this->CestS) > 0)
-            array_push ($cests, $this->CestS);
-        
+        if ($this->Ncm) {
+            $cests = array_merge($cests, $this->Ncm->cestsDisponiveis());
+        }
+
         return $cests;
     }
 
