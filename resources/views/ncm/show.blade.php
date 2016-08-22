@@ -52,8 +52,8 @@
             <table class="detail-view table table-striped table-condensed"> 
               <tbody>
                 <tr>
-                  <th class="col-md-2">#</th>
-                  <td class="col-md-10">{{ $value[$key]->codregulamentoicmsstmt }}</td>
+                  <th class="col-md-4">#</th>
+                  <td class="col-md-8">{{ $value[$key]->codregulamentoicmsstmt }}</td>
                 </tr>
                 <tr> 
                   <th>Subitem</th> 
@@ -92,8 +92,8 @@
             <table class="detail-view table table-striped table-condensed"> 
               <tbody>
                 <tr>
-                  <th class="col-md-2">#</th>
-                  <td class="col-md-10">{{ $cest['codcest'] }}</td>
+                  <th class="col-md-4">#</th>
+                  <td class="col-md-8">{{ $cest['codcest'] }}</td>
                 </tr>
                 <tr> 
                   <th>CEST</th> 
@@ -119,8 +119,8 @@
             <table class="detail-view table table-striped table-condensed"> 
               <tbody>
                 <tr>
-                  <th class="col-md-2">#</th>
-                  <td class="col-md-10">{{ $item->codibptax }}</td>
+                  <th class="col-md-4">#</th>
+                  <td class="col-md-8">{{ $item->codibptax }}</td>
                 </tr>
                 <tr> 
                   <th>Código</th> 
