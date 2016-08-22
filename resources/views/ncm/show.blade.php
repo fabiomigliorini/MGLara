@@ -48,47 +48,135 @@
     <div class="col-md-4">
         <h3>ICMS/ST <small>Regulamento de ICMS Substituição Tributária do Estado de Mato Grosso - Anexo X</small></h3>
         @foreach($model->regulamentoIcmsStMtsDisponiveis() as $key => $value)
-        <table class="detail-view table table-striped table-condensed"> 
-          <tbody>
-            <tr>
-              <th class="col-md-2">#</th>
-              <td class="col-md-10">{{ $value[$key]->codregulamentoicmsstmt }}</td>
-            </tr>
-            <tr> 
-              <th>Subitem</th> 
-              <td>{{ $value[$key]->subitem }}</td>
-            </tr>
-            <tr> 
-              <th>Descrição</th> 
-              <td>{{ $value[$key]->descricao }}</td>
-            </tr>
-            <tr> 
-              <th>NCM</th> 
-              <td>{{ $value[$key]->ncm }}</td>
-            </tr>
-            <tr> 
-              <th>Ncm Exceto</th> 
-              <td>{{ $value[$key]->ncmexceto }}</td>
-            </tr>
-            <tr> 
-              <th>ICMS ST Sul</th> 
-              <td>{{ $value[$key]->icmsstsul }}</td>
-            </tr>
-            <tr> 
-              <th>ICMS ST Norte</th> 
-              <td>{{ $value[$key]->icmsstnorte }}</td>
-            </tr>
-          </tbody> 
-        </table>        
+        <div class="panel panel-default">
+            <table class="detail-view table table-striped table-condensed"> 
+              <tbody>
+                <tr>
+                  <th class="col-md-2">#</th>
+                  <td class="col-md-10">{{ $value[$key]->codregulamentoicmsstmt }}</td>
+                </tr>
+                <tr> 
+                  <th>Subitem</th> 
+                  <td>{{ $value[$key]->subitem }}</td>
+                </tr>
+                <tr> 
+                  <th>Descrição</th> 
+                  <td>{{ $value[$key]->descricao }}</td>
+                </tr>
+                <tr> 
+                  <th>NCM</th> 
+                  <td>{{ formataNcm($value[$key]->ncm) }}</td>
+                </tr>
+                <tr> 
+                  <th>NCM Exceto</th> 
+                  <td>{{ $value[$key]->ncmexceto }}</td>
+                </tr>
+                <tr> 
+                  <th>ICMS ST Sul</th> 
+                  <td>{{ $value[$key]->icmsstsul }}</td>
+                </tr>
+                <tr> 
+                  <th>ICMS ST Norte</th> 
+                  <td>{{ $value[$key]->icmsstnorte }}</td>
+                </tr>
+              </tbody> 
+            </table>
+        </div>
         @endforeach
     </div>
     <div class="col-md-4">
         <h3>CEST <small>Código Especificador da Substituição Tributária - Anexo I</small></h3>
+        
+        @foreach($model->cestsDisponiveis() as $cest)
+        <div class="panel panel-default">
+            <table class="detail-view table table-striped table-condensed"> 
+              <tbody>
+                <tr>
+                  <th class="col-md-2">#</th>
+                  <td class="col-md-10">{{ $cest['codcest'] }}</td>
+                </tr>
+                <tr> 
+                  <th>CEST</th> 
+                  <td>{{ formataCest($cest['cest']) }}</td>
+                </tr>
+                <tr> 
+                  <th>NCM</th> 
+                  <td>{{ formataNcm($cest['ncm']) }}</td>
+                </tr>
+                <tr> 
+                  <th>Descrição</th> 
+                  <td>{{ $cest['descricao'] }}</td>
+                </tr>
+              </tbody> 
+            </table>        
+        </div>
+        @endforeach()
     </div>
     <div class="col-md-4">
         <h3>IBPT <small>Instituto Brasileiro de Planejamento e Tributação</small></h3>
         @foreach ($model->IbptaxS as $item)
-            <p>{{ $item->codibptax }}</p>
+        <div class="panel panel-default">
+            <table class="detail-view table table-striped table-condensed"> 
+              <tbody>
+                <tr>
+                  <th class="col-md-2">#</th>
+                  <td class="col-md-10">{{ $item->codibptax }}</td>
+                </tr>
+                <tr> 
+                  <th>Código</th> 
+                  <td>{{ formataNcm($item->codigo) }}</td>
+                </tr>
+                <tr> 
+                  <th>Ex</th> 
+                  <td>{{ $item->ex }}</td>
+                </tr>
+                <tr> 
+                  <th>Tipo</th> 
+                  <td>{{ $item->tipo }}</td>
+                </tr>
+                <tr> 
+                  <th>Descrição</th> 
+                  <td>{{ $item->descricao }}</td>
+                </tr>
+                <tr> 
+                  <th>Nacional Federal</th> 
+                  <td>{{ formataNumero($item->nacionalfederal) }}%</td>
+                </tr>
+                <tr> 
+                  <th>Importados Federal</th> 
+                  <td>{{ formataNumero($item->importadosfederal) }}%</td>
+                </tr>
+                <tr> 
+                  <th>Estadual</th> 
+                  <td>{{ formataNumero($item->estadual) }}%</td>
+                </tr>
+                <tr> 
+                  <th>Municipal</th> 
+                  <td>{{ formataNumero($item->municipal) }}%</td>
+                </tr>
+                <tr> 
+                  <th>Vigencia Inicio</th> 
+                  <td>{{ formataData($item->vigenciainicio) }}</td>
+                </tr>
+                <tr> 
+                  <th>Vigencia Fim</th> 
+                  <td>{{ formataData($item->vigenciafim) }}</td>
+                </tr>
+                <tr> 
+                  <th>Chave</th> 
+                  <td>{{ $item->chave }}</td>
+                </tr>
+                <tr> 
+                  <th>Versão</th> 
+                  <td>{{ $item->versao }}</td>
+                </tr>
+                <tr> 
+                  <th>Fonte</th> 
+                  <td>{{ $item->fonte }}</td>
+                </tr>            
+              </tbody> 
+            </table>
+        </div>
         @endforeach
     </div>
 </div>
