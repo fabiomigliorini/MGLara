@@ -95,7 +95,9 @@
 }
 .tree ul {
     margin-left:1em;
-    position:relative
+    position:relative;
+    margin: 10px 0 0 0;
+    left: 5px;
 }
 .tree ul ul {
     margin-left:.5em
@@ -111,9 +113,9 @@
     border-left:1px solid
 }
 .tree li {
-    margin:0;
+    margin:0 0 15px 0;
     padding:0 1em;
-    line-height:2em;
+    line-height:1.4em;
     color:#369;
     position:relative
 }
@@ -144,6 +146,9 @@
 .tree li a {
     text-decoration: none;
     color:#369;
+}
+.tree li a:hover {
+    text-decoration: underline;
 }
 .tree li button, .tree li button:active, .tree li button:focus {
     text-decoration: none;

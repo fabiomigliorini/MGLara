@@ -16,7 +16,19 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Permissões usuário: {{$model->usuario}}</h1>
+<h1 class="header">
+{!! 
+    titulo(
+        $model->codusuario,
+        [
+            url("usuario") => 'Usuários',
+            url("usuario/$model->codusuario") => $model->usuario,
+            'Permissões',
+        ],
+        $model->inativo
+    ) 
+!!} 
+</h1>
 <hr>
 <div id="registros">
   <div class="list-group col-md-12" id="items">
