@@ -31,49 +31,42 @@
 </h1>
 <hr>
 <div id="registros">
-  <div class="list-group col-md-12" id="items">
-      <div class="list-group-item">
-          <div class="row item">
-              <div class="col-md-1">#</div>
-              <div class="col-md-3">Grupo</div>
-              @foreach($filiais as $filial)
-              <div class="col-md-1">{{$filial->filial}} <br> <strong>{{$filial->codfilial}}</strong></div>
-              @endforeach
-          </div>
-      </div>
-    @foreach($grupos as $grupo)
-      <div class="list-group-item">
-        <div class="row item">
-          <div class="col-md-1">
-            <a href="<?php echo url("grupo-usuario/$grupo->codpermissao");?>">{{formataCodigo($grupo->codgrupousuario)}}</a>
-          </div>                            
-          <div class="col-md-3">
-            <a href="<?php echo url("grupo-usuario/$grupo->codpermissao");?>">{{$grupo->grupousuario}}</a>
-            <br>
-
-          </div>
-          @foreach($filiais as $filial)
-          <div class="col-md-1">
-            <input 
-                data-filial="{{$filial->codfilial}}"
-                data-grupo="{{$grupo->codgrupousuario}}"
-                <?php echo checkPermissao($filial->codfilial, $grupo->codgrupousuario, $model->extractgrupos());?>
-                type="checkbox" 
-                data-on-text="Sim" 
-                data-off-text="Não" 
-                data-off-color ="danger"
-                class="check-permissao">               
-          </div>
-          @endforeach            
-        </div>
-      </div>  
-    @endforeach
-    @if (count($grupos) === 0)
-        <h3>Nenhum grupo de usuário cadastrado!</h3>
-    @endif    
-  </div>
+    <div class="panel panel-default">
+        <table class="table table-striped table-hover"> 
+            <thead> 
+                <tr> 
+                    <th>Grupo</th>
+                    @foreach($filiais as $filial)
+                    <th>{{ $filial->filial }} <br> <strong>{{ $filial->codfilial }}</strong></th>
+                    @endforeach
+                </tr> 
+            </thead> 
+            <tbody>
+                @foreach($grupos as $grupo)
+                <tr> 
+                    <th scope="row">
+                        <a class="text-muted small" href="<?php echo url("grupo-usuario/$grupo->codpermissao");?>">{{formataCodigo($grupo->codgrupousuario)}}</a>
+                        <a href="<?php echo url("grupo-usuario/$grupo->codpermissao");?>">{{$grupo->grupousuario}}</a>                
+                    </th>
+                    @foreach($filiais as $filial)
+                    <td>
+                        <input 
+                            data-filial="{{$filial->codfilial}}"
+                            data-grupo="{{$grupo->codgrupousuario}}"
+                            <?php echo checkPermissao($filial->codfilial, $grupo->codgrupousuario, $model->extractgrupos());?>
+                            type="checkbox" 
+                            data-on-text="Sim" 
+                            data-off-text="Não" 
+                            data-off-color ="danger"
+                            class="check-permissao">                   
+                    </td>
+                    @endforeach
+                </tr>   
+                @endforeach
+            </tbody> 
+        </table>    
+    </div>    
 </div>
-
 @section('inscript')
 <script type="text/javascript">
   $(document).ready(function() {
