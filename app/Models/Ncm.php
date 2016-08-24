@@ -144,13 +144,14 @@ class Ncm extends MGModel
     {
         $regs = [];
 
+        // pega regulamentos do registro corrente
+        if (sizeof($this->RegulamentoIcmsStMtS) > 0)
+            $regs = array_merge ($regs, $this->RegulamentoIcmsStMtS->toArray());
+
         // pega regulamentos da arvore recursivamente
         if ($this->Ncm)
             $regs = array_merge ($regs, $this->Ncm->regulamentoIcmsStMtsDisponiveis());
 
-        // pega regulamentos do registro corrente
-        if (sizeof($this->RegulamentoIcmsStMtS) > 0)
-            array_push ($regs, $this->RegulamentoIcmsStMtS);
 
         // apaga os Excetos
         /*
@@ -210,14 +211,14 @@ class Ncm extends MGModel
     {
         $query = Ncm::query();
         
-        if (!empty($parametros['codncm'])) {
-            $query->where('codncm', $parametros['codncm']);
+        if (!empty($parametros['codncmpai'])) {
+            $query->whereNull('codncmpai');
         }
 
-        if (!empty($parametros['ncm']) || !empty($parametros['descricao'])) {
+        if (!empty($parametros['ncm'])) {
 
-            $numero = NumeroLimpo(trim($parametros['ncm']));
-            $query->where('descricao', 'ILIKE', "%{$parametros['descricao']}%");
+            $numero = numeroLimpo(trim($parametros['ncm']));
+            $query->where('descricao', 'ILIKE', "%{$parametros['ncm']}%");
 
             if (!empty($numero)) {
                 $query->orWhere('ncm', 'ILIKE', "%$numero%");

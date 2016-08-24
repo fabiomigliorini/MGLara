@@ -11,9 +11,11 @@
 </nav>
 <h1 class="header">
     {!! titulo(null, 'NCM', null) !!}
+    <!--
     <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
         <span class='glyphicon glyphicon-search'></span>
-    </a>    
+    </a>
+    -->
 </h1>
 <div class="clearfix"></div>
 <div class='collapse' id='div-filtro'>
@@ -29,12 +31,6 @@
             'autocomplete' => 'off'
         ]
     )!!}
-        <div class="col-md-2">
-            <div class="form-group">
-                {!! Form::label('codncm', '#', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-8">{!! Form::text('codncm', null, ['class' => 'form-control', 'placeholder' => '#']) !!}</div>
-            </div>
-        </div>
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('ncm', 'NCM', ['class' => 'col-sm-2 control-label']) !!}
@@ -52,17 +48,20 @@
     </div>
     {!! Form::close() !!}
 </div>
-<div id="registros" class="row">
+<div>
     <div class="col-md-5">
-        <div class="list-group list-group-striped list-group-hover" id="items">
-          @foreach($model as $row)
-            <a class="list-group-item{{ $row->codncm == Request::get('codncm') ? ' active' : '' }}" href="{{ url("ncm/?codncm=$row->codncm") }}">
-                {{ $row->ncm }} › {{ $row->descricao }}
-            </a>
-          @endforeach
-          @if (count($model) === 0)
-              <h3>Nenhum registro encontrado!</h3>
-          @endif    
+        <div id="registros" class="row">
+            <div class="list-group list-group-striped list-group-hover" id="items">
+              @foreach($model as $row)
+                <a class="list-group-item{{ $row->codncm == Request::get('codncm') ? ' active' : '' }}" href="{{ url("ncm/?ncmpai=$row->codncm") }}">
+                    {{ $row->ncm }} › {{ $row->descricao }}
+                </a>
+              @endforeach
+              @if (count($model) === 0)
+                  <h3>Nenhum registro encontrado!</h3>
+              @endif    
+            </div>
+            {!! $model->appends(Request::session()->get('ncm.index'))->render() !!}
         </div>
     </div>
     <div class="col-md-7">
@@ -79,13 +78,13 @@
             <?php }?>
             </ul>
         <?php } ?>
-        @if(Request::get('codncm'))
+        @if(Request::get('ncmpai'))
         <h1 style="margin-top: 0">{{$ncms->ncm}} - {{ $ncms->descricao }}</h1>
             <?php listaArvoreNcm($ncms->NcmS, 'tree1'); ?>
         @endif()
     </div>
-    {!! $model->appends(Request::session()->get('ncm.index'))->render() !!}
 </div>
+
 @section('inscript')
 <style type="text/css">
 .tree, .tree ul {
@@ -201,10 +200,11 @@ function scroll()
         loading : loading_options,
         navSelector : "#registros .pagination",
         nextSelector : "#registros .pagination li.active + li a",
-        itemSelector : "#items div.list-group-item",
+        itemSelector : "#items a.list-group-item",
     });    
 }
 $(document).ready(function() {
+    scroll();
     $.fn.extend({
         treed: function (o) {
 
@@ -265,7 +265,6 @@ $(document).ready(function() {
 
     $('#tree1').treed();
     
-    scroll();
     $("#ncm-search").on("change", function (event) {
         $('#items').infinitescroll('destroy');
         atualizaFiltro();

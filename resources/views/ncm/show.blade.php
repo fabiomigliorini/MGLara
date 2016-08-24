@@ -47,37 +47,37 @@
 <div class="row">
     <div class="col-md-4">
         <h3>ICMS/ST <small>Regulamento de ICMS Substituição Tributária do Estado de Mato Grosso - Anexo X</small></h3>
-        @foreach($model->regulamentoIcmsStMtsDisponiveis() as $key => $value)
+        @foreach($model->regulamentoIcmsStMtsDisponiveis() as $item)
         <div class="panel panel-default">
             <table class="detail-view table table-striped table-condensed"> 
               <tbody>
                 <tr>
                   <th class="col-md-4">#</th>
-                  <td class="col-md-8">{{ $value[$key]->codregulamentoicmsstmt }}</td>
+                  <td class="col-md-8">{{ $item['codregulamentoicmsstmt'] }}</td>
                 </tr>
                 <tr> 
                   <th>Subitem</th> 
-                  <td>{{ $value[$key]->subitem }}</td>
+                  <td>{{ $item['subitem'] }}</td>
                 </tr>
                 <tr> 
                   <th>Descrição</th> 
-                  <td>{{ $value[$key]->descricao }}</td>
+                  <td>{{ $item['descricao'] }}</td>
                 </tr>
                 <tr> 
                   <th>NCM</th> 
-                  <td>{{ formataNcm($value[$key]->ncm) }}</td>
+                  <td>{{ formataNcm($item['ncm']) }}</td>
                 </tr>
                 <tr> 
                   <th>NCM Exceto</th> 
-                  <td>{{ $value[$key]->ncmexceto }}</td>
+                  <td>{{ $item['ncmexceto'] }}</td>
                 </tr>
                 <tr> 
                   <th>ICMS ST Sul</th> 
-                  <td>{{ $value[$key]->icmsstsul }}</td>
+                  <td>{{ $item['icmsstsul'] }}</td>
                 </tr>
                 <tr> 
                   <th>ICMS ST Norte</th> 
-                  <td>{{ $value[$key]->icmsstnorte }}</td>
+                  <td>{{ $item['icmsstnorte'] }}</td>
                 </tr>
               </tbody> 
             </table>
