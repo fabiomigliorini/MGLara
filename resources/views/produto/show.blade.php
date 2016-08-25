@@ -186,7 +186,7 @@
                     {{ $model->descricaosite }}
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-fiscal">
-                    <?php /* @include('produto.show-ncm')*/ ?>
+                    @include('produto.show-ncm')
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-negocio">
                     

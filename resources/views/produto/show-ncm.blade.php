@@ -36,11 +36,9 @@
             <tr> 
                 <th scope="row">Regulamento ICMS ST/MT</th> 
                 <td>
-                @foreach($model->Ncm->regulamentoIcmsStMtsDisponiveis() as $key=>$reg)
-                    @foreach ($reg as $val)
-                        <strong>{{formataNcm($val['ncm'])}}/{{$val['subitem']}}</strong> - {{$val['descricao']}}
-                        <br>
-                    @endforeach
+                @foreach($model->Ncm->regulamentoIcmsStMtsDisponiveis() as $reg)
+                    <strong>{{formataNcm($reg['ncm'])}}/{{$reg['subitem']}}</strong> - {{$reg['descricao']}}
+                    <br>
                 @endforeach 
                 </td> 
             </tr> 
