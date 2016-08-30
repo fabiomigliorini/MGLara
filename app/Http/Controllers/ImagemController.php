@@ -244,43 +244,38 @@ class ImagemController extends Controller
     
     public function produtoImagens()
     {
-        $root = '/media/publico/Arquivos/Produtos';
+        $root = '/home/escmig05/Documentos/Fotos';
         $pastas = scandir($root);
         $pastas = array_diff($pastas,['.', '..']);
         
         foreach ($pastas as $pasta)
         {
-            if(is_dir($pasta)) {
-                $produto = ltrim($pasta, "0");
-                $fotos = \Illuminate\Support\Facades\File::allFiles("$root/$pasta");
+            $produto = ltrim($pasta, "0");
+            $fotos = \Illuminate\Support\Facades\File::allFiles("$root/$pasta");
+            foreach ($fotos as $foto)
+            {
 
-                foreach ($fotos as $foto)
-                {
-                    if($foto->getExtension() <> 'db' && $foto->getExtension() <> 'importado') {
+                if($foto->getExtension() <> 'db' && $foto->getExtension() <> 'importado') {
 
-                        $model = Produto::find($produto);
-                        $extensao = $foto->getExtension();
+                    $model = Produto::find($produto);
+                    $extensao = $foto->getExtension();
 
-                        $imagem = new Imagem();
-                        $imagem->save();
+                    $imagem = new Imagem();
+                    $imagem->save();
 
-                        $imagem_update = Imagem::findOrFail($imagem->codimagem);
-                        $imagem_update->observacoes = $imagem->codimagem.'.'.$extensao;
-                        $imagem_update->save();
+                    $imagem_update = Imagem::findOrFail($imagem->codimagem);
+                    $imagem_update->observacoes = $imagem->codimagem.'.'.$extensao;
+                    $imagem_update->save();
 
-                        $diretorio = '../public/imagens';
-                        $arquivo = $imagem->codimagem.'.'.$extensao;       
+                    $diretorio = '../public/imagens';
+                    $arquivo = $imagem->codimagem.'.'.$extensao;       
 
-                        try {
-                            if (copy($foto, "/var/www/MGLara/public/imagens/$arquivo")) {
-                                rename($foto, "$foto.importado");
-                                $model->ImagemS()->attach($imagem->codimagem);                        
-                            } else {
-                                echo "falha ao copiar $foto...\n";
-                            }
-                        } catch (Exception $ex) {
-                            dd($ex);
-                        }
+                    try {
+                        copy($foto, "/var/www/MGLara/public/imagens/$arquivo");
+                        rename($foto, "$foto.importado");
+                        $model->ImagemS()->attach($imagem->codimagem);                        
+                    } catch (Exception $ex) {
+                        dd($ex);
                     }
                 }
             }
