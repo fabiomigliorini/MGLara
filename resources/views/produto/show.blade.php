@@ -168,6 +168,7 @@
                 <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">NCM</a></li>
                 <li role="presentation"><a href="#tab-negocio" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
                 <li role="presentation"><a href="#tab-notasfiscais" aria-controls="messages" role="tab" data-toggle="tab">Notas Fiscais</a></li>
+                <li role="presentation"><a href="#tab-observacoes" aria-controls="observacoes" role="tab" data-toggle="tab">Observações</a></li>
             </ul>
             <br>
             <div class="tab-content">
@@ -300,6 +301,9 @@
                         <b>Aguarde...</b>
                     </div>
                 </div>
+                <div role="tabpanel" class="tab-pane fade" id="tab-observacoes">
+                    {!! $model->observacoes !!}
+                </div>
             </div>
         </div>
     </div>    
@@ -367,6 +371,9 @@
 .produto-item img {
     height: 500px !important;
     margin: 0 auto;
+}
+.nav>li>a {
+    padding: 10px 13px;
 }
 </style>
 

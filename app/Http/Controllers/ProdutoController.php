@@ -181,7 +181,7 @@ class ProdutoController extends Controller
         if (!isset($parametros["notasfiscais_codpessoa"]))
             $parametros["notasfiscais_codpessoa"] = null;
         
-        $model = Produto::find($id);
+        $model = Produto::findOrFail($id);
         
         switch ($request->get('_div'))
         {

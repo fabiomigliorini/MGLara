@@ -65,6 +65,7 @@ class Produto extends MGModel
         'descricaosite',
         'codncm',
         'codcest',
+        'observacoes',
     ];
     protected $dates = [
         'inativo',
