@@ -244,7 +244,7 @@ class ImagemController extends Controller
     
     public function produtoImagens()
     {
-        $root = '/home/escmig05/Documentos/Fotos';
+        $root = '/media/publico/Arquivos/Produtos';
         $pastas = scandir($root);
         $pastas = array_diff($pastas,['.', '..']);
         
