@@ -87,6 +87,7 @@ $(document).ready(function() {
         var codimagem = {{ $model->codimagem }};
         var token = '{{ csrf_token() }}';
         var inativo = '{{ $model->inativo }}';
+        var produto = '{{ $model->ProdutoS->first()->codproduto or "" }}';
         if(inativo.length === 0) {
             acao = 'inativar';
         } else {
@@ -96,6 +97,7 @@ $(document).ready(function() {
             if(result) {
                 $.post(baseUrl + '/imagem/inativo', {
                     codimagem: codimagem,
+                    produto:produto,
                     acao: acao,
                     _token: token
                 }).done(function (data) {

@@ -81,13 +81,13 @@ function atualizaFiltro()
         dataType: 'html'
     })
     .done(function (data) {
-        $('#items').html(jQuery(data).find('#items').html());
+        $('#imagens').html(jQuery(data).find('#imagens').html());
     })
     .fail(function () {
         console.log('Erro no filtro');
     });
 
-    $('#items').infinitescroll('update', {
+    $('#imagens').infinitescroll('update', {
         state: {
             currPage: 1,
             isDestroyed: false,
@@ -105,16 +105,23 @@ function scroll()
         img: baseUrl + '/public/img/ajax-loader.gif'
     };
 
-    $('#items').infinitescroll({
+    $('#imagens').infinitescroll({
         loading : loading_options,
         navSelector : "#registros .pagination",
         nextSelector : "#registros .pagination li.active + li a",
-        itemSelector : "#items div.imagem-grid-item",
+        itemSelector : "#imagens div.imagem-grid-item",
     });    
 }    
 $(document).ready(function() {
     scroll();
-
+    $("#imagem-search").on("change", function (event) {
+        $('#imagens').infinitescroll('destroy');
+        atualizaFiltro();
+    }).on('submit', function (event){
+        event.preventDefault();
+        $('#imagens').infinitescroll('destroy');
+        atualizaFiltro();
+    });        
 });  
 </script>
 @endsection

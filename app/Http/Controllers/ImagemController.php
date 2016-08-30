@@ -229,16 +229,29 @@ class ImagemController extends Controller
     
     public function inativo(Request $request)
     {
-        $imagem = Imagem::find($request->get('codimagem'));
-        $Model = Imagem::relacionamentos($request->get('codimagem'));
-        $model = $Model::where('codimagem', $request->get('codimagem'))->first();
+        if(empty($request->get('produto'))) {
+            $imagem = Imagem::find($request->get('codimagem'));
+            $Model = Imagem::relacionamentos($request->get('codimagem'));
+            $model = $Model::where('codimagem', $request->get('codimagem'))->first();            
+            
+            $model->codimagem = null;
+            $imagem->inativo = Carbon::now();
+            $msg = "Imagem '{$imagem->codimagem}' Inativada!";
 
-        $model->codimagem = null;
-        $imagem->inativo = Carbon::now();
-        $msg = "Imagem '{$imagem->codimagem}' Inativada!";
+            $model->save();
+            $imagem->save();
+            
+        } else {
+            $model = Produto::find($request->get('produto'));
+            $model->ImagemS()->detach($request->get('codimagem'));
+            
+            $imagem = Imagem::find($request->get('codimagem'));
+            $imagem->inativo = Carbon::now();
+            $msg = "Imagem '{$imagem->codimagem}' Inativada!";
 
-        $model->save();
-        $imagem->save();
+            $imagem->save();            
+        }
+        
         Session::flash('flash_success', $msg);
     }
     
