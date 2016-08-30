@@ -22,8 +22,6 @@
     ) 
 !!}     
 </h1>
-<hr>
-<br>
 {!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'id' => 'form-produto', 'action' => ['ProdutoController@update', $model->codproduto] ]) !!}
     @include('errors.form_error')
     @include('produto.form', ['submitTextButton' => 'Salvar'])
