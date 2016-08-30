@@ -272,9 +272,12 @@ class ImagemController extends Controller
                         $arquivo = $imagem->codimagem.'.'.$extensao;       
 
                         try {
-                            copy($foto, "/var/www/MGLara/public/imagens/$arquivo");
-                            rename($foto, "$foto.importado");
-                            $model->ImagemS()->attach($imagem->codimagem);                        
+                            if (copy($foto, "/var/www/MGLara/public/imagens/$arquivo")) {
+                                rename($foto, "$foto.importado");
+                                $model->ImagemS()->attach($imagem->codimagem);                        
+                            } else {
+                                echo "falha ao copiar $foto...\n";
+                            }
                         } catch (Exception $ex) {
                             dd($ex);
                         }
