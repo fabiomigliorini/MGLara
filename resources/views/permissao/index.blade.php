@@ -69,7 +69,7 @@
         <h3>Nenhum registro encontrado!</h3>
     @endif    
   </div>
-  {{ $model->appends(Request::session()->get('permissao.index'))->render() }}
+  {!! $model->appends(Request::session()->get('permissao.index'))->render() !!}
 </div>
 @section('inscript')
 <script type="text/javascript">

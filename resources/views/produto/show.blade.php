@@ -364,7 +364,10 @@
 .produto-historico-preco > .list-group-item {
     padding: 10px 0;
 }
-
+.produto-item img {
+    height: 500px !important;
+    margin: 0 auto;
+}
 </style>
 
 <script type="text/javascript">
