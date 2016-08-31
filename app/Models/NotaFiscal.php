@@ -67,6 +67,9 @@ namespace MGLara\Models;
 
 class NotaFiscal extends MGModel
 {
+    const MODELO_NFE = 55;
+    const MODELO_NFCE = 65;
+    
     protected $table = 'tblnotafiscal';
     protected $primaryKey = 'codnotafiscal';
     protected $fillable = [
@@ -120,7 +123,7 @@ class NotaFiscal extends MGModel
         'criacao',
     ];
     
-  // Chaves Estrangeiras
+    // Chaves Estrangeiras
     public function Filial()
     {
         return $this->belongsTo(Filial::class, 'codfilial', 'codfilial');
@@ -155,7 +158,6 @@ class NotaFiscal extends MGModel
     {
         return $this->belongsTo(EstoqueLocal::class, 'codestoquelocal', 'codestoquelocal');
     }
-
 
     // Tabelas Filhas
     public function NfeTerceiroS()

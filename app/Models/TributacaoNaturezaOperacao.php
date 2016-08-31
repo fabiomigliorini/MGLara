@@ -46,7 +46,7 @@ namespace MGLara\Models;
  * Tabelas Filhas
  */
 
-class Tributacaonaturezaoperacao extends MGModel
+class TributacaoNaturezaOperacao extends MGModel
 {
     protected $table = 'tbltributacaonaturezaoperacao';
     protected $primaryKey = 'codtributacaonaturezaoperacao';

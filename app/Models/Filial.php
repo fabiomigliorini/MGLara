@@ -49,6 +49,13 @@ namespace MGLara\Models;
 
 class Filial extends MGModel
 {
+    const CRT_SIMPLES = 1;
+    const CRT_SIMPLES_EXCESSO = 2;
+    const CRT_REGIME_NORMAL = 3;
+
+    const NFEAMBIENTE_PRODUCAO = 1;
+    const NFEAMBIENTE_HOMOLOGACAO = 2;
+    
     protected $table = 'tblfilial';
     protected $primaryKey = 'codfilial';
     protected $fillable = [
