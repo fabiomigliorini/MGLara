@@ -30,7 +30,7 @@
     <div class="col-md-4">
         <div class="form-group">
             {!! Form::label('codproduto', '#', ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-md-4">{!! Form::text('codproduto', null, ['class' => 'form-control', 'placeholder' => '#']) !!}</div>
+            <div class="col-md-4">{!! Form::number('codproduto', null, ['class' => 'form-control', 'placeholder' => '#']) !!}</div>
         </div>
 
         <div class="form-group">
