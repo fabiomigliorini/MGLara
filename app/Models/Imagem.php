@@ -129,6 +129,7 @@ class Imagem extends MGModel
             if(!empty($table_name)) {
                 $classe = str_replace('tbl', '', $rel->table_name);
                 $classe = str_replace('produto', 'Produto', $classe);
+                $classe = str_replace('imagem', 'Imagem', $classe);
                 $classe = str_replace('grupo', 'Grupo', $classe);
                 $classe = str_pad(ucfirst($classe), 30, ' ');
                 $classe = trim($classe);

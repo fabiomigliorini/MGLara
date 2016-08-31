@@ -60,9 +60,13 @@
         <label for="preco" class="col-sm-3 control-label">{!! Form::label('Preço:') !!}</label>
         <div class="col-sm-2">{!! Form::text('preco', null, ['required' => true, 'class'=> 'form-control text-right', 'id'=>'preco']) !!}</div>
         <div class="col-sm-3">{!! Form::select2UnidadeMedida('codunidademedida', null, ['required' => true,  'class'=> 'form-control', 'campo' => 'unidademedida', 'id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
-        
     </div>
 
+    <div class="form-group">
+        <label for="observacoes" class="col-sm-3 control-label">{!! Form::label('Observações:') !!}</label>
+        <div class="col-sm-9">{!! Form::textarea('observacoes', null, ['class'=> 'form-control', 'id'=>'observacoes', 'rows'=>'3']) !!}</div>
+    </div>
+    
     <div class="form-group">
         <label for="importado" class="col-sm-3 control-label">{!! Form::label('Importado:') !!}</label>
         <div class="col-sm-9" id="wrapper-importado">{!! Form::checkbox('importado', null, false,[ 'id'=>'importado', 'data-off-text' => 'Nacional', 'data-on-text' => 'Importado']) !!}</div>
@@ -75,7 +79,7 @@
 
     <div class="form-group">
         <label for="descricaosite" class="col-sm-3 control-label">{!! Form::label('Descrição Site:') !!}</label>
-        <div class="col-sm-9">{!! Form::textarea('descricaosite', null, ['class'=> 'form-control', 'id'=>'descricaosite']) !!}</div>
+        <div class="col-sm-9">{!! Form::textarea('descricaosite', null, ['class'=> 'form-control', 'id'=>'descricaosite', 'rows'=>'4']) !!}</div>
     </div>
 </div>
 <hr>

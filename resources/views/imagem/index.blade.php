@@ -58,7 +58,7 @@
         <h3>Nenhuma imagem encontrada!</h3>
     @endif    
   </div>
-  {{ $model->appends(Request::session()->get('imagem.index'))->render() }}
+  {!! $model->appends(Request::session()->get('imagem.index'))->render() !!}
 </div>
 @section('inscript')
 <style type="text/css">
@@ -70,23 +70,58 @@
 }
 </style>
 <script type="text/javascript">
-$(document).ready(function() {
-    $("#imagem-search").on("change", function (event) {
-        var $this = $(this);
-        var frmValues = $this.serialize();
-        $.ajax({
-            type: 'GET',
-            url: baseUrl + '/imagem/',
-            data: frmValues
-        })
-        .done(function (data) {
-            $('#imagens').html(jQuery(data).find('#imagens').html()); 
-        })
-        .fail(function () {
-            console.log('Erro no filtro');
-        });
-        event.preventDefault(); 
+function atualizaFiltro()
+{
+    scroll();
+    var frmValues = $('#imagem-search').serialize();
+    $.ajax({
+        type: 'GET',
+        url: baseUrl + '/imagem',
+        data: frmValues,
+        dataType: 'html'
+    })
+    .done(function (data) {
+        $('#imagens').html(jQuery(data).find('#imagens').html());
+    })
+    .fail(function () {
+        console.log('Erro no filtro');
     });
+
+    $('#imagens').infinitescroll('update', {
+        state: {
+            currPage: 1,
+            isDestroyed: false,
+            isDone: false             
+        },
+        path: ['?page=', '&'+frmValues]
+    });
+}
+
+function scroll()
+{
+    var loading_options = {
+        finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
+        msgText: "<div class='center'>Carregando mais itens...</div>",
+        img: baseUrl + '/public/img/ajax-loader.gif'
+    };
+
+    $('#imagens').infinitescroll({
+        loading : loading_options,
+        navSelector : "#registros .pagination",
+        nextSelector : "#registros .pagination li.active + li a",
+        itemSelector : "#imagens div.imagem-grid-item",
+    });    
+}    
+$(document).ready(function() {
+    scroll();
+    $("#imagem-search").on("change", function (event) {
+        $('#imagens').infinitescroll('destroy');
+        atualizaFiltro();
+    }).on('submit', function (event){
+        event.preventDefault();
+        $('#imagens').infinitescroll('destroy');
+        atualizaFiltro();
+    });        
 });  
 </script>
 @endsection

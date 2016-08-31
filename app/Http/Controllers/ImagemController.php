@@ -10,6 +10,7 @@ use MGLara\Models\Imagem;
 use MGLara\Models\Produto;
 use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class ImagemController extends Controller
 {
@@ -30,7 +31,7 @@ class ImagemController extends Controller
 
         $parametros = $request->session()->get('imagem.index');
         
-        $model = Imagem::search($parametros)->orderBy('codimagem', 'DESC')->paginate(20);
+        $model = Imagem::search($parametros)->orderBy('codimagem', 'DESC')->paginate(30);
         
         return view('imagem.index', compact('model'));
     }
@@ -228,16 +229,70 @@ class ImagemController extends Controller
     
     public function inativo(Request $request)
     {
-        $imagem = Imagem::find($request->get('codimagem'));
-        $Model = Imagem::relacionamentos($request->get('codimagem'));
-        $model = $Model::where('codimagem', $request->get('codimagem'))->first();
+        if(empty($request->get('produto'))) {
+            $imagem = Imagem::find($request->get('codimagem'));
+            $Model = Imagem::relacionamentos($request->get('codimagem'));
+            $model = $Model::where('codimagem', $request->get('codimagem'))->first();            
+            
+            $model->codimagem = null;
+            $imagem->inativo = Carbon::now();
+            $msg = "Imagem '{$imagem->codimagem}' Inativada!";
 
-        $model->codimagem = null;
-        $imagem->inativo = Carbon::now();
-        $msg = "Imagem '{$imagem->codimagem}' Inativada!";
+            $model->save();
+            $imagem->save();
+            
+        } else {
+            $model = Produto::find($request->get('produto'));
+            $model->ImagemS()->detach($request->get('codimagem'));
+            
+            $imagem = Imagem::find($request->get('codimagem'));
+            $imagem->inativo = Carbon::now();
+            $msg = "Imagem '{$imagem->codimagem}' Inativada!";
 
-        $model->save();
-        $imagem->save();
+            $imagem->save();            
+        }
+        
         Session::flash('flash_success', $msg);
     }
+    
+    public function produtoImagens()
+    {
+        $root = '/media/publico/Arquivos/Produtos';
+        $pastas = scandir($root);
+        $pastas = array_diff($pastas,['.', '..']);
+        
+        foreach ($pastas as $pasta)
+        {
+            $produto = ltrim($pasta, "0");
+            $fotos = \Illuminate\Support\Facades\File::allFiles("$root/$pasta");
+            foreach ($fotos as $foto)
+            {
+
+                if($foto->getExtension() <> 'db' && $foto->getExtension() <> 'importado') {
+
+                    $model = Produto::find($produto);
+                    $extensao = $foto->getExtension();
+
+                    $imagem = new Imagem();
+                    $imagem->save();
+
+                    $imagem_update = Imagem::findOrFail($imagem->codimagem);
+                    $imagem_update->observacoes = $imagem->codimagem.'.'.$extensao;
+                    $imagem_update->save();
+
+                    $diretorio = '../public/imagens';
+                    $arquivo = $imagem->codimagem.'.'.$extensao;       
+
+                    try {
+                        copy($foto, "/var/www/MGLara/public/imagens/$arquivo");
+                        rename($foto, "$foto.importado");
+                        $model->ImagemS()->attach($imagem->codimagem);                        
+                    } catch (Exception $ex) {
+                        dd($ex);
+                    }
+                }
+            }
+        }
+    }
+    
 }

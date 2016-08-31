@@ -2,7 +2,7 @@
   <div class="carousel-inner" role="listbox">
     @foreach($model->ImagemS as $imagem)
     <div class="item produto-item">
-        <img src="<?php echo URL::asset('public/imagens/'.$imagem->observacoes);?>" alt="" style="width:100%; max-height: 500px" id="{{$imagem->codimagem}}">
+        <img src="<?php echo URL::asset('public/imagens/'.$imagem->observacoes);?>" class="img-responsive" id="{{$imagem->codimagem}}">
     </div>
     @endforeach
   </div>

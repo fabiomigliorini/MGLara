@@ -169,11 +169,10 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('familia-produto/listagem-json','FamiliaProdutoController@listagemJson');
     Route::resource('familia-produto','FamiliaProdutoController');
 
-
-
     /* Imagem */
     Route::resource('imagem/produto/{id}/delete','ImagemController@produtoDelete');
     Route::post('imagem/produtostore/{id}','ImagemController@produtoStore');
+    //Route::resource('imagem/produto-imagens','ImagemController@produtoImagens');
     Route::resource('imagem/produto','ImagemController@produto');
     Route::resource('imagem/edit','ImagemController@edit');
     Route::resource('imagem/lixeira','ImagemController@lixeira');
