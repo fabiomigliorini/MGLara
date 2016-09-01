@@ -190,10 +190,12 @@ class NotaFiscalController extends Controller
             and tblnegocio.lancamento >= '2016-08-01 00:00:00'
             and emitida.codnotafiscal is null
             and tblnegocio.codfilial <> destino.codfilial
+            and tblnegocio.codnaturezaoperacao not in (19) --Uso e Consumo
             and origem.codempresa = destino.codempresa
             and origem.codfilial = {$codfilial}
             --limit 50
 
+            limit 600
             
             ";
             
@@ -219,6 +221,7 @@ class NotaFiscalController extends Controller
                 $nf->codpessoa = $reg->codpessoa;
                 $nf->emitida = true;
                 $nf->codnaturezaoperacao = $reg->codnaturezaoperacao;
+                $nf->codoperacao = $nf->NaturezaOperacao->codoperacao;
                 $nf->serie = 1;
                 $nf->numero = 0;
                 $nf->emissao = new Carbon;
