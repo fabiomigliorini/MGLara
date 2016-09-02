@@ -53,8 +53,8 @@ class Permissao extends MGModel
         $unique_permissao = "unique:tblpermissao,permissao|required|min:5"; 	
         
     	if ($this->exists) {
-            $unique_codpermissao = "unique:tblpermissao,codpermissao,$this->codpermissao,codpermissao|required|min:5";
-            $unique_permissao = "unique:tblpermissao,permissao,$this->codpermissao,codpermissao|required|min:5";
+            $unique_codpermissao = "unique:tblpermissao,codpermissao,$this->codpermissao,codpermissao|required|min:4";
+            $unique_permissao = "unique:tblpermissao,permissao,$this->codpermissao,codpermissao|required|min:4";
         }
    
         $this->_regrasValidacao = [
@@ -64,7 +64,7 @@ class Permissao extends MGModel
         ];
     
         $this->_mensagensErro = [
-            'permissao.min' => 'Permissão deve ter no mínimo 5 caracteres',
+            'permissao.min' => 'Permissão deve ter no mínimo 4 caracteres',
         ];
         
         return parent::validate();
