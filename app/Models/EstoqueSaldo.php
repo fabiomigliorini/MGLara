@@ -477,6 +477,11 @@ class EstoqueSaldo extends MGModel
         return $ret;
     }
     
+    private static function relatorioAnaliseTotaliza($arr, $arritens) 
+    {
+        
+    }
+    
     public static function relatorioAnalise($agrupamento, $filtro) 
     {
         $camposVenda = [
@@ -1017,10 +1022,10 @@ class EstoqueSaldo extends MGModel
         //$query->leftJoin('tblprodutovariacao', 'tblprodutovariacao.codproduto', '=', 'tblproduto.codproduto');
         //$query->leftJoin('tblestoquelocalprodutovariacao', '')
         
-        return $ret;
+        header('Content-Type: application/json');
+        echo json_encode($ret);
+        die();
         
-        //header('Content-Type: application/json');
-        //echo json_encode($ret);
-        //die();
+        return $ret;
     }
 }

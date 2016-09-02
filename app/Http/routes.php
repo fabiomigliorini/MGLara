@@ -182,6 +182,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('imagem','ImagemController');
 
     /* Nota Fiscal */
+    Route::get('nota-fiscal/gera-transferencias/{codfilial}','NotaFiscalController@geraTransferencias');
     Route::resource('nota-fiscal','NotaFiscalController');
 
     /* Negocio */
