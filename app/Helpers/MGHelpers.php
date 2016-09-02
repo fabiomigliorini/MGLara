@@ -38,7 +38,7 @@ if(!function_exists('formataData')) {
 
             case 'L':
             case 'LONGO':
-                return $data->format('d/m/Y H:i:s');
+                return $data->format('d/m/Y H:i');
                 break;
             
             default:

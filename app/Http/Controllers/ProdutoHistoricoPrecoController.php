@@ -39,73 +39,22 @@ class ProdutoHistoricoPrecoController extends Controller
             $parametros['alteracao_ate'] = new Carbon($parametros['alteracao_ate'] . ' 23:59:59');
         }
         
-        $model = ProdutoHistoricoPreco::search($parametros);
+        $model = ProdutoHistoricoPreco::search($parametros)->orderBy('criacao', 'DESC')->paginate(20);
         return view('produto-historico-preco.index', compact('model'));
     }    
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function relatorioFiltro(Request $request)
     {
-        //
+        
+        $filtro = $request->all();
+        
+        return view('produto-historico-preco.relatorio-filtro', compact('filtro'));
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function relatorio(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-}
+        $parametros = $request->all();
+        
+        $dados = ProdutoHistoricoPreco::search($parametros)->orderBy('criacao', 'DESC')->get();
+        
+        return view('produto-historico-preco.relatorio', compact('dados'));
+    }}

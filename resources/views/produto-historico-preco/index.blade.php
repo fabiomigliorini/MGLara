@@ -4,7 +4,7 @@
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li>
-                <a href=""><span class="glyphicon glyphicon-print"></span> Relatório</a>
+                <a href="" id="relatorio"><span class="glyphicon glyphicon-print"></span> Relatório</a>
             </li> 
         </ul>
     </div>
@@ -220,6 +220,11 @@ $(document).ready(function() {
         } else {
             $('#alteracao_de').attr('max', valor);
         }
+    });
+    
+    $('#relatorio').on('click', function(e){
+        e.preventDefault();
+        location.replace('produto-historico-preco/relatorio/?' + $('#produto-historico-preco-search').serialize());
     });
 });
 </script>

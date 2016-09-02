@@ -66,9 +66,9 @@ class ProdutoHistoricoPreco extends MGModel
         // ...
 
 
-    public static function search($parametros, $registros = 20)
+    public static function search($parametros)
     {
-        $query = ProdutoHistoricoPreco::orderBy('criacao', 'DESC');
+        $query = ProdutoHistoricoPreco::query();
             
         if(isset($parametros['id']) and !empty($parametros['id']))
             $query->whereHas('Produto', function($q) use ($parametros) {
@@ -101,7 +101,7 @@ class ProdutoHistoricoPreco extends MGModel
         if(isset($parametros['codusuario']) and !empty($parametros['codusuario']))
             $query->where('codusuariocriacao', $parametros['codusuario']);
         
-        return $query->paginate($registros);
+        return $query;
     }
 
     public function scopeProduto($query, $produto) 
@@ -114,5 +114,6 @@ class ProdutoHistoricoPreco extends MGModel
             foreach ($produto as $str)
                 $q->where('produto', 'ILIKE', "%$str%");
        });
-    }      
+    }
+
 }

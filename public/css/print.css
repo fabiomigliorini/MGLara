@@ -113,7 +113,24 @@ and open the template in the editor.
     .text-center {
         text-align: center;
     }
-    
+    .text-danger {
+      color: #a94442;
+    }
+    .text-success {
+      color: #3c763d;
+    }
+    .text-primary {
+      color: #337ab7;
+    }
+    .text-warning {
+      color: #8a6d3b;
+    }
+    .text-info {
+      color: #31708f;
+    }
+    .text-muted {
+      color: #777;
+    }    
     a {
         text-decoration: none;
     }
