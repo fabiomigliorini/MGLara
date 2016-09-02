@@ -49,8 +49,8 @@ class Permissao extends MGModel
 
     public function validate() {
         
-        $unique_codpermissao = "unique:tblpermissao,codpermissao|required|min:5";
-        $unique_permissao = "unique:tblpermissao,permissao|required|min:5"; 	
+        $unique_codpermissao = "unique:tblpermissao,codpermissao|required|min:4";
+        $unique_permissao = "unique:tblpermissao,permissao|required|min:4"; 	
         
     	if ($this->exists) {
             $unique_codpermissao = "unique:tblpermissao,codpermissao,$this->codpermissao,codpermissao|required|min:4";
