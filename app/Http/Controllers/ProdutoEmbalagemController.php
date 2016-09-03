@@ -20,6 +20,9 @@ class ProdutoEmbalagemController extends Controller
     {
         $this->datas = [];
         $this->numericos = [];
+        $this->middleware('permissao:produto-embalagem.inclusao', ['only' => ['create', 'store']]);
+        $this->middleware('permissao:produto-embalagem.alteracao', ['only' => ['edit', 'update']]);
+        $this->middleware('permissao:produto-embalagem.exclusao', ['only' => ['delete', 'destroy']]);        
     }         
     
     /**

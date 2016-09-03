@@ -29,6 +29,11 @@ class ProdutoController extends Controller
     {
         $this->datas = [];
         $this->numericos = [];
+        $this->middleware('permissao:produto.consulta', ['only' => ['index', 'show']]);
+        $this->middleware('permissao:produto.inclusao', ['only' => ['create', 'store']]);
+        $this->middleware('permissao:produto.alteracao', ['only' => ['edit', 'update']]);
+        $this->middleware('permissao:produto.exclusao', ['only' => ['delete', 'destroy']]);
+        $this->middleware('permissao:produto.inativacao', ['only' => ['inativo']]);
         $this->middleware('parametros', ['only' => ['index', 'show']]);
     }
 

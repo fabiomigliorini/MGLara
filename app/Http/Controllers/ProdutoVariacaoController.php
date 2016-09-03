@@ -17,6 +17,12 @@ use MGLara\Models\Produto;
 
 class ProdutoVariacaoController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permissao:produto-variacao.inclusao', ['only' => ['create', 'store']]);
+        $this->middleware('permissao:produto-variacao.alteracao', ['only' => ['edit', 'update']]);
+        $this->middleware('permissao:produto-variacao.exclusao', ['only' => ['delete', 'destroy']]);
+    }    
     public function show($id)
     {
         $model = ProdutoVariacao::findOrFail($id);

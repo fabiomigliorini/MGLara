@@ -17,6 +17,12 @@ use Illuminate\Support\Facades\DB;
 
 class ProdutoBarraController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permissao:produto-barra.inclusao', ['only' => ['create', 'store']]);
+        $this->middleware('permissao:produto-barra.alteracao', ['only' => ['edit', 'update']]);
+        $this->middleware('permissao:produto-barra.exclusao', ['only' => ['delete', 'destroy']]);
+    }
     /**
      * Show the form for creating a new resource.
      *

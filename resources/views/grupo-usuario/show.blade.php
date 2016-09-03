@@ -88,7 +88,7 @@
         <h3>Nenhum registro encontrado!</h3>
     @endif    
   </div>
-  {{ $permissoes->appends(Request::session()->get('grupo-usuario.show'))->render() }}
+  {!! $permissoes->appends(Request::session()->get('grupo-usuario.show'))->render() !!}
 </div>
 
 @section('inscript')
