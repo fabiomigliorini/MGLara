@@ -33,11 +33,11 @@
             -->
             <li>
                 @if(empty($model->inativo))
-                <a href="" id="inativar-produto">
+                <a href="{{ url('produto/inativo') }}" data-inativar data-codigo="{{ $model->codproduto }}" data-acao="inativar" data-pergunta="Tem certeza que deseja inativar o produto {{ $model->produto }}? " data-after-inativar="location.reload()">
                     <span class="glyphicon glyphicon-ban-circle"></span> Inativar
                 </a>
                 @else
-                <a href="" id="inativar-produto">
+                <a href="{{ url('produto/inativo') }}" data-inativar data-codigo="{{ $model->codproduto }}" data-acao="ativar" data-pergunta="Tem certeza que deseja ativar o produto {{ $model->produto }}? " data-after-inativar="location.reload()">
                     <span class="glyphicon glyphicon-ok-sign"></span> Ativar
                 </a>
                 @endif
@@ -543,33 +543,6 @@ $(document).ready(function() {
             alert( "Erro ao procurar produto" );
         });
     });
-    
-    $('#inativar-produto').on("click", function(e) {
-        e.preventDefault();
-        var codproduto = {{ $model->codproduto }};
-        var token = '{{ csrf_token() }}';
-        var inativo = '{{ $model->inativo }}';
-        if(inativo.length === 0) {
-            acao = 'inativar';
-        } else {
-            acao = 'ativar';
-        }        
-        bootbox.confirm("Tem certeza que deseja "+acao+"?", function(result) {
-            if(result) {
-                $.post(baseUrl + '/produto/inativo', {
-                    codproduto: codproduto,
-                    acao: acao,
-                    _token: token
-                }).done(function (data) {
-                    location.reload();
-                }).fail(function (error){
-                  location.reload();          
-              });
-            }  
-        });
-    });
-    
-    console.log($('#negocio_codproduto').val());    
 });
 </script>
 @endsection
