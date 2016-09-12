@@ -95,9 +95,71 @@ function excluirClick (tag)
                     
                 },
                 error: function (XHR, textStatus) {
-                    bootbox.alert('<strong class="text-danger">Erro ao excluir o registro!</strong> <hr><span class="text-muted">Verifique o LOG do Console...</span>');
-                    console.log(XHR);
-                    console.log(textStatus);
+                    if(XHR.status === 200) {
+                        bootbox.alert('<h3 class="text-danger">Você não tem acesso a esse recurso!</h3>');
+                    } 
+                }
+            });
+        }
+    });
+    
+    return true;
+}
+
+
+function inativarClick (tag)
+{
+    var url         = $(tag).attr('href');
+    var pergunta    = $(tag).data('pergunta');
+    var acao        = $(tag).data('acao');
+    var codigo      = $(tag).data('codigo');
+    var funcaoAfterInativar = $(tag).data('after-inativar');
+    var funcaoOnError = $(tag).data('on-error');
+    
+    pergunta = (typeof pergunta === 'undefined') ? 'Tem certeza que deseja inativar o registro?' : pergunta;
+    
+    bootbox.confirm('<strong>' + pergunta + '</strong>', function(result) {
+        if (result) {
+            $.ajax({
+                type: 'POST',
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: url,
+                dataType: 'json',
+                data:{
+                    id:codigo,
+                    acao:acao
+                },
+                success: function(retorno) {
+                    
+                    if (retorno.resultado)
+                    {
+                        var mensagem = '<strong class="text-success">' + retorno.mensagem + '</strong>';
+                        var funcaoExecutar = funcaoAfterInativar;
+                    }
+                    else
+                    {
+                        var mensagem = '<strong class="text-danger">' + retorno.mensagem + '</strong>';
+                        mensagem += '<hr><pre>';
+                        mensagem += JSON.stringify(retorno, undefined, 2);
+                        mensagem += '</pre>';
+                        var funcaoExecutar = funcaoOnError;
+                    }
+                    
+                    bootbox.alert(mensagem, function (){
+                        if (typeof funcaoExecutar !== 'undefined')
+                            eval(funcaoExecutar);
+                    });
+                    
+                    console.log(retorno);
+                    
+                },
+                error: function (XHR, textStatus) {
+                    if(XHR.status === 200) {
+                        bootbox.alert('<h3 class="text-danger">Você não tem acesso a esse recurso!</h3>');
+                    } 
                 }
             });
         }
@@ -106,6 +168,7 @@ function excluirClick (tag)
     
     return true;
 }
+
 
 function recarregaDiv(div, url)
 {
@@ -157,6 +220,10 @@ function inicializa(elemento)
     $(elemento).find('a[data-excluir]').click(function(event) {
         event.preventDefault();
         return excluirClick($(this));
+    });
+    $(elemento).find('a[data-inativar]').click(function(event) {
+        event.preventDefault();
+        return inativarClick($(this));
     });
 }
 

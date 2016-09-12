@@ -508,16 +508,24 @@ class ProdutoController extends Controller
 
     public function inativo(Request $request)
     {
-        $model = Produto::find($request->get('codproduto'));
-        if($request->get('acao') == 'ativar')
-            $model->inativo = null;
-        else
-            $model->inativo = Carbon::now();
-        
-        $model->save();
-    }    
-        
-        
+        try{
+            $model = Produto::find($request->get('id'));
+            if ($request->get('acao') == 'ativar') {
+                $model->inativo = null;
+            } else {
+                $model->inativo = Carbon::now();
+            }
+            
+            $model->save();
+            $acao = ($request->get('acao') == 'ativar') ? 'ativado' : 'inativado';
+            $ret = ['resultado' => true, 'mensagem' => "Produto $model->produto $acao com sucesso!"];
+        }
+        catch(\Exception $e){
+            $ret = ['resultado' => false, 'mensagem' => "Erro ao $acao produto!", 'exception' => $e];
+        }
+        return json_encode($ret);
+    } 
+    
     public function estoqueSaldo(Request $request) 
     {
         $query = DB::table('tblestoquesaldo')
