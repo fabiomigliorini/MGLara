@@ -106,7 +106,6 @@ class EstoqueController extends Controller
                   ";
 
             $regs = DB::select($sql);
-            //dd($regs);
 
             DB::beginTransaction();
             $gerados = [];
@@ -236,8 +235,9 @@ class EstoqueController extends Controller
         }
     }
 */
-    
+
 /*
+    
     public function zeraSaldo ($id, $tipo)
     {
         
@@ -268,8 +268,10 @@ class EstoqueController extends Controller
             and elpv.codestoquelocal = $id
             and es.codestoquesaldo not in (select esc.codestoquesaldo from tblestoquesaldoconferencia esc)
             order by pv.codproduto, pv.codprodutovariacao
-            limit 10000
+            limit 2500
             ";
+
+        set_time_limit(600);
         
         //dd($sql);
                 
