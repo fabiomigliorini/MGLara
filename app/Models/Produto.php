@@ -246,7 +246,10 @@ class Produto extends MGModel
         }
 
         if(!empty($parametros['referencia'])) {
-            $query->where('referencia', $parametros['referencia']);
+            $referencia = explode(' ', $parametros['referencia']);
+            foreach ($referencia as $str) {
+                $query->where('referencia', 'ILIKE', "%$str%");
+            }
         }
 
         if(!empty($parametros['codtributacao'])) {
