@@ -48,7 +48,7 @@ function divDescricao($arr) {
     </div>
     <div class="col-md-4 text-muted">
         @if (isset($arr['corredor']))
-            {{ formataLocalEstoque($arr['corredor'], $arr['prateleira'], $arr['coluna'], $arr['bloco']) }}
+            {{ formataLocalEstoque($arr['corredor'], (isset($arr['prateleira'])) ? $arr['prateleira'] : '', (isset($arr['coluna'])) ? $arr['coluna'] : '', (isset($arr['bloco'])) ? $arr['bloco'] : '') }}
         @endif
         <div class='pull-right'>
             @if (!empty($arr['estoqueminimo']))
