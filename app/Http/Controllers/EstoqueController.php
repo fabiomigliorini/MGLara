@@ -118,8 +118,13 @@ class EstoqueController extends Controller
 
                 $model->codestoquesaldo = $es->codestoquesaldo;
                 $model->quantidadesistema = $es->saldoquantidade;
-                $model->quantidadeinformada = $es->saldoquantidade + $reg->quantidadeinformada;
-                //$model->quantidadeinformada = $reg->quantidadeinformada;
+                //$model->quantidadeinformada = $es->saldoquantidade + $reg->quantidadeinformada;
+                $model->quantidadeinformada = $reg->quantidadeinformada;
+		if ($model->quantidadesistema > 0) {
+                    $model->quantidadeinformada += $es->saldoquantidade;
+		} else {
+                    //dd($model);
+                }
                 $model->customediosistema = $es->customedio;
 
                 $model->customedioinformado = $es->customedio;
@@ -219,6 +224,8 @@ class EstoqueController extends Controller
                         ];
 
             }
+
+            //die('antes commit');
             
             DB::commit();
             
