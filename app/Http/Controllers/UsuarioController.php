@@ -15,6 +15,7 @@ use MGLara\Models\Filial;
 use MGLara\Models\Operacao;
 use MGLara\Models\Portador;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class UsuarioController extends Controller
 {
@@ -25,8 +26,6 @@ class UsuarioController extends Controller
         $this->middleware('permissao:usuario.alteracao', ['only' => ['edit', 'update']]);
         $this->middleware('permissao:usuario.exclusao', ['only' => ['delete', 'destroy']]);
         $this->middleware('parametros', ['only' => ['index', 'permissao']]);
-        
-        $this->prints     = [''=>''] + Usuario::printers();        
     }
     
     public function index(Request $request) {
@@ -36,16 +35,13 @@ class UsuarioController extends Controller
         }
 
         $parametros = $request->session()->get('usuario.index');        
-        
         $model = Usuario::search($parametros)->orderBy('usuario', 'ASC')->paginate(20);
- 
         return view('usuario.index', compact('model'));        
     }
 
     public function create() {
         $model = new Usuario();
-        $prints     = $this->prints;
-        return view('usuario.create', compact('model', 'prints'));
+        return view('usuario.create', compact('model'));
     }
 
     public function store(Request $request) {
@@ -60,17 +56,24 @@ class UsuarioController extends Controller
 
     public function edit($codusuario) {
         $model = Usuario::findOrFail($codusuario);
-        $prints     = $this->prints;
-        if(!empty(!in_array($model->impressoramatricial, $prints)))
-            $prints[$model->impressoramatricial] = $model->impressoramatricial;
-        
-        if(!empty(!in_array($model->impressoratermica, $prints)))
-            $prints[$model->impressoratermica] = $model->impressoratermica;
-        
-        if(!empty(!in_array($model->impressoratelanegocio, $prints)))
-            $prints[$model->impressoratelanegocio] = $model->impressoratelanegocio;
                 
-        return view('usuario.edit',  compact('model', 'prints'));
+        $usuario = Usuario::find(Auth::user()->codusuario);
+        $grupos = $usuario->extractgrupos();
+        $admin = false;
+        foreach ($grupos as $grupo)
+        {
+            if ($grupo['grupo'] == '1') {
+                $admin = true;
+            }
+        }
+
+        if($admin) { 
+            return view('usuario.edit',  compact('model'));
+        } elseif(!$admin && $model->codusuario == $usuario->codusuario){
+            return view('usuario.edit',  compact('model'));
+        } else {
+            return view('errors.403');
+        }        
     }
 
     public function update($codusuario, Request $request) {
@@ -90,7 +93,8 @@ class UsuarioController extends Controller
     
     public function show($codusuario) {
         $model = Usuario::find($codusuario);
-        return view('usuario.show', compact('model'));
+        $usuario = Usuario::find(Auth::user()->codusuario);
+        return view('usuario.show', compact('model', 'usuario'));
     }
 
     /**
@@ -139,6 +143,8 @@ class UsuarioController extends Controller
         $model = Usuario::find($codusuario);
         $filiais = Filial::orderBy('codfilial', 'asc')->get();
         $grupos = GrupoUsuario::search($parametros)->orderBy('grupousuario', 'ASC')->paginate(20);
+        
+        
         return view('usuario.permissao', compact('model', 'grupos', 'filiais'));
     }
 

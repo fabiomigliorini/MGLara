@@ -1,3 +1,25 @@
+<?php
+    $o = shell_exec("lpstat -d -p");
+    $res = explode("\n", $o);
+    $printers = [];
+    foreach ($res as $r) 
+    {
+        if (strpos($r, "printer") !== FALSE) 
+        {
+            $r = str_replace("printer ", "", $r);
+            $r = explode(" ", $r);
+            $printers[$r[0]] = $r[0];
+        }
+    }
+        if(!empty(!in_array($model->impressoramatricial, $printers)))
+            $printers[$model->impressoramatricial] = $model->impressoramatricial;
+        
+        if(!empty(!in_array($model->impressoratermica, $printers)))
+            $printers[$model->impressoratermica] = $model->impressoratermica;
+        
+        if(!empty(!in_array($model->impressoratelanegocio, $printers)))
+            $printers[$model->impressoratelanegocio] = $model->impressoratelanegocio;
+?>
 <div class="form-group">
   <label for="usuario" class="col-sm-2 control-label">
   	{!! Form::label('Usuário', 'Usuário:') !!}
@@ -67,7 +89,7 @@
   	{!! Form::label('Impressora Matricial', 'Impressora Matricial:') !!}
   </label>
   <div class="col-sm-3">
-  	{!! Form::select('impressoramatricial', $prints, ['class'=> 'form-control'], ['id'=>'impressoramatricial','required'=>'required']) !!}
+  	{!! Form::select('impressoramatricial', $printers, ['class'=> 'form-control'], ['id'=>'impressoramatricial','required'=>'required']) !!}
   </div>
 </div>
 
@@ -76,7 +98,7 @@
   	{!! Form::label('Impressora Térmica', 'Impressora Térmica:') !!}
   </label>
   <div class="col-sm-3">
-  	{!! Form::select('impressoratermica', $prints, ['class'=> 'form-control'], ['id'=>'impressoratermica','required'=>'required']) !!}
+  	{!! Form::select('impressoratermica', $printers, ['class'=> 'form-control'], ['id'=>'impressoratermica','required'=>'required']) !!}
   </div>
 </div>
 
@@ -85,7 +107,7 @@
   	{!! Form::label('Impressora tela negócio', 'Impressora tela negócio:') !!}
   </label>
   <div class="col-sm-3">
-  	{!! Form::select('impressoratelanegocio', $prints, ['class'=> 'form-control'], ['id'=>'impressoratelanegocio']) !!}
+  	{!! Form::select('impressoratelanegocio', $printers, ['class'=> 'form-control'], ['id'=>'impressoratelanegocio']) !!}
   </div>
 </div>
 
