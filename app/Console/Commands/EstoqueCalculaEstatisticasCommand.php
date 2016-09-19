@@ -3,11 +3,11 @@
 namespace MGLara\Console\Commands;
 
 use Illuminate\Console\Command;
-use MGLara\Jobs\EstoqueCalculaVenda as JobEstoqueCalculaVenda;
+use MGLara\Jobs\EstoqueCalculaEstatisticas;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\Log;
 
-class EstoqueCalculaVenda extends Command
+class EstoqueCalculaEstatisticasCommand extends Command
 {
     use DispatchesJobs;
     
@@ -16,7 +16,7 @@ class EstoqueCalculaVenda extends Command
      *
      * @var string
      */
-    protected $signature = 'estoque:calcula-venda';
+    protected $signature = 'estoque:calcula-estatisticas';
 
     /**
      * The console command description.
@@ -42,8 +42,9 @@ class EstoqueCalculaVenda extends Command
      */
     public function handle()
     {
-        Log::info('EstoqueCalculaVenda - schedule');
-        $this->dispatch((new JobEstoqueCalculaVenda(null, null))->onQueue('low'));
+        Log::info('EstoqueCalculaEstatisticasCommand - schedule');
+        //$this->dispatch((new EstoqueCalculaEstatisticas(103, 103001))->onQueue('low'));
+        $this->dispatch((new EstoqueCalculaEstatisticas(null, null))->onQueue('low'));
     }
     
 }

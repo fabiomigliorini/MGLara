@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \MGLara\Console\Commands\Inspire::class,
-        \MGLara\Console\Commands\EstoqueCalculaVenda::class,
+        \MGLara\Console\Commands\EstoqueCalculaEstatisticasCommand::class,
     ];
 
     /**
@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('estoque:calcula-venda')->dailyAt('01:00');
+        $schedule->command('estoque:calcula-estatisticas')->dailyAt('01:00');
         //$schedule->command('inspire')->hourly();
     }
 }
