@@ -259,7 +259,6 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     public function getAuthPassword(){
         return $this->senha;
     }
-
     
     // Chaves Estrangeiras
     public function Ecf()
