@@ -127,7 +127,7 @@ class ProdutoController extends Controller
             $pb = new ProdutoBarra();
             $pb->codproduto = $model->codproduto;
             $pb->codprodutovariacao = $pv->codprodutovariacao;
-            $pb->barras = str_pad($model->codproduto, 6, '0', STR_PAD_LEFT);
+            //$pb->barras = str_pad($model->codproduto, 6, '0', STR_PAD_LEFT);
                     
             if (!$pb->save())
                 throw new Exception ('Erro ao Criar Barras!');
