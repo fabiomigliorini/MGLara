@@ -82,11 +82,15 @@ class UsuarioController extends Controller
         if (!$model->validate()) {
             $this->throwValidationException($request, $model->_validator);
         }
-        if (isset($model->senha)) {
+        if(empty($model->senha)) {
+            unset($model->senha);
+        }
+        
+        if(isset($model->senha)) {
             $model->senha = bcrypt($model->senha);
         }
-        $model->save();
-        
+
+        $model->save();        
         Session::flash('flash_success', "Usuário '{$model->usuario}' Atualizado!");
         return redirect("usuario/$model->codusuario"); 
     }
