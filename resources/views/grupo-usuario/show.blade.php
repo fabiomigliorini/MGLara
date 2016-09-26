@@ -60,6 +60,20 @@
     </div>
     {!! Form::close() !!}
 </div>
+<?php
+$dados = [];
+foreach($permissoes as $permissao)
+{
+    
+    $array = explode('.', $permissao->permissao);
+    //dd($array);
+    //foreach ($array as $item)
+    //{
+        $dados[$array[0]]= $permissao->observacoes;
+    //}
+}
+dd($dados);
+?>
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
     @foreach($permissoes as $permissao)
@@ -103,7 +117,7 @@ function atualizaFiltro()
         data: frmValues
     })
     .done(function (data) {
-        $('#items').html(jQuery(data).find('#items').html()); 
+        $('#items').html(jQuery(data).find('#items').html());
     })
     .fail(function () {
         console.log('Erro no filtro');

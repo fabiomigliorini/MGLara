@@ -48,7 +48,9 @@ h1.header {
 .mz {
     margin: 0;
 }
-
+.clearfix .btn {
+    margin: 5px 0 10px 0;
+}
 .select2-container .select2-selection--single .select2-selection__rendered {
   padding-top: 2px;
 }

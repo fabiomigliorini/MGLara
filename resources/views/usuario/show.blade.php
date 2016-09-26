@@ -91,11 +91,11 @@
           </tr>
           <tr> 
             <th>Último acesso</th> 
-            <td>{{ $model->ultimoacesso }}</td> 
+            <td>{{ formataData($model->ultimoacesso, 'L') }}</td> 
           </tr>           
           <tr> 
             <th>Inativo</th> 
-            <td>{!! isset($model->inativo) ? formataData($model->inativo, 'M') : '' !!}</td> 
+            <td>{{ formataData($model->inativo, 'M') }}</td> 
           </tr> 
         </tbody> 
       </table>
