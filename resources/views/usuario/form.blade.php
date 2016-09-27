@@ -11,14 +11,6 @@
             $printers[$r[0]] = $r[0];
         }
     }
-        if(!empty(!in_array($model->impressoramatricial, $printers)))
-            $printers[$model->impressoramatricial] = $model->impressoramatricial;
-        
-        if(!empty(!in_array($model->impressoratermica, $printers)))
-            $printers[$model->impressoratermica] = $model->impressoratermica;
-        
-        if(!empty(!in_array($model->impressoratelanegocio, $printers)))
-            $printers[$model->impressoratelanegocio] = $model->impressoratelanegocio;
 ?>
 <div class="form-group">
     {!! Form::label('usuario', 'Usuário', ['class' => 'col-sm-2 control-label']) !!}
