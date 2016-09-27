@@ -288,14 +288,13 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
 
     public function UsuarioAlteracao()
     {
-        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuarioalteracao');
+        return $this->belongsTo(Usuario::class, 'codusuarioalteracao', 'codusuario');
     }
 
     public function UsuarioCriacao()
     {
-        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
+        return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
     }
-    
     
 
     // Tabelas Filhas
@@ -1094,10 +1093,6 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     {
         return $this->hasMany(Usuario::class, 'codusuario', 'codusuariocriacao');
     }
-
-    
-    
-    
     
     // Métodos
     public function extractgrupos()
