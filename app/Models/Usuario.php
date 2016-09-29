@@ -238,7 +238,7 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     	if ($this->codusuario)
     		$unique_usuario = "unique:tblusuario,usuario,$this->codusuario,codusuario|required|min:2";
     	else
-    		$unique_usuario = "unique:tblusuario,usuario|required|min:5";    	
+    		$unique_usuario = "unique:tblusuario,usuario|required|min:2";    	
     	
         $this->_regrasValidacao = [
             'usuario' => $unique_usuario, 
