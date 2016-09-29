@@ -236,7 +236,7 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     public function validate() {
         
     	if ($this->codusuario)
-    		$unique_usuario = "unique:tblusuario,usuario,$this->codusuario,codusuario|required|min:5";
+    		$unique_usuario = "unique:tblusuario,usuario,$this->codusuario,codusuario|required|min:2";
     	else
     		$unique_usuario = "unique:tblusuario,usuario|required|min:5";    	
     	
@@ -250,7 +250,7 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     
         $this->_mensagensErro = [
             'usuario.required' => 'O campo usuário não pode ser vazio',
-            'usuario.min' => 'O campo usuário deve ter mais de 4 caracteres',
+            'usuario.min' => 'O campo usuário deve ter mais de 2 caracteres',
         ];
         
         return parent::validate();
