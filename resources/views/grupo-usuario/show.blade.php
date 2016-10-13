@@ -20,9 +20,9 @@
             $model->inativo
         ) 
     !!}
-    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
-        <span class='glyphicon glyphicon-search'></span>
-    </a>
+    <button class="btn btn-primary pull-right" role="button" data-toggle="collapse" aria-expanded="false" id="expandir">
+        <span class='glyphicon glyphicon-resize-full'></span>
+    </button>
 </h1>
 @include('includes.autor')
 <?php		 
@@ -90,59 +90,7 @@ foreach($permissoes as $permissao){
 }
 </style>
 <script type="text/javascript">
-function atualizaFiltro()
-{
-    scroll();
-    var frmValues = $("#permissoes-search").serialize();
-    $.ajax({
-        type: 'GET',
-        url: baseUrl + '/grupo-usuario/' + {{ $model->codgrupousuario }},
-        data: frmValues
-    })
-    .done(function (data) {
-        $('#items').html(jQuery(data).find('#items').html());
-    })
-    .fail(function () {
-        console.log('Erro no filtro');
-    });
-
-    $('#items').infinitescroll('update', {
-        state: {
-            currPage: 1,
-            isDestroyed: false,
-            isDone: false             
-        },
-        path: ['?page=', '&'+frmValues]
-    });
-}
-
-function scroll()
-{
-    var loading_options = {
-        finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
-        msgText: "<div class='center'>Carregando mais itens...</div>",
-        img: baseUrl + '/public/img/ajax-loader.gif'
-    };
-
-    $('#items').infinitescroll({
-        loading : loading_options,
-        navSelector : "#registros .pagination",
-        nextSelector : "#registros .pagination li.active + li a",
-        itemSelector : "#items div.list-group-item",
-    });    
-}
-    
 $(document).ready(function() {
-    scroll();
-    $("#permissoes-search").on("change", function (event) {
-        $('#items').infinitescroll('destroy');
-        atualizaFiltro();
-    }).on('submit', function (event){
-        event.preventDefault();
-        $('#items').infinitescroll('destroy');
-        atualizaFiltro();
-    });
-    
     $(".check-permissao").bootstrapSwitch('size', 'small');
     $('.check-permissao').on('switchChange.bootstrapSwitch', function(event, state) {
         var grupo = '<?php echo $model->codgrupousuario;?>';
@@ -162,7 +110,12 @@ $(document).ready(function() {
         .done(function(data) {
             // ...
         });
-    });      
+    });
+
+    $('#expandir').click(function() {
+      $('.panel-collapse:not(".in")').collapse('show');
+    });    
+    
 });
 </script>
 @endsection
