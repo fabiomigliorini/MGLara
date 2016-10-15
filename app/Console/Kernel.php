@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \MGLara\Console\Commands\Inspire::class,
         \MGLara\Console\Commands\EstoqueCalculaEstatisticasCommand::class,
+        \MGLara\Console\Commands\SiteExportaMarcasCommand::class,
     ];
 
     /**
