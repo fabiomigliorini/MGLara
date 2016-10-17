@@ -7,6 +7,7 @@ use Validator;
 use MGLara\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -38,6 +39,13 @@ class AuthController extends Controller
         return 'usuario';
     }    
   
+    protected function getCredentials(Request $request)
+    {
+        $credentials=$request->only($this->loginUsername(), 'password');
+        $credentials['inativo'] = null;
+        return $credentials;
+    } 
+    
     /**
      * Get a validator for an incoming registration request.
      *

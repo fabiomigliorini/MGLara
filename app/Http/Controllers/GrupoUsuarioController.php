@@ -72,7 +72,7 @@ class GrupoUsuarioController extends Controller
 
         $parametros = $request->session()->get('grupo-usuario.show');
         $model = GrupoUsuario::find($id);
-        $permissoes = Permissao::search($parametros)->orderBy('permissao', 'ASC')->paginate(20);        
+        $permissoes = Permissao::orderBy('permissao', 'ASC')->get();        
         return view('grupo-usuario.show', compact('model', 'permissoes'));
     }
 

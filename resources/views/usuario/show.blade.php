@@ -1,11 +1,22 @@
 @extends('layouts.default')
 @section('content')
+<?php 
+    $grupos = $usuario->extractgrupos();
+    $admin = false;
+    foreach ($grupos as $grupo)
+    {
+        if ($grupo['grupo'] == '1') {
+        $admin = true;
+        }
+    }
+?>
 <nav class="navbar navbar-default navbar-fixed-top" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="<?php echo url('usuario');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="<?php echo url('usuario/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
+            <li><a href="<?php echo url('usuario/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>
             <li><a href="<?php echo url("usuario/$model->codusuario/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
+            @if($admin)
             <li><a href="<?php echo url("usuario/$model->codusuario/permissao");?>"><span class="glyphicon glyphicon-lock"></span> Permissões</a></li> 
             <li>
                 @if(empty($model->inativo))
@@ -21,6 +32,7 @@
             <li>
                 <a href="{{ url("usuario/$model->codusuario") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o usuario'{{ $model->usuario }}'?" data-after-delete="location.replace(baseUrl + '/usuario');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
             </li>
+            @endif
         </ul>
     </div>
 </nav>
@@ -79,11 +91,11 @@
           </tr>
           <tr> 
             <th>Último acesso</th> 
-            <td>{{ $model->ultimoacesso }}</td> 
+            <td>{{ formataData($model->ultimoacesso, 'L') }}</td> 
           </tr>           
           <tr> 
             <th>Inativo</th> 
-            <td>{!! isset($model->inativo) ? formataData($model->inativo, 'M') : '' !!}</td> 
+            <td>{{ formataData($model->inativo, 'M') }}</td> 
           </tr> 
         </tbody> 
       </table>

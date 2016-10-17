@@ -52,7 +52,11 @@
     </div>
 </h1>
 @include('includes.autor')
-<div class="clearfix"></div>
+<div class="clearfix">
+    <a class="btn btn-default pull-left" href="{{ url("familia-produto/create?codsecaoproduto=$model->codsecaoproduto") }}">
+        <i class=" glyphicon glyphicon-plus"></i> Nova Familia
+    </a>
+</div>
 <div class='collapse' id='div-filtro'>
     <div class='well well-sm' style="padding:9px 0">
 {!! Form::model(
@@ -84,14 +88,11 @@
             <button type="submit" class="btn btn-default pull-left">
                 <i class=" glyphicon glyphicon-search"></i> Buscar
             </button>
-            <a class="btn btn-default pull-left" href="{{ url("familia-produto/create?codsecaoproduto=$model->codsecaoproduto") }}" style="margin-left:10px">
-                <i class=" glyphicon glyphicon-plus"></i> Nova Familia
-            </a>
         </div>
     </div>
 </div>
 {!! Form::close() !!}
-        <div class="clearfix"></div>
+    <div class="clearfix"></div>
     </div>
     {!! Form::close() !!}
 </div>

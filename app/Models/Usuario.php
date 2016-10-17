@@ -236,9 +236,9 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     public function validate() {
         
     	if ($this->codusuario)
-    		$unique_usuario = "unique:tblusuario,usuario,$this->codusuario,codusuario|required|min:5";
+    		$unique_usuario = "unique:tblusuario,usuario,$this->codusuario,codusuario|required|min:2";
     	else
-    		$unique_usuario = "unique:tblusuario,usuario|required|min:5";    	
+    		$unique_usuario = "unique:tblusuario,usuario|required|min:2";    	
     	
         $this->_regrasValidacao = [
             'usuario' => $unique_usuario, 
@@ -250,7 +250,7 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     
         $this->_mensagensErro = [
             'usuario.required' => 'O campo usuário não pode ser vazio',
-            'usuario.min' => 'O campo usuário deve ter mais de 4 caracteres',
+            'usuario.min' => 'O campo usuário deve ter mais de 2 caracteres',
         ];
         
         return parent::validate();
@@ -259,7 +259,6 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     public function getAuthPassword(){
         return $this->senha;
     }
-
     
     // Chaves Estrangeiras
     public function Ecf()
@@ -289,14 +288,13 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
 
     public function UsuarioAlteracao()
     {
-        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuarioalteracao');
+        return $this->belongsTo(Usuario::class, 'codusuarioalteracao', 'codusuario');
     }
 
     public function UsuarioCriacao()
     {
-        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
+        return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
     }
-    
     
 
     // Tabelas Filhas
@@ -1095,10 +1093,6 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     {
         return $this->hasMany(Usuario::class, 'codusuario', 'codusuariocriacao');
     }
-
-    
-    
-    
     
     // Métodos
     public function extractgrupos()

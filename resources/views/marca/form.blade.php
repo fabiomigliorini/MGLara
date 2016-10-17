@@ -49,7 +49,8 @@ $(document).ready(function() {
           valor = 0;
         }
         $('#site').val(valor);
-    });    
+    });
+    $('#marca').Setcase();     
 });
 </script>
 @endsection
