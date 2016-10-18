@@ -6,9 +6,9 @@ use Illuminate\Console\Command;
 use MGLara\Jobs\EstoqueCalculaEstatisticas;
 //use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\Log;
-use MGLara\Models\SecaoProduto;
+use MGLara\Models\Marca;
 
-class SiteExportaSecoesCommand extends Command
+class SiteExportaProdutosCommand extends Command
 {
     const URL_SITE = 'http://webapp15505.cloud683.configrapp.com/';
     //use DispatchesJobs;
@@ -18,14 +18,14 @@ class SiteExportaSecoesCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'site:exporta-secoes';
+    protected $signature = 'site:exporta-marcas';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Exporta secoes para o site usando API OpenCart';
+    protected $description = 'Exporta marcas para o site usando API OpenCart';
 
     /**
      * Create a new command instance.
@@ -44,9 +44,8 @@ class SiteExportaSecoesCommand extends Command
      */
     public function handle()
     {
-        Log::info('site:exporta-secoes');
+        Log::info('site:exporta-marcas');
         
-        /*
         // Usuario e Senha do Site
         $chave = base64_encode('mgpapelaria:123456');
         
@@ -66,21 +65,21 @@ class SiteExportaSecoesCommand extends Command
         curl_close($ch);
         
         if ($status != 200) {
-            Log::error("site:exporta-secoes - Erro ao Gerar Token - $response");
+            Log::error("site:exporta-marcas - Erro ao Gerar Token - $response");
         } else {
             $response_arr = json_decode($response, true);
             if (empty($response_arr['access_token'])) {
-                Log::error("site:exporta-secoes - Erro ao Gerar Token - $response");
+                Log::error("site:exporta-marcas - Erro ao Gerar Token - $response");
                 return false;
             }
             $token = $response_arr['access_token'];
         } 
-        */
-        // Token temporario
-        $token = '13f8ea04e1728a03a1a71f2340b086eba3e5f595';
         
-        // Busca Listagem das secoes do OpenCart
-        $ch = curl_init(SELF::URL_SITE . 'index.php?route=rest/category_admin/category&level=99999');
+        // Token temporario
+        //$token = '13f8ea04e1728a03a1a71f2340b086eba3e5f595';
+        
+        // Busca Listagem das marcas do OpenCart
+        $ch = curl_init(SELF::URL_SITE . 'index.php?route=rest/manufacturer_admin/manufacturer&limit=10000000');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -95,7 +94,7 @@ class SiteExportaSecoesCommand extends Command
         curl_close($ch);
         
         if ($status != 200) {
-            Log::error("site:exporta-secoes - Erro ao Gerar Token - $response");
+            Log::error("site:exporta-marcas - Erro ao Gerar Token - $response");
         } else {
             $response = json_decode($response, true);
             if (!$response['success']) {
@@ -103,35 +102,32 @@ class SiteExportaSecoesCommand extends Command
             }
         } 
 
-        dd($response);
-        // Transforma o array das Secoes, deixando o codigo como chave do array
-        $secoes_site = [];
-        foreach ($response['data'] as $key => $category) {
-            $secoes_site[$category['category_id']] = $category;
+        // Transforma o array das Marcas, deixando o codigo como chave do array
+        $marcas_site = [];
+        foreach ($response['data'] as $key => $manufacturer) {
+            $marcas_site[$manufacturer['manufacturer_id']] = $manufacturer;
         }
         
-        dd($secoes_site);
+        // Busca as Marcas do Sistema
+        //$marcas = Marca::whereNotNull('codimagem')->orderBy('codmarca')->limit(10)->get();
+        $marcas = Marca::orderBy('codmarca')->get();
         
-        // Busca as Secoes do Sistema
-        //$secoes = SecaoProduto::whereNotNull('codimagem')->orderBy('codsecaoproduto')->limit(10)->get();
-        $secoes = SecaoProduto::orderBy('codsecaoproduto')->get();
-        
-        // Percorre todas as secoes
-        foreach ($secoes as $secaoproduto) {
+        // Percorre todas as marcas
+        foreach ($marcas as $marca) {
 
-            // String com os dados da SecaoProduto
+            // String com os dados da Marca
             $data_string = json_encode([
-                'name' => $secaoproduto->secaoproduto,
-                'keyword' => $secaoproduto->secaoproduto,
+                'name' => $marca->marca,
+                'keyword' => $marca->marca,
                 'sort_order'=> '0', // TODO: Ordenar de acordo com importancia
                 //'image': "image_path", //TODO: Upload Imagem
                 //'manufacturer_store':["0"],
             ]);
             
             //Se ja esta no OpenCart - ATUALIZA
-            if (isset($secoes_site[$secaoproduto->codopencart])) {
+            if (isset($marcas_site[$marca->codopencart])) {
                 
-                $ch = curl_init(SELF::URL_SITE . "index.php?route=rest/manufacturer_admin/manufacturer&id={$secaoproduto->codopencart}");
+                $ch = curl_init(SELF::URL_SITE . "index.php?route=rest/manufacturer_admin/manufacturer&id={$marca->codopencart}");
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");   
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);                                                                  
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
@@ -146,7 +142,7 @@ class SiteExportaSecoesCommand extends Command
                 curl_close($ch);
                 
                 if ($status != 200) {
-                    Log::error("site:exporta-secoes - Erro ao ATUALIZAR secaoproduto #{$secaoproduto->codsecaoproduto} - '$secaoproduto->secaoproduto' - $response");
+                    Log::error("site:exporta-marcas - Erro ao ATUALIZAR marca #{$marca->codmarca} - '$marca->marca' - $response");
                 }
                 
             // Se nao esta no OpenCart - CRIA
@@ -167,21 +163,21 @@ class SiteExportaSecoesCommand extends Command
                 curl_close($ch);
                 
                 if ($status != 200) {
-                    Log::error("site:exporta-secoes - Erro ao CRIAR secaoproduto #{$secaoproduto->codsecaoproduto} - '$secaoproduto->secaoproduto' - $response");
+                    Log::error("site:exporta-marcas - Erro ao CRIAR marca #{$marca->codmarca} - '$marca->marca' - $response");
                 } else {
                     $response = json_decode($response, true);
                     if ($response['success']) {
-                        $secaoproduto->codopencart = $response['data']['id'];
-                        $secaoproduto->save();
+                        $marca->codopencart = $response['data']['id'];
+                        $marca->save();
                     } else {
-                        if (($response['error']['keyword'] == 'SEO keyword already in use!') && empty($secaoproduto->codopencart)) {
-                            $codigos = array_keys($secoes_site);
-                            $i = array_search($secaoproduto->secaoproduto, array_column($secoes_site, 'name'));
-                            $secaoproduto->codopencart = $codigos[$i];
-                            $secaoproduto->save();
+                        if (($response['error']['keyword'] == 'SEO keyword already in use!') && empty($marca->codopencart)) {
+                            $codigos = array_keys($marcas_site);
+                            $i = array_search($marca->marca, array_column($marcas_site, 'name'));
+                            $marca->codopencart = $codigos[$i];
+                            $marca->save();
                         } else {
                             $response = json_encode($response);
-                            Log::error("site:exporta-secoes - Erro ao CRIAR secaoproduto #{$secaoproduto->codsecaoproduto} - '$secaoproduto->secaoproduto' - $response");
+                            Log::error("site:exporta-marcas - Erro ao CRIAR marca #{$marca->codmarca} - '$marca->marca' - $response");
                         }
                     }
                 }                
@@ -189,16 +185,16 @@ class SiteExportaSecoesCommand extends Command
             }
             
             // TODO: logica para saber se precisa atualizar a imagem
-            $atualizar_imagem = empty($secaoproduto->codimagem)?false:true;
+            $atualizar_imagem = empty($marca->codimagem)?false:true;
             
             if ($atualizar_imagem) {
                 
                 
-                $target = SELF::URL_SITE . "index.php?route=rest/manufacturer_admin/manufacturerimages&id={$secaoproduto->codopencart}";
+                $target = SELF::URL_SITE . "index.php?route=rest/manufacturer_admin/manufacturerimages&id={$marca->codopencart}";
 
                 // Create a CURLFile object / procedural method 
-                $imagePath = base_path('public/imagens/'.$secaoproduto->Imagem->observacoes);
-                echo "{$secaoproduto->codopencart} - {$secaoproduto->secaoproduto} - $imagePath\n";
+                $imagePath = base_path('public/imagens/'.$marca->Imagem->observacoes);
+                echo "{$marca->codopencart} - {$marca->marca} - $imagePath\n";
                 $imageExtention = preg_replace('/^.*\.([^.]+)$/D', '$1', $imagePath);
                 $cfile = curl_file_create($imagePath, mime_content_type($imagePath), $imagePath); // try adding 
                 //dd($cfile);
@@ -232,12 +228,12 @@ class SiteExportaSecoesCommand extends Command
                 dd($postFields['file']);
                 //$x = new \CURLFile($filename)
 
-                //dd(SELF::URL_SITE . "index.php?route=rest/manufacturer_admin/manufacturerimages&id={$secaoproduto->codopencart}");
+                //dd(SELF::URL_SITE . "index.php?route=rest/manufacturer_admin/manufacturerimages&id={$marca->codopencart}");
                 */
                 //dd($postFields);
                 
                 /*
-                $ch = curl_init(SELF::URL_SITE . "index.php?route=rest/manufacturer_admin/manufacturerimages&id={$secaoproduto->codopencart}");
+                $ch = curl_init(SELF::URL_SITE . "index.php?route=rest/manufacturer_admin/manufacturerimages&id={$marca->codopencart}");
                 curl_setopt ($ch, CURLOPT_POST, 1);
                 curl_setopt ($ch, CURLOPT_POSTFIELDS, $postFields);
                 curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -271,12 +267,12 @@ class SiteExportaSecoesCommand extends Command
                 
             }            
             
-            // Exclui do array de Secoes do OpenCart
-            unset($secoes_site[$secaoproduto->codopencart]);
+            // Exclui do array de Marcas do OpenCart
+            unset($marcas_site[$marca->codopencart]);
         }
         
-        // Percorre as Secoes do OpenCart que sobraram e Exclui
-        foreach($secoes_site as $manufacturer_id => $manufacturer) {
+        // Percorre as Marcas do OpenCart que sobraram e Exclui
+        foreach($marcas_site as $manufacturer_id => $manufacturer) {
             
             $data_string = json_encode(['manufacturers' => [$manufacturer_id]]);
             
@@ -295,12 +291,12 @@ class SiteExportaSecoesCommand extends Command
             curl_close($ch);
 
             if ($status != 200) {
-                Log::error("site:exporta-secoes - Erro ao EXCLUIR secaoproduto #{$manufacturer_id} - '{$manufacturer['name']}' - $response");
+                Log::error("site:exporta-marcas - Erro ao EXCLUIR marca #{$manufacturer_id} - '{$manufacturer['name']}' - $response");
             } else {
                 $response = json_decode($response, true);
                 if (!$response['success']) {
                     $response = json_encode($response);
-                    Log::error("site:exporta-secoes - Erro ao EXCLUIR secaoproduto #{$manufacturer_id} - '{$manufacturer['name']}' - $response");
+                    Log::error("site:exporta-marcas - Erro ao EXCLUIR marca #{$manufacturer_id} - '{$manufacturer['name']}' - $response");
                 }
             }
             

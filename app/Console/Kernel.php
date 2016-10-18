@@ -16,7 +16,8 @@ class Kernel extends ConsoleKernel
         \MGLara\Console\Commands\Inspire::class,
         \MGLara\Console\Commands\EstoqueCalculaEstatisticasCommand::class,
         \MGLara\Console\Commands\SiteExportaMarcasCommand::class,
-        \MGLara\Console\Commands\SiteExportaSecoesCommand::class,
+        \MGLara\Console\Commands\SiteExportaCategoriasCommand::class,
+        \MGLara\Console\Commands\SiteExportaProdutosCommand::class,
     ];
 
     /**
