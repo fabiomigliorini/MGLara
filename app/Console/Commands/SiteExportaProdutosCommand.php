@@ -8,6 +8,8 @@ use MGLara\Jobs\EstoqueCalculaEstatisticas;
 use Illuminate\Support\Facades\Log;
 use MGLara\Models\Marca;
 
+use MGLara\Library\IntegracaoOpenCart;
+
 class SiteExportaProdutosCommand extends Command
 {
     const URL_SITE = 'http://webapp15505.cloud683.configrapp.com/';
@@ -18,7 +20,7 @@ class SiteExportaProdutosCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'site:exporta-marcas';
+    protected $signature = 'site:exporta-produtos';
 
     /**
      * The console command description.
@@ -44,7 +46,14 @@ class SiteExportaProdutosCommand extends Command
      */
     public function handle()
     {
-        Log::info('site:exporta-marcas');
+        $oc = new IntegracaoOpenCart(true);
+        $oc->token = 'e8792e2b6099deed56ae4568cc81e1059612b5f4';
+        $oc->sincronizaProdutos([374, 638]);
+        $oc->sincronizaProdutos([9785]);
+        $oc->sincronizaProdutos([23021]);
+        
+        /*
+        Log::info('site:exporta-produtos');
         
         // Usuario e Senha do Site
         $chave = base64_encode('mgpapelaria:123456');
@@ -65,11 +74,11 @@ class SiteExportaProdutosCommand extends Command
         curl_close($ch);
         
         if ($status != 200) {
-            Log::error("site:exporta-marcas - Erro ao Gerar Token - $response");
+            Log::error("site:exporta-produtos - Erro ao Gerar Token - $response");
         } else {
             $response_arr = json_decode($response, true);
             if (empty($response_arr['access_token'])) {
-                Log::error("site:exporta-marcas - Erro ao Gerar Token - $response");
+                Log::error("site:exporta-produtos - Erro ao Gerar Token - $response");
                 return false;
             }
             $token = $response_arr['access_token'];
@@ -94,7 +103,7 @@ class SiteExportaProdutosCommand extends Command
         curl_close($ch);
         
         if ($status != 200) {
-            Log::error("site:exporta-marcas - Erro ao Gerar Token - $response");
+            Log::error("site:exporta-produtos - Erro ao Gerar Token - $response");
         } else {
             $response = json_decode($response, true);
             if (!$response['success']) {
@@ -142,7 +151,7 @@ class SiteExportaProdutosCommand extends Command
                 curl_close($ch);
                 
                 if ($status != 200) {
-                    Log::error("site:exporta-marcas - Erro ao ATUALIZAR marca #{$marca->codmarca} - '$marca->marca' - $response");
+                    Log::error("site:exporta-produtos - Erro ao ATUALIZAR marca #{$marca->codmarca} - '$marca->marca' - $response");
                 }
                 
             // Se nao esta no OpenCart - CRIA
@@ -163,7 +172,7 @@ class SiteExportaProdutosCommand extends Command
                 curl_close($ch);
                 
                 if ($status != 200) {
-                    Log::error("site:exporta-marcas - Erro ao CRIAR marca #{$marca->codmarca} - '$marca->marca' - $response");
+                    Log::error("site:exporta-produtos - Erro ao CRIAR marca #{$marca->codmarca} - '$marca->marca' - $response");
                 } else {
                     $response = json_decode($response, true);
                     if ($response['success']) {
@@ -177,7 +186,7 @@ class SiteExportaProdutosCommand extends Command
                             $marca->save();
                         } else {
                             $response = json_encode($response);
-                            Log::error("site:exporta-marcas - Erro ao CRIAR marca #{$marca->codmarca} - '$marca->marca' - $response");
+                            Log::error("site:exporta-produtos - Erro ao CRIAR marca #{$marca->codmarca} - '$marca->marca' - $response");
                         }
                     }
                 }                
@@ -216,54 +225,6 @@ class SiteExportaProdutosCommand extends Command
                 $r = curl_exec($curl); 
                 curl_close($curl);
                 
-                //dd($r);
-                /*
-                
-                $postFields['file'] = curl_file_create($imagePath, "image/$imageExtention", 'file');
-                */
-
-                /*
-                //$postFields['file'] = "@$imagePath;type=image/$imageExtention";
-                $postFields['file'] = new \CURLFile($imagePath);
-                dd($postFields['file']);
-                //$x = new \CURLFile($filename)
-
-                //dd(SELF::URL_SITE . "index.php?route=rest/manufacturer_admin/manufacturerimages&id={$marca->codopencart}");
-                */
-                //dd($postFields);
-                
-                /*
-                $ch = curl_init(SELF::URL_SITE . "index.php?route=rest/manufacturer_admin/manufacturerimages&id={$marca->codopencart}");
-                curl_setopt ($ch, CURLOPT_POST, 1);
-                curl_setopt ($ch, CURLOPT_POSTFIELDS, $postFields);
-                curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-                 * 
-                 */
-                /*
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");   
-                curl_setopt($ch, CURLOPT_HEADER, 0);
-                curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);                                                                  
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
-                 * 
-                 */
-                /*
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
-                    'Content-Type: application/json',     
-                    "Authorization: Bearer $token"
-                ));
-
-                $response = curl_exec($ch);
-                $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                curl_close($ch);
-                dd($response);
-                if ($status != 200) {
-                    echo("ERROR");
-                } else {
-                    echo($response);
-                }
-                 * 
-                 */
                 
             }            
             
@@ -291,18 +252,18 @@ class SiteExportaProdutosCommand extends Command
             curl_close($ch);
 
             if ($status != 200) {
-                Log::error("site:exporta-marcas - Erro ao EXCLUIR marca #{$manufacturer_id} - '{$manufacturer['name']}' - $response");
+                Log::error("site:exporta-produtos - Erro ao EXCLUIR marca #{$manufacturer_id} - '{$manufacturer['name']}' - $response");
             } else {
                 $response = json_decode($response, true);
                 if (!$response['success']) {
                     $response = json_encode($response);
-                    Log::error("site:exporta-marcas - Erro ao EXCLUIR marca #{$manufacturer_id} - '{$manufacturer['name']}' - $response");
+                    Log::error("site:exporta-produtos - Erro ao EXCLUIR marca #{$manufacturer_id} - '{$manufacturer['name']}' - $response");
                 }
             }
             
         }
         
-        
+        */
         
     }
     

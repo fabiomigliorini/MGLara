@@ -11,6 +11,8 @@ use MGLara\Models\FamiliaProduto;
 use MGLara\Models\GrupoProduto;
 use MGLara\Models\SubGrupoProduto;
 
+use MGLara\Library\IntegracaoOpenCart;
+
 class SiteExportaCategoriasCommand extends Command
 {
     const URL_SITE = 'http://webapp15505.cloud683.configrapp.com/';
@@ -66,6 +68,17 @@ class SiteExportaCategoriasCommand extends Command
     
     public function enviaOpenCart($model, $data) 
     {
+        
+        if (strlen($data['category_description'][0]['name']) < 3) {
+            $data['category_description'][0]['name'] = str_pad($data['category_description'][0]['name'], 3, '_', STR_PAD_RIGHT);
+        }
+            
+        if (strlen($data['category_description'][0]['meta_description']) < 3) {
+            $data['category_description'][0]['meta_description'] = str_pad($data['category_description'][0]['meta_description'], 3, '_', STR_PAD_RIGHT);
+        }
+        
+        $class = class_basename($model);
+        echo "{$class} - {$data['category_description'][0]['name']}\n";
         
         //Se ja esta no OpenCart - ATUALIZA
         if (isset($this->categoriasOpenCart[$model->codopencart])) {
@@ -143,6 +156,9 @@ class SiteExportaCategoriasCommand extends Command
     {
         Log::info('site:exporta-categorias');
         
+        $xx = new IntegracaoOpenCart();
+        $xx->teste();
+        
         // Usuario e Senha do Site
         $chave = base64_encode('mgpapelaria:123456');
         
@@ -174,7 +190,7 @@ class SiteExportaCategoriasCommand extends Command
         
         // Token temporario
         //$this->token = '13f8ea04e1728a03a1a71f2340b086eba3e5f595';
-        
+
         // Busca Listagem das secoes do OpenCart
         $ch = curl_init(SELF::URL_SITE . 'index.php?route=rest/category_admin/category&level=99999999');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");

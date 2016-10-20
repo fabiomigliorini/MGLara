@@ -8,6 +8,8 @@ use MGLara\Jobs\EstoqueCalculaEstatisticas;
 use Illuminate\Support\Facades\Log;
 use MGLara\Models\Marca;
 
+use MGLara\Library\IntegracaoOpenCart;
+
 class SiteExportaMarcasCommand extends Command
 {
     const URL_SITE = 'http://webapp15505.cloud683.configrapp.com/';
@@ -45,6 +47,15 @@ class SiteExportaMarcasCommand extends Command
     public function handle()
     {
         Log::info('site:exporta-marcas');
+        //dd('aqui');
+        $x = new IntegracaoOpenCart(true);
+        $x->token = 'e8792e2b6099deed56ae4568cc81e1059612b5f4';
+        if ($x->teste()) {
+            echo "\n\nPassou OK\n\n";
+        } else {
+            echo "\n\nDeu Erro\n\n";
+        }
+        dd($x);
         
         // Usuario e Senha do Site
         $chave = base64_encode('mgpapelaria:123456');
