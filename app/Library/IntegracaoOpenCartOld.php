@@ -16,7 +16,7 @@ use MGLara\Models\ProdutoVariacao;
  * @author escmig98
  * @property Marca[] marcasSistema
  */
-class IntegracaoOpenCart {
+class IntegracaoOpenCartOld {
     
     protected $debug = false;
     
@@ -255,6 +255,12 @@ class IntegracaoOpenCart {
         // Transforma a resposta dos Produtos, deixando o ID como chave do array
         if (isset($this->curlResponseObject->data->id)) {
             $encontrados = 1;
+            if ($id != $this->curlResponseObject->data->id) {
+                if ($prod = Produto::find($sku)) {
+                    $prod->codopencart = $this->curlResponseObject->data->id;
+                    $prod->save();
+                }
+            }
             // Transforma a resposta dos Produtos, deixando o ID como chave do array
             $this->produtosOpenCart[$this->curlResponseObject->data->id] = $this->curlResponseObject->data;
         } else {
@@ -526,6 +532,7 @@ class IntegracaoOpenCart {
             
         } else {
 
+            echo "sincronizapv nao tem variacao";
             // se Existia uma opcao criada no OpenCart
             if (isset($this->opcoesProdutoOpenCart[$prod->codopencartvariacao])) {
                 
@@ -727,7 +734,7 @@ class IntegracaoOpenCart {
         ];
         
         //dd($data);
-        
+        //dd($prod->codopencart);
         if (!isset($this->produtosOpenCart[$prod->codopencart])) {
             
             // Gera json 
@@ -762,10 +769,15 @@ class IntegracaoOpenCart {
                 Log::error(class_basename($this) . ' - Falha ao criar Opcao da Variacao!');
                 return false;
             }
+            
+            echo "\n\n Gravou novo produto \n\n";
+            dd($this->curlResponseObject);
 
             // Grava ID do OpenCart da Opcao
-            $prod->codopencart = $this->curlResponseObject->data->product_id;
-            $prod->save();
+            if (isset($this->curlResponseObject->product_id)) {
+                $prod->codopencart = $this->curlResponseObject->product_id;
+                $prod->save();
+            }
             
         } else {
             
@@ -803,7 +815,7 @@ class IntegracaoOpenCart {
             }
 
             // Grava ID do OpenCart da Opcao
-            $prod->codopencart = $this->curlResponseObject->data->product_id;
+            $prod->codopencart = $this->curlResponseObject->product_id;
             $prod->save();
                         
         }

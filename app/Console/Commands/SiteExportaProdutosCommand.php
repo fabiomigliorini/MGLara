@@ -8,7 +8,8 @@ use MGLara\Jobs\EstoqueCalculaEstatisticas;
 use Illuminate\Support\Facades\Log;
 use MGLara\Models\Marca;
 
-use MGLara\Library\IntegracaoOpenCart;
+//use MGLara\Library\IntegracaoOpenCart;
+use MGLara\Library\IntegracaoOpenCart\IntegracaoOpenCart;
 
 class SiteExportaProdutosCommand extends Command
 {
@@ -46,12 +47,28 @@ class SiteExportaProdutosCommand extends Command
      */
     public function handle()
     {
+        $i = new IntegracaoOpenCart(true);
+        $i->token = '230f09725c442eaf40405c0c7995912ac91611bc';
+        //$i->getToken();
+        //$i->sincronizaMarcas([10000410, 10000295, 138], true);
+        $i->sincronizaMarcas();
+        //dd($i);
+        /*
+        $auth = new IntegracaoOpenCartAuth(true);
+        $token = $auth->getToken();
+        dd($token);
+         * 
+         */
+        /*
         $oc = new IntegracaoOpenCart(true);
         $oc->token = 'e8792e2b6099deed56ae4568cc81e1059612b5f4';
-        $oc->sincronizaProdutos([374, 638]);
-        $oc->sincronizaProdutos([9785]);
-        $oc->sincronizaProdutos([23021]);
-        
+        //$oc->sincronizaProdutos([374, 638]);
+        //$oc->sincronizaProdutos([9785]);
+        //$oc->sincronizaProdutos([23021]);
+        //$oc->sincronizaProdutos([313287]);
+        //$oc->sincronizaProdutos([676]);
+        $oc->sincronizaProdutos([2060]);
+        */
         /*
         Log::info('site:exporta-produtos');
         
