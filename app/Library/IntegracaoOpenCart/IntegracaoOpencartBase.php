@@ -15,6 +15,7 @@ class IntegracaoOpencartBase {
     protected $url;
     protected $user;
     protected $password;
+    protected $languagePTBR;
     
     public $token;
     
@@ -25,13 +26,14 @@ class IntegracaoOpencartBase {
     /**
      * Construtor
      */
-    public function __construct($debug = false, $url = null, $user = null, $password = null)
+    public function __construct($debug = false, $url = null, $user = null, $password = null, $language_ptbr = null)
     {
         // Traz variaves de ambiente
         $this->debug = $debug;
         $this->url = (!empty($url))?$url:$_ENV['OPENCART_BASEURL'];
         $this->user = (!empty($user))?$user:$_ENV['OPENCART_USER'];
         $this->password = (!empty($password))?$password:$_ENV['OPENCART_PASSWORD'];
+        $this->languagePTBR = (!empty($language_ptbr))?$language_ptbr:$_ENV['OPENCART_LANGUAGE_PTBR'];
     }
     
     public function get($url, $data = null, $http_header = null, $data_as_json = true)
@@ -153,7 +155,17 @@ class IntegracaoOpencartBase {
         
     }
     
-    public function getManufacturer () {
+    public function parseManufacturers($manufacturers) 
+    {
+        $return = [];
+        foreach ($manufacturers as $key => $manufacturer) {
+            $return[$manufacturer->manufacturer_id] = $manufacturer;
+        }
+        return $return;
+    }
+    
+    public function getManufacturer () 
+    {
 
         // monta URL
         $url = $this->url . 'index.php?route=rest/manufacturer_admin/manufacturer&limit=10000000';
@@ -173,16 +185,8 @@ class IntegracaoOpencartBase {
             return false;
         }
         
-        // inicializa array que sera retornado
-        $manufacturers = [];
-        
-        // percorre o array recebido deixando como chave o id
-        foreach ($this->responseObject->data as $key => $manufacturer) {
-            $manufacturers[$manufacturer->manufacturer_id] = $manufacturer;
-        }
-        
         // retorna array
-        return $manufacturers;
+        return $this->parseManufacturers($this->responseObject->data);
         
     }
     
@@ -253,7 +257,7 @@ class IntegracaoOpencartBase {
         }
         
         // monta Array com dados
-        $data = ['manufacturers' => [$ids]];
+        $data = ['manufacturers' => $ids];
 
         // monta URL
         $url = $this->url . 'index.php?route=rest/manufacturer_admin/manufacturer';
@@ -303,5 +307,170 @@ class IntegracaoOpencartBase {
         
     }
     
+    public function parseCategories($categories, $parent_id = null, &$return = [])
+    {
+        // percorre objeto das categorias recebido deixando como chave o id da categoria e o id da lingua
+        foreach ($categories as $category_id => $langs) {
+            $category = [
+                'category_id' => $category_id,
+                'parent_id' => $parent_id
+            ];
+            foreach ($langs as $key => $lang) {
+                //dd($lang);
+                $category['sort_order'] = $lang->sort_order;
+                $category['category_description'][$lang->language_id] = $lang;
+                if ($lang->language_id == $this->languagePTBR && isset($lang->categories)) {
+                    $this->parseCategories($lang->categories->categories, $category_id, $return);
+                }
+                unset($lang->categories);
+            }
+            $return[$category_id] = (object) $category;
+        }
+        return $return;
+        
+    }
+    
+    public function getCategory($id = null, $level = 9999999999) 
+    {
+        
+        // monta URL
+        if (empty($id)) {
+            $url = $this->url . "index.php?route=rest/category_admin/category&level={$level}";
+        } else {
+            $url = $this->url . "index.php?route=rest/category_admin/category&id={$id}";
+        }
+        
+        // aborta se falhou na chamada get 
+        if (!$this->get($url)) {
+            return false;
+        }
+        
+        // aborta se nao retornou sucesso
+        if (!$this->responseObject->success) {
+            return false;
+        }
+        
+        // aborta se nao veio array com dados
+        if (!isset($this->responseObject->data->categories)) {
+            return false;
+        }
+        
+        // retorna array de categorias
+        return $this->parseCategories($this->responseObject->data->categories);
+        
+    }
+    
+    public function updateCategory ($id, $sort_order, $parent_id, $top, $column, $status, $name, $description, $meta_title, $meta_description, $meta_keyword) 
+    {
+        // monta Array com dados
+        $data = [
+            'sort_order' => $sort_order,
+            'category_store' => [0],
+            'parent_id' => $parent_id,
+            'top' => $top,
+            'column' => $column,
+            'status' => $status, //1 - Ativo / 0 - Inativo
+            'category_description' => [
+                0 => [
+                    'language_id' => $this->languagePTBR,
+                    'name' => $name,
+                    'description' => $description,
+                    'meta_title' => $meta_title,
+                    'meta_description' => $meta_description,
+                    'meta_keyword' => $meta_keyword,
+                ]
+            ]
+        ];
+
+        // monta URL
+        $url = $this->url . "index.php?route=rest/category_admin/category&id={$id}";
+
+        // aborta caso erro no put
+        if (!$this->put($url, $data)) {
+            return false;
+        }
+        
+        // aborta se nao veio variavel de success
+        if (!isset($this->responseObject->success)) {
+            return false;
+        }
+        
+        // retorna o success
+        return $this->responseObject->success;
+        
+    }
+    
+    public function createCategory ($sort_order, $parent_id, $top, $column, $status, $name, $description, $meta_title, $meta_description, $meta_keyword) 
+    {
+        // monta Array com dados
+        $data = [
+            'sort_order' => $sort_order,
+            'category_store' => [0],
+            'parent_id' => $parent_id,
+            'top' => $top,
+            'column' => $column,
+            'status' => $status, //1 - Ativo / 0 - Inativo
+            'category_description' => [
+                0 => [
+                    'language_id' => $this->languagePTBR,
+                    'name' => $name,
+                    'description' => $description,
+                    'meta_title' => $meta_title,
+                    'meta_description' => $meta_description,
+                    'meta_keyword' => $meta_keyword,
+                ]
+            ]
+        ];
+        
+        // monta URL
+        $url = $this->url . 'index.php?route=rest/category_admin/category';
+
+        // aborta caso erro no post
+        if (!$this->post($url, $data)) {
+            return false;
+        }
+        
+        // aborta se nao veio variavel de success
+        if (!isset($this->responseObject->success)) {
+            return false;
+        }
+        
+        // aborta se nao retornou success
+        if (!$this->responseObject->success) {
+            return false;
+        }
+        
+        // retorna o id
+        return $this->responseObject->data->id;
+        
+    }
+
+    public function deleteCategory ($ids)
+    {
+        // se passou somente um id, transforma em array
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        
+        // monta Array com dados
+        $data = ['categories' => $ids];
+
+        // monta URL
+        $url = $this->url . 'index.php?route=rest/category_admin/category';
+            
+        // aborta caso erro no delete
+        if (!$this->delete($url, $data)) {
+            return false;
+        }
+        
+        // aborta se nao veio variavel de success
+        if (!isset($this->responseObject->success)) {
+            return false;
+        }
+        
+        // retorna o success
+        return $this->responseObject->success;
+        
+    }
     
 }

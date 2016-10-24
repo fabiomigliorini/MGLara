@@ -350,7 +350,7 @@ class SiteExportaCategoriasCommand extends Command
         // Percorre as Secoes do OpenCart que sobraram e Exclui
         foreach($this->categoriasOpenCart as $category_id => $category) {
             
-            $data_string = json_encode(['manufacturers' => [$category_id]]);
+            $data_string = json_encode(['categories' => [$category_id]]);
             
             $ch = curl_init(SELF::URL_SITE . "index.php?route=rest/category_admin/category");
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");

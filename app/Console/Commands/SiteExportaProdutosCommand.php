@@ -51,7 +51,10 @@ class SiteExportaProdutosCommand extends Command
         $i->token = '230f09725c442eaf40405c0c7995912ac91611bc';
         //$i->getToken();
         //$i->sincronizaMarcas([10000410, 10000295, 138], true);
-        $i->sincronizaMarcas();
+        //$i->sincronizaMarcas();
+        //$i->sincronizaSecoes(1, true);
+        $i->sincronizaSecoes();
+        //
         //dd($i);
         /*
         $auth = new IntegracaoOpenCartAuth(true);
