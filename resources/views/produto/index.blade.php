@@ -51,8 +51,8 @@
         <div class="form-group">
             {!! Form::label('preco_de', 'Preço', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-md-9">
-                {!! Form::number('preco_de', null, ['class' => 'form-control text-right pull-left', 'id' => 'preco_de', 'placeholder' => 'De', 'style'=>'width:100px; margin-right:10px']) !!}
-                {!! Form::number('preco_ate', null, ['class' => 'form-control text-right pull-left', 'id' => 'preco_ate', 'placeholder' => 'Até', 'style'=>'width:100px;']) !!}
+                {!! Form::number('preco_de', null, ['class' => 'form-control text-right pull-left', 'id' => 'preco_de', 'placeholder' => 'De', 'style'=>'width:100px; margin-right:10px', 'step'=>'0.01']) !!}
+                {!! Form::number('preco_ate', null, ['class' => 'form-control text-right pull-left', 'id' => 'preco_ate', 'placeholder' => 'Até', 'style'=>'width:100px;', 'step'=>'0.01']) !!}
             </div>
         </div>
 
