@@ -53,7 +53,8 @@ class SiteExportaProdutosCommand extends Command
         //$i->sincronizaMarcas([10000410, 10000295, 138], true);
         //$i->sincronizaMarcas();
         //$i->sincronizaSecoes(1, true);
-        $i->sincronizaSecoes();
+        //$i->sincronizaSecoes();
+        $i->sincronizaProdutos(793, true);
         //
         //dd($i);
         /*
