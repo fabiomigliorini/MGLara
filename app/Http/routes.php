@@ -123,6 +123,9 @@ Route::group(['middleware' => 'auth'], function() {
     /* Produto Embalagem */
     Route::resource('produto-embalagem','ProdutoEmbalagemController');
 
+    /* Estoque Local Produto Variacao */
+    Route::resource('estoque-local-produto-variacao','EstoqueLocalProdutoVariacaoController');
+
     /* Pais */
     Route::resource('pais','PaisController');
 
