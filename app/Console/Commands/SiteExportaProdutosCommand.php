@@ -47,6 +47,7 @@ class SiteExportaProdutosCommand extends Command
      */
     public function handle()
     {
+        /*
         $i = new IntegracaoOpenCart(true);
         $i->token = '230f09725c442eaf40405c0c7995912ac91611bc';
         //$i->getToken();
@@ -54,7 +55,13 @@ class SiteExportaProdutosCommand extends Command
         //$i->sincronizaMarcas();
         //$i->sincronizaSecoes(1, true);
         //$i->sincronizaSecoes();
-        $i->sincronizaProdutos(793, true);
+        $i->sincronizaProdutos([2224, 557]);
+         * 
+         */
+        
+        //IntegracaoOpenCart::sincronizaProdutos(2901);
+        //IntegracaoOpenCart::sincronizaProdutos(559);
+        IntegracaoOpenCart::sincronizaProdutos();
         //
         //dd($i);
         /*

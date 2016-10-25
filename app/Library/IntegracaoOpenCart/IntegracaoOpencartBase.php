@@ -330,11 +330,11 @@ class IntegracaoOpencartBase {
         
     }
     
-    public function getCategory($id = null, $level = 9999999999) 
+    public function getCategory($id = 'all', $level = 9999999999) 
     {
         
         // monta URL
-        if (empty($id)) {
+        if ($id == 'all') {
             $url = $this->url . "index.php?route=rest/category_admin/category&level={$level}";
         } else {
             $url = $this->url . "index.php?route=rest/category_admin/category&id={$id}";
@@ -496,11 +496,11 @@ class IntegracaoOpencartBase {
         
     }
     
-    public function getProductOption($id = null, $limit = 999999999, $page = 0)
+    public function getProductOption($id = 'all', $limit = 999999999, $page = 0)
     {
         
         // monta URL
-        if (!empty($id)) {
+        if ($id == 'all') {
             $url = $this->url . "index.php?route=rest/option_admin/option&id=$id";
         } else {
             $url = $this->url . "index.php?route=rest/option_admin/option&limit=$limit&page=$page";
@@ -684,13 +684,13 @@ class IntegracaoOpencartBase {
         
     }
     
-    public function getProduct($id = null, $sku = null)
+    public function getProduct($id = 'all', $sku = 'all')
     {
         
         // monta URL
-        if (!empty($id)) {
+        if ($id != 'all') {
             $url = $this->url . "index.php?route=rest/product_admin/products&id=$id";
-        } elseif (!empty($sku)) {
+        } elseif ($sku != 'all') {
             $url = $this->url . "index.php?route=rest/product_admin/getproductbysku&sku=$sku";
         } else {
             $url = $this->url . "index.php?route=rest/product_admin/products";

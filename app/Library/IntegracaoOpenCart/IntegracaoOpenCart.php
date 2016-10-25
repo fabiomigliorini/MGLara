@@ -3,6 +3,7 @@
 namespace MGLara\Library\IntegracaoOpenCart;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 use MGLara\Library\IntegracaoOpenCart\IntegracaoOpencartBase;
 use MGLara\Models\Marca;
@@ -38,6 +39,23 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
         return sizeof($this->manufacturers);
     }
     
+    public function buscaSecoesOpenCart ($id = 'all') 
+    {
+        if (!$categories = $this->getCategory($id)) {
+            return false;
+        }
+        foreach ($categories as $id => $category) {
+            $this->categories[$id] = $category;
+        }
+        return sizeof($categories);
+    }
+    
+    public function buscaProdutosOpenCart ($product_id = 'all', $sku = 'all', $option_id = 'all')
+    {
+        $this->productOptions = $this->getProductOption($option_id);
+        $this->products = $this->getProduct($product_id, $sku);
+    }
+    
     /**
      * Exclui marcas do opencart que nao estao na listagem de 'manufacturersUpdated'
      * @return boolean
@@ -55,40 +73,54 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
         }
         return $retorno;
     }
+    
+    public function excluiSecoesExcedentes() 
+    {
+        $retorno = true;
+        foreach ($this->categories as $id => $category) {
+            if (!isset($this->categoriesUpdated[$id])) {
+                if (!$this->deleteCategory($id)) {
+                    Log::error (class_basename($this) . " - Erro ao excluir Categoria #$id excedente - $this->response");
+                    $retorno = false;
+                }
+            }
+        }
+        return $retorno;
+    }
+
+    public function excluiVariacoesExcedentes() 
+    {
+        $retorno = true;
+        if (!is_array($this->productOptions)) {
+            return $retorno;
+        }
+        foreach ($this->productOptions as $id => $option) {
+            if (!isset($this->productOptionsUpdated[$id])) {
+                if (!$this->deleteProductOption($id)) {
+                    Log::error (class_basename($this) . " - Erro ao excluir Variacao $id excedente - $this->response");
+                    $retorno = false;
+                }
+            }
+        }
+        return $retorno;
+    }
 
     /**
      * 
      * @param type $codmarca
-     * @param type $excluir_excedentes
      */
-    public function sincronizaMarcas ($codmarca = null, $excluir_excedentes = null) 
+    public function exportaMarcas ($marcas)
     {
-        // Busca Marcas no OpenCart
-        if (empty($this->manufacturers)) {
-            $this->buscaMarcasOpenCart();
-        }
-        
-        // Se não passou marca por parametro, percorre todas marcas do banco
-        if (empty($codmarca)) {
-            $marcas = Marca::whereNull('inativo')->get();
-        // Senao pega Marca Especifica
-        } else {
-            // Caso tenha vindo somente um codigo, transforma em array
-            if (!is_array($codmarca)) {
-                $codmarca = [$codmarca];
-            }
-            // procura as marcas com o codigo
-            $marcas = Marca::whereIn('codmarca', $codmarca)->get();
-        }
 
-        // por padrao exclui marcas excedentes somente em caso de sincronizacao completa
-        if ($excluir_excedentes === null) {
-            $excluir_excedentes = empty($codmarca)?true:false;
-        }
-        
         $retorno = true;
+        
         // Percorre todas as marcas
         foreach ($marcas as $marca) {
+            
+            // Caso marca ja tenha sido atualizada, continua
+            if (isset($this->manufacturersUpdated[$marca->codopencart])) {
+                continue;
+            }
             
             // Se ja existe Marca atualiza
             if (isset($this->manufacturers[$marca->codopencart])) {
@@ -138,80 +170,22 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
             $this->manufacturersUpdated[$marca->codopencart] = $marca;
         }
         
-        // chama exclusao de excedentes
-        if ($excluir_excedentes) {
-            if (!$this->excluiMarcasExcedentes()) {
-                $retorno = false;                
-            }
-        }
-        
         return $retorno;
             
     }
     
-    public function excluiSecoesExcedentes() 
+    public function exportaCategorias ($secoes, $familias, $grupos, $subgrupos) 
     {
-        $retorno = true;
-        foreach ($this->categories as $id => $category) {
-            if (!isset($this->categoriesUpdated[$id])) {
-                if (!$this->deleteCategory($id)) {
-                    Log::error (class_basename($this) . " - Erro ao excluir Categoria #$id excedente - $this->response");
-                    $retorno = false;
-                }
-            }
-        }
-        return $retorno;
-    }
-    
-    public function buscaSecoesOpenCart ($id = null) 
-    {
-        if (!$categories = $this->getCategory($id)) {
-            return false;
-        }
-        foreach ($categories as $id => $category) {
-            $this->categories[$id] = $category;
-        }
-        return sizeof($categories);
-    }
-    
-    public function sincronizaSecoes ($codsubgrupo = null, $excluir_excedentes = null) 
-    {
-        if (empty($codsubgrupo)) {
-            $secoes = SecaoProduto::orderBy('codsecaoproduto')->get();
-            $familias = FamiliaProduto::orderBy('codfamiliaproduto')->get();
-            $grupos = GrupoProduto::orderBy('codgrupoproduto')->get();
-            $subgrupos = SubGrupoProduto::orderBy('codsubgrupoproduto')->get();
-            $this->buscaSecoesOpenCart();
-        } else {
-            $subgrupos = SubGrupoProduto::where('codsubgrupoproduto', $codsubgrupo)->get();
-            $grupos = collect([$subgrupos[0]->GrupoProduto]);
-            $familias = collect([$grupos[0]->FamiliaProduto]);
-            $secoes = collect([$familias[0]->SecaoProduto]);
-            
-            if (!empty($secoes[0]->codopencart)) {
-                $this->buscaSecoesOpenCart($secoes[0]->codopencart);
-            }
-            if (!empty($familias[0]->codopencart)) {
-                $this->buscaSecoesOpenCart($familias[0]->codopencart);
-            }
-            if (!empty($grupos[0]->codopencart)) {
-                $this->buscaSecoesOpenCart($grupos[0]->codopencart);
-            }
-            if (!empty($subgrupos[0]->codopencart)) {
-                $this->buscaSecoesOpenCart($subgrupos[0]->codopencart);
-            }
-        }
-        
-        // por padrao exclui categorias excedentes somente em caso de sincronizacao completa
-        if ($excluir_excedentes === null) {
-            $excluir_excedentes = empty($codmarca)?true:false;
-        }
         
         $retorno = true;
         
         // Atualiza ou Cria Secoes
         foreach ($secoes as $secao) {
-            
+                        
+            // Caso secao ja tenha sido atualizada, continua
+            if (isset($this->categoriesUpdated[$secao->codopencart])) {
+                continue;
+            }
             
             // Se ja existe Marca atualiza
             if (isset($this->categories[$secao->codopencart])) {
@@ -245,7 +219,12 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
         
         // Atualiza ou Cria Familias
         foreach ($familias as $familia) {
-            
+
+            // Caso familia ja tenha sido atualizada, continua
+            if (isset($this->categoriesUpdated[$familia->codopencart])) {
+                continue;
+            }
+                        
             // recarrega o modelo para atualizar o parent_id, em caso de recem incluido
             $familia = $familia->fresh();
             
@@ -281,6 +260,11 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
         
         // Atualiza ou Cria Grupos
         foreach ($grupos as $grupo) {
+
+            // Caso grupo ja tenha sido atualizada, continua
+            if (isset($this->categoriesUpdated[$grupo->codopencart])) {
+                continue;
+            }
             
             // recarrega o modelo para atualizar o parent_id, em caso de recem incluido
             $grupo = $grupo->fresh();
@@ -317,6 +301,11 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
         
         // Atualiza ou Cria Grupos
         foreach ($subgrupos as $subgrupo) {
+
+            // Caso subgrupo ja tenha sido atualizada, continua
+            if (isset($this->categoriesUpdated[$subgrupo->codopencart])) {
+                continue;
+            }
             
             // recarrega o modelo para atualizar o parent_id, em caso de recem incluido
             $subgrupo = $subgrupo->fresh();
@@ -351,31 +340,11 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
             
         }
         
-        // chama exclusao de excedentes
-        if ($excluir_excedentes) {
-            if (!$this->excluiSecoesExcedentes()) {
-                $retorno = false;                
-            }
-        }
-        
         return $retorno;
     }
     
-    public function sincronizaProdutos ($codproduto = null, $excluir_excedentes = null)
+    public function exportaProdutos ($produtos)
     {
-        
-        if (empty($codproduto)) {
-            $produtos = Produto::where('site', true)->orderBy('codproduto')->get();
-        } else {
-            $produtos = Produto::where('site', true)->where('codproduto', $codproduto)->orderBy('codproduto')->get();
-        }
-        $this->productOptions = $this->getProductOption();
-        $this->products = $this->getProduct();
-        
-        // por padrao exclui marcas excedentes somente em caso de sincronizacao completa
-        if ($excluir_excedentes === null) {
-            $excluir_excedentes = empty($codproduto)?true:false;
-        }
         
         foreach ($produtos as $produto) {
             
@@ -435,8 +404,6 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                         }
                     }
                     
-                    // Excluir opcoes excedentes
-
                 } else {
 
                     $values = [];
@@ -505,17 +472,18 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
 
             $product_option = [];
             if (sizeof($variacoes) > 1) {
+                $values = [];
                 foreach($variacoes as $pv) {
                     $values[] = [
                         'price' => 0,
                         'price_prefix' => '+',
                         'subtract' => 1,
-			'points' => null,
-			'points_prefix' => null,
-			'weight' => null,
-			'weight_prefix' => null,
+                        'points' => null,
+                        'points_prefix' => null,
+                        'weight' => null,
+                        'weight_prefix' => null,
                         'option_value_id' => $pv->codopencart,
-			'quantity' => null
+                        'quantity' => null
                     ];
                 }
                 $product_option = [[
@@ -527,12 +495,27 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
             }
 
             // TODO: listagem dos produtos relacionados
-            $product_related = [
-                43,
-                42,
-                41
-            ];
+            $sql = "
+                select p_rel.codopencart
+                from tblprodutobarra pb
+                inner join tblnegocioprodutobarra npb on (npb.codprodutobarra = pb.codprodutobarra)
+                inner join tblnegocioprodutobarra npb_rel on (npb_rel.codnegocio = npb.codnegocio)
+                inner join tblprodutobarra pb_rel on (pb_rel.codprodutobarra = npb_rel.codprodutobarra)
+                inner join tblproduto p_rel on (p_rel.codproduto = pb_rel.codproduto)
+                where pb.codproduto = {$produto->codproduto}
+                and pb_rel.codproduto != {$produto->codproduto}
+                and p_rel.codopencart is not null
+                and p_rel.site = true
+                group by p_rel.codopencart
+                order by count(npb_rel.codnegocioprodutobarra) desc
+                limit 10
+            ";
+            $prods_related = DB::select($sql);
             
+            $product_related = [];
+            foreach ($prods_related as $related) {
+                $product_related[] = $related->codopencart;
+            }
             
             $model = $produto->referencia;
             $sku = $produto->codproduto;
@@ -638,30 +621,47 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                 
         }
         
-        // chama exclusao de excedentes
-        if ($excluir_excedentes) {
-            if (!$this->excluiVariacoesExcedentes()) {
-                $retorno = false;                
-            }
+    }
+    
+    public static function sincronizaProdutos ($codproduto = 'all', $excluir_excedentes = 'auto')
+    {
+        
+        $qryProdutos = Produto::where('site', true)->orderBy('codproduto');
+        
+        if (is_numeric($codproduto)) {
+            $produtos = $qryProdutos->where('codproduto', $codproduto)->get();
+        } else {
+            $produtos = $qryProdutos->get();            
         }
         
-    }
-
-    public function excluiVariacoesExcedentes() 
-    {
-        $retorno = true;
-        if (!is_array($this->productOptions)) {
-            return $retorno;
+        $oc = new IntegracaoOpenCart(true);
+        
+        $oc->getToken();
+        $oc->buscaMarcasOpenCart();
+        $oc->buscaSecoesOpenCart();
+        $oc->buscaProdutosOpenCart();
+        
+        foreach ($produtos as $produto) {
+            $oc->exportaMarcas([$produto->Marca]);
+            $oc->exportaCategorias(
+                [$produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto], 
+                [$produto->SubGrupoProduto->GrupoProduto->FamiliaProduto], 
+                [$produto->SubGrupoProduto->GrupoProduto], 
+                [$produto->SubGrupoProduto]
+            );
         }
-        foreach ($this->productOptions as $id => $option) {
-            if (!isset($this->productOptionsUpdated[$id])) {
-                if (!$this->deleteProductOption($id)) {
-                    Log::error (class_basename($this) . " - Erro ao excluir Variacao $id excedente - $this->response");
-                    $retorno = false;
-                }
-            }
+        
+        $oc->exportaProdutos($produtos);
+        
+        $excluir_excedentes = ($codproduto == 'all')?true:false;
+        
+        if ($excluir_excedentes == true) {
+            $this->excluiMarcasExcedentes();
+            $this->excluiSecoesExcedentes();
+            $this->excluiVariacoesExcedentes();
+            //$this->excluiProdutosExcedentes();
         }
-        return $retorno;
+        
     }
     
 }
