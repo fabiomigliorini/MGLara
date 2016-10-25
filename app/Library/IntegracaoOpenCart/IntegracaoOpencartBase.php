@@ -684,7 +684,7 @@ class IntegracaoOpencartBase {
         
     }
     
-    public function getProduct($id = 'all', $sku = 'all')
+    public function getProduct($id = 'all', $sku = 'all', $limit = 9999999999)
     {
         
         // monta URL
@@ -693,7 +693,7 @@ class IntegracaoOpencartBase {
         } elseif ($sku != 'all') {
             $url = $this->url . "index.php?route=rest/product_admin/getproductbysku&sku=$sku";
         } else {
-            $url = $this->url . "index.php?route=rest/product_admin/products";
+            $url = $this->url . "index.php?route=rest/product_admin/products&limit={$limit}";
         }
         
         // aborta se falhou na chamada get 

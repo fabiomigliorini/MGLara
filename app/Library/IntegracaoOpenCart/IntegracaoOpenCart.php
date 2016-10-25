@@ -33,6 +33,8 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
      */
     public function buscaMarcasOpenCart () 
     {
+        Log::info (class_basename($this) . " - Buscando Marcas OpenCart");
+            
         if (!$this->manufacturers = $this->getManufacturer()) {
             return false;
         }
@@ -41,6 +43,8 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
     
     public function buscaSecoesOpenCart ($id = 'all') 
     {
+        Log::info (class_basename($this) . " - Buscando Secoes OpenCart");
+            
         if (!$categories = $this->getCategory($id)) {
             return false;
         }
@@ -52,7 +56,10 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
     
     public function buscaProdutosOpenCart ($product_id = 'all', $sku = 'all', $option_id = 'all')
     {
+        Log::info (class_basename($this) . " - Buscando Opcoes de Produtos OpenCart");
         $this->productOptions = $this->getProductOption($option_id);
+        
+        Log::info (class_basename($this) . " - Buscando Produtos OpenCart");
         $this->products = $this->getProduct($product_id, $sku);
     }
     
@@ -122,6 +129,8 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                 continue;
             }
             
+            Log::info (class_basename($this) . " - Exportando Marca #$marca->codmarca - $marca->marca ");
+            
             // Se ja existe Marca atualiza
             if (isset($this->manufacturers[$marca->codopencart])) {
                 if (!$this->updateManufacturer($marca->codopencart, $marca->marca, $marca->marca, 1)) {
@@ -181,11 +190,13 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
         
         // Atualiza ou Cria Secoes
         foreach ($secoes as $secao) {
-                        
+
             // Caso secao ja tenha sido atualizada, continua
             if (isset($this->categoriesUpdated[$secao->codopencart])) {
                 continue;
             }
+            
+            Log::info (class_basename($this) . " - Exportando Secao #$secao->codsecaoproduto - $secao->secaoproduto ");
             
             // Se ja existe Marca atualiza
             if (isset($this->categories[$secao->codopencart])) {
@@ -224,6 +235,9 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
             if (isset($this->categoriesUpdated[$familia->codopencart])) {
                 continue;
             }
+            
+            Log::info (class_basename($this) . " - Exportando Familia #$familia->codfamiliaproduto - $familia->familiaproduto ");
+            
                         
             // recarrega o modelo para atualizar o parent_id, em caso de recem incluido
             $familia = $familia->fresh();
@@ -266,6 +280,8 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                 continue;
             }
             
+            Log::info (class_basename($this) . " - Exportando Grupo #$grupo->codgrupoproduto - $grupo->grupoproduto ");
+            
             // recarrega o modelo para atualizar o parent_id, em caso de recem incluido
             $grupo = $grupo->fresh();
             
@@ -307,6 +323,8 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                 continue;
             }
             
+            Log::info (class_basename($this) . " - Exportando SubGrupo #$subgrupo->codsubgrupoproduto - $subgrupo->subgrupoproduto ");
+            
             // recarrega o modelo para atualizar o parent_id, em caso de recem incluido
             $subgrupo = $subgrupo->fresh();
             
@@ -347,6 +365,25 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
     {
         
         foreach ($produtos as $produto) {
+            
+            Log::info (class_basename($this) . " - Exportando Produto #$produto->codproduto - $produto->produto ");
+            
+            $produto = $produto->fresh();
+            
+            if (!isset($this->manufacturersUpdated[$produto->Marca->codopencart])) {
+                $this->exportaMarcas([$produto->Marca]);
+            }
+            
+            if (!isset($this->categoriesUpdated[$produto->SubGrupoProduto->codopencart])) {
+                $this->exportaCategorias(
+                    [$produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto], 
+                    [$produto->SubGrupoProduto->GrupoProduto->FamiliaProduto], 
+                    [$produto->SubGrupoProduto->GrupoProduto], 
+                    [$produto->SubGrupoProduto]
+                );
+            }
+            
+            $produto = $produto->fresh();
             
             // Atualiza Variacoes
             $variacoes = $produto->ProdutoVariacaoS()->orderBy('codprodutovariacao')->get();
@@ -508,7 +545,7 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                 and p_rel.site = true
                 group by p_rel.codopencart
                 order by count(npb_rel.codnegocioprodutobarra) desc
-                limit 10
+                limit 3
             ";
             $prods_related = DB::select($sql);
             
@@ -625,6 +662,7 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
     
     public static function sincronizaProdutos ($codproduto = 'all', $excluir_excedentes = 'auto')
     {
+        Log::info ("Inicio Sincronizacao de Produtos OpenCart ($codproduto)");
         
         $qryProdutos = Produto::where('site', true)->orderBy('codproduto');
         
@@ -634,33 +672,25 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
             $produtos = $qryProdutos->get();            
         }
         
-        $oc = new IntegracaoOpenCart(true);
+        $oc = new IntegracaoOpenCart();
         
         $oc->getToken();
         $oc->buscaMarcasOpenCart();
         $oc->buscaSecoesOpenCart();
         $oc->buscaProdutosOpenCart();
         
-        foreach ($produtos as $produto) {
-            $oc->exportaMarcas([$produto->Marca]);
-            $oc->exportaCategorias(
-                [$produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto], 
-                [$produto->SubGrupoProduto->GrupoProduto->FamiliaProduto], 
-                [$produto->SubGrupoProduto->GrupoProduto], 
-                [$produto->SubGrupoProduto]
-            );
-        }
-        
         $oc->exportaProdutos($produtos);
         
         $excluir_excedentes = ($codproduto == 'all')?true:false;
         
         if ($excluir_excedentes == true) {
-            $this->excluiMarcasExcedentes();
-            $this->excluiSecoesExcedentes();
-            $this->excluiVariacoesExcedentes();
+            $oc->excluiMarcasExcedentes();
+            $oc->excluiSecoesExcedentes();
+            $oc->excluiVariacoesExcedentes();
             //$this->excluiProdutosExcedentes();
         }
+        
+        Log::info ("Final Sincronizacao de Produtos OpenCart");
         
     }
     
