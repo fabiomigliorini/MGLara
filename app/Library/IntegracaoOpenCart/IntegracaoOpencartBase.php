@@ -89,6 +89,7 @@ class IntegracaoOpencartBase {
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $http_header);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 90);
 
         // Executa
         $this->response = curl_exec($ch);
@@ -164,11 +165,15 @@ class IntegracaoOpencartBase {
         return $return;
     }
     
-    public function getManufacturer () 
+    public function getManufacturer ($id = 'all', $limit = 9999999999) 
     {
 
         // monta URL
-        $url = $this->url . 'index.php?route=rest/manufacturer_admin/manufacturer&limit=10000000';
+        if ($id == 'all') {
+            $url = $this->url . "index.php?route=rest/manufacturer_admin/manufacturer&limit={$limit}";
+        } else {
+            $url = $this->url . "index.php?route=rest/manufacturer_admin/manufacturer&id={$id}";
+        }
         
         // aborta se falhou na chamada get 
         if (!$this->get($url)) {
@@ -190,13 +195,14 @@ class IntegracaoOpencartBase {
         
     }
     
-    public function updateManufacturer ($id, $name, $keyword, $sort_order) 
+    public function updateManufacturer ($id, $name, $keyword, $sort_order, $image) 
     {
         // monta Array com dados
         $data = [
             'name' => $name,
             'keyword' => $keyword,
             'sort_order'=> $sort_order,
+            'image'=> $image,
         ];
 
         // monta URL
@@ -217,13 +223,14 @@ class IntegracaoOpencartBase {
         
     }
     
-    public function createManufacturer ($name, $keyword, $sort_order) 
+    public function createManufacturer ($name, $keyword, $sort_order, $image) 
     {
         // monta Array com dados
         $data = [
             'name' => $name,
             'keyword' => $keyword,
             'sort_order'=> $sort_order,
+            'image'=> $image,
         ];
 
         // monta URL
@@ -277,6 +284,7 @@ class IntegracaoOpencartBase {
         
     }
     
+    /*
     public function uploadManufacturerImage ($id, $image_path) {
                 
         // monta Array com dados
@@ -306,6 +314,7 @@ class IntegracaoOpencartBase {
         return $this->responseObject->success;
         
     }
+    */
     
     public function parseCategories($categories, $parent_id = null, &$return = [])
     {
@@ -498,12 +507,12 @@ class IntegracaoOpencartBase {
     
     public function getProductOption($id = 'all', $limit = 999999999, $page = 0)
     {
-        
+     
         // monta URL
         if ($id == 'all') {
-            $url = $this->url . "index.php?route=rest/option_admin/option&id=$id";
-        } else {
             $url = $this->url . "index.php?route=rest/option_admin/option&limit=$limit&page=$page";
+        } else {
+            $url = $this->url . "index.php?route=rest/option_admin/option&id=$id";
         }
         
         // aborta se falhou na chamada get 
@@ -747,6 +756,8 @@ class IntegracaoOpencartBase {
             $status,
             $ean,
             $stock_status_id,
+            $image,
+            $other_images,
             $subtract,
             $product_category,
             $name,
@@ -773,11 +784,8 @@ class IntegracaoOpencartBase {
             'status' => $status, // 1 - Ativo / 0 - Inativo
             'ean' => $ean,
             'stock_status_id' => $stock_status_id, // Pre Order
-            //'image' => '', 
-            //'other_images' => [
-            //    '',
-            //    ''
-            //], 
+            'image' => $image, 
+            'other_images' => $other_images,
             'subtract' => $subtract,
             'product_store' => [
                 '0',
@@ -831,6 +839,8 @@ class IntegracaoOpencartBase {
             $status,
             $ean,
             $stock_status_id,
+            $image,
+            $other_images,
             $subtract,
             $product_category,
             $name,
@@ -856,11 +866,8 @@ class IntegracaoOpencartBase {
             'status' => $status, // 1 - Ativo / 0 - Inativo
             'ean' => $ean,
             'stock_status_id' => $stock_status_id, // Pre Order
-            //'image' => '', 
-            //'other_images' => [
-            //    '',
-            //    ''
-            //], 
+            'image' => $image, 
+            'other_images' => $other_images,
             'subtract' => $subtract,
             'product_store' => [
                 '0',
@@ -896,5 +903,39 @@ class IntegracaoOpencartBase {
         return $this->responseObject->success;
     }
     
+    /*
+    public function uploadProductImage ($id, $image_path, $other = false) {
+                
+        // monta Array com dados
+        $cfile = curl_file_create($image_path, mime_content_type($image_path), $image_path); 
+        $data = array('file' => $cfile);
+        
+        // monta URL
+        if ($other) {
+            $url = $this->url . "index.php?route=rest/product_admin/productimages&id={$id}&other=1";
+        } else {
+            $url = $this->url . "index.php?route=rest/product_admin/productimages&id={$id}";
+        }
+        
+        // monta Heather com autorizacao
+        $http_header =  [
+            "Authorization: Bearer $this->token"
+        ];
+        
+        // aborta caso erro no post
+        if (!$this->post($url, $data, $http_header, false)) {
+            return false;
+        }
+        
+        // aborta se nao veio variavel de success
+        if (!isset($this->responseObject->success)) {
+            return false;
+        }
+        
+        // retorna o success
+        return $this->responseObject->success;
+        
+    }
+    */
     
 }

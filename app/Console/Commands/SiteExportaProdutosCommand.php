@@ -62,6 +62,8 @@ class SiteExportaProdutosCommand extends Command
         //IntegracaoOpenCart::sincronizaProdutos(2901);
         //IntegracaoOpenCart::sincronizaProdutos(559);
         IntegracaoOpenCart::sincronizaProdutos();
+        //IntegracaoOpenCart::sincronizaProdutos(305848);
+        //IntegracaoOpenCart::sincronizaProdutos(86);
         //
         //dd($i);
         /*

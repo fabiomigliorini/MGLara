@@ -31,11 +31,11 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
      * Busca as marcas do opencart retornando o numero de registros encontrados
      * @return bigint
      */
-    public function buscaMarcasOpenCart () 
+    public function buscaMarcasOpenCart ($id = 'all') 
     {
         Log::info (class_basename($this) . " - Buscando Marcas OpenCart");
             
-        if (!$this->manufacturers = $this->getManufacturer()) {
+        if (!$this->manufacturers = $this->getManufacturer($id)) {
             return false;
         }
         return sizeof($this->manufacturers);
@@ -131,9 +131,14 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
             
             Log::info (class_basename($this) . " - Exportando Marca #$marca->codmarca - $marca->marca ");
             
+            $image = null;
+            if (!empty($marca->codimagem)) {
+                $image = 'imagens/' . $marca->Imagem->observacoes;                
+            }
+            
             // Se ja existe Marca atualiza
             if (isset($this->manufacturers[$marca->codopencart])) {
-                if (!$this->updateManufacturer($marca->codopencart, $marca->marca, $marca->marca, 1)) {
+                if (!$this->updateManufacturer($marca->codopencart, $marca->marca, $marca->marca, 1, $image)) {
                     Log::error (class_basename($this) . " - Erro ao atualizar Marca #$marca->codmarca($marca->codopencart) - $marca->marca ");
                     $retorno = false;
                 }
@@ -141,7 +146,7 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
             } else {
                 
                 // Caso falha na criacao
-                if (!$id = $this->createManufacturer($marca->marca, $marca->marca, 1)) {
+                if (!$id = $this->createManufacturer($marca->marca, $marca->marca, 1, $image)) {
                     
                     // tenta procurar se ja existe mas codigo nao estava gravado no sistema
                     if (isset($this->responseObject->error->keyword) && $this->responseObject->error->keyword == 'SEO keyword already in use!') {
@@ -161,17 +166,6 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                     $marca = $marca->fresh();
                     $marca->codopencart = $id;
                     $marca->save();
-                }
-            }
-            
-            // TODO: logica para saber se precisa atualizar a imagem
-            if (!empty($marca->codimagem)) {
-                $image_path = base_path('public/imagens/'.$marca->Imagem->observacoes);
-                if (file_exists($image_path)) {
-                    if (!$this->uploadManufacturerImage($marca->codopencart, $image_path)) {
-                        Log::error (class_basename($this) . " - Erro ao fazer UPLOAD da imagem #$marca->codmarca - $marca->marca - {$marca->Imagem->observacoes}");
-                        $retorno = false;
-                    }
                 }
             }
             
@@ -520,7 +514,7 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                         'weight' => null,
                         'weight_prefix' => null,
                         'option_value_id' => $pv->codopencart,
-                        'quantity' => null
+                        'quantity' => 1
                     ];
                 }
                 $product_option = [[
@@ -554,11 +548,11 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                 $product_related[] = $related->codopencart;
             }
             
-            $model = $produto->referencia;
-            $sku = $produto->codproduto;
-            $quantity = null;
+            $model = str_pad($produto->referencia, 2, '_', STR_PAD_LEFT);
+            $sku = str_pad($produto->codproduto, 6, '0', STR_PAD_LEFT);
+            $quantity = 1;
             $price = $produto->preco;
-            $keyword = str_pad($produto->codproduto, 6, '0', STR_PAD_LEFT);
+            $keyword = $sku;
             $tax_class_id = null;
             $manufacturer_id = $produto->Marca->codopencart;
             $sort_order = 1;
@@ -581,6 +575,12 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
             $product_option = $product_option;
             $product_related = $product_related;
             
+            $other_images = [];
+            foreach ($produto->ImagemS()->orderBy('codimagem')->get() as $pi) {
+                $other_images[] = 'imagens/'.$pi->observacoes;
+            }
+            $image = array_shift($other_images);
+            
             // Se ja existe produto atualiza
             if (isset($this->products[$produto->codopencart])) {
                
@@ -598,6 +598,8 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                     $status,
                     $ean,
                     $stock_status_id,
+                    $image,
+                    $other_images,
                     $subtract,
                     $product_category,
                     $name,
@@ -629,6 +631,8 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                     $status,
                     $ean,
                     $stock_status_id,
+                    $image,
+                    $other_images,
                     $subtract,
                     $product_category,
                     $name,
@@ -672,12 +676,22 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
             $produtos = $qryProdutos->get();            
         }
         
-        $oc = new IntegracaoOpenCart();
+        $oc = new IntegracaoOpenCart(true);
         
         $oc->getToken();
-        $oc->buscaMarcasOpenCart();
-        $oc->buscaSecoesOpenCart();
-        $oc->buscaProdutosOpenCart();
+        
+        if ($codproduto != 'all') {
+            $oc->buscaMarcasOpenCart($produtos[0]->Marca->codopencart);
+            $oc->buscaProdutosOpenCart($produtos[0]->codopencart, str_pad($produtos[0]->codproduto, 6, '0', STR_PAD_LEFT), $produtos[0]->codopencartvariacao);
+            $oc->buscaSecoesOpenCart($produtos[0]->SubGrupoProduto->codopencart);
+            $oc->buscaSecoesOpenCart($produtos[0]->SubGrupoProduto->GrupoProduto->codopencart);
+            $oc->buscaSecoesOpenCart($produtos[0]->SubGrupoProduto->GrupoProduto->FamiliaProduto->codopencart);
+            $oc->buscaSecoesOpenCart($produtos[0]->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codopencart);
+        } else {
+            $oc->buscaMarcasOpenCart();
+            $oc->buscaSecoesOpenCart();
+            $oc->buscaProdutosOpenCart();
+        }
         
         $oc->exportaProdutos($produtos);
         
