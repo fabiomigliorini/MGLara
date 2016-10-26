@@ -24,7 +24,6 @@ use MGLara\Models\ProdutoHistoricoPreco;
 
 class ProdutoController extends Controller
 {
-    
     public function __construct()
     {
         $this->datas = [];
@@ -71,7 +70,6 @@ class ProdutoController extends Controller
         //dd(DB::getQueryLog());
         
         return view('produto.index', compact('model'));
-        
     }
 
     /**

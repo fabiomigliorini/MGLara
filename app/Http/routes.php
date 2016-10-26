@@ -174,6 +174,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('familia-produto','FamiliaProdutoController');
 
     /* Imagem */
+    Route::resource('imagem/{id}/delete','ImagemController@delete');
     Route::resource('imagem/produto/{id}/delete','ImagemController@produtoDelete');
     Route::post('imagem/produtostore/{id}','ImagemController@produtoStore');
     //Route::resource('imagem/produto-imagens','ImagemController@produtoImagens');

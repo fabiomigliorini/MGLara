@@ -49,6 +49,7 @@
             <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
         </a>
         <span class="caption simple-caption">
+            <a href="{{ url("/imagem/$model->codgrupoproduto/delete/?model=GrupoProduto&imagem={$model->Imagem->codimagem}") }}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-trash"></i> Excluir</a>          
             <a href="{{ url("/imagem/edit?id=$model->codgrupoproduto&model=GrupoProduto") }}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
         </span>        
         @endif
