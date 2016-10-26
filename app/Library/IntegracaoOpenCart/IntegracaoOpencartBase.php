@@ -89,6 +89,7 @@ class IntegracaoOpencartBase {
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $http_header);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 90);
 
         // Executa
         $this->response = curl_exec($ch);
@@ -164,11 +165,15 @@ class IntegracaoOpencartBase {
         return $return;
     }
     
-    public function getManufacturer () 
+    public function getManufacturer ($id = 'all', $limit = 9999999999) 
     {
 
         // monta URL
-        $url = $this->url . 'index.php?route=rest/manufacturer_admin/manufacturer&limit=10000000';
+        if ($id == 'all') {
+            $url = $this->url . "index.php?route=rest/manufacturer_admin/manufacturer&limit={$limit}";
+        } else {
+            $url = $this->url . "index.php?route=rest/manufacturer_admin/manufacturer&id={$id}";
+        }
         
         // aborta se falhou na chamada get 
         if (!$this->get($url)) {
@@ -190,13 +195,14 @@ class IntegracaoOpencartBase {
         
     }
     
-    public function updateManufacturer ($id, $name, $keyword, $sort_order) 
+    public function updateManufacturer ($id, $name, $keyword, $sort_order, $image) 
     {
         // monta Array com dados
         $data = [
             'name' => $name,
             'keyword' => $keyword,
             'sort_order'=> $sort_order,
+            'image'=> $image,
         ];
 
         // monta URL
@@ -217,13 +223,14 @@ class IntegracaoOpencartBase {
         
     }
     
-    public function createManufacturer ($name, $keyword, $sort_order) 
+    public function createManufacturer ($name, $keyword, $sort_order, $image) 
     {
         // monta Array com dados
         $data = [
             'name' => $name,
             'keyword' => $keyword,
             'sort_order'=> $sort_order,
+            'image'=> $image,
         ];
 
         // monta URL
@@ -277,6 +284,7 @@ class IntegracaoOpencartBase {
         
     }
     
+    /*
     public function uploadManufacturerImage ($id, $image_path) {
                 
         // monta Array com dados
@@ -306,6 +314,7 @@ class IntegracaoOpencartBase {
         return $this->responseObject->success;
         
     }
+    */
     
     public function parseCategories($categories, $parent_id = null, &$return = [])
     {
@@ -330,11 +339,11 @@ class IntegracaoOpencartBase {
         
     }
     
-    public function getCategory($id = null, $level = 9999999999) 
+    public function getCategory($id = 'all', $level = 9999999999) 
     {
         
         // monta URL
-        if (empty($id)) {
+        if ($id == 'all') {
             $url = $this->url . "index.php?route=rest/category_admin/category&level={$level}";
         } else {
             $url = $this->url . "index.php?route=rest/category_admin/category&id={$id}";
@@ -362,6 +371,7 @@ class IntegracaoOpencartBase {
     
     public function updateCategory ($id, $sort_order, $parent_id, $top, $column, $status, $name, $description, $meta_title, $meta_description, $meta_keyword) 
     {
+        
         // monta Array com dados
         $data = [
             'sort_order' => $sort_order,
@@ -472,5 +482,460 @@ class IntegracaoOpencartBase {
         return $this->responseObject->success;
         
     }
+    
+    public function parseProductOptions($options)
+    {
+        $return = [];
+        
+        if (isset($options->option_id)) {
+            $options = [$options];
+        }
+        
+        // Transforma a resposta dos Produtos, deixando o ID como chave do array
+        foreach ($options as $key => $option) {
+            $values = [];
+            foreach ($option->option_values as $key => $value) {
+                $values[$value->option_value_id] = $value;
+            }
+            $option->option_values = $values;
+            $return[$option->option_id] = $option;
+        }
+        
+        return $return;
+        
+    }
+    
+    public function getProductOption($id = 'all', $limit = 999999999, $page = 0)
+    {
+     
+        // monta URL
+        if ($id == 'all') {
+            $url = $this->url . "index.php?route=rest/option_admin/option&limit=$limit&page=$page";
+        } else {
+            $url = $this->url . "index.php?route=rest/option_admin/option&id=$id";
+        }
+        
+        // aborta se falhou na chamada get 
+        if (!$this->get($url)) {
+            return false;
+        }
+        
+        // aborta se nao retornou sucesso
+        if (!$this->responseObject->success) {
+            return false;
+        }
+        
+        // aborta se nao veio array com dados
+        if (!isset($this->responseObject->data)) {
+            return false;
+        }
+        
+        // retorna array de categorias
+        return $this->parseProductOptions($this->responseObject->data);
+        
+    }
+    
+    public function createProductOption ($sort_order, $type, $name, Array $option_values) 
+    {
+        // monta Array com dados
+        $data = [
+            'sort_order' => $sort_order,
+            'type' => $type,
+            'option_description' => [[
+                'name'=> $name,
+                'language_id'=> $this->languagePTBR,
+            ]],
+            'option_value'=> $option_values
+        ];
+        
+        // monta URL
+        $url = $this->url . 'index.php?route=rest/option_admin/option';
+
+        // aborta caso erro no post
+        if (!$this->post($url, $data)) {
+            return false;
+        }
+        
+        // aborta se nao veio variavel de success
+        if (!isset($this->responseObject->success)) {
+            return false;
+        }
+        
+        // aborta se nao retornou success
+        if (!$this->responseObject->success) {
+            return false;
+        }
+        
+        // retorna o id
+        return $this->responseObject->data->option_id;
+        
+    }
+    
+    public function deleteProductOption ($ids)
+    {
+        
+        // se passou somente um id, transforma em array
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        
+        // monta Array com dados
+        $data = ['options' => $ids];
+
+        // monta URL
+        $url = $this->url . 'index.php?route=rest/option_admin/option';
+            
+        // aborta caso erro no delete
+        if (!$this->delete($url, $data)) {
+            return false;
+        }
+        
+        // aborta se nao veio variavel de success
+        if (!isset($this->responseObject->success)) {
+            return false;
+        }
+        
+        // retorna o success
+        return $this->responseObject->success;
+        
+    }
+    
+    public function updateProductOptionValue ($id, $sort_order, $name)
+    {
+        // monta Array com dados
+        $data = [
+            'sort_order' => $sort_order,
+            'image' => '',
+            'option_value_description' => [[
+                'language_id' => $this->languagePTBR,
+                'name' => $name
+            ]]
+        ];
+
+        // monta URL
+        $url = $this->url . "index.php?route=rest/option_value_admin/optionvalue&id={$id}";
+
+        // aborta caso erro no put
+        if (!$this->put($url, $data)) {
+            return false;
+        }
+        
+        // aborta se nao veio variavel de success
+        if (!isset($this->responseObject->success)) {
+            return false;
+        }
+        
+        // retorna o success
+        return $this->responseObject->success;
+    }
+    
+    public function createProductOptionValue ($option_id, $sort_order, $name)
+    {
+        // monta Array com dados
+        $data = [
+            'sort_order' => $sort_order,
+            'image' => '',
+            'option_value_description' => [[
+                'language_id' => $this->languagePTBR,
+                'name' => $name
+            ]]
+        ];
+        
+        // monta URL
+        $url = $this->url . "index.php?route=rest/option_value_admin/optionvalue&id={$option_id}";
+
+        // aborta caso erro no post
+        if (!$this->post($url, $data)) {
+            return false;
+        }
+        
+        // aborta se nao veio variavel de success
+        if (!isset($this->responseObject->success)) {
+            return false;
+        }
+        
+        // aborta se nao retornou success
+        if (!$this->responseObject->success) {
+            return false;
+        }
+        
+        // retorna o id
+        return $this->responseObject->data->option_value_id;
+        
+    }
+    
+    public function deleteProductOptionValue ($ids)
+    {
+        
+        // se passou somente um id, transforma em array
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        
+        // monta Array com dados
+        $data = ['option_values' => $ids];
+
+        // monta URL
+        $url = $this->url . 'index.php?route=rest/option_value_admin/optionvalue';
+            
+        // aborta caso erro no delete
+        if (!$this->delete($url, $data)) {
+            return false;
+        }
+        
+        // aborta se nao veio variavel de success
+        if (!isset($this->responseObject->success)) {
+            return false;
+        }
+        
+        // retorna o success
+        return $this->responseObject->success;
+        
+    }
+    
+    public function getProduct($id = 'all', $sku = 'all', $limit = 9999999999)
+    {
+        
+        // monta URL
+        if ($id != 'all') {
+            $url = $this->url . "index.php?route=rest/product_admin/products&id=$id";
+        } elseif ($sku != 'all') {
+            $url = $this->url . "index.php?route=rest/product_admin/getproductbysku&sku=$sku";
+        } else {
+            $url = $this->url . "index.php?route=rest/product_admin/products&limit={$limit}";
+        }
+        
+        // aborta se falhou na chamada get 
+        if (!$this->get($url)) {
+            return false;
+        }
+        
+        // aborta se nao retornou sucesso
+        if (!$this->responseObject->success) {
+            return false;
+        }
+        
+        // aborta se nao veio array com dados
+        if (!isset($this->responseObject->data)) {
+            return false;
+        }
+        
+        // retorna array de categorias
+        return $this->parseProducts($this->responseObject->data);
+        
+    }
+    
+    public function parseProducts($data)
+    {
+        
+        $products = [];
+        
+        if (isset($data->id)) {
+            // Transforma a resposta dos Produtos, deixando o ID como chave do array
+            $products[$data->id] = $data;
+        } else {
+            // Transforma a resposta dos Produtos, deixando o ID como chave do array
+            foreach ($data as $key => $product) {
+                $products[$product->id] = $product;
+            }
+        }
+        
+        return $products;
+        
+    }
+    
+    public function createProduct(
+            $model, 
+            $sku, 
+            $quantity, 
+            $price, 
+            $keyword, 
+            $tax_class_id,
+            $manufacturer_id,
+            $sort_order,
+            $status,
+            $ean,
+            $stock_status_id,
+            $image,
+            $other_images,
+            $subtract,
+            $product_category,
+            $name,
+            $meta_description,
+            $meta_title,
+            $meta_keyword,
+            $description,
+            $tag,
+            $product_option,
+            $product_related
+            )
+    {
+        
+        // monta Array com dados
+        $data = [
+            'model' => $model,
+            'sku' => $sku,
+            'quantity' => $quantity,
+            'price' => $price,
+            'keyword' => $keyword,
+            'tax_class_id' => $tax_class_id,
+            'manufacturer_id' => $manufacturer_id,
+            'sort_order' => $sort_order,
+            'status' => $status, // 1 - Ativo / 0 - Inativo
+            'ean' => $ean,
+            'stock_status_id' => $stock_status_id, // Pre Order
+            'image' => $image, 
+            'other_images' => $other_images,
+            'subtract' => $subtract,
+            'product_store' => [
+                '0',
+            ],
+            'product_category' => $product_category,
+            'product_description' => [[
+                'language_id' => $this->languagePTBR,
+                'name' => $name,
+                'meta_description' => $meta_description,
+                'meta_title' => $meta_title,
+                'meta_keyword' => $meta_keyword,
+                'description' => $description,
+                'tag' => $tag,
+            ]],
+            'product_option' => $product_option,
+            'product_related' => $product_related,
+        ];
+        
+        // monta URL
+        $url = $this->url . 'index.php?route=rest/product_admin/products';
+
+        // aborta caso erro no post
+        if (!$this->post($url, $data)) {
+            return false;
+        }
+        
+        // aborta se nao veio variavel de success
+        if (!isset($this->responseObject->success)) {
+            return false;
+        }
+        
+        // aborta se nao retornou success
+        if (!$this->responseObject->success) {
+            return false;
+        }
+        
+        // retorna o id
+        return $this->responseObject->product_id;
+    }
+    
+    public function updateProduct (
+            $id, 
+            $model, 
+            $sku, 
+            $quantity, 
+            $price, 
+            $keyword, 
+            $tax_class_id,
+            $manufacturer_id,
+            $sort_order,
+            $status,
+            $ean,
+            $stock_status_id,
+            $image,
+            $other_images,
+            $subtract,
+            $product_category,
+            $name,
+            $meta_description,
+            $meta_title,
+            $meta_keyword,
+            $description,
+            $tag,
+            $product_option,
+            $product_related
+            )
+    {
+        // monta Array com dados
+        $data = [
+            'model' => $model,
+            'sku' => $sku,
+            'quantity' => $quantity,
+            'price' => $price,
+            'keyword' => $keyword,
+            'tax_class_id' => $tax_class_id,
+            'manufacturer_id' => $manufacturer_id,
+            'sort_order' => $sort_order,
+            'status' => $status, // 1 - Ativo / 0 - Inativo
+            'ean' => $ean,
+            'stock_status_id' => $stock_status_id, // Pre Order
+            'image' => $image, 
+            'other_images' => $other_images,
+            'subtract' => $subtract,
+            'product_store' => [
+                '0',
+            ],
+            'product_category' => $product_category,
+            'product_description' => [[
+                'language_id' => $this->languagePTBR,
+                'name' => $name,
+                'meta_description' => $meta_description,
+                'meta_title' => $meta_title,
+                'meta_keyword' => $meta_keyword,
+                'description' => $description,
+                'tag' => $tag,
+            ]],
+            'product_option' => $product_option,
+            'product_related' => $product_related,
+        ];
+
+        // monta URL
+        $url = $this->url . "index.php?route=rest/product_admin/products&id={$id}";
+
+        // aborta caso erro no put
+        if (!$this->put($url, $data)) {
+            return false;
+        }
+        
+        // aborta se nao veio variavel de success
+        if (!isset($this->responseObject->success)) {
+            return false;
+        }
+        
+        // retorna o success
+        return $this->responseObject->success;
+    }
+    
+    /*
+    public function uploadProductImage ($id, $image_path, $other = false) {
+                
+        // monta Array com dados
+        $cfile = curl_file_create($image_path, mime_content_type($image_path), $image_path); 
+        $data = array('file' => $cfile);
+        
+        // monta URL
+        if ($other) {
+            $url = $this->url . "index.php?route=rest/product_admin/productimages&id={$id}&other=1";
+        } else {
+            $url = $this->url . "index.php?route=rest/product_admin/productimages&id={$id}";
+        }
+        
+        // monta Heather com autorizacao
+        $http_header =  [
+            "Authorization: Bearer $this->token"
+        ];
+        
+        // aborta caso erro no post
+        if (!$this->post($url, $data, $http_header, false)) {
+            return false;
+        }
+        
+        // aborta se nao veio variavel de success
+        if (!isset($this->responseObject->success)) {
+            return false;
+        }
+        
+        // retorna o success
+        return $this->responseObject->success;
+        
+    }
+    */
     
 }
