@@ -616,10 +616,10 @@ class ProdutoController extends Controller
     {
         try {
             IntegracaoOpenCart::sincronizaProdutos($request->get('id'));
-            $retorno = ['resultado' => true, 'mensagem' => "Produto sincronizado com sucesso!"];
+            $retorno = ['resultado' => true, 'mensagem' => 'Produto sincronizado com sucesso!'];
         } catch (\Exception $e) {
-            $retorno = ['resultado' => false, 'mensagem' => "Erro ao sincronizar produto!", 'exception' => $e];
+            $retorno = ['resultado' => false, 'mensagem' => 'Erro ao sincronizar produto!', 'exception' => $e];
         }
-        return json_encode($retorno);
+        return response()->json($retorno);
     }
 }

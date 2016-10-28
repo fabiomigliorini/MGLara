@@ -558,13 +558,13 @@ $(document).ready(function() {
                 })
                 .done(function (data) {
                     if(data.resultado === true) {
-                        var mensagem = '<strong class="text-danger">Produto sincronizado com sucesso!</strong>';
+                        var mensagem = '<strong class="text-success">'+data.mensagem+'</strong>';
                         bootbox.alert(mensagem);
-                        console.log(data);
+                        console.log(data.resultado);
                     } else {
-                        var mensagem = '<strong class="text-danger">Erro ao sincronizar o produto!</strong>';
+                        var mensagem = '<strong class="text-danger">'+data.mensagem+'</strong>';
                         bootbox.alert(mensagem);
-                        console.log(data);
+                        console.log(data.resultado);
                     }
                 })
                 .fail(function (data) {
