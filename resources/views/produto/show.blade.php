@@ -549,18 +549,20 @@ $(document).ready(function() {
         bootbox.confirm("Tem certeza que deseja sincronizar esse produto", function(result) {
             if (result) {
                 $.ajax({
-                    type: 'POST',
+                    type: 'GET',
                     url: baseUrl + '/produto/sincroniza-produto-open-cart',
                     data: {
-                        _token:$('meta[name="csrf-token"]').attr('content'),
+                        //_token:$('meta[name="csrf-token"]').attr('content'),
                         id:{{ $model->codproduto }}
                     }
                 })
                 .done(function (data) {
-                    if(data.resultado) {
-                        console.log('VERDADEIRO');
+                    if(data.resultado === true) {
+                        var mensagem = '<strong class="text-danger">Produto sincronizado com sucesso!</strong>';
+                        bootbox.alert(mensagem);
+                        console.log(data);
                     } else {
-                        var mensagem = '<strong class="text-danger"> Erro ao sincronizar o produto</strong>';
+                        var mensagem = '<strong class="text-danger">Erro ao sincronizar o produto!</strong>';
                         bootbox.alert(mensagem);
                         console.log(data);
                     }
