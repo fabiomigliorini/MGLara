@@ -69,12 +69,12 @@
     
     <div class="form-group">
         <label for="importado" class="col-sm-3 control-label">{!! Form::label('Importado:') !!}</label>
-        <div class="col-sm-9" id="wrapper-importado">{!! Form::checkbox('importado', null, false,[ 'id'=>'importado', 'data-off-text' => 'Nacional', 'data-on-text' => 'Importado']) !!}</div>
+        <div class="col-sm-9" id="wrapper-importado">{!! Form::checkbox('importado', true, null, ['id'=>'importado', 'data-off-text' => 'Nacional', 'data-on-text' => 'Importado']) !!}</div>
     </div>
 
     <div class="form-group">
         <label for="site" class="col-sm-3 control-label">{!! Form::label('Disponível no Site:') !!}</label>
-        <div class="col-sm-9" id="wrapper-site">{!! Form::checkbox('site', null, null, ['id'=>'site', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+        <div class="col-sm-9" id="wrapper-site">     {!! Form::checkbox('site', true, null, ['id'=>'site', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
     </div>
 
     <div class="form-group">
@@ -200,47 +200,17 @@ $(document).ready(function() {
             }
         });
     });
-    $('#importado').bootstrapSwitch('state', <?php echo ($model->importado == 1 ? 'true' : 'false'); ?>);
-    $('#site').bootstrapSwitch('state', <?php echo ($model->site == 1 ? 'true' : 'false'); ?>);
-    $('input[name="site"]').on('switchChange.bootstrapSwitch', function(event, state) {
-        var valor;
-        if (state === true) {
-          valor = 1;
-        } else {
-          valor = 0;
-        }
-        $('#site').val(valor);
-    });
-    $('input[name="importado"]').on('switchChange.bootstrapSwitch', function(event, state) {
-        var valor;
-        if (state === true) {
-          valor = 1;
-        } else {
-          valor = 0;
-        }
-        $('#importado').val(valor);
-    });
-    $('#inativo').datetimepicker({
-        locale: 'pt-br',
-        format: 'DD/MM/YYYY'
-    });
-    <?php if($model->inativo):?>$('#inativo').val({{ formatadata($model->inativo)}}).change();<?php endif;?>
+    $('#importado').bootstrapSwitch();
+    $('#site').bootstrapSwitch();
     
     $('#preco').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
 
-    if($('#codsecaoproduto').val() == '') {
-        $('#codsecaoproduto').val({{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto or ''}});
-    }
+    @if (!empty($model->codsubgrupoproduto))
+        $('#codsecaoproduto').val({{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto}});
+        $('#codfamiliaproduto').val({{$model->SubGrupoProduto->GrupoProduto->codfamiliaproduto}});
+        $('#codgrupoproduto').val({{ $model->SubGrupoProduto->codgrupoproduto}});
+    @endif
 
-    if($('#codfamiliaproduto').val() == '') {
-        $('#codfamiliaproduto').val({{ $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codfamiliaproduto or '' }});
-    }
-
-    
-    if($('#codgrupoproduto').val() == '') {
-        $('#codgrupoproduto').val({{ $model->SubGrupoProduto->GrupoProduto->codgrupoproduto or '' }});
-    }
-    
     var codproduto = <?php echo (isset($model->codproduto) ? $model->codproduto:'""')?>;
     
     function descricaoProdutoTypeahead(codsubgrupoproduto, codproduto) {

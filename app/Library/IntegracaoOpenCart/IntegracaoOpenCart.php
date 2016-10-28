@@ -676,7 +676,8 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
             $produtos = $qryProdutos->get();            
         }
         
-        $oc = new IntegracaoOpenCart(true);
+        //$oc = new IntegracaoOpenCart(true);
+        $oc = new IntegracaoOpenCart();
         
         $oc->getToken();
         
@@ -705,6 +706,8 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
         }
         
         Log::info ("Final Sincronizacao de Produtos OpenCart");
+        
+        return true;
         
     }
     

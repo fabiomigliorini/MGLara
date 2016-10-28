@@ -197,6 +197,10 @@ class IntegracaoOpencartBase {
     
     public function updateManufacturer ($id, $name, $keyword, $sort_order, $image) 
     {
+        /*
+         * rsync -uvazh --delete /var/www/MGLara/public/imagens/* mgpapelaria@webapp15505.cloud683.configrapp.com:/home/mgpapelaria/mgpapelaria.com.br/www/image/imagens/
+         */
+        
         // monta Array com dados
         $data = [
             'name' => $name,
@@ -283,38 +287,6 @@ class IntegracaoOpencartBase {
         return $this->responseObject->success;
         
     }
-    
-    /*
-    public function uploadManufacturerImage ($id, $image_path) {
-                
-        // monta Array com dados
-        $cfile = curl_file_create($image_path, mime_content_type($image_path), $image_path); 
-        $data = array('file' => $cfile);
-        //dd($data);
-        
-        // monta URL
-        $url = $this->url . "index.php?route=rest/manufacturer_admin/manufacturerimages&id={$id}";
-        
-        // monta Heather com autorizacao
-        $http_header =  [
-            "Authorization: Bearer $this->token"
-        ];
-        
-        // aborta caso erro no post
-        if (!$this->post($url, $data, $http_header, false)) {
-            return false;
-        }
-        
-        // aborta se nao veio variavel de success
-        if (!isset($this->responseObject->success)) {
-            return false;
-        }
-        
-        // retorna o success
-        return $this->responseObject->success;
-        
-    }
-    */
     
     public function parseCategories($categories, $parent_id = null, &$return = [])
     {
@@ -902,40 +874,5 @@ class IntegracaoOpencartBase {
         // retorna o success
         return $this->responseObject->success;
     }
-    
-    /*
-    public function uploadProductImage ($id, $image_path, $other = false) {
-                
-        // monta Array com dados
-        $cfile = curl_file_create($image_path, mime_content_type($image_path), $image_path); 
-        $data = array('file' => $cfile);
-        
-        // monta URL
-        if ($other) {
-            $url = $this->url . "index.php?route=rest/product_admin/productimages&id={$id}&other=1";
-        } else {
-            $url = $this->url . "index.php?route=rest/product_admin/productimages&id={$id}";
-        }
-        
-        // monta Heather com autorizacao
-        $http_header =  [
-            "Authorization: Bearer $this->token"
-        ];
-        
-        // aborta caso erro no post
-        if (!$this->post($url, $data, $http_header, false)) {
-            return false;
-        }
-        
-        // aborta se nao veio variavel de success
-        if (!isset($this->responseObject->success)) {
-            return false;
-        }
-        
-        // retorna o success
-        return $this->responseObject->success;
-        
-    }
-    */
     
 }

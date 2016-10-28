@@ -184,7 +184,7 @@
                     <br>
                     <strong>Divulgado no Site: {{ ($model->site)?'Sim':'Não' }}</strong>
                     <hr>
-                    {{ $model->descricaosite }}
+                    {!! nl2br($model->descricaosite) !!}
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-fiscal">
                     @include('produto.show-ncm')
