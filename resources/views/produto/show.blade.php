@@ -181,7 +181,7 @@
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-site">
-                    <br>
+                    <p><botton class="btn btn-default" id="integracao-open-cart"><i class="glyphicon glyphicon-shopping-cart"></i> Sincronizar</botton></p>                    <br>
                     <strong>Divulgado no Site: {{ ($model->site)?'Sim':'Não' }}</strong>
                     <hr>
                     {{ $model->descricaosite }}
@@ -543,6 +543,35 @@ $(document).ready(function() {
             alert( "Erro ao procurar produto" );
         });
     });
+    
+    $('#integracao-open-cart').click(function (e) {
+        e.preventDefault();
+        bootbox.confirm("Tem certeza que deseja sincronizar esse produto", function(result) {
+            if (result) {
+                $.ajax({
+                    type: 'POST',
+                    url: baseUrl + '/produto/sincroniza-produto-open-cart',
+                    data: {
+                        _token:$('meta[name="csrf-token"]').attr('content'),
+                        id:{{ $model->codproduto }}
+                    }
+                })
+                .done(function (data) {
+                    if(data.resultado) {
+                        console.log('VERDADEIRO');
+                    } else {
+                        var mensagem = '<strong class="text-danger"> Erro ao sincronizar o produto</strong>';
+                        bootbox.alert(mensagem);
+                        console.log(data);
+                    }
+                })
+                .fail(function (data) {
+                    console.log('erro no POST');
+                });                 
+            }
+        }); 
+    });    
+    
 });
 </script>
 @endsection

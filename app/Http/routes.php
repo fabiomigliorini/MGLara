@@ -105,6 +105,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto/descricao','ProdutoController@listagemJsonDescricao');
     Route::resource('produto/popula-secao-produto','ProdutoController@populaSecaoProduto');
     Route::resource('produto/estoque-saldo','ProdutoController@estoqueSaldo');
+    Route::resource('produto/sincroniza-produto-open-cart','ProdutoController@sincronizaProdutoOpenCart');
     Route::resource('produto/inativo','ProdutoController@inativo');
     Route::patch('produto/{id}/transferir-variacao-salvar','ProdutoController@transferirVariacaoSalvar');
     Route::get('produto/{id}/transferir-variacao','ProdutoController@transferirVariacao');

@@ -21,6 +21,7 @@ use MGLara\Models\NegocioProdutoBarra;
 use MGLara\Models\NotaFiscalProdutoBarra;
 use MGLara\Models\TipoProduto;
 use MGLara\Models\ProdutoHistoricoPreco;
+use MGLara\Library\IntegracaoOpenCart\IntegracaoOpenCart;
 
 class ProdutoController extends Controller
 {
@@ -610,5 +611,15 @@ class ProdutoController extends Controller
         
         dd($validator);
     }
-        
+    
+    public function sincronizaProdutoOpenCart(Request $request)
+    {
+        try {
+            IntegracaoOpenCart::sincronizaProdutos($request->get('id'));
+            $retorno = ['resultado' => true, 'mensagem' => "Produto sincronizado com sucesso!"];
+        } catch (\Exception $e) {
+            $retorno = ['resultado' => false, 'mensagem' => "Erro ao sincronizar produto!", 'exception' => $e];
+        }
+        return json_encode($retorno);
+    }
 }
