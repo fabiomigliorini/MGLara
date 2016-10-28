@@ -42,6 +42,26 @@ class ImagemController extends Controller
         return view('imagem.produto', compact('model', 'request'));
     }
     
+    public function delete(Request $request, $id)
+    {
+        try {
+            $Model = '\MGLara\Models\\' . $request->get('model');
+            $model = $Model::find($id);
+            $model->codimagem = null;
+            $model->save();
+            
+            $imagem = Imagem::find($request->get('imagem'));
+            $imagem->inativo = Carbon::now();
+            $imagem->save();
+            
+        Session::flash('flash_delete', 'Imagem deletada!');
+        return Redirect::back();
+        }
+        catch(\Exception $e){
+            return view('errors.fk');
+        }         
+    }
+    
     public function produtoStore(Request $request, $id)
     {
         $model = Produto::find($id);
