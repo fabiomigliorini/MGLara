@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="{{ url('pessoa') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
@@ -9,7 +9,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Alterar Pessoa: {{$model->pessoa}}</h1>
+<ol class="breadcrumb header">Alterar Pessoa: {{$model->pessoa}}</ol>
 <hr>
 <br>
 {!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal', 'id' => 'form-pessoa', 'action' => ['PessoaController@update', $model->codpessoa] ]) !!}

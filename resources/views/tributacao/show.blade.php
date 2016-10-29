@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="{{ url('tributacao') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
@@ -15,7 +15,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">{{ $model->tributacao }}</h1>
+<ol class="breadcrumb header">{{ $model->tributacao }}</ol>
 <hr>
 <div class="row">
   <div class="col-lg-12">

@@ -111,7 +111,7 @@ function divLocalizacao ($arr)
 
 ?>
 
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="{{ url("estoque-saldo-conferencia") }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>
@@ -119,7 +119,7 @@ function divLocalizacao ($arr)
     </div>
 </nav>
 
-<h1>
+<ol class="breadcrumb header">
     {!! 
         titulo(
             $pv->codproduto ,
@@ -130,7 +130,7 @@ function divLocalizacao ($arr)
             6
         ) 
     !!}
-</h1>
+</ol>
 
 <div>
     <a href='{{ url("secao-produto/{$pv->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto}") }}' class=''>

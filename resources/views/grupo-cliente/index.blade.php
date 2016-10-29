@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li>
@@ -9,7 +9,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Grupos de cliente</h1>
+<ol class="breadcrumb header">Grupos de cliente</ol>
 <hr>
 <div class="search-bar">
 {!! Form::model(Request::all(), ['route' => 'grupo-cliente.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'grupo-cliente-search', 'role' => 'search', 'autocomplete' => 'off'])!!}

@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li>
@@ -12,7 +12,7 @@
         </ul>
     </div>
 </nav>
-<h1>
+<ol class="breadcrumb header">
     {!! 
         titulo(
             null,
@@ -23,7 +23,7 @@
             null
         ) 
     !!}    
-</h1>
+</ol>
 <div id="registros">
     <div id="imagens" class="row">
     @foreach($model as $row)

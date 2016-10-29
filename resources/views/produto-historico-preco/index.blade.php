@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li>
@@ -9,11 +9,11 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">{!! titulo(NULL, 'Histórico de Preços', NULL) !!}
+<ol class="breadcrumb header">{!! titulo(NULL, 'Histórico de Preços', NULL) !!}
     <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
         <span class='glyphicon glyphicon-search'></span>
     </a>
- </h1>
+ </ol>
 <div class="clearfix"></div>
 <div class='collapse' id='div-filtro'>
     <div class='well well-sm' style="padding:9px 0">

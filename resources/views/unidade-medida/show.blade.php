@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="{{ url('unidade-medida') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
@@ -15,7 +15,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">{{ $model->unidademedida }}</h1>
+<ol class="breadcrumb header">{{ $model->unidademedida }}</ol>
 <hr>
 <div class="row">
   <div class="col-lg-12">

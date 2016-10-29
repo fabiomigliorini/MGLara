@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
 	<div class="container-fluid"> 
 		<ul class="nav navbar-nav">
 			<li>
@@ -8,7 +8,7 @@
 		</ul>
 	</div>
 </nav>
-<h1 class="header">Exportação Domínio</h1>
+<ol class="breadcrumb header">Exportação Domínio</ol>
 <hr>
 <form class='form-horizontal'>
 

@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<h1 class="header">Enviar imagem</h1>
+<ol class="breadcrumb header">Enviar imagem</ol>
 <hr>
 @include('errors.form_error')
 {!! Form::model($model, [

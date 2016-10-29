@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="<?php echo url('permissao');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
@@ -9,7 +9,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Alterar permissão #{{$model->codpermissao}}</h1>
+<ol class="breadcrumb header">Alterar permissão #{{$model->codpermissao}}</ol>
 <hr>
 <br>
 {!! Form::model($model, ['method' => 'PATCH', 'class' => 'form-horizontal','onsubmit'=> 'onSubmit()','id'=> 'estoque-movimentoForm', 'action' => ['PermissaoController@update', $model->codpermissao] ]) !!}

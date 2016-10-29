@@ -1,20 +1,14 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
-    <div class="container-fluid">
-        <ul class="nav navbar-nav">
-            <li>
-                <a href="<?php echo url('produto/create'); ?>"><span class="glyphicon glyphicon-plus"></span> Novo</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-<h1 class="header">
+<ol class="breadcrumb header">
     {!! titulo(null, 'Produtos', null) !!}
-    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
-        <span class='glyphicon glyphicon-search'></span>
-    </a>
-</h1>
+    <li class='active'>
+        <small>
+            <a href="<?php echo url('produto/create'); ?>"><span class="glyphicon glyphicon-plus"></span></a>
+            <a class="" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro"><span class='glyphicon glyphicon-search'></span></a>
+        </small>
+    </li>
+</ol>
 <div class="clearfix"></div>
 <div class='collapse' id='div-filtro'>
     <div class='well well-sm' style="padding:9px 0">

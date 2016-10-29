@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="#" id="btnBuscaCodProduto"><span class="glyphicon glyphicon-refresh"></span> Recalcular Movimento de Estoque</a></li>            
@@ -30,12 +30,12 @@
 </nav>
 <div class="row">
     <div class="col-md-6">
-        <h1 class="header">
+        <ol class="breadcrumb header">
             <a href="{{ url("grupo-produto/$model->codgrupoproduto") }}">
                 {{ $model->GrupoProduto->grupoproduto }} 
             </a>
             › {{ $model->subgrupoproduto }}
-        </h1>
+        </ol>
     </div>
     <div class="pull-right foto-item-unico">
         @if(empty($model->codimagem))

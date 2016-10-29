@@ -20,7 +20,7 @@ function decideIconeUltimaConferencia($data)
 
 ?>
 
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="{{ url("estoque-movimento/create/$model->codestoquemes") }}"><span class="glyphicon glyphicon-plus"></span> Novo Movimento Manual</a></li>             
@@ -32,7 +32,7 @@ function decideIconeUltimaConferencia($data)
     </div>
 </nav>
 
-<h1 class="header">
+<ol class="breadcrumb header">
     {!!
         titulo(
                 $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto, 
@@ -49,7 +49,7 @@ function decideIconeUltimaConferencia($data)
     <button class="btn pull-right" type="button" data-toggle="collapse" data-target="#div-conferencia-collapse" aria-expanded="false" aria-controls="div-conferencia-collapse">
         <span class='glyphicon {{ decideIconeUltimaConferencia($model->EstoqueSaldo->ultimaconferencia) }}'></span>
     </button>
-</h1>
+</ol>
 <hr>
 
 <small>

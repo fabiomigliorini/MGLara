@@ -1,12 +1,12 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
   <div class="container-fluid"> 
     <ul class="nav navbar-nav">
     </ul>
   </div>
 </nav>
-<h1 class="header">Notas Fiscais</h1>
+<ol class="breadcrumb header">Notas Fiscais</ol>
 <hr>
 <br>
 <div id="registros">

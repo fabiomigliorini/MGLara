@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li>
@@ -9,7 +9,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">Portadores</h1>
+<ol class="breadcrumb header">Portadores</ol>
 <hr>
 <div class="search-bar">
 {!! Form::model(Request::all(), ['route' => 'portador.index', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'portador-search', 'role' => 'search', 'autocomplete' => 'off'])!!}

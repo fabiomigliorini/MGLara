@@ -1,6 +1,7 @@
 @extends('layouts.default')
 @section('content')
 
+        <!--
         <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
 
         <style>
@@ -32,9 +33,9 @@
                 font-size: 96px;
             }
         </style>
- 
         <div class="container">
             <div class="content">
                 <div class="title">Laravel 5</div>
             </div>
         </div>
+        -->

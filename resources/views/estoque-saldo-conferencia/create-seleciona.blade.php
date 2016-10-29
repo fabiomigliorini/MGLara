@@ -1,13 +1,13 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="{{ url("estoque-saldo-conferencia") }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>
         </ul>
     </div>
 </nav>
-<h1 class="header">
+<ol class="breadcrumb header">
     {!! 
     titulo(
         NULL ,
@@ -18,7 +18,7 @@
         NULL
     ) 
 !!}
-</h1>
+</ol>
 <hr>
 {!! Form::model(null, ['method' => 'GET', 'class' => 'form-horizontal', 'id' => 'form-estoque-saldo-conferencia-selecao', 'route' => 'estoque-saldo-conferencia.create']) !!}
 

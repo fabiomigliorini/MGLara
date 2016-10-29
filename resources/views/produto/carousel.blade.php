@@ -1,8 +1,8 @@
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner" role="listbox">
     @foreach($model->ImagemS as $imagem)
-    <div class="item produto-item">
-        <img src="<?php echo URL::asset('public/imagens/'.$imagem->observacoes);?>" class="img-responsive" id="{{$imagem->codimagem}}">
+    <div class="item">
+        <img src="<?php echo URL::asset('public/imagens/'.$imagem->observacoes);?>" id="{{$imagem->codimagem}}">
     </div>
     @endforeach
   </div>

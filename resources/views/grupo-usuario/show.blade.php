@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="<?php echo url('grupo-usuario');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
@@ -12,7 +12,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">
+<ol class="breadcrumb header">
     {!! 
         titulo(
             $model->codgrupousuario,
@@ -23,7 +23,7 @@
     <button class="btn btn-primary pull-right" role="button" data-toggle="collapse" aria-expanded="false" id="expandir">
         <span class='glyphicon glyphicon-resize-full'></span>
     </button>
-</h1>
+</ol>
 @include('includes.autor')
 <?php		 
 $dados = [];		

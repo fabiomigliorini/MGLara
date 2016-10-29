@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="{{ url("grupo-produto/$model->codgrupoproduto") }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
@@ -23,7 +23,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">
+<ol class="breadcrumb header">
     {!! 
         titulo(
             $model->codgrupoproduto,
@@ -55,7 +55,7 @@
         </span>        
         @endif
     </div>
-</h1>
+</ol>
 @include('includes.autor')
 <div class="clearfix"></div>
 <div class='collapse' id='div-filtro'>

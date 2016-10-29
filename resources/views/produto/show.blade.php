@@ -8,375 +8,263 @@
     $naturezaop = [''=>''] + NaturezaOperacao::lists('naturezaoperacao', 'codnaturezaoperacao')->all();
     //dd($model->ProdutoVariacaoS);
 ?>
+<ol class="breadcrumb header">
+    {!! 
+    titulo(
+        $model->codproduto,
+        [
+            url("produto") => 'Produtos',
+            $model->produto,
+        ],
+        $model->inativo,
+        6
+    ) 
+    !!}
+    <li class='active'>
+        <small>
+            <a href="<?php echo url("produto/$model->codproduto/edit");?>" alt="Editar"><span class="glyphicon glyphicon-pencil"></span></a>
+            &nbsp;
+            <a href="<?php echo url("produto/create/?duplicar={$model->codproduto}");?>"><span class="glyphicon glyphicon-duplicate"></span></a>
+            &nbsp;
+            @if(empty($model->inativo))
+            <a href="{{ url('produto/inativo') }}" data-inativar data-codigo="{{ $model->codproduto }}" data-acao="inativar" data-pergunta="Tem certeza que deseja inativar o produto {{ $model->produto }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ban-circle"></span></a>
+            @else
+            <a href="{{ url('produto/inativo') }}" data-inativar data-codigo="{{ $model->codproduto }}" data-acao="ativar" data-pergunta="Tem certeza que deseja ativar o produto {{ $model->produto }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ok-sign"></span></a>
+            @endif
+            &nbsp;
+            <a href="{{ url("produto/$model->codproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o produto '{{ $model->produto }}'?" data-after-delete="location.replace(baseUrl + '/produto');"><i class="glyphicon glyphicon-trash"></i></a>
+        </small>
+    </li>
+</ol>
 
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="<?php echo url('produto');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-plus"></span> Novo <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="<?php echo url('produto/create');?>">Produto</a></li>             
-                    <li><a href="<?php echo url("produto-embalagem/create?codproduto={$model->codproduto}");?>">Embalagem</a></li>             
-                    <li><a href="<?php echo url("produto-variacao/create?codproduto={$model->codproduto}");?>">Variação</a></li>             
-                    <li><a href="<?php echo url("produto-barra/create?codproduto={$model->codproduto}");?>">Código de Barras</a></li>             
-                </ul>
-            </li>
-        
-            <li><a href="<?php echo url("produto/create/?duplicar={$model->codproduto}");?>"><span class="glyphicon glyphicon-duplicate"></span> Duplicar</a></li> 
-            <li><a href="<?php echo url("produto/$model->codproduto/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
-            <li><a href="<?php echo url("produto/$model->codproduto/transferir-variacao");?>"><span class="glyphicon glyphicon-transfer"></span> Transferir Variação</a></li> 
-            <!--
-            <li><a href="<?php echo url("produto/$model->codproduto/juntar-barras");?>"><span class="glyphicon glyphicon-resize-small"></span> Juntar códigosde barra</a></li> 
-            <li><a href="<?php echo url("produto/$model->codproduto/transferir-barras");?>"><span class="glyphicon glyphicon-"></span> Transferir códigos de barra</a></li> 
-            -->
-            <li>
-                @if(empty($model->inativo))
-                <a href="{{ url('produto/inativo') }}" data-inativar data-codigo="{{ $model->codproduto }}" data-acao="inativar" data-pergunta="Tem certeza que deseja inativar o produto {{ $model->produto }}? " data-after-inativar="location.reload()">
-                    <span class="glyphicon glyphicon-ban-circle"></span> Inativar
-                </a>
-                @else
-                <a href="{{ url('produto/inativo') }}" data-inativar data-codigo="{{ $model->codproduto }}" data-acao="ativar" data-pergunta="Tem certeza que deseja ativar o produto {{ $model->produto }}? " data-after-inativar="location.reload()">
-                    <span class="glyphicon glyphicon-ok-sign"></span> Ativar
-                </a>
-                @endif
-            </li> 
-            <li>
-                <a href="{{ url("produto/$model->codproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o produto '{{ $model->produto }}'?" data-after-delete="location.replace(baseUrl + '/produto');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-            </li>
+<br>
+<div class="col-md-6">
+    <div class="pull-right">
+        <a href="{{ url("/imagem/produto/$model->codproduto") }}">
+            Nova Imagem
+            <i class="glyphicon glyphicon-plus"></i> 
+        </a>
+        &nbsp;
+        @if(count ($model->ImagemS) > 0)
+        <a href="{{ url("imagem/produto/$model->codproduto?imagem={$model->ImagemS->first()->codimagem}") }}">
+            <i class="glyphicon glyphicon-pencil"></i> 
+        </a>
+        &nbsp;
+        <a class="btn-delete" href="{{ url("imagem/produto/$model->codproduto/delete?imagem={$model->ImagemS->first()->codimagem}") }}">
+            <i class="glyphicon glyphicon-trash"></i> 
+        </a>
+        @endif
+    </div>
+    <br>
+    <br>
+    @include('produto.carousel')
+    <br>
+    <br>
+    <br>
+</div>
+    
+<div class="col-md-6">
+    <div>
+        <ul class="nav nav-tabs" role="tablist" id='tab-produto'>
+            <li role="presentation" class='active'><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Detalhes</a></li>
+            <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab" data-toggle="tab">Estoque</a></li>
+            <li role="presentation"><a href="#tab-site" aria-controls="profile" role="tab" data-toggle="tab">Site</a></li>
+            <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">NCM</a></li>
+            <li role="presentation"><a href="#tab-negocio" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
+            <li role="presentation"><a href="#tab-notasfiscais" aria-controls="messages" role="tab" data-toggle="tab">Notas Fiscais</a></li>
+            <li role="presentation"><a href="#tab-observacoes" aria-controls="observacoes" role="tab" data-toggle="tab">Observações</a></li>
         </ul>
-    </div>
-</nav>
-<!--
-<div class="row">
-    <div class="col-md-5">
-        {!! Form::model(Request::all(), [
-          'method' => 'POST', 
-          'class' => 'form-inline',
-          'id' => 'produto-busca-barras',
-          'role' => 'search'
-        ])!!}        
-        <div class="form-group" style="width: 100%">
-            <div class="input-group" style="width: 100%">
-                <input type="text" name="" class="form-control text-right" id="barras">
-                <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+        <br>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade in active" id="tab-variacoes">
+                <div class='clearfix'>
+                    <div class='col-md-7'>
+                        <ol class="breadcrumb">
+                            {!! 
+                                titulo(
+                                    NULL, 
+                                    [
+                                        url("secao-produto/{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto}") => $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->secaoproduto,
+                                        url("familia-produto/{$model->SubGrupoProduto->GrupoProduto->codfamiliaproduto}") => $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->familiaproduto,
+                                        url("grupo-produto/{$model->SubGrupoProduto->codgrupoproduto}") => $model->SubGrupoProduto->GrupoProduto->grupoproduto,
+                                        url("sub-grupo-produto/{$model->codsubgrupoproduto}") => $model->SubGrupoProduto->subgrupoproduto,
+                                        url("marca/{$model->codmarca}") => $model->Marca->marca,
+                                        $model->referencia,
+                                    ], 
+                                    NULL) 
+                            !!}
+                        </ol>
+                        <ol class="breadcrumb">
+                            <?php 
+                            $arr = [            
+                                url("tipo-produto/{$model->codtipoproduto}") => $model->TipoProduto->tipoproduto,
+                                url("ncm/{$model->codncm}") => formataNcm($model->Ncm->ncm),
+                                url("tributacao/{$model->codtributacao}") => $model->Tributacao->tributacao,
+                            ];
+
+                            if (!empty($model->codcest))
+                                $arr[url("cest/{$model->codcest}")] = formataCest($model->Cest->cest);
+
+                            $arr[] = ($model->importado)?'Importado':'Nacional';
+
+                            ?>
+                            {!! 
+                                titulo(NULL, $arr, NULL) 
+                            !!}
+                        </ol>
+                    </div>
+                    @include('produto.show-embalagens')
+                </div>
+
+
+                <a href="<?php echo url("produto-variacao/create?codproduto={$model->codproduto}");?>">Nova Variação <span class="glyphicon glyphicon-plus"></span></a>
+                |
+                <a href="<?php echo url("produto/$model->codproduto/transferir-variacao");?>">Transferir Variação <span class="glyphicon glyphicon-transfer"></span></a>
+                |
+                <a href="<?php echo url("produto-barra/create?codproduto={$model->codproduto}");?>">Novo Código de Barras <span class="glyphicon glyphicon-plus"></span></a>
+
+                <br>
+                <br>
+
+                @include('produto.show-variacoes')
+
             </div>
-        </div>            
-        {!! Form::close() !!}
-    </div>
-    <div class="col-md-7">
-        {!! Form::model(Request::all(), ['route' => 'produto.show', 'method' => 'GET', 'class' => 'form-inline', 'id' => 'produto-show-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
-            {!! Form::text('codproduto', null, ['class' => 'form-control', 'id'=> 'codproduto', 'style'=> 'width: 100%;']) !!}
-        {!! Form::close() !!}
-    </div>
-</div>
-<hr>
--->
-<div class="panel panel-default">
-    <table class="table table-bordered table-responsive">
-        <tr>
-            <td class="col-md-8 bg-warning" style="vertical-align: middle">
-                <h2 class="text-danger produtos-detalhes-produto">
-                    {!! titulo($model->codproduto, $model->produto, $model->inativo, 6) !!}
-                </h2>
-                <div class="pull-left">
-                    {!! 
-                        titulo(
-                            NULL, 
-                            [
-                                url("secao-produto/{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto}") => $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->secaoproduto,
-                                url("familia-produto/{$model->SubGrupoProduto->GrupoProduto->codfamiliaproduto}") => $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->familiaproduto,
-                                url("grupo-produto/{$model->SubGrupoProduto->codgrupoproduto}") => $model->SubGrupoProduto->GrupoProduto->grupoproduto,
-                                url("sub-grupo-produto/{$model->codsubgrupoproduto}") => $model->SubGrupoProduto->subgrupoproduto,
-                                url("marca/{$model->codmarca}") => $model->Marca->marca,
-                                $model->referencia,
-                            ], 
-                            NULL) 
-                    !!}
+            <div role="tabpanel" class="tab-pane fade" id="tab-estoque">
+                <div id="div-estoque">
+                    <b>Aguarde...</b>
                 </div>
-                <div class="pull-right">
-                    <?php 
-                    $arr = [            
-                        url("tipo-produto/{$model->codtipoproduto}") => $model->TipoProduto->tipoproduto,
-                        url("ncm/{$model->codncm}") => formataNcm($model->Ncm->ncm),
-                        url("tributacao/{$model->codtributacao}") => $model->Tributacao->tributacao,
-                    ];
-
-                    if (!empty($model->codcest))
-                        $arr[url("cest/{$model->codcest}")] = formataCest($model->Cest->cest);
-
-                    $arr[] = ($model->importado)?'Importado':'Nacional';
-
-                    ?>
-                    {!! 
-                        titulo(NULL, $arr, NULL) 
-                    !!}
-                </div>
-
-
-            </td>
-            <td class="col-md-4 bg-success" style="vertical-align: middle">
-                <div class="col-md-12">
-                    <h2 class="produtos-detalhe-preco text-right text-success col-md-7">
-                        <span class="pull-left text-muted produtos-detalhe-cifrao">R$ &nbsp; </span>
-                        {{ formataNumero($model->preco) }}
-                    </h2>
-                    <span class="text-muted col-md-5">
-                        {{ $model->UnidadeMedida->unidademedida }}
-                    </span>
-                </div>
-                @include('produto.show-embalagens')
-            </td>
-        </tr>
-    </table>
-</div>
-<div class="row">
-    <div class="col-md-6">
-        <!--FOTOS -->
-        <div class="panel panel-default produtos-detalhe-carousel">
-            <div class="pull-right carousel-menu">
-                <a class="btn btn-default" href="{{ url("/imagem/produto/$model->codproduto") }}">
-                    <i class="glyphicon glyphicon-picture"></i> 
-                    Nova
-                </a>
-                @if(count ($model->ImagemS) > 0)
-                <a class="btn btn-default btn-detalhe" href="{{ url("imagem/produto/$model->codproduto?imagem={$model->ImagemS->first()->codimagem}") }}">
-                    <i class="glyphicon glyphicon-pencil"></i> 
-                    Alterar
-                </a>
-                <a class="btn btn-default btn-delete" href="{{ url("imagem/produto/$model->codproduto/delete?imagem={$model->ImagemS->first()->codimagem}") }}">
-                    <i class="glyphicon glyphicon-trash"></i> 
-                    Excluir 
-                </a>
-                @endif
             </div>
-            <div class="panel-body">
-                @if(count ($model->ImagemS) > 0)
-                    @include('produto.carousel')
-                @endif
+            <div role="tabpanel" class="tab-pane fade" id="tab-site">
+                <p><botton class="btn btn-default" id="integracao-open-cart"><i class="glyphicon glyphicon-shopping-cart"></i> Sincronizar</botton></p>                    <br>
+                <strong>Divulgado no Site: {{ ($model->site)?'Sim':'Não' }}</strong>
+                <hr>
+                {!! nl2br($model->descricaosite) !!}
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="tab-fiscal">
+                @include('produto.show-ncm')
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="tab-negocio">
+
+                <!-- BOTAO FILTRO -->
+                <div class='clearfix'>
+                    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#filtro-negocio" aria-expanded="false" aria-controls="filtro-negocio">
+                        <span class='glyphicon glyphicon-search'></span>
+                    </a>
+                </div>
+
+                <!-- FILTRO NEGOCIO -->
+                <div class="collapse" id="filtro-negocio">
+                    <br>
+                    <div class='well well-sm'>
+                        {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-horizontal', 'method' => 'GET', 'id' => 'produto-negocio-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">{!! Form::label('negocio_lancamento_de', 'De') !!}</div>
+                                <div class="col-sm-4">{!! Form::date('negocio_lancamento_de', $parametros['negocio_lancamento_de'], ['class' => 'form-control', 'id' => 'negocio_lancamento_de', 'placeholder' => 'De']) !!}</div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">{!! Form::label('negocio_lancamento_ate', 'Até') !!}</div>
+                                <div class="col-sm-4">{!! Form::date('negocio_lancamento_ate', $parametros['negocio_lancamento_de'], ['class' => 'form-control', 'id' => 'negocio_lancamento_ate', 'placeholder' => 'Até']) !!}</div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">{!! Form::label('negocio_codfilial', 'Filial') !!}</div>
+                                <div class="col-sm-4">{!! Form::select2Filial('negocio_codfilial', $parametros['negocio_codfilial'], ['style'=>'width:100%', 'id'=>'negocio_codfilial']) !!}</div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">{!! Form::label('negocio_codnaturezaoperacao', 'Natureza de Operação') !!}</div>
+                                <div class="col-sm-7">{!! Form::select2NaturezaOperacao('negocio_codnaturezaoperacao', $parametros['negocio_codnaturezaoperacao'], ['style'=>'width:100%', 'id' => 'negocio_codnaturezaoperacao']) !!}</div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">{!! Form::label('negocio_codprodutovariacao', 'Variação') !!}</div>
+                                <div class="col-sm-7">{!! Form::select2ProdutoVariacao('negocio_codprodutovariacao', $parametros['negocio_codprodutovariacao'], ['style'=>'width:100%', 'id' => 'negocio_codprodutovariacao', 'codproduto'=>'negocio_codproduto']) !!}</div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">{!! Form::label('negocio_codproduto', 'Pessoa') !!}</div>
+                                <div class="col-sm-7">{!! Form::select2Pessoa('negocio_codpessoa', null, ['class' => 'form-control', 'id'=>'negocio_codpessoa', 'style'=>'width:100%', 'placeholder' => 'Pessoa', 'ativo' => 9]) !!}</div>
+                            </div>                            
+                            {!! Form::hidden('negocio_codproduto', $model->codproduto, ['id'=>'negocio_codproduto']) !!}
+
+                        {!! Form::hidden('_div', 'div-negocios', ['id'=>'negocio_page']) !!}
+
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+                <br>
+                <div id="div-negocios">
+                    <b>Aguarde...</b>
+                </div>
+            </div>
+            <!-- -->
+            <div role="tabpanel" class="tab-pane fade" id="tab-notasfiscais">
+
+                <!-- BOTAO FILTRO -->
+                <div class='clearfix'>
+                    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#filtro-notasfiscais" aria-expanded="false" aria-controls="filtro-notasfiscais">
+                        <span class='glyphicon glyphicon-search'></span>
+                    </a>
+                </div>
+
+                <!-- FILTRO NOTAS FISCAIS -->
+                <div class="collapse" id="filtro-notasfiscais">
+                    <br>
+                    <div class='well well-sm'>
+                        {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-horizontal', 'method' => 'GET', 'id' => 'produto-notasfiscais-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_lancamento_de', 'De') !!}</div>
+                                <div class="col-sm-4">{!! Form::date('notasfiscais_lancamento_de', $parametros['notasfiscais_lancamento_de'], ['class' => 'form-control', 'id' => 'notasfiscais_lancamento_de', 'placeholder' => 'De']) !!}</div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_lancamento_ate', 'Até') !!}</div>
+                                <div class="col-sm-4">{!! Form::date('notasfiscais_lancamento_ate', $parametros['notasfiscais_lancamento_de'], ['class' => 'form-control', 'id' => 'notasfiscais_lancamento_ate', 'placeholder' => 'Até']) !!}</div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codfilial', 'Filial') !!}</div>
+                                <div class="col-sm-4">{!! Form::select2Filial('notasfiscais_codfilial', $parametros['notasfiscais_codfilial'], ['style'=>'width:100%', 'id'=>'notasfiscais_codfilial']) !!}</div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codnaturezaoperacao', 'Natureza de Operação') !!}</div>
+                                <div class="col-sm-7">{!! Form::select2NaturezaOperacao('notasfiscais_codnaturezaoperacao', $parametros['notasfiscais_codnaturezaoperacao'], ['style'=>'width:100%', 'id' => 'notasfiscais_codnaturezaoperacao']) !!}</div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codprodutovariacao', 'Variação') !!}</div>
+                                <div class="col-sm-7">{!! Form::select2('notasfiscais_codprodutovariacao', [''=>''] + $model->ProdutoVariacaoS->lists('variacao', 'codprodutovariacao')->all(), $parametros['negocio_codprodutovariacao'], ['style'=>'width:100%', 'id' => 'notasfiscais_codprodutovariacao', 'placeholder'=>'Variaçao']) !!}</div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codproduto', 'Pessoa') !!}</div>
+                                <div class="col-sm-7">{!! Form::select2Pessoa('notasfiscais_codpessoa', null, ['class' => 'form-control','id'=>'notasfiscais_codpessoa', 'style'=>'width:100%', 'placeholder' => 'Pessoa', 'ativo' => 9]) !!}</div>
+                            </div>
+                            {!! Form::hidden('notasfiscais_codproduto', $model->codproduto, ['id'=>'notasfiscais_codproduto']) !!}
+                            {!! Form::hidden('_div', 'div-notasfiscais', ['id'=>'notasfiscais_page']) !!}
+
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+                <br>
+                <div id="div-notasfiscais">
+                    <b>Aguarde...</b>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="tab-observacoes">
+                {!! $model->observacoes !!}
             </div>
         </div>
-        <!--/ FOTOS -->
     </div>
-    <div class="col-md-6">
-        <div>
-            <ul class="nav nav-pills" role="tablist" id='tab-produto'>
-                <li role="presentation" class='active'><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Variações</a></li>
-                <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab" data-toggle="tab">Estoque</a></li>
-                <li role="presentation"><a href="#tab-site" aria-controls="profile" role="tab" data-toggle="tab">Site</a></li>
-                <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">NCM</a></li>
-                <li role="presentation"><a href="#tab-negocio" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
-                <li role="presentation"><a href="#tab-notasfiscais" aria-controls="messages" role="tab" data-toggle="tab">Notas Fiscais</a></li>
-                <li role="presentation"><a href="#tab-observacoes" aria-controls="observacoes" role="tab" data-toggle="tab">Observações</a></li>
-            </ul>
-            <br>
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="tab-variacoes">
-                    @include('produto.show-variacoes')
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab-estoque">
-                    <div id="div-estoque">
-                        <b>Aguarde...</b>
-                    </div>
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab-site">
-                    <p><botton class="btn btn-default" id="integracao-open-cart"><i class="glyphicon glyphicon-shopping-cart"></i> Sincronizar</botton></p>                    <br>
-                    <strong>Divulgado no Site: {{ ($model->site)?'Sim':'Não' }}</strong>
-                    <hr>
-                    {!! nl2br($model->descricaosite) !!}
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab-fiscal">
-                    @include('produto.show-ncm')
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab-negocio">
-                    
-                    <!-- BOTAO FILTRO -->
-                    <div class='clearfix'>
-                        <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#filtro-negocio" aria-expanded="false" aria-controls="filtro-negocio">
-                            <span class='glyphicon glyphicon-search'></span>
-                        </a>
-                    </div>
-                    
-                    <!-- FILTRO NEGOCIO -->
-                    <div class="collapse" id="filtro-negocio">
-                        <br>
-                        <div class='well well-sm'>
-                            {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-horizontal', 'method' => 'GET', 'id' => 'produto-negocio-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+    <br>    
+    @include('includes.autor')
+</div>    
 
-                                <div class="form-group">
-                                    <div class="col-sm-4 control-label">{!! Form::label('negocio_lancamento_de', 'De') !!}</div>
-                                    <div class="col-sm-4">{!! Form::date('negocio_lancamento_de', $parametros['negocio_lancamento_de'], ['class' => 'form-control', 'id' => 'negocio_lancamento_de', 'placeholder' => 'De']) !!}</div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-sm-4 control-label">{!! Form::label('negocio_lancamento_ate', 'Até') !!}</div>
-                                    <div class="col-sm-4">{!! Form::date('negocio_lancamento_ate', $parametros['negocio_lancamento_de'], ['class' => 'form-control', 'id' => 'negocio_lancamento_ate', 'placeholder' => 'Até']) !!}</div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-sm-4 control-label">{!! Form::label('negocio_codfilial', 'Filial') !!}</div>
-                                    <div class="col-sm-4">{!! Form::select2Filial('negocio_codfilial', $parametros['negocio_codfilial'], ['style'=>'width:100%', 'id'=>'negocio_codfilial']) !!}</div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-sm-4 control-label">{!! Form::label('negocio_codnaturezaoperacao', 'Natureza de Operação') !!}</div>
-                                    <div class="col-sm-7">{!! Form::select2NaturezaOperacao('negocio_codnaturezaoperacao', $parametros['negocio_codnaturezaoperacao'], ['style'=>'width:100%', 'id' => 'negocio_codnaturezaoperacao']) !!}</div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-sm-4 control-label">{!! Form::label('negocio_codprodutovariacao', 'Variação') !!}</div>
-                                    <div class="col-sm-7">{!! Form::select2ProdutoVariacao('negocio_codprodutovariacao', $parametros['negocio_codprodutovariacao'], ['style'=>'width:100%', 'id' => 'negocio_codprodutovariacao', 'codproduto'=>'negocio_codproduto']) !!}</div>
-                                </div>
-                            
-                                <div class="form-group">
-                                    <div class="col-sm-4 control-label">{!! Form::label('negocio_codproduto', 'Pessoa') !!}</div>
-                                    <div class="col-sm-7">{!! Form::select2Pessoa('negocio_codpessoa', null, ['class' => 'form-control', 'id'=>'negocio_codpessoa', 'style'=>'width:100%', 'placeholder' => 'Pessoa', 'ativo' => 9]) !!}</div>
-                                </div>                            
-                                {!! Form::hidden('negocio_codproduto', $model->codproduto, ['id'=>'negocio_codproduto']) !!}
-                                
-                            {!! Form::hidden('_div', 'div-negocios', ['id'=>'negocio_page']) !!}
-                                
-                            {!! Form::close() !!}
-                        </div>
-                    </div>
-                    <br>
-                    <div id="div-negocios">
-                        <b>Aguarde...</b>
-                    </div>
-                </div>
-                <!-- -->
-                <div role="tabpanel" class="tab-pane fade" id="tab-notasfiscais">
-                    
-                    <!-- BOTAO FILTRO -->
-                    <div class='clearfix'>
-                        <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#filtro-notasfiscais" aria-expanded="false" aria-controls="filtro-notasfiscais">
-                            <span class='glyphicon glyphicon-search'></span>
-                        </a>
-                    </div>
-                    
-                    <!-- FILTRO NOTAS FISCAIS -->
-                    <div class="collapse" id="filtro-notasfiscais">
-                        <br>
-                        <div class='well well-sm'>
-                            {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-horizontal', 'method' => 'GET', 'id' => 'produto-notasfiscais-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
-
-                                <div class="form-group">
-                                    <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_lancamento_de', 'De') !!}</div>
-                                    <div class="col-sm-4">{!! Form::date('notasfiscais_lancamento_de', $parametros['notasfiscais_lancamento_de'], ['class' => 'form-control', 'id' => 'notasfiscais_lancamento_de', 'placeholder' => 'De']) !!}</div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_lancamento_ate', 'Até') !!}</div>
-                                    <div class="col-sm-4">{!! Form::date('notasfiscais_lancamento_ate', $parametros['notasfiscais_lancamento_de'], ['class' => 'form-control', 'id' => 'notasfiscais_lancamento_ate', 'placeholder' => 'Até']) !!}</div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codfilial', 'Filial') !!}</div>
-                                    <div class="col-sm-4">{!! Form::select2Filial('notasfiscais_codfilial', $parametros['notasfiscais_codfilial'], ['style'=>'width:100%', 'id'=>'notasfiscais_codfilial']) !!}</div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codnaturezaoperacao', 'Natureza de Operação') !!}</div>
-                                    <div class="col-sm-7">{!! Form::select2NaturezaOperacao('notasfiscais_codnaturezaoperacao', $parametros['notasfiscais_codnaturezaoperacao'], ['style'=>'width:100%', 'id' => 'notasfiscais_codnaturezaoperacao']) !!}</div>
-                                </div>
-                            
-                                <div class="form-group">
-                                    <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codprodutovariacao', 'Variação') !!}</div>
-                                    <div class="col-sm-7">{!! Form::select2('notasfiscais_codprodutovariacao', [''=>''] + $model->ProdutoVariacaoS->lists('variacao', 'codprodutovariacao')->all(), $parametros['negocio_codprodutovariacao'], ['style'=>'width:100%', 'id' => 'notasfiscais_codprodutovariacao', 'placeholder'=>'Variaçao']) !!}</div>
-                                </div>
-                            
-                                <div class="form-group">
-                                    <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codproduto', 'Pessoa') !!}</div>
-                                    <div class="col-sm-7">{!! Form::select2Pessoa('notasfiscais_codpessoa', null, ['class' => 'form-control','id'=>'notasfiscais_codpessoa', 'style'=>'width:100%', 'placeholder' => 'Pessoa', 'ativo' => 9]) !!}</div>
-                                </div>
-                                {!! Form::hidden('notasfiscais_codproduto', $model->codproduto, ['id'=>'notasfiscais_codproduto']) !!}
-                                {!! Form::hidden('_div', 'div-notasfiscais', ['id'=>'notasfiscais_page']) !!}
-                                
-                            {!! Form::close() !!}
-                        </div>
-                    </div>
-                    <br>
-                    <div id="div-notasfiscais">
-                        <b>Aguarde...</b>
-                    </div>
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab-observacoes">
-                    {!! $model->observacoes !!}
-                </div>
-            </div>
-        </div>
-    </div>    
-</div>
-@include('includes.autor')
-<br>
-<br>
 @section('inscript')
-<style type="text/css">
-.produtos-grid-inativo {
-    margin: 0 0 5px 0;
-}
-
-.subregistro .col-md-8 {
-    margin-bottom: 5px;
-}
-.produtos-detalhes-produto {
-    font-family: sans-serif;
-    letter-spacing: -1px;
-    margin: 0 0 20px;
-    font-size: 28px;
-}
-
-.produtos-detalhe-preco {
-    font-size: 4em;
-    font-weight: bold;
-    margin: 0;
-}
-.produtos-detalhe-preco-menor {
-    font-size: 1.5em;
-    font-weight: bold;
-    margin: 0;
-}
-.produtos-detalhe-cifrao {
-    font-size: 0.5em;
-    font-weight: bold;
-    margin: 8px 0 0;
-}
-
-.produtos-combinacoes-titulo {
-    font-size: 22px;
-}
-.produto-detalhes-unidade {
-    font-size: 20px;
-}
-.bg-info .list-group-item {
-    background: none;
-}
-.produtos-detalhe-carousel {
-    min-height: 500px;
-}
-.carousel-control.left, 
-.carousel-control.right {
-    background: none;
-}
-.carousel-menu {
-    margin-right: -1px;
-    margin-top: -1px;
-    position: relative;
-    z-index: 100;
-}
-.produto-historico-preco > .list-group-item {
-    padding: 10px 0;
-}
-.produto-item img {
-    height: 500px !important;
-    margin: 0 auto;
-}
-.nav>li>a {
-    padding: 10px 13px;
-}
-</style>
-
 <script type="text/javascript">
 
 function mostraListagemNegocios()

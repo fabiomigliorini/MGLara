@@ -322,32 +322,39 @@ if(!function_exists('removeAcentos')) {
 if(!function_exists('titulo')) {
     function titulo ($codigo, $descricao, $inativo, $digitos_codigo = 8) 
     {
+        if (is_string($descricao)) {
+            $descricao = [$descricao];
+        }
         
-        $html = (!empty($codigo))?'<small class=\'text-muted\'>'. formataCodigo($codigo, $digitos_codigo) .'</small> ':'';
+        $html = '';
         
         $i = 0;
         
-        if (is_string($descricao))
-            $descricao = [$descricao];
-        
-        foreach ($descricao as $url => $titulo)
-        {
-            $htmlItem = $titulo;
+        foreach ($descricao as $url => $titulo) {
             
-            if (!is_null($url) && !is_integer($url))
-                $htmlItem = "<a href='$url'>$htmlItem</a>";
+            if (is_numeric($url)) {
+                $url = null;
+            }
             
-            if ($i > 0)
-                $htmlItem = " » $htmlItem";
-            
-            $html .= $htmlItem;
+            $html .= ' <li class="' . (empty($url)?'active':'') . '">';
+            $html .= (empty($url))?'':"<a href='$url'>";
+            $html .= (empty($inativo))?'':'<del>';
+            if ($i === 1 && !empty($codigo)) {
+                $html .= '<small>' . formataCodigo($codigo, $digitos_codigo) . '</small> - ';
+            }
+            $html .= $titulo;
+            $html .= (empty($inativo))?'':'</del>';;
+            $html .= (empty($url))?'':"</a>";
+            $html .= '</li>';
             
             $i++;
+            
         }
         
-        if(!empty($inativo))
-            $html = "<del>$html</del> <small class='text-danger'> Inativo desde ".formataData($inativo, 'L') . "!</small>";
-
+        if(!empty($inativo)) {
+            $html .= ' <li class="text-danger">Inativo desde ' . formataData($inativo, 'L') . '</li>';
+        }
+        
         return $html;
     }
 }

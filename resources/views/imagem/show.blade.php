@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li>
@@ -21,7 +21,7 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">
+<ol class="breadcrumb header">
     {!! 
         titulo(
             $model->codimagem,
@@ -29,7 +29,7 @@
             $model->inativo
         ) 
     !!}
-</h1>
+</ol>
 @include('includes.autor')
 <div>
     <div class="col-xs-6">

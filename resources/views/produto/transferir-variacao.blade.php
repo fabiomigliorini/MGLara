@@ -1,14 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="{{ url('produto') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="{{ url("produto/$model->codproduto") }}"><span class="glyphicon glyphicon-eye-open"></span> Detalhes</a></li>  
-        </ul>
-    </div>
-</nav>
-<h1 class="header">
+<ol class="breadcrumb header">
 {!! 
     titulo(
         $model->codproduto,
@@ -21,7 +13,7 @@
         6
     ) 
 !!}     
-</h1>
+</ol>
 <hr>
 {!! Form::open(['method' => 'PATCH', 'class' => 'form-horizontal', 'id' => 'form-produto-transferir-variacao', 'action' => ['ProdutoController@transferirVariacaoSalvar', $model->codproduto]]) !!}
 @include('errors.form_error')

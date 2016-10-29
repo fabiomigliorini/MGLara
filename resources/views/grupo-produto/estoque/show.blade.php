@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li><a href="<?php echo url('grupo-produto');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
@@ -34,7 +34,7 @@
 @endif
 <div class="row">
     <div class="col-md-6">
-        <h1 class="header">{{ $model->grupoproduto }}</h1>
+        <ol class="breadcrumb header">{{ $model->grupoproduto }}</ol>
     </div>
     <div class="pull-right foto-item-unico">
         @if(empty($model->codimagem))

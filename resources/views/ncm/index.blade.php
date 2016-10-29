@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default navbar-fixed-top" id="submenu">
+<nav class="navbar navbar-default" id="submenu">
     <div class="container-fluid"> 
         <ul class="nav navbar-nav">
             <li>
@@ -9,9 +9,9 @@
         </ul>
     </div>
 </nav>
-<h1 class="header">
+<ol class="breadcrumb header">
     {!! titulo(null, 'NCM', null) !!}
-</h1>
+</ol>
 <div class="clearfix"></div>
 <div>
     <div class="col-md-5">
@@ -44,7 +44,7 @@
             </ul>
         <?php } ?>
         @if(Request::get('ncmpai'))
-        <h1 style="margin-top: 0">{{$ncms->ncm}} - {{ $ncms->descricao }}</h1>
+        <h1 style="margin-top: 0">{{$ncms->ncm}} - {{ $ncms->descricao }}</ol>
             <?php listaArvoreNcm($ncms->NcmS, 'tree1'); ?>
         @endif()
     </div>
