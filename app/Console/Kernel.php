@@ -26,8 +26,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        // TODO: DESCOBRIR PQ .env NAO E CARREGADO NO SCHEDULE
+        
         //$schedule->command('estoque:calcula-estatisticas')->dailyAt('01:00');
-        $schedule->command('open-cart:sincroniza-produtos')->dailyAt('01:00');
+        //$schedule->command('opencart:sincroniza-produtos')->dailyAt('01:00');
         //$schedule->command('inspire')->hourly();
     }
 }
