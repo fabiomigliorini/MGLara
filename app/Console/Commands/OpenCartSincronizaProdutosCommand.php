@@ -41,7 +41,6 @@ class OpenCartSincronizaProdutosCommand extends Command
      */
     public function handle()
     {
-        //TODO: rsync -uvazh --delete /var/www/MGLara/public/imagens/* mgpapelaria@webapp15505.cloud683.configrapp.com:/home/mgpapelaria/mgpapelaria.com.br/www/image/imagens/
         if (empty($this->argument('codproduto'))) {
             IntegracaoOpenCart::sincronizaProdutos();
         } else {
