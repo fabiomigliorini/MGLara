@@ -699,7 +699,7 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
             $produtos = $qryProdutos->get();            
         }
         
-        $oc = new IntegracaoOpenCart(true);
+        $oc = new IntegracaoOpenCart();
         
         $oc->getToken();
         
