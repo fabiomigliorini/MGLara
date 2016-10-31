@@ -15,9 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \MGLara\Console\Commands\Inspire::class,
         \MGLara\Console\Commands\EstoqueCalculaEstatisticasCommand::class,
-        \MGLara\Console\Commands\SiteExportaMarcasCommand::class,
-        \MGLara\Console\Commands\SiteExportaCategoriasCommand::class,
-        \MGLara\Console\Commands\SiteExportaProdutosCommand::class,
+        \MGLara\Console\Commands\OpenCartSincronizaProdutosCommand::class,
     ];
 
     /**
@@ -28,7 +26,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('estoque:calcula-estatisticas')->dailyAt('01:00');
+        //$schedule->command('estoque:calcula-estatisticas')->dailyAt('01:00');
+        $schedule->command('open-cart:sincroniza-produtos')->dailyAt('01:00');
         //$schedule->command('inspire')->hourly();
     }
 }

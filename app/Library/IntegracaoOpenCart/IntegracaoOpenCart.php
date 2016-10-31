@@ -70,6 +70,9 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
     public function excluiMarcasExcedentes() 
     {
         $retorno = true;
+        if (!is_array($this->manufacturers)) {
+            return $retorno;
+        }
         foreach ($this->manufacturers as $id => $manufacturer) {
             if (!isset($this->manufacturersUpdated[$id])) {
                 if (!$this->deleteManufacturer($id)) {
@@ -84,6 +87,9 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
     public function excluiSecoesExcedentes() 
     {
         $retorno = true;
+        if (!is_array($this->categories)) {
+            return $retorno;
+        }
         foreach ($this->categories as $id => $category) {
             if (!isset($this->categoriesUpdated[$id])) {
                 if (!$this->deleteCategory($id)) {
@@ -112,6 +118,23 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
         return $retorno;
     }
 
+    public function excluiProdutosExcedentes() 
+    {
+        $retorno = true;
+        if (!is_array($this->products)) {
+            return $retorno;
+        }
+        foreach ($this->products as $id => $product) {
+            if (!isset($this->productsUpdated[$id])) {
+                if (!$this->deleteProduct($id)) {
+                    Log::error (class_basename($this) . " - Erro ao excluir Produto $id excedente - $this->response");
+                    $retorno = false;
+                }
+            }
+        }
+        return $retorno;
+    }
+    
     /**
      * 
      * @param type $codmarca
@@ -668,20 +691,19 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
     {
         Log::info ("Inicio Sincronizacao de Produtos OpenCart ($codproduto)");
         
-        $qryProdutos = Produto::where('site', true)->orderBy('codproduto');
+        $qryProdutos = Produto::where('site', true)->whereNull('inativo')->orderBy('codproduto');
         
-        if (is_numeric($codproduto)) {
+        if ($codproduto != 'all') {
             $produtos = $qryProdutos->where('codproduto', $codproduto)->get();
         } else {
             $produtos = $qryProdutos->get();            
         }
         
-        //$oc = new IntegracaoOpenCart(true);
-        $oc = new IntegracaoOpenCart();
+        $oc = new IntegracaoOpenCart(true);
         
         $oc->getToken();
         
-        if ($codproduto != 'all') {
+        if ($codproduto != 'all' && isset($produtos[0])) {
             $oc->buscaMarcasOpenCart($produtos[0]->Marca->codopencart);
             $oc->buscaProdutosOpenCart($produtos[0]->codopencart, str_pad($produtos[0]->codproduto, 6, '0', STR_PAD_LEFT), $produtos[0]->codopencartvariacao);
             $oc->buscaSecoesOpenCart($produtos[0]->SubGrupoProduto->codopencart);
@@ -696,13 +718,14 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
         
         $oc->exportaProdutos($produtos);
         
-        $excluir_excedentes = ($codproduto == 'all')?true:false;
-        
+        if ($excluir_excedentes === 'auto') {
+            $excluir_excedentes = ($codproduto == 'all')?true:false;
+        }
         if ($excluir_excedentes == true) {
+            $oc->excluiProdutosExcedentes();
+            $oc->excluiVariacoesExcedentes();
             $oc->excluiMarcasExcedentes();
             $oc->excluiSecoesExcedentes();
-            $oc->excluiVariacoesExcedentes();
-            //$this->excluiProdutosExcedentes();
         }
         
         Log::info ("Final Sincronizacao de Produtos OpenCart");

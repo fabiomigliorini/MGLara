@@ -197,10 +197,6 @@ class IntegracaoOpencartBase {
     
     public function updateManufacturer ($id, $name, $keyword, $sort_order, $image) 
     {
-        /*
-         * rsync -uvazh --delete /var/www/MGLara/public/imagens/* mgpapelaria@webapp15505.cloud683.configrapp.com:/home/mgpapelaria/mgpapelaria.com.br/www/image/imagens/
-         */
-        
         // monta Array com dados
         $data = [
             'name' => $name,
@@ -262,6 +258,7 @@ class IntegracaoOpencartBase {
     
     public function deleteManufacturer ($ids)
     {
+        
         // se passou somente um id, transforma em array
         if (!is_array($ids)) {
             $ids = [$ids];
@@ -297,7 +294,6 @@ class IntegracaoOpencartBase {
                 'parent_id' => $parent_id
             ];
             foreach ($langs as $key => $lang) {
-                //dd($lang);
                 $category['sort_order'] = $lang->sort_order;
                 $category['category_description'][$lang->language_id] = $lang;
                 if ($lang->language_id == $this->languagePTBR && isset($lang->categories)) {
@@ -873,6 +869,26 @@ class IntegracaoOpencartBase {
         
         // retorna o success
         return $this->responseObject->success;
+    }
+    
+    public function deleteProduct($id) 
+    {
+        // monta URL
+        $url = $this->url . "index.php?route=rest/product_admin/products&id={$id}";
+            
+        // aborta caso erro no delete
+        if (!$this->delete($url)) {
+            return false;
+        }
+        
+        // aborta se nao veio variavel de success
+        if (!isset($this->responseObject->success)) {
+            return false;
+        }
+        
+        // retorna o success
+        return $this->responseObject->success;
+        
     }
     
 }
