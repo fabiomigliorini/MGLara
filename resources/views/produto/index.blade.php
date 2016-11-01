@@ -5,6 +5,7 @@
     <li class='active'>
         <small>
             <a href="<?php echo url('produto/create'); ?>"><span class="glyphicon glyphicon-plus"></span></a>
+            &nbsp;
             <a class="" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro"><span class='glyphicon glyphicon-search'></span></a>
         </small>
     </li>

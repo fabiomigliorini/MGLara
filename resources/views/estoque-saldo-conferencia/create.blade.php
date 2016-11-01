@@ -110,15 +110,6 @@ function divLocalizacao ($arr)
 }
 
 ?>
-
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="{{ url("estoque-saldo-conferencia") }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>
-        </ul>
-    </div>
-</nav>
-
 <ol class="breadcrumb header">
     {!! 
         titulo(

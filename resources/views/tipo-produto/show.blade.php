@@ -1,21 +1,28 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="{{ url('tipo-produto') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="{{ url('tipo-produto/create') }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
-            <li><a href="{{ url("tipo-produto/$model->codtipoproduto/edit") }}"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
-            <li>
-                {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['tipo-produto.destroy', $model->codtipoproduto]]) !!}
-                <span class="glyphicon glyphicon-trash"></span>
-                {!! Form::submit('Excluir') !!}
-                {!! Form::close() !!}
-            </li>
-        </ul>
-    </div>
-</nav>
-<ol class="breadcrumb header">{{ $model->tipoproduto }}</ol>
+<ol class="breadcrumb header">
+    {!! 
+        titulo(
+            $model->codtipoproduto,
+            [
+                url("tipo-produto") => 'Tipos de Produto',
+                $model->tipoproduto
+            ],
+            $model->inativo
+        ) 
+    !!}    
+    <li class='active'>
+        <small>
+            <a title="Novo Tipo" href="{{ url('tipo-produto/create') }}"><span class="glyphicon glyphicon-plus"></span></a>
+            &nbsp;
+            <a title="Alterar" href="{{ url("tipo-produto/$model->codtipoproduto/edit") }}"><span class="glyphicon glyphicon-pencil"></span></a>
+            {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['tipo-produto.destroy', $model->codtipoproduto]]) !!}
+            <i class="glyphicon glyphicon-trash"></i>
+            {!! Form::submit('Excluir') !!}
+            {!! Form::close() !!}
+        </small>
+    </li>   
+</ol>
 <hr>
 <div class="row">
   <div class="col-lg-12">

@@ -1,63 +1,61 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="{{ url('secao-produto') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="{{ url('secao-produto/create') }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
-            <li><a href="{{ url("secao-produto/$model->codsecaoproduto/edit") }}"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
-            <li>
-                @if(empty($model->inativo))
-                <a href="" id="inativo-secao-produto">
-                    <span class="glyphicon glyphicon-ban-circle"></span> Inativar
-                </a>
-                @else
-                <a href="" id="inativo-secao-produto">
-                    <span class="glyphicon glyphicon-ok-sign"></span> Ativar
-                </a>
-                @endif
-            </li>
-            <li>
-                <a href="{{ url("secao-produto/$model->codsecaoproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a Seção '{{ $model->secaoproduto }}'?" data-after-delete="location.replace(baseUrl + '/secao-produto');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-
 <ol class="breadcrumb header">
     {!! 
         titulo(
             $model->codsecaoproduto,
-            $model->secaoproduto,
+            [
+                url("secao-produto") => 'Seções de Produto',
+                $model->secaoproduto
+            ],
             $model->inativo
         ) 
     !!}
-    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
-        <span class='glyphicon glyphicon-search'></span>
-    </a>  
-    <div class="pull-right foto-item-unico">
+    <li class='active'>
+        <small>
+            <a title="Nova Seção" href="{{ url('secao-produto/create') }}"><i class="glyphicon glyphicon-plus"></i></a>
+            &nbsp;
+            <a title="Alterar" href="{{ url("secao-produto/$model->codsecaoproduto/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
+            &nbsp;
+            @if(empty($model->inativo))
+            <a title="Inativar" href="" id="inativo-secao-produto"><i class="glyphicon glyphicon-ban-circle"></i></a>
+            &nbsp;
+            @else
+            <a title="Ativar" href="" id="inativo-secao-produto"><i class="glyphicon glyphicon-ok-sign"></i></a>
+            &nbsp;
+            @endif
+            <a title="Excluir" href="{{ url("secao-produto/$model->codsecaoproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a Seção '{{ $model->secaoproduto }}'?" data-after-delete="location.replace(baseUrl + '/secao-produto');"><i class="glyphicon glyphicon-trash"></i></a>
+            &nbsp;
+            <a title="Filtrar" class="" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro"><span class='glyphicon glyphicon-search'></span></a>
+        </small>
+    </li>
+</ol>
+
+<div class="row">
+    <div class="col-lg-10 col-sm-8">
+        @include('includes.autor')     
+    </div>
+    <div class="col-lg-2 col-sm-4 col-xs-4">
         @if(empty($model->codimagem))
             <a class="btn btn-default carregar" href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}">
                 <i class="glyphicon glyphicon-picture"></i>
-                Carregar imagem
+                Cadastrar imagem
             </a>
         @else
-        <a href="{{ url("imagem/{$model->Imagem->codimagem}") }}">
-            <img class="img-responsive pull-right" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
-        </a>
-        <span class="caption simple-caption">
             <a href="{{ url("/imagem/$model->codsecaoproduto/delete/?model=SecaoProduto&imagem={$model->Imagem->codimagem}") }}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
             <a href="{{ url("/imagem/edit?id=$model->codsecaoproduto&model=SecaoProduto") }}" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-        </span>        
+            <a href="{{ url("imagem/{$model->Imagem->codimagem}") }}">
+                <img class="img-responsive" src='<?php echo URL::asset('public/imagens/'.$model->Imagem->observacoes);?>'>
+            </a>
         @endif
     </div>
-</ol>
-@include('includes.autor')
+</div>
+
 <div class="clearfix">
     <a class="btn btn-default pull-left" href="{{ url("familia-produto/create?codsecaoproduto=$model->codsecaoproduto") }}">
         <i class=" glyphicon glyphicon-plus"></i> Nova Familia
     </a>
-</div>
+</div>   
 <div class='collapse' id='div-filtro'>
     <div class='well well-sm' style="padding:9px 0">
 {!! Form::model(
@@ -97,6 +95,7 @@
     </div>
     {!! Form::close() !!}
 </div>
+
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
     @foreach($familias as $row)

@@ -1,16 +1,12 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-  <div class="container-fluid"> 
-    <ul class="nav navbar-nav">
-    </ul>
-  </div>
-</nav>
 <ol class="breadcrumb header">
-    {!! titulo(null, 'Relatório Análise Saldos de Estoque', null) !!}  
-    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
-        <span class='glyphicon glyphicon-search'></span>
-    </a>
+    {!! titulo(null, 'Relatório Análise Saldos de Estoque', null) !!}
+    <li class='active'>
+        <small>
+            <a data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro"><span class='glyphicon glyphicon-search'></span></a>
+        </small>
+    </li>
 </ol>
 <div class="clearfix"></div>
 <div class='collapse in' id='div-filtro'>

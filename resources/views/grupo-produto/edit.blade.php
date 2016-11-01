@@ -1,14 +1,5 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="{{ url("familia-produto/{$model->FamiliaProduto->codfamiliaproduto}") }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="{{ url("grupo-produto/create?codfamiliaproduto={$model->FamiliaProduto->codfamiliaproduto}") }}><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
-            <li><a href="{{ url("grupo-produto/$model->codgrupoproduto") }}"><span class="glyphicon glyphicon-eye-open"></span> Detalhes</a></li>  
-        </ul>
-    </div>
-</nav>
 <ol class="breadcrumb header">
 {!! 
     titulo(
@@ -22,6 +13,13 @@
         $model->inativo
     ) 
 !!}  
+    <li class='active'>
+        <small>
+            <a title="Novo Grupo" href="{{ url("grupo-produto/create?codfamiliaproduto={$model->FamiliaProduto->codfamiliaproduto}") }}"><i class="glyphicon glyphicon-plus"></i></a>
+            &nbsp;
+            <a title="Detalhes" href="{{ url("grupo-produto/$model->codgrupoproduto") }}"><i class="glyphicon glyphicon-eye-open"></i></a>
+        </small>
+    </li>
 </ol>
 <hr>
 <br>

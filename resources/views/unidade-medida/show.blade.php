@@ -1,21 +1,28 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="{{ url('unidade-medida') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="{{ url('unidade-medida/create') }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
-            <li><a href="{{ url("unidade-medida/$model->codunidademedida/edit") }}"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
-            <li>
-                {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['unidade-medida.destroy', $model->codunidademedida]]) !!}
-                <span class="glyphicon glyphicon-trash"></span>
-                {!! Form::submit('Excluir') !!}
-                {!! Form::close() !!}
-            </li>
-        </ul>
-    </div>
-</nav>
-<ol class="breadcrumb header">{{ $model->unidademedida }}</ol>
+<ol class="breadcrumb header">
+    {!! 
+        titulo(
+            $model->codunidademedida,
+            [
+                url("unidade-medida") => 'Unidades de Medida',
+                $model->unidademedida
+            ],
+            $model->inativo
+        ) 
+    !!}    
+    <li class='active'>
+        <small>
+            <a title="Nova Unidade" href="{{ url('unidade-medida/create') }}"><span class="glyphicon glyphicon-plus"></span></a>
+            &nbsp;
+            <a title="Alterar" href="{{ url("unidade-medida/$model->codunidademedida/edit") }}"><span class="glyphicon glyphicon-pencil"></span></a>
+            {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['unidade-medida.destroy', $model->codunidademedida]]) !!}
+            <span class="glyphicon glyphicon-trash"></span>
+            {!! Form::submit('Excluir') !!}
+            {!! Form::close() !!}            
+        </small>
+    </li>   
+</ol>
 <hr>
 <div class="row">
   <div class="col-lg-12">

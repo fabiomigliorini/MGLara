@@ -1,18 +1,11 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="{{ url("tipo-produto") }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>
-        </ul>
-    </div>
-</nav>
 <ol class="breadcrumb header">
 {!! 
     titulo(
         null,
         [
-            url("secao-produto") => 'Tipos de Produto',
+            url("tipo-produto") => 'Tipos de Produto',
             'Novo Tipo de Produto',
         ],
         $model->inativo

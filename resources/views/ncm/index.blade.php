@@ -1,16 +1,12 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li>
-                <a href="{{ url("ncm/create") }}"><span class="glyphicon glyphicon-plus"></span> Nova</a>
-            </li> 
-        </ul>
-    </div>
-</nav>
 <ol class="breadcrumb header">
     {!! titulo(null, 'NCM', null) !!}
+    <li class='active'>
+        <small>
+            <a title="Nova NCM" href="{{ url("ncm/create") }}"><i class="glyphicon glyphicon-plus"></i></a>
+        </small>
+    </li>     
 </ol>
 <div class="clearfix"></div>
 <div>
@@ -44,7 +40,7 @@
             </ul>
         <?php } ?>
         @if(Request::get('ncmpai'))
-        <h1 style="margin-top: 0">{{$ncms->ncm}} - {{ $ncms->descricao }}</ol>
+        <h3 style="margin-top: 0">{{$ncms->ncm}} - {{ $ncms->descricao }}</h3>
             <?php listaArvoreNcm($ncms->NcmS, 'tree1'); ?>
         @endif()
     </div>
@@ -52,6 +48,9 @@
 
 @section('inscript')
 <style type="text/css">
+.tree {
+    font-size: 14px;
+}
 .tree, .tree ul {
     margin:0;
     padding:0;

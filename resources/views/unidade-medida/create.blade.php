@@ -1,13 +1,17 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="{{ url("unidade-medida") }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>
-        </ul>
-    </div>
-</nav>
-<ol class="breadcrumb header">Nova unidade de medida</ol>
+<ol class="breadcrumb header">
+{!! 
+    titulo(
+        null,
+        [
+            url("unidade-medida") => 'Unidades de Medida',
+            'Nova unidade de medida',
+        ],
+        $model->inativo
+    ) 
+!!}       
+</ol>
 <hr>
 <br>
 {!! Form::model($model, ['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form-unidade-medida', 'route' => 'unidade-medida.store']) !!}

@@ -1,25 +1,24 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="{{ url('ncm') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="{{ url('ncm/create') }}"><span class="glyphicon glyphicon-plus"></span> Nova</a></li>             
-            <li><a href="{{ url("ncm/$model->codncm/edit") }}"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
-            <li>
-                <a href="{{ url("ncm/$model->codncm") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a NCM '{{ $model->descricao }}'?" data-after-delete="location.replace(baseUrl + '/ncm');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-            </li>
-        </ul>
-    </div>
-</nav>
 <ol class="breadcrumb header">
     {!! 
         titulo(
             $model->codncm,
-            formataNcm($model->ncm),
+            [
+                url("ncm") => 'NCM',
+                formataNcm($model->ncm),],
             $model->inativo
         ) 
-    !!} 
+    !!}
+    <li class='active'>
+        <small>
+            <a title="Nova" href="{{ url('ncm/create') }}"><i class="glyphicon glyphicon-plus"></i></a>
+            &nbsp;
+            <a title="Alterar" href="{{ url("ncm/$model->codncm/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
+            &nbsp;
+            <a title="Excluir" href="{{ url("ncm/$model->codncm") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a NCM '{{ $model->descricao }}'?" data-after-delete="location.replace(baseUrl + '/ncm');"><i class="glyphicon glyphicon-trash"></i></a>
+        </small>
+    </li>     
 </ol>
 @include('includes.autor')
 <div class="row">

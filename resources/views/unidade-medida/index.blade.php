@@ -1,19 +1,14 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li>
-                <a href="{{ url("unidade-medida/create") }}"><span class="glyphicon glyphicon-plus"></span> Novo</a>
-            </li> 
-        </ul>
-    </div>
-</nav>
 <ol class="breadcrumb header">
-    {!! titulo(null, 'Unidades de medida', null) !!}
-    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
-        <span class='glyphicon glyphicon-search'></span>
-    </a>     
+    {!! titulo(null, 'Unidades de Medida', null) !!}
+    <li class='active'>
+        <small>
+            <a title="Nova Unidade de Medida" href="{{ url("unidade-medida/create") }}"><i class="glyphicon glyphicon-plus"></i></a>
+            &nbsp;
+            <a class="" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro"><span class='glyphicon glyphicon-search'></span></a>
+        </small>
+    </li>   
 </ol>
 <div class="clearfix"></div>
 <div class='collapse' id='div-filtro'>

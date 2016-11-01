@@ -19,19 +19,6 @@ function decideIconeUltimaConferencia($data)
 }
 
 ?>
-
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="{{ url("estoque-movimento/create/$model->codestoquemes") }}"><span class="glyphicon glyphicon-plus"></span> Novo Movimento Manual</a></li>             
-            <!--
-            <li><a href="#" id="btnRecalculaMovimentoEstoque"><span class="glyphicon glyphicon-refresh"></span> Recalcular Movimento de Estoque</a></li>
-            <li><a href="#" id="btnRecalculaCustoMedio"><span class="glyphicon glyphicon-usd"></span> Recalcular Custo Medio</a></li>
-            -->
-        </ul>
-    </div>
-</nav>
-
 <ol class="breadcrumb header">
     {!!
         titulo(
@@ -46,6 +33,15 @@ function decideIconeUltimaConferencia($data)
                 6
         )
     !!}
+    <li class='active'>
+        <small>
+            <a title="Novo Movimento Manual" href="{{ url("estoque-movimento/create/$model->codestoquemes") }}"><i class="glyphicon glyphicon-plus"></i></a>
+            <!--
+            <a title="Recalcular Movimento de Estoque" href="#" id="btnRecalculaMovimentoEstoque"><i class="glyphicon glyphicon-refresh"></i></a>
+            <a title="Recalcular Custo Medio" href="#" id="btnRecalculaCustoMedio"><i class="glyphicon glyphicon-usd"></i></a>
+            -->
+        </small>
+    </li>
     <button class="btn pull-right" type="button" data-toggle="collapse" data-target="#div-conferencia-collapse" aria-expanded="false" aria-controls="div-conferencia-collapse">
         <span class='glyphicon {{ decideIconeUltimaConferencia($model->EstoqueSaldo->ultimaconferencia) }}'></span>
     </button>

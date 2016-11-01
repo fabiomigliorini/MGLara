@@ -1,18 +1,13 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li>
-                <a href="" id="relatorio"><span class="glyphicon glyphicon-print"></span> Relatório</a>
-            </li> 
-        </ul>
-    </div>
-</nav>
 <ol class="breadcrumb header">{!! titulo(NULL, 'Histórico de Preços', NULL) !!}
-    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
-        <span class='glyphicon glyphicon-search'></span>
-    </a>
+    <li class='active'>
+        <small>
+            <a title="Relatório" href="" id="relatorio"><span class="glyphicon glyphicon-print"></span></a>
+            &nbsp;
+            <a title="Filtrar" class="" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro"><span class='glyphicon glyphicon-search'></span></a>
+        </small>
+    </li>
  </ol>
 <div class="clearfix"></div>
 <div class='collapse' id='div-filtro'>

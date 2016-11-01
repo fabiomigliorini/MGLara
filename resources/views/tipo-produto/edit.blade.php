@@ -1,14 +1,5 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="{{ url('tipo-produto') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="{{ url('tipo-produto/create') }}"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
-            <li><a href="{{ url("tipo-produto/$model->codtipoproduto") }}"><span class="glyphicon glyphicon-eye-open"></span> Detalhes</a></li>  
-        </ul>
-    </div>
-</nav>
 <ol class="breadcrumb header">
 {!! 
     titulo(
@@ -19,7 +10,14 @@
         ],
         $model->inativo
     ) 
-!!}     
+!!}
+    <li class='active'>
+        <small>
+            <a title="Novo Tipo" href="{{ url('tipo-produto/create') }}"><span class="glyphicon glyphicon-plus"></span></a>
+            &nbsp;
+            <a title="Detalhes" href="{{ url("tipo-produto/$model->codtipoproduto") }}"><span class="glyphicon glyphicon-eye-open"></span></a>
+        </small>
+    </li>   
 </ol>
 <hr>
 <br>

@@ -1,14 +1,5 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li>
-                <a href="{{ url("estoque-saldo-conferencia/create") }}"><span class="glyphicon glyphicon-plus"></span> Nova</a>
-            </li> 
-        </ul>
-    </div>
-</nav>
 <?php
     use MGLara\Models\Usuario;
     use MGLara\Models\EstoqueLocal;
@@ -16,10 +7,14 @@
     $codestoquelocal = [''=>''] + EstoqueLocal::orderBy('estoquelocal', 'ASC')->lists('estoquelocal', 'codestoquelocal')->all();
 ?>
 <ol class="breadcrumb header">{!! titulo(NULL, 'Conferência Saldo de Estoque', NULL) !!}
-    <a class="btn btn-primary pull-right" role="button" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro">
-        <span class='glyphicon glyphicon-search'></span>
-    </a>
- </ol>
+    <li class='active'>
+        <small>
+            <a title="Nova" href="{{ url("estoque-saldo-conferencia/create") }}"><span class="glyphicon glyphicon-plus"></span></a>
+            &nbsp;
+            <a title="Filtro" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro"><span class='glyphicon glyphicon-search'></span></a>
+        </small>
+    </li>
+</ol>
 <div class="clearfix"></div>
 <div class='collapse' id='div-filtro'>
     <div class='well well-sm' style="padding:9px 0">
