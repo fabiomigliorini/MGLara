@@ -162,7 +162,7 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
             // Se ja existe Marca atualiza
             if (isset($this->manufacturers[$marca->codopencart])) {
                 if (!$this->updateManufacturer($marca->codopencart, $marca->marca, $marca->marca, 1, $image)) {
-                    Log::error (class_basename($this) . " - Erro ao atualizar Marca #$marca->codmarca($marca->codopencart) - $marca->marca ");
+                    Log::error (class_basename($this) . " - Erro ao atualizar Marca #$marca->codmarca($marca->codopencart) - $marca->marca - $this->response");
                     $retorno = false;
                 }
             // Senao Cria
@@ -220,7 +220,7 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                
                 // Caso falha na atualizacao
                 if (!$id = $this->updateCategory($secao->codopencart, 1, null, 1, 4, 1, $secao->secaoproduto, $secao->secaoproduto, $secao->secaoproduto, $secao->secaoproduto, $secao->secaoproduto)) {
-                    Log::error (class_basename($this) . " - Erro ao atualizar Marca #$secao->codsecaoproduto($secao->codopencart) - $secao->secaoproduto ");
+                    Log::error (class_basename($this) . " - Erro ao atualizar Marca #$secao->codsecaoproduto($secao->codopencart) - $secao->secaoproduto - $this->response");
                     $retorno = false;
                 }
                 
@@ -264,7 +264,7 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                
                 // Caso falha na atualizacao
                 if (!$id = $this->updateCategory($familia->codopencart, 1, $familia->SecaoProduto->codopencart, 1, 4, 1, $familia->familiaproduto, $familia->familiaproduto, $familia->familiaproduto, $familia->familiaproduto, $familia->familiaproduto)) {
-                    Log::error (class_basename($this) . " - Erro ao atualizar Familia #$familia->codfamiliaproduto($familia->codopencart) - $familia->familiaproduto ");
+                    Log::error (class_basename($this) . " - Erro ao atualizar Familia #$familia->codfamiliaproduto($familia->codopencart) - $familia->familiaproduto - $this->response");
                     $retorno = false;
                 }
                 
@@ -307,7 +307,7 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                
                 // Caso falha na atualizacao
                 if (!$id = $this->updateCategory($grupo->codopencart, 1, $grupo->FamiliaProduto->codopencart, 1, 4, 1, $grupo->grupoproduto, $grupo->grupoproduto, $grupo->grupoproduto, $grupo->grupoproduto, $grupo->grupoproduto)) {
-                    Log::error (class_basename($this) . " - Erro ao atualizar Grupo #$grupo->codgrupoproduto($grupo->codopencart) - $grupo->grupoproduto ");
+                    Log::error (class_basename($this) . " - Erro ao atualizar Grupo #$grupo->codgrupoproduto($grupo->codopencart) - $grupo->grupoproduto - $this->response");
                     $retorno = false;
                 }
                 
@@ -350,7 +350,7 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                
                 // Caso falha na atualizacao
                 if (!$this->updateCategory($subgrupo->codopencart, 1, $subgrupo->GrupoProduto->codopencart, 1, 4, 1, $subgrupo->subgrupoproduto, $subgrupo->subgrupoproduto, $subgrupo->subgrupoproduto, $subgrupo->subgrupoproduto, $subgrupo->subgrupoproduto)) {
-                    Log::error (class_basename($this) . " - Erro ao atualizar SubGrupo #$subgrupo->codsubgrupoproduto($subgrupo->codopencart) - $subgrupo->subgrupoproduto ");
+                    Log::error (class_basename($this) . " - Erro ao atualizar SubGrupo #$subgrupo->codsubgrupoproduto($subgrupo->codopencart) - $subgrupo->subgrupoproduto - $this->response");
                     $retorno = false;
                 }
                 
@@ -420,7 +420,7 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                         }
                         
                         if (!$this->updateProductOptionValue($pv->codopencart, 1, empty($pv->variacao)?'{ Sem Variação }':$pv->variacao)) {
-                            Log::error (class_basename($this) . " - Erro ao atualizar Opcao da Variacao #$pv->codprodutovariacao($valor->option_value_id) - $pv->variacao ");
+                            Log::error (class_basename($this) . " - Erro ao atualizar Opcao da Variacao #$pv->codprodutovariacao($valor->option_value_id) - $pv->variacao - $this->response");
                             $retorno = false;
                         }
                         
@@ -439,7 +439,7 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                     foreach ($pvs as $pv) {
                         
                         if (!$id = $this->createProductOptionValue ($produto->codopencartvariacao, 1, empty($pv->variacao)?'{ Sem Variação }':$pv->variacao)) {
-                            Log::error (class_basename($this) . " - Erro ao Criar Opcao da Variacao #$pv->codprodutovariacao - $pv->variacao ");
+                            Log::error (class_basename($this) . " - Erro ao Criar Opcao da Variacao #$pv->codprodutovariacao - $pv->variacao - $this->response");
                             $retorno = false;
 
                         // salva o id do opencart no sistema
@@ -453,7 +453,7 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                     
                     if (sizeof($valores_excluir) > 0) {
                         if (!$id = $this->deleteProductOptionValue ($valores_excluir)) {
-                            Log::error (class_basename($this) . " - Erro ao Excluir Variacoes Excedentes do Produto #$produto->codproduto($produto->codopencartvariacao) - $produto->produto ");
+                            Log::error (class_basename($this) . " - Erro ao Excluir Variacoes Excedentes do Produto #$produto->codproduto($produto->codopencartvariacao) - $produto->produto - $this->response");
                             $retorno = false;
                         }
                     }
@@ -635,7 +635,7 @@ class IntegracaoOpenCart extends IntegracaoOpencartBase {
                     $product_related
                 )) {
                     
-                    Log::error (class_basename($this) . " - Erro ao atualizar Produto #$produto->codproduto($produto->codopencart) - $produto->produto");
+                    Log::error (class_basename($this) . " - Erro ao atualizar Produto #$produto->codproduto($produto->codopencart) - $produto->produto - $this->response");
                     $retorno = false;
                 }
                 
