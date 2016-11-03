@@ -10,32 +10,6 @@
         }
     }
 ?>
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="<?php echo url('usuario');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="<?php echo url('usuario/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>
-            <li><a href="<?php echo url("usuario/$model->codusuario/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
-            @if($admin)
-            <li><a href="<?php echo url("usuario/$model->codusuario/permissao");?>"><span class="glyphicon glyphicon-lock"></span> Permissões</a></li> 
-            <li>
-                @if(empty($model->inativo))
-                <a href="" id="inativar-usuario">
-                    <span class="glyphicon glyphicon-ban-circle"></span> Inativar
-                </a>
-                @else
-                <a href="" id="inativar-usuario">
-                    <span class="glyphicon glyphicon-ok-sign"></span> Ativar
-                </a>
-                @endif
-            </li> 
-            <li>
-                <a href="{{ url("usuario/$model->codusuario") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o usuario'{{ $model->usuario }}'?" data-after-delete="location.replace(baseUrl + '/usuario');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-            </li>
-            @endif
-        </ul>
-    </div>
-</nav>
 <ol class="breadcrumb header">
 {!! 
     titulo(
@@ -46,7 +20,27 @@
         ],
         $model->inativo
     ) 
-!!}  
+!!}
+    <li class='active'>
+        <small>
+            <a title="Novo" href="{{ url('usuario/create') }}"><i class="glyphicon glyphicon-plus"></i></a>
+            &nbsp;
+            <a title="Alterar" href="{{ url("usuario/$model->codusuario/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
+            &nbsp;
+            @if($admin)
+                <a title="Permissões" href="{{ url("usuario/$model->codusuario/permissao") }}"><span class="glyphicon glyphicon-lock"></span></a>
+                &nbsp;
+                @if(empty($model->inativo))
+                <a title="Inativar" href="" id="inativar-usuario"><i class="glyphicon glyphicon-ban-circle"></i></a>
+                &nbsp;
+                @else
+                <a title="Ativar" href="" id="inativar-usuario"><i class="glyphicon glyphicon-ok-sign"></i></a>
+                &nbsp;
+                @endif
+                <a title="Excluir" href="{{ url("usuario/$model->codusuario") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o usuario'{{ $model->usuario }}'?" data-after-delete="location.replace(baseUrl + '/usuario');"><i class="glyphicon glyphicon-trash"></i></a>
+            @endif
+        </small>
+    </li>   
 </ol>
 <hr>
 <div class="row">

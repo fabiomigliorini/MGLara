@@ -1,28 +1,25 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="<?php echo url('grupo-usuario');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="<?php echo url('grupo-usuario/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
-            <li><a href="<?php echo url("grupo-usuario/$model->codgrupousuario/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
-            <li>
-                <a href="{{ url("grupo-usuario/$model->codgrupousuario") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o grupo de usuário'{{ $model->grupousuario }}'?" data-after-delete="location.replace(baseUrl + '/grupo-usuario');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-            </li>
-        </ul>
-    </div>
-</nav>
 <ol class="breadcrumb header">
     {!! 
         titulo(
             $model->codgrupousuario,
-            $model->grupousuario,
+            [
+                url("grupo-usuario") => 'Grupos de Usuários',
+                $model->grupousuario,
+            ],
             $model->inativo
         ) 
     !!}
-    <button class="btn btn-primary pull-right" role="button" data-toggle="collapse" aria-expanded="false" id="expandir">
-        <span class='glyphicon glyphicon-resize-full'></span>
-    </button>
+    <li class='active'>
+        <small>
+            <a title="Novo" href="{{ url('grupo-usuario/create') }}"><i class="glyphicon glyphicon-plus"></i></a>
+            &nbsp;
+            <a title="Alterar" href="{{ url("grupo-usuario/$model->codgrupousuario/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
+            &nbsp;
+            <a title="Excluir" href="{{ url("grupo-usuario/$model->codgrupousuario") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o grupo de usuário'{{ $model->grupousuario }}'?" data-after-delete="location.replace(baseUrl + '/grupo-usuario');"><i class="glyphicon glyphicon-trash"></i></a>
+        </small>
+    </li>   
 </ol>
 @include('includes.autor')
 <?php		 

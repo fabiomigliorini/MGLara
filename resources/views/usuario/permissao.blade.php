@@ -1,33 +1,30 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="<?php echo url('usuario');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="<?php echo url('usuario/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
-            <li><a href="<?php echo url("usuario/$model->codusuario/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li>
-            <li><a href="<?php echo url("usuario/$model->codusuario");?>"><span class="glyphicon glyphicon-eye-open"></span> Detalhes</a></li> 
-            <li>
+<ol class="breadcrumb header">
+    {!! 
+        titulo(
+            $model->codusuario,
+            [
+                url("usuario") => 'Usuários',
+                url("usuario/$model->codusuario") => $model->usuario,
+                'Permissões',
+            ],
+            $model->inativo
+        ) 
+    !!} 
+    <li class='active'>
+        <small>
+            <a title="Novo" href="{{ url('usuario/create') }}"><i class="glyphicon glyphicon-plus"></i></a>
+            &nbsp;
+            <a title="Alterar" href="{{ url("marca/$model->codmarca/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
+            &nbsp;            
+            <a title="Detalhes" href="{{ url("usuario/$model->codusuario") }}"><i class="glyphicon glyphicon-eye-open"></i></a>
                 {!! Form::open(['method' => 'DELETE', 'route' => ['usuario.destroy', $model->codusuario]]) !!}
                 <span class="glyphicon glyphicon-trash"></span>
                 {!! Form::submit('Excluir') !!}
-                {!! Form::close() !!}
-            </li>
-        </ul>
-    </div>
-</nav>
-<ol class="breadcrumb header">
-{!! 
-    titulo(
-        $model->codusuario,
-        [
-            url("usuario") => 'Usuários',
-            url("usuario/$model->codusuario") => $model->usuario,
-            'Permissões',
-        ],
-        $model->inativo
-    ) 
-!!} 
+                {!! Form::close() !!}            
+        </small>
+    </li>   
 </ol>
 <hr>
 <div id="registros">

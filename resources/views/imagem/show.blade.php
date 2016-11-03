@@ -1,34 +1,26 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li>
-                <a href="{{ url('imagem') }}"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a>
-            </li>
-            @if(empty($model->inativo))
-            <li>
-                <a href="" id="inativo-imagem">
-                    <span class="glyphicon glyphicon-ban-circle"></span> Inativar
-                </a>
-            </li> 
-            @endif
-            @if($model->inativo)
-            <li>
-                <a href="{{ url("imagem/$model->codimagem") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a imagem '{{ $model->observacoes }}'?" data-after-delete="location.replace(baseUrl + '/imagem');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-            </li>
-            @endif
-        </ul>
-    </div>
-</nav>
 <ol class="breadcrumb header">
     {!! 
         titulo(
             $model->codimagem,
-            $model->observacoes,
+            [
+                url("imagem") => 'Imagens',
+                $model->observacoes
+            ],
             $model->inativo
         ) 
     !!}
+    <li class='active'>
+        <small>
+            @if(empty($model->inativo))
+            <a title="Inativar" href="" id="inativo-imagem"><i class="glyphicon glyphicon-ban-circle"></i></a>
+            &nbsp;
+            @else
+            <a title="Excluir" href="{{ url("imagem/$model->codimagem") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a imagem '{{ $model->observacoes }}'?" data-after-delete="location.replace(baseUrl + '/imagem');"><i class="glyphicon glyphicon-trash"></i></a>
+            @endif
+        </small>
+    </li>   
 </ol>
 @include('includes.autor')
 <div>

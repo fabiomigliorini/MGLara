@@ -1,25 +1,26 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="<?php echo url('permissao');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="<?php echo url('permissao/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
-            <li><a href="<?php echo url("permissao/$model->codpermissao/edit");?>"><span class="glyphicon glyphicon-pencil"></span> Alterar</a></li> 
-            <li>
-                <a href="{{ url("permissao/$model->codpermissao") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a permissao'{{ $model->observacoes }}'?" data-after-delete="location.replace(baseUrl + '/permissao');"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-            </li>
-        </ul>
-    </div>
-</nav>
 <ol class="breadcrumb header">
     {!! 
         titulo(
             $model->codpermissao,
-            $model->observacoes,
+            [
+                url("permissao") => 'Permissões',
+                $model->observacoes,
+            ],
             $model->inativo
         ) 
     !!}
+    <li class='active'>
+        <small>
+            <a title="Novo" href="{{ url('permissao/create') }}"><i class="glyphicon glyphicon-plus"></i></a>
+            &nbsp;
+            <a title="Alterar" href="{{ url("permissao/$model->codpermissao/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
+            &nbsp;
+            <a title="Excluir" href="{{ url("permissao/$model->codpermissao") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a permissao'{{ $model->observacoes }}'?" data-after-delete="location.replace(baseUrl + '/permissao');"><i class="glyphicon glyphicon-trash"></i></a>
+        </small>
+    </li>   
+    
 </ol>
 <hr>
 <div class="row">

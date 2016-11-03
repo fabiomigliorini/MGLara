@@ -1,14 +1,5 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li><a href="<?php echo url('usuario');?>"><span class="glyphicon glyphicon-list-alt"></span> Listagem</a></li>             
-            <li><a href="<?php echo url('usuario/create');?>"><span class="glyphicon glyphicon-plus"></span> Novo</a></li>             
-            <li><a href="<?php echo url("usuario/$model->codusuario");?>"><span class="glyphicon glyphicon-eye-open"></span> Detalhes</a></li> 
-        </ul>
-    </div>
-</nav>
 <ol class="breadcrumb header">
 {!! 
     titulo(
@@ -21,6 +12,13 @@
         $model->inativo
     ) 
 !!} 
+    <li class='active'>
+        <small>
+            <a title="Novo" href="{{ url('usuario/create') }}"><i class="glyphicon glyphicon-plus"></i></a>
+            &nbsp;
+            <a title="Detalhes" href="{{ url("usuario/$model->codusuario") }}"><i class="glyphicon glyphicon-eye-open"></i></a>
+        </small>
+    </li>   
 </ol>
 <hr>
 <br>

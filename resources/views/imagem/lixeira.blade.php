@@ -1,17 +1,5 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-    <div class="container-fluid"> 
-        <ul class="nav navbar-nav">
-            <li>
-                <a href="{{ url('imagem') }}"><i class="glyphicon glyphicon-list-alt"></i> Listagem</a>
-            </li> 
-            <li>
-                <a href="{{ url('imagem/esvaziar-lixeira') }}" id="esvaziar-lixeira"><i class="glyphicon glyphicon-trash"></i> Esvaziar</a>
-            </li> 
-        </ul>
-    </div>
-</nav>
 <ol class="breadcrumb header">
     {!! 
         titulo(
@@ -23,6 +11,12 @@
             null
         ) 
     !!}    
+    <li class='active'>
+        <small>
+            <a title="Esvaziar Lixeira" id="esvaziar-lixeira" href="{{ url('imagem/esvaziar-lixeira') }}"><i class="glyphicon glyphicon-trash"></i></a>
+        </small>
+    </li>      
+    
 </ol>
 <div id="registros">
     <div id="imagens" class="row">
@@ -34,7 +28,9 @@
         </div>          
     @endforeach
     @if (count($model) === 0)
-        <h3>Nenhuma imagem na lixeira!</h3>
+        <div class="col-md-12">
+            <h3>Nenhuma imagem na lixeira!</h3>
+        </div>
     @endif    
   </div>
   <?php echo $model->appends(Request::all())->render();?>
