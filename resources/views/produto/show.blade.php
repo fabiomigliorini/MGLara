@@ -39,21 +39,11 @@
 
 <br>
 <div class="col-md-6">
+    <a href="{{ url("/imagem/produto/$model->codproduto") }}">
+        Nova Imagem
+        <i class="glyphicon glyphicon-plus"></i> 
+    </a>
     <div class="pull-right">
-        <a href="{{ url("/imagem/produto/$model->codproduto") }}">
-            Nova Imagem
-            <i class="glyphicon glyphicon-plus"></i> 
-        </a>
-        &nbsp;
-        @if(count ($model->ImagemS) > 0)
-        <a href="{{ url("imagem/produto/$model->codproduto?imagem={$model->ImagemS->first()->codimagem}") }}">
-            <i class="glyphicon glyphicon-pencil"></i> 
-        </a>
-        &nbsp;
-        <a class="btn-delete" href="{{ url("imagem/produto/$model->codproduto/delete?imagem={$model->ImagemS->first()->codimagem}") }}">
-            <i class="glyphicon glyphicon-trash"></i> 
-        </a>
-        @endif
     </div>
     <br>
     <br>
@@ -391,6 +381,7 @@ $(document).ready(function() {
     $('.carousel').carousel({
         interval:5000
     });
+    /*
     $('.carousel').on('slid.bs.carousel', function (e) {
         var imagem = $(e.target).find('.active > img').attr('id');
         var produto = {{ $model->codproduto }};
@@ -398,6 +389,7 @@ $(document).ready(function() {
         $('.btn-detalhe').attr('href', baseUrl+'/imagem/produto/' +produto+ '?imagem=' + imagem);
         $('.btn-delete').attr('href', baseUrl+'/imagem/produto/' +produto+ '/delete?imagem=' + imagem);
     })    
+    */
     $('.btn-detalhe, .btn-delete').on('mouseenter', function() {
        $(".carousel").carousel('pause');
     });

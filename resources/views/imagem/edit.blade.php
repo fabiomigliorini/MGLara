@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <ol class="breadcrumb header">Enviar imagem</ol>
-<hr>
+<hr>TESTE
 <?php
 $id = 'cod'.strtolower($request->model);
 
