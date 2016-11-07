@@ -64,11 +64,26 @@
     </div>
 </div>
 
-
 <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
         {!! Form::submit('Enviar', array('class' => 'btn btn-primary')) !!}
     </div>
 </div>    
 {!! Form::close() !!}   
+@section('inscript')
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#form-imagem-produto').on("submit", function(e){
+        var currentForm = this;
+        e.preventDefault();
+        bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
+            if (result) {
+                currentForm.submit();
+            }
+        });
+    });   
+});
+</script>
+@endsection
+
 @stop

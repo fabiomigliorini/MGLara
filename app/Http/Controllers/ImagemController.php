@@ -113,20 +113,19 @@ class ImagemController extends Controller
 
     public function produtoDelete(Request $request, $id)
     {
-        try {
+        try{
             $model = Produto::find($id);
             $model->ImagemS()->detach($request->get('imagem'));
             
             $imagem = Imagem::find($request->get('imagem'));
             $imagem->inativo = Carbon::now();
             $imagem->save();
-            
-	    Session::flash('flash_delete', 'Imagem deletada!');
-	    return redirect("produto/$id"); 
+            $ret = ['resultado' => true, 'mensagem' => 'Imagem Excluída!'];
         }
         catch(\Exception $e){
-            return view('errors.fk');
-        }         
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir imagem!', 'exception' => $e];
+        }
+        return json_encode($ret);
     }
 
         /**

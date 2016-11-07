@@ -189,6 +189,9 @@ class ProdutoController extends Controller
         
         switch ($request->get('_div'))
         {
+            case 'div-imagens':
+                $view = 'produto.show-imagens';
+                break;
             case 'div-variacoes':
                 $view = 'produto.show-variacoes';
                 break;

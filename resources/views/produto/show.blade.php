@@ -39,18 +39,7 @@
 
 <br>
 <div class="col-md-6">
-    <a href="{{ url("/imagem/produto/$model->codproduto") }}">
-        Nova Imagem
-        <i class="glyphicon glyphicon-plus"></i> 
-    </a>
-    <div class="pull-right">
-    </div>
-    <br>
-    <br>
-    @include('produto.carousel')
-    <br>
-    <br>
-    <br>
+    @include('produto.show-imagens')
 </div>
     
 <div class="col-md-6">
@@ -374,54 +363,6 @@ $(document).ready(function() {
     
     $('#codproduto').change(function (){
         window.location.href = '{{ url("produto/") }}' + $('#codproduto').val();
-    });
-    
-    // IMAGENS
-    $('.carousel-inner .item').first().addClass('active');
-    $('.carousel').carousel({
-        interval:5000
-    });
-    /*
-    $('.carousel').on('slid.bs.carousel', function (e) {
-        var imagem = $(e.target).find('.active > img').attr('id');
-        var produto = {{ $model->codproduto }};
-        //$('.btn-detalhe').attr('href', baseUrl+'/imagem/'+imagem);
-        $('.btn-detalhe').attr('href', baseUrl+'/imagem/produto/' +produto+ '?imagem=' + imagem);
-        $('.btn-delete').attr('href', baseUrl+'/imagem/produto/' +produto+ '/delete?imagem=' + imagem);
-    })    
-    */
-    $('.btn-detalhe, .btn-delete').on('mouseenter', function() {
-       $(".carousel").carousel('pause');
-    });
-    $('.btn-detalhe, .btn-delete').on('mouseleave', function() {
-       $(".carousel").carousel('cycle');
-    });
-    $('.btn-delete').click(function (e) {
-        e.preventDefault();
-        var url = $('.btn-delete').attr('href');
-        bootbox.confirm("Tem certeza que deseja deletar essa imagem", function(result) {
-            if (result) {
-                window.location.href = url;
-            }
-        }); 
-    });
-    
-    $('#produto-busca-barras').on('submit', function(e) {
-        e.preventDefault();
-        $.post(baseUrl + '/produto/busca-barras', {
-            barras: $('#barras').val(),
-            _token: '{{ csrf_token() }}'
-        }).done(function(data) {
-            if(data.length > 0) {
-                var codproduto = JSON.stringify(data[0].codproduto);
-                var variacao = JSON.stringify(data[0].variacao).replace('"', '').replace('"', '');
-                window.location.href = '{{ url('produto') }}/' + codproduto + '?v=' + variacao
-            } else {
-                alert( "Nenhum produto encontrado" );
-            }
-        }).fail(function() {
-            alert( "Erro ao procurar produto" );
-        });
     });
     
     $('#integracao-open-cart').click(function (e) {
