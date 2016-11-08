@@ -99,10 +99,16 @@ class MarcaController extends Controller
     {
         $model = Marca::findOrFail($id);
         $model->fill($request->all());
-        if (!$model->validate())
-            $this->throwValidationException($request, $model->_validator);
-        $model->save();
+        
+        if(is_null($request->input('site'))) {
+            $model->site = FALSE;
+        }
 
+        if (!$model->validate()) {
+            $this->throwValidationException($request, $model->_validator);
+        }
+
+        $model->save();
         Session::flash('flash_success', "Marca '{$model->marca}' Atualizada!");
         return redirect("marca/$model->codmarca");         
     }

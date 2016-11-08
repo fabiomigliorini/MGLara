@@ -264,15 +264,11 @@ class ProdutoController extends Controller
         $model = Produto::findOrFail($id);
         $model->fill($request->all());
         
-        if ($request->input('importado') == 1) {
-            $model->importado = TRUE;
-        } else {
+        if(is_null($request->input('importado'))) {
             $model->importado = FALSE;
         }
-
-        if ($request->input('site') == 1) {
-            $model->site = TRUE;
-        } else {
+        
+        if(is_null($request->input('site'))) {
             $model->site = FALSE;
         }
 

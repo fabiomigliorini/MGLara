@@ -9,7 +9,7 @@
 
     <div class="form-group">
         <label for="site" class="col-sm-2 control-label">{!! Form::label('Disponível no Site:') !!}</label>
-        <div class="col-sm-9" id="wrapper-site">{!! Form::checkbox('site', null, null, ['id'=>'site', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+        <div class="col-sm-9" id="wrapper-site">{!! Form::checkbox('site', true, null, ['id'=>'site', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
     </div>
 
 
@@ -40,16 +40,7 @@ $(document).ready(function() {
             }
         });
     });
-    $('#site').bootstrapSwitch('state', <?php echo ($model->site == 1 ? 'true' : 'false'); ?>);
-    $('input[name="site"]').on('switchChange.bootstrapSwitch', function(event, state) {
-        var valor;
-        if (state === true) {
-          valor = 1;
-        } else {
-          valor = 0;
-        }
-        $('#site').val(valor);
-    });
+    $('#site').bootstrapSwitch();    
     $('#marca').Setcase();     
 });
 </script>
