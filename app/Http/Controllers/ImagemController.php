@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
+use MGLara\Library\SlimImageCropper\Slim;
+
 class ImagemController extends Controller
 {
     public function __construct()
@@ -64,13 +66,38 @@ class ImagemController extends Controller
     
     public function produtoStore(Request $request, $id)
     {
+        
+        // Carrega Model do Produto
         $model = Produto::find($id);
-        $codimagem = Input::file('imagem');
-        $extensao = $codimagem->getClientOriginalExtension();
-       
+        
+        // Carrega Imagens do SLIM
+        $images = Slim::getImages();
+        if (!isset($images[0])) {
+            abort(500, 'Nenhuma imagem informada!');
+        }
+        $image = $images[0];
+        
+        // Se tipo for diferente de JPEG
+        if ($image['input']['type'] != 'image/jpeg') {
+            abort(500, 'Imagem deve ser um JPEG!');
+        }
+        
+        // Salva para ganhar o ID
         $imagem = new Imagem();
         $imagem->save();
         
+        // Grava nome do arquivo nas observacoes
+        $arquivo = "{$imagem->codimagem}.jpg";
+        $imagem->observacoes = $arquivo;
+        $imagem->save();
+        
+        // Anexa imagem ao produto
+        $model->ImagemS()->attach($imagem->codimagem);
+        
+        // Salva o arquivo
+        Slim::saveFile($image['output']['data'], $arquivo, './public/imagens', false);
+        
+        // Se havia alguma imagem para inativar
         if($request->get('imagem')) {
             $imagem_inativa = Imagem::find($request->get('imagem'));
             $imagem_inativa->inativo = Carbon::now();
@@ -78,35 +105,27 @@ class ImagemController extends Controller
             $model->ImagemS()->detach($request->get('imagem'));
         }
         
-        $imagem_update = Imagem::findOrFail($imagem->codimagem);
-        $imagem_update->observacoes = $imagem->codimagem.'.'.$extensao;
-        $imagem_update->save();
-        
-        $diretorio = './public/imagens';
-        $arquivo = $imagem->codimagem.'.'.$extensao;       
-        
-        $codimagem->move($diretorio, $arquivo);    
-        $model->ImagemS()->attach($imagem->codimagem);
+        // Redireciona
         Session::flash('flash_update', 'Imagem inserida.');
         return redirect("produto/$id"); 
+        
     }
 
     public function produtoDelete(Request $request, $id)
     {
-        try {
+        try{
             $model = Produto::find($id);
             $model->ImagemS()->detach($request->get('imagem'));
             
             $imagem = Imagem::find($request->get('imagem'));
             $imagem->inativo = Carbon::now();
             $imagem->save();
-            
-	    Session::flash('flash_delete', 'Imagem deletada!');
-	    return redirect("produto/$id"); 
+            $ret = ['resultado' => true, 'mensagem' => 'Imagem Excluída!'];
         }
         catch(\Exception $e){
-            return view('errors.fk');
-        }         
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir imagem!', 'exception' => $e];
+        }
+        return json_encode($ret);
     }
 
         /**

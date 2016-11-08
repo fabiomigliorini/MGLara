@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <ol class="breadcrumb header">Enviar imagem</ol>
-<hr>
+<hr>TESTE
 <?php
 $id = 'cod'.strtolower($request->model);
 
@@ -12,7 +12,8 @@ $id = 'cod'.strtolower($request->model);
     'action' => ['ImagemController@update', $model->$id, 'model' => $request->model],
     'files'=>true 
 ]) !!}
-    @include('errors.form_error')
+
+@include('errors.form_error')
     
 <div class="form-group">
     <label for="usuario" class="col-sm-2 control-label">
@@ -23,9 +24,9 @@ $id = 'cod'.strtolower($request->model);
     </div>
 </div>
 <div class="form-group">
-	<div class="col-sm-offset-2 col-sm-10">
-  {!! Form::submit('Enviar', array('class' => 'btn btn-primary')) !!}
-  </div>
+    <div class="col-sm-offset-2 col-sm-10">
+        {!! Form::submit('Enviar', array('class' => 'btn btn-primary')) !!}
+    </div>
 </div>    
 {!! Form::close() !!}   
 @stop
