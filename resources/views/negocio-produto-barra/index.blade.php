@@ -7,10 +7,10 @@
         {!! Form::text('npb_lancamento_ate', null, ['class' => 'form-control between', 'id' => 'npb_lancamento_ate', 'placeholder' => 'Até']) !!}
     </div>
     <div class="form-group">
-        {!! Form::select('npb_codfilial', $filiais, ['style'=>'width:100px'], ['id'=>'npb_codfilial']) !!}
+        {!! Form::select('npb_codfilial', $filiais, null, ['style'=>'width:100px', 'id'=>'npb_codfilial']) !!}
     </div>  
     <div class="form-group">
-        {!! Form::select('npb_codnaturezaoperacao', $naturezaop, ['style'=>'width:100px'], ['id' => 'npb_codnaturezaoperacao']) !!}
+        {!! Form::select('npb_codnaturezaoperacao', $naturezaop, null, ['style'=>'width:100px', 'id' => 'npb_codnaturezaoperacao']) !!}
     </div>
     <div class="form-group">
       <input type="text" name="npb_codpessoa" id="npb_codpessoa" class="form-control search-pessoa" />

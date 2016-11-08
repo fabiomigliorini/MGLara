@@ -11,7 +11,7 @@ use MGLara\Models\Filial;
 </div>
 <div class="form-group">
     <label for="codfilial" class="col-sm-2 control-label">{!! Form::label('Banco:') !!}</label>
-    <div class="col-sm-2">{!! Form::select('codbanco', $bancos, ['class'=> 'form-control'], ['id' => 'codbanco', 'style'=>'width:100%']) !!}</div>
+    <div class="col-sm-2">{!! Form::select('codbanco', $bancos, null, ['class'=> 'form-control', 'id' => 'codbanco', 'style'=>'width:100%']) !!}</div>
 </div>
 <div class="form-group">
     <label class="col-sm-2 control-label">{!! Form::label('Agencia:') !!}</label>
@@ -31,11 +31,11 @@ use MGLara\Models\Filial;
 </div>
 <div class="form-group">
     <label for="site" class="col-sm-2 control-label">{!! Form::label('Emitir boleto:') !!}</label>
-    <div class="col-sm-10" id="wrapper-site">{!! Form::checkbox('emiteboleto', null, null, ['id'=>'emiteboleto', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+    <div class="col-sm-10" id="wrapper-site">{!! Form::checkbox('emiteboleto', true, null, ['id'=>'emiteboleto', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
 </div>
 <div class="form-group">
     <label for="codfilial" class="col-sm-2 control-label">{!! Form::label('Filial:') !!}</label>
-    <div class="col-sm-2">{!! Form::select('codfilial', $filiais, ['class'=> 'form-control'], ['id' => 'codfilial', 'style'=>'width:100%']) !!}</div>
+    <div class="col-sm-2">{!! Form::select('codfilial', $filiais, null, ['class'=> 'form-control', 'id' => 'codfilial', 'style'=>'width:100%']) !!}</div>
 </div>
 <div class="form-group">
     <label class="col-sm-2 control-label">{!! Form::label('Convênio:') !!}</label>
@@ -83,16 +83,7 @@ $(document).ready(function() {
         allowClear: true,
         closeOnSelect: true
     })<?php echo (isset($model->codbanco) ? ".select2('val', $model->codbanco);" : ';');?>
-    $('#emiteboleto').bootstrapSwitch('state', <?php echo ($model->emiteboleto == 1 ? 'true' : 'false'); ?>);
-    $('input[name="emiteboleto"]').on('switchChange.bootstrapSwitch', function(event, state) {
-        var valor;
-        if (state === true) {
-          valor = 1;
-        } else {
-          valor = 0;
-        }
-        $('#emiteboleto').val(valor);
-    });    
+    $('#emiteboleto').bootstrapSwitch();
 });
 </script>
 @endsection

@@ -80,7 +80,7 @@
 <div class="form-group">
     {!! Form::label('impressoratelanegocio', 'Impressora tela negócio', ['class' => 'col-sm-2 control-label']) !!}  
     <div class="col-sm-3">
-        {!! Form::select('impressoratelanegocio', $printers, ['class'=> 'form-control'], ['id'=>'impressoratelanegocio']) !!}
+        {!! Form::select('impressoratelanegocio', $printers, null, ['class'=> 'form-control', 'id'=>'impressoratelanegocio']) !!}
     </div>
 </div>
 -->
