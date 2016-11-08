@@ -99,6 +99,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('sub-grupo-produto','SubGrupoProdutoController');
 
     /* Produto */
+    Route::get('produto/quiosque','ProdutoController@quiosque');
+    Route::get('produto/consulta/{barras}','ProdutoController@consulta');
     Route::get('produto/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');
     Route::resource('produto/busca-barras','ProdutoController@buscaPorBarras');
     Route::resource('produto/listagem-json','ProdutoController@listagemJsonProduto');

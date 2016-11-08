@@ -39,16 +39,15 @@
     <style>
         /* Distancia Menu superior */
         body {
-            padding-top: 65px;
+            padding-top: 15px;
         }
     </style>
     @yield('inscript')
   </head>
 
   <body>
-    <header class="row">
-        @include('includes.header')
-    </header>
+    <script src="/MGLara/public/vendor/vuejs/vue.js"></script>
+    <script src="/MGLara/public/vendor/vuejs/vue-resource.min.js"></script>
     <div class="container-fluid">
       @include('errors.flash')
       @yield('content')

@@ -625,4 +625,27 @@ class ProdutoController extends Controller
         }
         return response()->json($retorno);
     }
+    
+    public function consulta (Request $request, $barras) 
+    {
+        
+        if (!$prod = ProdutoBarra::buscaPorBarras($barras)) {
+            return [
+                'resultado' => false, 
+                'mensagem' => 'Nenhum produto localizado!', 
+            ];
+        }
+        
+        return [
+            'resultado' => true,
+            'produto' => $prod->Produto,
+        ];
+        //dd($prod);
+    }
+    
+    public function quiosque (Request $request)
+    {
+        return view('produto.quiosque');
+    }
+    
 }

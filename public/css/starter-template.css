@@ -1,9 +1,4 @@
 
-/* Distancia Menu superior */
-body {
-    padding-top: 65px;
-}
-
 /* Sempre mostrar scroll */
 html {
     overflow: -moz-scrollbars-vertical; 
