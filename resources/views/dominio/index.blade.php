@@ -1,45 +1,31 @@
 @extends('layouts.default')
 @section('content')
-<nav class="navbar navbar-default" id="submenu">
-	<div class="container-fluid"> 
-		<ul class="nav navbar-nav">
-			<li>
-			</li> 
-		</ul>
-	</div>
-</nav>
 <ol class="breadcrumb header">Exportação Domínio</ol>
 <hr>
 <form class='form-horizontal'>
-
 <?php
-
 use MGLara\Models\Filial;
 $filiais = [''=>''] + Filial::orderBy('codfilial')->lists('filial', 'codfilial')->all();
 
 ?>
-    
 <div class="form-group">
-    <label for="codfilial" class="col-sm-2 control-label">
-        {!! Form::label('codfilial', 'Filial') !!}
-    </label>
+    {!! Form::label('codfilial', 'Filial', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-md-2 col-xs-4">
-        {!! Form::select('codfilial', $filiais, ['class'=> 'form-control'], ['style'=>'width:100%', 'id'=>'codfilial']) !!}
-  </div>
+        {!! Form::select('codfilial', $filiais, null, ['class'=> 'form-control', 'style'=>'width:100%', 'id'=>'codfilial']) !!}
+    </div>
 </div>
-    
-    
+
 <div class="form-group">
-    <label for="mes" class="col-sm-2 control-label">
-        {!! Form::label('chkEstoque', 'chkEstoque') !!}
-    </label>
+    {!! Form::label('chkEstoque', 'chkEstoque',['class'=>'col-sm-2 control-label']) !!}
     <div class="col-md-2 col-xs-4">
-        <div class='pull-left'>
-            {!! Form::checkbox('chkEstoque', null, ['class'=> 'form-control text-center', 'id'=>'chkEstoque']) !!}
-        </div>
-        <div>
-            {!! Form::text('mes', null, ['class'=> 'form-control text-center', 'id'=>'mes', 'required'=>'required']) !!}
-        </div>
+        {!! Form::checkbox('chkEstoque', true, null, ['id'=>'chkEstoque', 'class'=> 'form-control', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}
+    </div>
+</div>
+
+<div class="form-group">
+    {!! Form::label('mes', 'Mês', ['class'=>'col-sm-2 control-label']) !!}
+    <div class="col-md-2 col-xs-4">
+        {!! Form::text('mes', null, ['class'=> 'form-control text-center', 'id'=>'mes', 'required'=>'required']) !!}
     </div>
 </div>
 
@@ -124,7 +110,7 @@ $(document).ready(function() {
         $('#pbProcessando').css('width', '0%');        
         estoque();
     });
-
+    $('#chkEstoque').bootstrapSwitch();
 });
 </script>
 @endsection

@@ -20,7 +20,7 @@
         {!! Form::text('portador', null, ['class' => 'form-control', 'placeholder' => 'Portador']) !!}
     </div>
     <div class="form-group">
-        <div style="width: 180px">{!! Form::select('codbanco', $bancos, ['class'=> 'form-control'], ['id' => 'codbanco', 'style'=>'width:100%']) !!}</div>
+        <div style="width: 180px">{!! Form::select('codbanco', $bancos, null, ['class'=> 'form-control', 'id' => 'codbanco', 'style'=>'width:100%']) !!}</div>
     </div>
     <button type="submit" class="btn btn-default">Buscar</button>
 {!! Form::close() !!}
