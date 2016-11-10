@@ -1,84 +1,86 @@
 <div class='col-md-5'>
     <div class="form-group">
-        <label for="codtipoproduto" class="col-sm-3 control-label">{!! Form::label('Tipo:') !!}</label>
+        {!! Form::label('codtipoproduto', 'Tipo', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-6">{!! Form::select2TipoProduto('codtipoproduto', null, ['required' => true,  'class'=> 'form-control', 'id' => 'codtipoproduto', 'style'=>'width:100%', 'placeholder'=>'Tipo']) !!}</div>
     </div>
     
     <div class="form-group">
-        <label for="codmarca" class="col-sm-3 control-label">Marca</label>
+        {!! Form::label('codmarca', 'Marca', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-5">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%', 'required'=>true]) !!}</div>    
     </div>
     
     <div class="form-group">
-        <label for="codsecaoproduto" class="col-sm-3 control-label">Seção</label>
+        {!! Form::label('codsecaoproduto', 'Seção', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-6">{!! Form::select2SecaoProduto('codsecaoproduto', null, ['required' => true, 'class'=> 'form-control', 'id' => 'codsecaoproduto', 'style'=>'width:100%', 'placeholder' => 'Seção']) !!}</div>
 
     </div>
 
     <div class="form-group">
-        <label for="codfamiliaproduto" class="col-sm-3 control-label">Família</label>
+        {!! Form::label('codfamiliaproduto', 'Família', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-6">{!! Form::select2FamiliaProduto('codfamiliaproduto', null, ['required' => true, 'class' => 'form-control','id'=>'codfamiliaproduto', 'style'=>'width:100%', 'placeholder' => 'Família', 'codsecaoproduto'=>'codsecaoproduto']) !!}</div>
     </div>
 
     <div class="form-group">
-        <label for="codgrupoproduto" class="col-sm-3 control-label">Grupo Produto</label>
+        {!! Form::label('codgrupoproduto', 'Grupo Produto', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-6">{!! Form::select2GrupoProduto('codgrupoproduto', null, ['required' => true, 'class' => 'form-control','id'=>'codgrupoproduto', 'style'=>'width:100%', 'placeholder' => 'Grupo', 'codfamiliaproduto'=>'codfamiliaproduto']) !!}</div>
     </div>
 
     <div class="form-group">
-        <label for="codsubgrupoproduto" class="col-sm-3 control-label">Sub Grupo</label>
+        {!! Form::label('codsubgrupoproduto', 'Sub Grupo', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-6">{!! Form::select2SubGrupoProduto('codsubgrupoproduto', null, ['required' => true, 'class' => 'form-control','id'=>'codsubgrupoproduto', 'style'=>'width:100%', 'placeholder' => 'Sub Grupo', 'codgrupoproduto'=>'codgrupoproduto']) !!}</div>        
     </div>
+
     <div class="form-group">
-        <label for="ncm" class="col-sm-3 control-label">{!! Form::label('NCM:') !!}</label>
+        {!! Form::label('codncm', 'NCM', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9">{!! Form::select2Ncm('codncm', null, ['required' => true, 'class' => 'form-control','id'=>'codncm', 'style'=>'width:100%', 'placeholder' => 'NCM']) !!}</div>
     </div>
     
     <div class="form-group">
-        <label for="codtributacao" class="col-sm-3 control-label">{!! Form::label('Tributação:') !!}</label>
+        {!! Form::label('codtributacao', 'Tributação', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-4">{!! Form::select2Tributacao('codtributacao', null, ['required' => true, 'placeholder'=>'Tributação',  'class'=> 'form-control', 'id' => 'codtributacao', 'style'=>'width:100%']) !!}</div>
     </div>
 
     <div class="form-group">
-        <label for="codcest" class="col-sm-3 control-label">{!! Form::label('CEST:') !!}</label>
+        {!! Form::label('codcest', 'CEST', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9">{!! Form::select2Cest('codcest', null, ['class' => 'form-control','id'=>'codcest', 'style'=>'width:100%', 'placeholder' => 'CEST', 'codncm'=>'codncm']) !!}</div>
     </div>
 
 </div>
+
 <div class='col-md-7'>
     <div class="form-group">
-        <label for="produto" class="col-sm-3 control-label">{!! Form::label('Descrição:') !!}</label>
+        {!! Form::label('produto', 'Descrição', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9" id="produto-descricao">{!! Form::text('produto', null, ['class'=> 'typeahead form-control', 'id'=>'produto', 'data-provide'=>'typeahead', 'required'=>'true', 'autocomplete'=>'off']) !!}</div>
     </div>
 
     <div class="form-group">
-        <label for="referencia" class="col-sm-3 control-label">{!! Form::label('Referência:') !!}</label>
+        {!! Form::label('referencia', 'Referência', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-5">{!! Form::text('referencia', null, ['class'=> 'form-control'], ['id'=>'referencia']) !!}</div>
     </div>
 
     <div class="form-group">
-        <label for="preco" class="col-sm-3 control-label">{!! Form::label('Preço:') !!}</label>
+        {!! Form::label('codunidademedida', 'Preço', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-2">{!! Form::text('preco', null, ['required' => true, 'class'=> 'form-control text-right', 'id'=>'preco']) !!}</div>
         <div class="col-sm-3">{!! Form::select2UnidadeMedida('codunidademedida', null, ['required' => true,  'class'=> 'form-control', 'campo' => 'unidademedida', 'id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
     </div>
 
     <div class="form-group">
-        <label for="observacoes" class="col-sm-3 control-label">{!! Form::label('Observações:') !!}</label>
+        {!! Form::label('observacoes', 'Observações', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9">{!! Form::textarea('observacoes', null, ['class'=> 'form-control', 'id'=>'observacoes', 'rows'=>'3']) !!}</div>
     </div>
     
     <div class="form-group">
-        <label for="importado" class="col-sm-3 control-label">{!! Form::label('Importado:') !!}</label>
+        {!! Form::label('importado', 'Importado', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9" id="wrapper-importado">{!! Form::checkbox('importado', true, null, ['id'=>'importado', 'data-off-text' => 'Nacional', 'data-on-text' => 'Importado']) !!}</div>
     </div>
 
     <div class="form-group">
-        <label for="site" class="col-sm-3 control-label">{!! Form::label('Disponível no Site:') !!}</label>
+        {!! Form::label('site', 'Disponível no Site', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9" id="wrapper-site">     {!! Form::checkbox('site', true, null, ['id'=>'site', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
     </div>
 
     <div class="form-group">
-        <label for="descricaosite" class="col-sm-3 control-label">{!! Form::label('Descrição Site:') !!}</label>
+        {!! Form::label('descricaosite', 'Descrição Site', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9">{!! Form::textarea('descricaosite', null, ['class'=> 'form-control', 'id'=>'descricaosite', 'rows'=>'4']) !!}</div>
     </div>
 </div>
