@@ -120,11 +120,12 @@ class TipoProdutoController extends Controller
     {
         try{
             TipoProduto::find($id)->delete();
-            Session::flash('flash_delete', 'Registro deletado!');
-            return Redirect::route('tipo-produto.index');
+            $ret = ['resultado' => true, 'mensagem' => 'Tipo de produto excluído com sucesso!'];
         }
         catch(\Exception $e){
-            return view('errors.fk');
-        }     
-    }
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir tipo de produto!', 'exception' => $e];
+        }
+        return json_encode($ret);
+    }    
+    
 }

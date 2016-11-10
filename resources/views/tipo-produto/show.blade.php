@@ -16,10 +16,8 @@
             <a title="Novo Tipo" href="{{ url('tipo-produto/create') }}"><span class="glyphicon glyphicon-plus"></span></a>
             &nbsp;
             <a title="Alterar" href="{{ url("tipo-produto/$model->codtipoproduto/edit") }}"><span class="glyphicon glyphicon-pencil"></span></a>
-            {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['tipo-produto.destroy', $model->codtipoproduto]]) !!}
-            <i class="glyphicon glyphicon-trash"></i>
-            {!! Form::submit('Excluir') !!}
-            {!! Form::close() !!}
+            &nbsp;
+            <a href="{{ url("tipo-produto/$model->codtipoproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o tipo de produto '{{ $model->tipoproduto }}'?" data-after-delete="location.replace(baseUrl + '/tipo-produto');"><i class="glyphicon glyphicon-trash"></i></a>
         </small>
     </li>   
 </ol>
@@ -42,4 +40,12 @@
 </div>
 <hr>
 @include('includes.autor')
+@section('inscript')
+<script type="text/javascript">
+$(document).ready(function() {
+    
+    
+});
+</script>
+@endsection
 @stop
