@@ -120,11 +120,11 @@ class UnidadeMedidaController extends Controller
     {
         try{
             UnidadeMedida::find($id)->delete();
-            Session::flash('flash_delete', 'Registro deletado!');
-            return Redirect::route('unidade-medida.index');
+            $ret = ['resultado' => true, 'mensagem' => 'Unidade de medida excluída com sucesso!'];
         }
         catch(\Exception $e){
-            return view('errors.fk');
-        }     
-    }
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir unidade de medida!', 'exception' => $e];
+        }
+        return json_encode($ret);
+    }    
 }
