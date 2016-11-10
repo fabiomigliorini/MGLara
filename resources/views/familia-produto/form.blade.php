@@ -1,9 +1,6 @@
-<?php
-    //
-?>
 <div class="form-group">
-    <label for="produto" class="col-sm-2 control-label">{!! Form::label('Família de produto:') !!}</label>
-    <div class="col-sm-3">{!! Form::text('familiaproduto', null, ['class'=> 'form-control', 'id'=>'familiaproduto']) !!}</div>
+    {!! Form::label('familiaproduto', 'Família de produto:', ['class'=>'col-sm-2 control-label']) !!}
+    <div class="col-sm-3">{!! Form::text('familiaproduto', null, ['required' => true, 'class'=> 'form-control', 'id'=>'familiaproduto']) !!}</div>
 </div>
 <hr>
 <div class="form-group">
@@ -24,7 +21,6 @@ $(document).ready(function() {
             }
         });
     });
-    $('#familiaproduto').prop('required', true);
     $("#familiaproduto").Setcase();
 });
 </script>

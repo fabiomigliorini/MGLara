@@ -402,7 +402,7 @@ $(document).ready(function() {
                     } else {
                         var mensagem = '<strong class="text-danger">'+data.mensagem+'</strong>';
                         mensagem += '<hr><pre>';
-                        mensagem += JSON.stringify(mensagem, undefined, 2);
+                        mensagem += JSON.stringify(data.exception, undefined, 2);
                         mensagem += '</pre>';                        
                         bootbox.alert(mensagem);
                         console.log(data.resultado);
