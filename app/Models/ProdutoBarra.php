@@ -8,6 +8,7 @@ namespace MGLara\Models;
  * @property  bigint                         $codproduto                         NOT NULL
  * @property  bigint                         $codprodutovariacao                 NOT NULL
  * @property  varchar(50)                    $barras                             NOT NULL
+ * @property  varchar(50)                    $referencia
  * @property  bigint                         $codprodutovariacao                 
  * @property  bigint                         $codprodutoembalagem                
  * @property  timestamp                      $alteracao                          
@@ -20,6 +21,7 @@ namespace MGLara\Models;
  * @property  Produto                        $Produto                       
  * @property  ProdutoVariacao                $ProdutoVariacao               
  * @property  ProdutoEmbalagem               $ProdutoEmbalagem              
+ * @property  UnidadeMedida                  $UnidadeMedida
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
  *
@@ -65,12 +67,6 @@ class ProdutoBarra extends MGModel
         return parent::validate();
     } 
     
-    // Chaves Estrangeiras
-    public function Marca()
-    {
-        return $this->belongsTo(Marca::class, 'codmarca', 'codmarca');
-    }
-
     public function Produto()
     {
         return $this->belongsTo(Produto::class, 'codproduto', 'codproduto');
@@ -210,5 +206,53 @@ class ProdutoBarra extends MGModel
         
         return parent::save();
         
-    }    
+    }
+    
+    public function descricao()
+    {
+        $descr = "{$this->Produto->produto} {$this->ProdutoVariacao->variacao}";
+        if (!empty($this->codprodutoembalagem)) {
+            $quant = formataNumero($this->ProdutoEmbalagem->quantidade, 0);
+            $descr = "{$descr} C/{$quant}";
+        }
+        return trim($descr);
+    }
+    
+    public function UnidadeMedida()
+    {
+        if (!empty($this->codprodutoembalagem)) {
+            return $this->ProdutoEmbalagem->UnidadeMedida();
+        } 
+        return $this->Produto->UnidadeMedida();
+    }
+    
+    public function referencia()
+    {
+        if (!empty($this->referencia)) {
+            return $this->referencia;
+        }
+        if (!empty($this->ProdutoVariacao->referencia)) {
+            return $this->ProdutoVariacao->referencia;
+        } 
+        return $this->Produto->referencia;
+    }
+
+    public function Marca()
+    {
+        if (!empty($this->ProdutoVariacao->codmarca)) {
+            return $this->ProdutoVariacao->Marca();
+        } 
+        return $this->Produto->Marca();
+    }
+
+    public function Preco()
+    {
+        if (!empty($this->codprodutoembalagem)) {
+            if (empty($this->ProdutoEmbalagem->preco)) {
+                return $this->ProdutoEmbalagem->quantidade * $this->produto->preco;
+            }
+            return (float) $this->ProdutoEmbalagem->preco;
+        }
+        return (float) $this->Produto->preco;
+    }
 }

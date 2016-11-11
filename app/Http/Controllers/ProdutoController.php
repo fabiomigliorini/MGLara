@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
+use URL;
 
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\Produto;
@@ -625,16 +626,109 @@ class ProdutoController extends Controller
     public function consulta (Request $request, $barras) 
     {
         
-        if (!$prod = ProdutoBarra::buscaPorBarras($barras)) {
+        if (!$barras = ProdutoBarra::buscaPorBarras($barras)) {
             return [
                 'resultado' => false, 
                 'mensagem' => 'Nenhum produto localizado!', 
             ];
         }
         
+        // Imagens
+        $imagens = [];
+        foreach ($barras->Produto->ImagemS as $imagem) {
+            $imagens[$imagem->codimagem] = [
+                'codimagem' => $imagem->codimagem,
+                'url' => URL::asset('public/imagens/'.$imagem->observacoes),
+            ];
+        }
+        
+        // Variacoes
+        $variacoes = [];
+        foreach ($barras->Produto->ProdutoVariacaoS as $pv) {
+            $produtobarras = [];
+            foreach ($pv->ProdutoBarraS as $pb) {
+                $produtobarras[$pb->codprodutobarra] = [
+                    'codprodutobarra' => $pb->codprodutobarra,
+                    'codprodutoembalagem' => $pb->codprodutoembalagem,
+                    'barras' => $pb->barras,
+                    'detalhes' => $pb->variacao,
+                    'referencia' => $pb->referencia,
+                    'unidademedida' => $pb->UnidadeMedida->sigla,
+                    'quantidade' => (!empty($pb->codprodutoembalagem)?(float)$pb->ProdutoEmbalagem->quantidade:null),
+                ];
+            }
+            $variacoes[$pv->codprodutovariacao] = [
+                'codprodutovariacao' => $pv->codprodutovariacao,
+                'referencia' => $pv->referencia,
+                'marca' => (!empty($pv->codmarca)?$pv->Marca->marca:null),
+                'variacao' => $pv->variacao,
+                'barras' => $produtobarras,
+            ];
+        }
+        
+        // Embalagens
+        $embalagens = [];
+        foreach ($barras->Produto->ProdutoEmbalagemS as $embalagem) {
+            $embalagens[$embalagem->codprodutoembalagem] = [
+                'codprodutoembalagem' => $embalagem->codprodutoembalagem,
+                'quantidade' => (float)$embalagem->quantidade,
+                'preco' => (float)(!empty($embalagem->preco)?$embalagem->preco:$embalagem->quantidade * $barras->Produto->preco),
+                'precocalculado' => empty($embalagem->preco),
+            ];
+        }
+        
+        $produto = [
+            'codproduto' => $barras->codproduto,
+            'codprodutobarra' => $barras->codprodutobarra,
+            'produto' => $barras->descricao(),
+            'unidademedida' => $barras->UnidadeMedida->unidademedida,
+            'referencia' => $barras->referencia(),
+            'marca' => [
+                'codmarca' => $barras->Marca->codmarca,
+                'marca' => $barras->Marca->marca,
+                'url' => (!empty($barras->Marca->codimagem)?URL::asset('public/imagens/'.$barras->Marca->Imagem->observacoes):null),
+            ],
+            'codmarca' => $barras->Marca->codmarca,
+            'codsubgrupoproduto' => $barras->Produto->codsubgrupoproduto,
+            'subgrupoproduto' => $barras->Produto->SubGrupoProduto->subgrupoproduto,
+            'codgrupoproduto' => $barras->Produto->SubGrupoProduto->codgrupoproduto,
+            'grupoproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->grupoproduto,
+            'codfamiliaproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->codfamiliaproduto,
+            'familiaproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->familiaproduto,
+            'codsecaoproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto,
+            'secaoproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->secaoproduto,
+            'preco' => $barras->preco(),
+            'imagens' => $imagens,
+            'variacoes' => $variacoes,
+            'embalagens' => $embalagens,
+            /*
+            variacoes: [
+            codprodutovariacao,
+            variacao,
+            referencia,
+            barras: [
+            codprodutobarra,
+            unidademedida
+            quantidade,
+            preco,
+            barras
+            ]
+            ]
+            estoque: [
+            codestoquesaldo,
+            codestoquelocal,
+            estoquelocal,
+            saldoquantidade,
+            ]
+             * 
+             */
+            
+        ];
+        
+        
         return [
             'resultado' => true,
-            'produto' => $prod->Produto,
+            'produto' => $produto,
         ];
         //dd($prod);
     }
