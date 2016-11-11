@@ -1,22 +1,17 @@
 <div class="form-group">
-    <label for="usuario" class="col-sm-2 control-label">
-        {!! Form::label('Marca', 'Marca:') !!}
-    </label>    
+    {!! Form::label('marca', 'Marca:', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-md-3 col-xs-4">
         {!! Form::text('marca', null, ['class'=> 'form-control', 'id'=>'marca', 'required'=>'required']) !!}
     </div>
 </div>
 
-    <div class="form-group">
-        <label for="site" class="col-sm-2 control-label">{!! Form::label('Disponível no Site:') !!}</label>
-        <div class="col-sm-9" id="wrapper-site">{!! Form::checkbox('site', true, null, ['id'=>'site', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
-    </div>
-
+<div class="form-group">
+    {!! Form::label('site', 'Disponível no Site:', ['class'=>'col-sm-2 control-label']) !!}
+    <div class="col-sm-9" id="wrapper-site">{!! Form::checkbox('site', true, null, ['id'=>'site', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+</div>
 
 <div class="form-group">
-    <label for="usuario" class="col-sm-2 control-label">
-        {!! Form::label('Descrição Site', 'Descrição Site:') !!}
-    </label>
+    {!! Form::label('descricaosite', 'Descrição Site:', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-md-4 col-xs-4">
         {!! Form::textarea('descricaosite', null, ['class'=> 'form-control', 'id'=>'descricaosite']) !!}
     </div>

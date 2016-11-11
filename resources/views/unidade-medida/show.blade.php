@@ -16,10 +16,8 @@
             <a title="Nova Unidade" href="{{ url('unidade-medida/create') }}"><span class="glyphicon glyphicon-plus"></span></a>
             &nbsp;
             <a title="Alterar" href="{{ url("unidade-medida/$model->codunidademedida/edit") }}"><span class="glyphicon glyphicon-pencil"></span></a>
-            {!! Form::open(['method' => 'DELETE', 'id'=>'deleteId', 'route' => ['unidade-medida.destroy', $model->codunidademedida]]) !!}
-            <span class="glyphicon glyphicon-trash"></span>
-            {!! Form::submit('Excluir') !!}
-            {!! Form::close() !!}            
+            &nbsp;
+            <a href="{{ url("unidade-medida/$model->codunidademedida") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a unidade de medida '{{ $model->unidademedida }}'?" data-after-delete="location.replace(baseUrl + '/unidade-medida');"><i class="glyphicon glyphicon-trash"></i></a>           
         </small>
     </li>   
 </ol>

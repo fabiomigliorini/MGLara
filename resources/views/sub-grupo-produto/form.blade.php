@@ -1,7 +1,5 @@
 <div class="form-group">
-    <label for="usuario" class="col-sm-2 control-label">
-        {!! Form::label('Grupo de Produtos', 'Sub Grupo de Produtos:') !!}
-    </label>
+    {!! Form::label('subgrupoproduto', 'Sub Grupo de Produtos:', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-md-4 col-xs-4">
         {!! Form::text('subgrupoproduto', null, ['class'=> 'form-control', 'id'=>'subgrupoproduto', 'required'=>'required']) !!}
     </div>

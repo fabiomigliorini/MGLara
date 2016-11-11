@@ -2,8 +2,8 @@
     //...
 ?>
 <div class="form-group">
-    <label for="produto" class="col-sm-2 control-label">{!! Form::label('Tipo de produto:') !!}</label>
-    <div class="col-sm-4">{!! Form::text('tipoproduto', null, ['class'=> 'form-control', 'id'=>'tipoproduto']) !!}</div>
+    {!! Form::label('tipoproduto', 'Tipo de produto:', ['class'=>'col-sm-2 control-label']) !!}
+    <div class="col-sm-4">{!! Form::text('tipoproduto', null, ['class'=> 'form-control', 'id'=>'tipoproduto', 'required'=>'required']) !!}</div>
 </div>
 <hr>
 <div class="form-group">
@@ -23,8 +23,7 @@ $(document).ready(function() {
                 currentForm.submit();
             }
         });
-    });
-    $('#tipoproduto').prop('required', true);      
+    });     
 });
 </script>
 @endsection

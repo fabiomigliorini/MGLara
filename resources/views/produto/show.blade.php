@@ -33,6 +33,8 @@
             @endif
             &nbsp;
             <a href="{{ url("produto/$model->codproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o produto '{{ $model->produto }}'?" data-after-delete="location.replace(baseUrl + '/produto');"><i class="glyphicon glyphicon-trash"></i></a>
+            &nbsp;
+            <a href="" id="prompt"><span class="glyphicon glyphicon-new-window"></span></a>
         </small>
     </li>
 </ol>
@@ -114,7 +116,14 @@
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="tab-site">
-                <p><botton class="btn btn-default" id="integracao-open-cart"><i class="glyphicon glyphicon-shopping-cart"></i> Sincronizar</botton></p>                    <br>
+                <p>
+                    <botton class="btn btn-default" id="integracao-open-cart"><i class="glyphicon glyphicon-shopping-cart"></i> 
+                        Sincronizar &nbsp;&nbsp;
+                        <img width="20px" id="sincronizar" src="{{ URL::asset('public/img/carregando.gif') }}">
+                    </botton>
+                    
+                </p>
+                <br>
                 <strong>Divulgado no Site: {{ ($model->site)?'Sim':'Não' }}</strong>
                 <hr>
                 {!! nl2br($model->descricaosite) !!}
@@ -365,6 +374,7 @@ $(document).ready(function() {
         window.location.href = '{{ url("produto/") }}' + $('#codproduto').val();
     });
     
+    $('#sincronizar').hide();
     $('#integracao-open-cart').click(function (e) {
         e.preventDefault();
         bootbox.confirm("Tem certeza que deseja sincronizar esse produto", function(result) {
@@ -373,17 +383,27 @@ $(document).ready(function() {
                     type: 'GET',
                     url: baseUrl + '/produto/sincroniza-produto-open-cart',
                     data: {
-                        //_token:$('meta[name="csrf-token"]').attr('content'),
                         id:{{ $model->codproduto }}
+                    },
+                    beforeSend: function( xhr ) {
+                        $('#sincronizar').show(function() {
+                            $('#integracao-open-cart').attr('disabled','disabled');
+                        });
                     }
                 })
                 .done(function (data) {
+                    $('#sincronizar').hide(function() {
+                        $('#integracao-open-cart').removeAttr('disabled');
+                    });
                     if(data.resultado === true) {
                         var mensagem = '<strong class="text-success">'+data.mensagem+'</strong>';
                         bootbox.alert(mensagem);
                         console.log(data.resultado);
                     } else {
                         var mensagem = '<strong class="text-danger">'+data.mensagem+'</strong>';
+                        mensagem += '<hr><pre>';
+                        mensagem += JSON.stringify(data.exception, undefined, 2);
+                        mensagem += '</pre>';                        
                         bootbox.alert(mensagem);
                         console.log(data.resultado);
                     }
@@ -393,7 +413,21 @@ $(document).ready(function() {
                 });                 
             }
         }); 
-    });    
+    });
+    
+    $('#prompt').click(function (e) {
+        e.preventDefault();
+        bootbox.prompt({
+            title: "Digite o código do produto",
+            inputType: 'number',
+            callback: function (result) {
+                if(result) {
+                    location.replace(baseUrl + '/produto/' + result)
+                }
+            }
+        });
+    });
+    
     
 });
 </script>
