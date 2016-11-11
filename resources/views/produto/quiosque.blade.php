@@ -2,16 +2,26 @@
 @section('content')
 
 <div id="app">
-    <div class='clearfix'>
-        <form class="form-inline">
-          <div class="form-group">
-            <input type="number" class="form-control" id="barrasDigitado" placeholder="Código de Barras" v-model="barrasDigitado" v-on:change="getProduto">
-          </div>
-          <button type="submit" v-on:click='getProduto'  class="btn btn-default">Send invitation</button>
+    <div class='row'>
+        <form class="form col-md-12">
+            <div class="input-group">
+                <input type="number" class="form-control input-lg" id="barrasDigitado" placeholder="Código de Barras" v-model="barrasDigitado" v-on:change="getProduto">
+                <span class="input-group-btn">
+                    <button type="submit" v-on:click='getProduto'  class="btn btn-default btn-lg">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </span>
+            </div>            
         </form>    
     </div>
     
-
+    <div class="row">
+        <h2 class="col-md-12">
+            @{{ produto.produto }}
+        </h2>
+    </div>
+    <br>
+    
     <!-- Carousel
     ================================================== -->
     <div id="myCarousel" class="carousel slide col-md-6" data-ride="carousel">
@@ -37,11 +47,80 @@
     </div><!-- /.carousel -->    
 
     <div class="col-md-6" role="alert">
-        R$ @{{ produto.preco }}
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="list-group-item" style="margin: 0">
+                    <strong>@{{ produto.preco }}</strong>
+                </h1>
+            </div>
+            <div class="col-md-4">
+                <h4>
+                    <small>Marca</small> <br>
+                    <strong>@{{ produto.marca.marca }}</strong>
+                </h4>
+            </div>
+            <div class="col-md-4">
+                <h4>
+                    <small>Ref</small><br>
+                    <strong>@{{ produto.referencia }}</strong>
+                </h4>
+            </div>
+            <div class="col-md-4">
+                <h4>
+                    <small>Unidade</small> <br>
+                    <strong>@{{ produto.unidademedida }}</strong>
+                </h4>
+            </div>
+        </div>
         <hr>
-        @{{ produto.unidademedida }}
+        <div class="row">
+            <div class="col-md-4">
+                <h4>
+                    <small>Seção</small> <br>
+                    <strong>@{{ produto.secaoproduto }}</strong>
+                </h4>
+            </div>
+
+            <div class="col-md-4">
+                <h4>
+                    <small>Família</small><br>
+                    <strong>@{{ produto.familiaproduto }}</strong>
+                </h4>
+            </div>
+            <div class="col-md-4">
+                <h4>
+                    <small>Grupo</small> <br>
+                    <strong>@{{ produto.grupoproduto }}</strong>
+                </h4>
+            </div>
+        </div>
         <hr>
-        @{{ barrasDigitado }}
+        <div class="row">
+            <div class="col-md-4">
+                <h4>
+                    <small>Sub Grupo</small><br>
+                    <strong>@{{ produto.subgrupoproduto }}</strong>
+                </h4>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-group">
+                    <li class="list-group-item active"><strong>VARIAÇÕES</strong></li>
+                    <li class="list-group-item" v-for="(variacao, codprodutovariacao, index) in produto.variacoes">
+                        <strong>@{{ variacao.variacao }}</strong> <span class="pull-right">ref. @{{ variacao.referencia }}</span>
+                            <div v-for="(barra, codprodutobarra, index) in variacao.barras">
+                                @{{ barra.barras }} - @{{ barra.unidademedida }} <span v-if="barra.quantidade">/ @{{ barra.quantidade }}</span>
+                            </div>
+                    </li>
+                </ul>
+            </div>
+        </div>    
+   
+
+
+<!--        @{{ barrasDigitado }}-->
         <hr>
         Resultado: @{{ resultado }} - Mensagem: @{{ mensagem }}
     </div>
@@ -50,52 +129,51 @@
 </div> 
 
 
-      
-	<script type="text/javascript">
+<style>
+    hr {margin: 5px 0;}
+</style>      
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#app',
+        data: {
+            barrasDigitado: '00070330133020',
+            produto: { 
+            },
+            resultado: null,
+            mensagem: null,
+        },
 
-		var app = new Vue({
+        ready : function()
+        {
+            this.fetchProduto();
+        },  
 
-			el: '#app',
+        methods:
+        {
+        getProduto: function(e)
+            {
+                if (e) e.preventDefault();
+                this.$http.get('/MGLara/produto/consulta/' + this.barrasDigitado).then((response) => {
+                this.retorno = response.body.retorno;
+                this.mensagem = response.body.mensagem;
 
-			data: {
-				barrasDigitado: '00070330133020',
-				produto: { 
-				},
-				resultado: null,
-				mensagem: null,
-			},
+                if (response.body.resultado) {
+                    this.produto = response.body.produto;
+                } else {
+                    console.log(response.body.mensagem);
+                    this.produto = {};
+                }
 
-			ready : function()
-		    {
-		    	this.fetchProduto();
-		    },  
-		    
-			methods:
-		    {
-		        getProduto: function(e)
-		        {
-                            if (e) e.preventDefault();
-					this.$http.get('/MGLara/produto/consulta/' + this.barrasDigitado).then((response) => {
-						this.retorno = response.body.retorno;
-						this.mensagem = response.body.mensagem;
+                codimagemprimeira = Object.keys(this.produto.imagens)[0];
+                this.produto.imagens[codimagemprimeira].primeira = true;
 
-						if (response.body.resultado) {
-							this.produto = response.body.produto;
-						} else {
-							console.log(response.body.mensagem);
-							this.produto = {};
-						}
-                                                
-                                                codimagemprimeira = Object.keys(this.produto.imagens)[0];
-                                                this.produto.imagens[codimagemprimeira].primeira = true;
-						
-					}, (response) => {
-					    console.log('errror', response);
-					});                
-		        },
-		    }
+                }, (response) => {
+                    console.log('errror', response);
+                });                
+            },
+        }
 
-		});
-		app.getProduto();
-	</script>
+    });
+    app.getProduto();
+</script>
 @stop
