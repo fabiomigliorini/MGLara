@@ -636,18 +636,25 @@ class ProdutoController extends Controller
         // Imagens
         $imagens = [];
         foreach ($barras->Produto->ImagemS as $imagem) {
-            $imagens[$imagem->codimagem] = [
+            $imagens[] = [
                 'codimagem' => $imagem->codimagem,
                 'url' => URL::asset('public/imagens/'.$imagem->observacoes),
+            ];
+        }
+        if (sizeof($imagens) == 0) {
+            $imagens[] = [
+                'codimagem' => null,
+                'url' => URL::asset('public/imagens/semimagem.jpg'),
             ];
         }
         
         // Variacoes
         $variacoes = [];
-        foreach ($barras->Produto->ProdutoVariacaoS as $pv) {
+        $estoquelocais = [];
+        foreach ($barras->Produto->ProdutoVariacaoS()->orderByRaw("variacao asc nulls first")->get() as $pv) {
             $produtobarras = [];
             foreach ($pv->ProdutoBarraS as $pb) {
-                $produtobarras[$pb->codprodutobarra] = [
+                $produtobarras[] = [
                     'codprodutobarra' => $pb->codprodutobarra,
                     'codprodutoembalagem' => $pb->codprodutoembalagem,
                     'barras' => $pb->barras,
@@ -657,21 +664,45 @@ class ProdutoController extends Controller
                     'quantidade' => (!empty($pb->codprodutoembalagem)?(float)$pb->ProdutoEmbalagem->quantidade:null),
                 ];
             }
-            $variacoes[$pv->codprodutovariacao] = [
+            $saldos = [];
+            foreach ($pv->EstoqueLocalProdutoVariacaoS()->orderBy('codestoquelocal')->get() as $elpv) {
+                foreach ($elpv->EstoqueSaldoS()->where('fiscal', false)->get() as $es) {
+                    $estoquelocais[$elpv->codestoquelocal] = [
+                        'codestoquelocal' => $elpv->codestoquelocal,
+                        'estoquelocal' => $elpv->EstoqueLocal->estoquelocal,
+                    ];
+                    $saldos[$elpv->codestoquelocal] = [
+                        'codestoquesaldo' => $es->codestoquesaldo,
+                        'url' => url("estoque-saldo/{$es->codestoquesaldo}"),
+                        'codestoquelocal' => $elpv->codestoquelocal,
+                        'saldoquantidade' => (float)$es->saldoquantidade,
+                        'saldovalor' => (float)$es->saldovalor,
+                    ];
+                }
+            }
+            $variacoes[] = [
                 'codprodutovariacao' => $pv->codprodutovariacao,
                 'referencia' => $pv->referencia,
                 'marca' => (!empty($pv->codmarca)?$pv->Marca->marca:null),
                 'variacao' => $pv->variacao,
                 'barras' => $produtobarras,
+                'saldos' => $saldos,
             ];
         }
         
         // Embalagens
-        $embalagens = [];
-        foreach ($barras->Produto->ProdutoEmbalagemS as $embalagem) {
-            $embalagens[$embalagem->codprodutoembalagem] = [
+        $embalagens[] = [
+            'codprodutoembalagem' => null,
+            'quantidade' => null,
+            'unidademedida' => $barras->Produto->UnidadeMedida->unidademedida,
+            'preco' => (float)$barras->Produto->preco,
+            'precocalculado' => false,
+        ];
+        foreach ($barras->Produto->ProdutoEmbalagemS()->orderBy('quantidade')->get() as $embalagem) {
+            $embalagens[] = [
                 'codprodutoembalagem' => $embalagem->codprodutoembalagem,
                 'quantidade' => (float)$embalagem->quantidade,
+                'unidademedida' => $embalagem->UnidadeMedida->unidademedida,
                 'preco' => (float)(!empty($embalagem->preco)?$embalagem->preco:$embalagem->quantidade * $barras->Produto->preco),
                 'precocalculado' => empty($embalagem->preco),
             ];
@@ -679,6 +710,7 @@ class ProdutoController extends Controller
         
         $produto = [
             'codproduto' => $barras->codproduto,
+            'url' => url("produto/{$barras->codproduto}"),
             'codprodutobarra' => $barras->codprodutobarra,
             'produto' => $barras->descricao(),
             'unidademedida' => $barras->UnidadeMedida->unidademedida,
@@ -686,11 +718,14 @@ class ProdutoController extends Controller
             'marca' => [
                 'codmarca' => $barras->Marca->codmarca,
                 'marca' => $barras->Marca->marca,
-                'url' => (!empty($barras->Marca->codimagem)?URL::asset('public/imagens/'.$barras->Marca->Imagem->observacoes):null),
+                'url' => url("marca/{$barras->Marca->codmarca}"),
+                'urlimagem' => (!empty($barras->Marca->codimagem)?URL::asset('public/imagens/'.$barras->Marca->Imagem->observacoes):null),
             ],
-            'codmarca' => $barras->Marca->codmarca,
-            'codsubgrupoproduto' => $barras->Produto->codsubgrupoproduto,
-            'subgrupoproduto' => $barras->Produto->SubGrupoProduto->subgrupoproduto,
+            'subgrupoproduto' => [
+                'codsubgrupoproduto' => $barras->Produto->codsubgrupoproduto,
+                'subgrupoproduto' => $barras->Produto->SubGrupoProduto->subgrupoproduto,
+                'url' => url("sub-grupo-produto/{$barras->Produto->codsubgrupoproduto}"),
+            ],
             'codgrupoproduto' => $barras->Produto->SubGrupoProduto->codgrupoproduto,
             'grupoproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->grupoproduto,
             'codfamiliaproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->codfamiliaproduto,
@@ -701,6 +736,7 @@ class ProdutoController extends Controller
             'imagens' => $imagens,
             'variacoes' => $variacoes,
             'embalagens' => $embalagens,
+            'estoquelocais' => $estoquelocais,
             /*
             variacoes: [
             codprodutovariacao,
