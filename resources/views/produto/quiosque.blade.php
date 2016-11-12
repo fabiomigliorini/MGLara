@@ -1,22 +1,22 @@
 @extends('layouts.quiosque')
 @section('content')
 
-
-
 <div id="app">
     <div class="col-md-6">
-        <div class="row">
+        <div class="row" v-if="produto != null">
             <!-- Carousel
             ================================================== -->
-            <div id="myCarousel" class="carousel slide" data-ride="carousel">
+            <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
                 <!-- Indicators -->
-                <ol class="carousel-indicators" v-for="(imagem, index) in produto.imagens">
-                    <li data-target="#myCarousel" v-bind:data-slide-to="index" v-bind:class="{ active: (index==0) }"></li>
+                <ol class="carousel-indicators" >
+                    <li v-for="(imagem, index) in produto.imagens" data-target="#myCarousel" v-bind:data-slide-to="index" v-bind:class="{ active: (index==0) }">{index}</li>
                 </ol>
 
                 <div class="carousel-inner" role="listbox">
-                  <div class="item" v-for="(imagem, index) in produto.imagens"  v-bind:class="{ active: (index==0) }">
-                    <img v-bind:src="imagem.url" v-bind:alt="imagem.codimagem">
+                  <div class="item text-center" v-for="(imagem, index) in produto.imagens"  v-bind:class="{ active: (index==0) }">
+                    <div class="text-center">
+                        <img v-bind:src="imagem.url" v-bind:alt="imagem.codimagem">
+                    </div>
                   </div>
                 </div>
 
@@ -44,77 +44,119 @@
            </div>
         </form>
         <br>
-        <span style="font-size: 2em">
-            <a v-bind:href="produto.url">
-                @{{ produto.produto }}
-            </a>
-        </span>
-        <br>
-        <a href="">@{{ produto.secaoproduto }}</a>
-        /
-        <strong>@{{ produto.familiaproduto }}</strong>
-        /
-        <strong>@{{ produto.grupoproduto }}</strong>
-        /
-        <a v-bind:href="produto.subgrupoproduto.url">
-            @{{ produto.subgrupoproduto.subgrupoproduto }}
-        </a>
-        /
-        <a v-bind:href="produto.marca.url">
-            <img v-if="produto.marca != null" v-bind:src="produto.marca.urlimagem" style="max-height: 40px">
-            <span v-if="produto.marca == null">
-                @{{ produto.marca.marca }}
-            </span>
-        </a>
-        /
-        <strong>@{{ produto.referencia }}</strong>
-        <br>
-        <br>
-        <div class="alert alert-success text-center">
-            <span class="text-muted pull-left">
-                @{{ produto.unidademedida }}
-                R$
-            </span>
-            <strong style="font-size: 5em">
-                @{{ produto.preco.formataNumero() }}
-            </strong>
+        
+        <div v-if="produto != null">
+
+            <div class="well well-sm" style="font-size: 2em">
+                <a v-bind:href="produto.url">
+                    @{{ produto.produto }}
+                </a>
+            </div>
+
+            <div class="alert alert-success text-center">
+                <span class="text-muted pull-left">
+                    @{{ produto.unidademedida }}
+                    R$
+                </span>
+                <strong style="font-size: 5em">
+                    @{{ produto.preco.formataNumero() }}
+                </strong>
+            </div>
+            
+            
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a v-bind:href="produto.secaoproduto.url">
+                        <img v-if="produto.secaoproduto.urlimagem != null" v-bind:src="produto.secaoproduto.urlimagem" style="max-height: 40px">
+                        <span v-if="produto.secaoproduto.urlimagem == null">
+                            @{{ produto.secaoproduto.secaoproduto }}
+                        </span>
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-bind:href="produto.familiaproduto.url">
+                        <img v-if="produto.familiaproduto.urlimagem != null" v-bind:src="produto.familiaproduto.urlimagem" style="max-height: 40px">
+                        <span v-if="produto.familiaproduto.urlimagem == null">
+                            @{{ produto.familiaproduto.familiaproduto }}
+                        </span>
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-bind:href="produto.grupoproduto.url">
+                        <img v-if="produto.grupoproduto.urlimagem != null" v-bind:src="produto.grupoproduto.urlimagem" style="max-height: 40px">
+                        <span v-if="produto.grupoproduto.urlimagem == null">
+                            @{{ produto.grupoproduto.grupoproduto }}
+                        </span>
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-bind:href="produto.subgrupoproduto.url">
+                        <img v-if="produto.subgrupoproduto.urlimagem != null" v-bind:src="produto.subgrupoproduto.urlimagem" style="max-height: 40px">
+                        <span v-if="produto.subgrupoproduto.urlimagem == null">
+                            @{{ produto.subgrupoproduto.subgrupoproduto }}
+                        </span>
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-bind:href="produto.marca.url">
+                        <img v-if="produto.marca.urlimagem != null" v-bind:src="produto.marca.urlimagem" style="max-height: 40px">
+                        <span v-if="produto.marca.urlimagem == null">
+                            @{{ produto.marca.marca }}
+                        </span>
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" v-if="produto.referencia != null" >
+                    @{{ produto.referencia }}
+                </li>
+            </ol>
+
+            <ul class="list-group list-group-condensed list-group-hover list-group-striped">
+                <li class="list-group-item" v-for="(embalagem, index) in produto.embalagens">
+                    <span>
+                        @{{ embalagem.unidademedida }}
+                    </span> 
+                    <span v-if="embalagem.quantidade > 1" >
+                        C/@{{ embalagem.quantidade }}
+                    </span>
+                    <strong class="pull-right">
+                        @{{ embalagem.preco.formataNumero() }}
+                    </strong>
+                </li>
+            </ul>
+
+            <table class="table table-bordered table-condensed table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Estoque
+                        </th>
+                        <th class="text-center" v-for="(estoquelocal, codestoquelocal) in produto.estoquelocais">
+                            @{{ estoquelocal.estoquelocal }}
+                        </th>
+                        <th class="text-center">
+                            Total
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(variacao, index) in produto.variacoes">
+                        <th>
+                            @{{ variacao.variacao }}
+                        </th>
+                        <td class="text-center" v-for="(estoquelocal, codestoquelocal) in produto.estoquelocais">
+                            <div v-if="(codestoquelocal in variacao.saldos)">
+                                <a v-bind:href="variacao.saldos[codestoquelocal].url">
+                                    @{{ variacao.saldos[codestoquelocal].saldoquantidade.formataNumero(0)  }}
+                                </a>
+                            </div>
+                        </td>
+                        <th class="text-center">
+                            @{{ variacao.saldo.formataNumero(0) }}
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        
-        <ul class="list-group list-group-condensed list-group-hover list-group-striped">
-            <li class="list-group-item" v-for="(embalagem, index) in produto.embalagens">
-                <span>@{{ embalagem.unidademedida }}</span> 
-                <span v-if="embalagem.quantidade > 1" >C/@{{ embalagem.quantidade }}</span>
-                <span class="pull-right">@{{ embalagem.preco.formataNumero() }}</span>
-            </li>
-        </ul>
-        
-        <table class="table table-bordered table-condensed table-hover table-striped">
-            <thead>
-                <tr>
-                    <th>
-                        Variação
-                    </th>
-                    <th class="col-md-2 text-center" v-for="(estoquelocal, codestoquelocal) in produto.estoquelocais">
-                        <small>@{{ estoquelocal.estoquelocal }} </small>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(variacao, index) in produto.variacoes">
-                    <th>
-                        @{{ variacao.variacao }}
-                    </th>
-                    <td class="col-md-2 text-center" v-for="(estoquelocal, codestoquelocal) in produto.estoquelocais">
-                        <div v-if="(codestoquelocal in variacao.saldos)">
-                            <a v-bind:href="variacao.saldos[codestoquelocal].url">
-                                @{{ variacao.saldos[codestoquelocal].saldoquantidade.formataNumero(0)  }}
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        
         <small class="text-muted">
             Resultado: @{{ resultado }} - Mensagem: @{{ mensagem }}
         </small>
@@ -139,15 +181,15 @@
     var app = new Vue({
         el: '#app',
         data: {
-            barrasDigitado: '00070330133020',
-            produto: { 
-            },
+            //barrasDigitado: '00070330133020',
+            barrasDigitado: '7891027120832',
+            produto: null,
             resultado: null,
             mensagem: null,
         },
 
         ready : function() {
-            this.fetchProduto();
+            this.getProduto();
         },  
 
         methods: {

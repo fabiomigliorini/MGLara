@@ -665,8 +665,10 @@ class ProdutoController extends Controller
                 ];
             }
             $saldos = [];
+            $saldo = 0;
             foreach ($pv->EstoqueLocalProdutoVariacaoS()->orderBy('codestoquelocal')->get() as $elpv) {
                 foreach ($elpv->EstoqueSaldoS()->where('fiscal', false)->get() as $es) {
+                    $saldo += (float)$es->saldoquantidade;
                     $estoquelocais[$elpv->codestoquelocal] = [
                         'codestoquelocal' => $elpv->codestoquelocal,
                         'estoquelocal' => $elpv->EstoqueLocal->estoquelocal,
@@ -686,6 +688,7 @@ class ProdutoController extends Controller
                 'marca' => (!empty($pv->codmarca)?$pv->Marca->marca:null),
                 'variacao' => $pv->variacao,
                 'barras' => $produtobarras,
+                'saldo' => $saldo,
                 'saldos' => $saldos,
             ];
         }
@@ -708,6 +711,9 @@ class ProdutoController extends Controller
             ];
         }
         
+        //dd($barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codimagem);
+        //dd($barras->Produto->SubGrupoProduto->codimagem);
+        
         $produto = [
             'codproduto' => $barras->codproduto,
             'url' => url("produto/{$barras->codproduto}"),
@@ -724,14 +730,27 @@ class ProdutoController extends Controller
             'subgrupoproduto' => [
                 'codsubgrupoproduto' => $barras->Produto->codsubgrupoproduto,
                 'subgrupoproduto' => $barras->Produto->SubGrupoProduto->subgrupoproduto,
+                'urlimagem' => (!empty($barras->Produto->SubGrupoProduto->codimagem)?URL::asset('public/imagens/'.$barras->Produto->SubGrupoProduto->Imagem->observacoes):null),
                 'url' => url("sub-grupo-produto/{$barras->Produto->codsubgrupoproduto}"),
             ],
-            'codgrupoproduto' => $barras->Produto->SubGrupoProduto->codgrupoproduto,
-            'grupoproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->grupoproduto,
-            'codfamiliaproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->codfamiliaproduto,
-            'familiaproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->familiaproduto,
-            'codsecaoproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto,
-            'secaoproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->secaoproduto,
+            'grupoproduto' => [
+                'codgrupoproduto' => $barras->Produto->SubGrupoProduto->codgrupoproduto,
+                'grupoproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->grupoproduto,
+                'urlimagem' => (!empty($barras->Produto->SubGrupoProduto->GrupoProduto->codimagem)?URL::asset('public/imagens/'.$barras->Produto->SubGrupoProduto->GrupoProduto->Imagem->observacoes):null),
+                'url' => url("grupo-produto/{$barras->Produto->SubGrupoProduto->codgrupoproduto}"),
+            ],
+            'familiaproduto' => [
+                'codfamiliaproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->codfamiliaproduto,
+                'familiaproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->familiaproduto,
+                'urlimagem' => (!empty($barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->codimagem)?URL::asset('public/imagens/'.$barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->Imagem->observacoes):null),
+                'url' => url("familia-produto/{$barras->Produto->SubGrupoProduto->GrupoProduto->codfamiliaproduto}"),
+            ],
+            'secaoproduto' => [
+                'codsecaoproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto,
+                'secaoproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->secaoproduto,
+                'urlimagem' => (!empty($barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codimagem)?URL::asset('public/imagens/'.$barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->Imagem->observacoes):null),
+                'url' => url("secao-produto/{$barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto}"),
+            ],
             'preco' => $barras->preco(),
             'imagens' => $imagens,
             'variacoes' => $variacoes,
