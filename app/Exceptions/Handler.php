@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-
+use Illuminate\Http\Response;
 class Handler extends ExceptionHandler
 {
     /**
@@ -43,7 +43,8 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $e)
     {
         if ($e instanceof ModelNotFoundException) {
-            $e = new NotFoundHttpException($e->getMessage(), $e);
+            //$e = new NotFoundHttpException($e->getMessage(), $e);
+            return response()->view('errors.500', ['mensagem'=>'Registro não encontrado'], 500);
         }
 
         return parent::render($request, $e);
