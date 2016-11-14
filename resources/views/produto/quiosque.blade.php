@@ -1,6 +1,13 @@
 @extends('layouts.quiosque')
 @section('content')
-
+<script type="text/javascript">
+$(document).ready(function() {    
+    $("#codproduto").on("select2-selecting", function(e) { 
+        var produtoselecionado = e.val;
+        console.log (produtoselecionado);
+    })
+}); 
+</script>
 <div id="app">
     <div class="col-md-6">
         <div class="row" v-if="produto != null">
@@ -36,12 +43,15 @@
 
     <div class="col-md-6">
         <form class="" role="search">
-           <div class="input-group">
-              <input type="text" class="form-control" id="barrasDigitado" placeholder="Código de Barras" v-model="barrasDigitado" v-on:change="getProduto">
-              <div class="input-group-btn">
-                 <button type="submit" v-on:click='getProduto' class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
-              </div>
-           </div>
+            <div class="input-group">
+                <input type="text" class="form-control" id="barrasDigitado" placeholder="Código de Barras" v-model="barrasDigitado" v-on:change="getProduto">
+                <div class="input-group-btn">
+                    <button type="submit" v-on:click='getProduto' class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+                </div>
+            </div>
+            <div>
+                {!! Form::select2Produto('codproduto', null, ['class' => 'form-control','id'=>'codproduto', 'somenteAtivos'=>'9']) !!}
+            </div>
         </form>
         <br>
         
@@ -196,7 +206,7 @@
             
             getProduto: function(e) {
                 
-                //if (e) e.preventDefault();
+                if (e) e.preventDefault();
                 
                 this.$http.get('/MGLara/produto/consulta/' + this.barrasDigitado).then((response) => {
                     
@@ -218,5 +228,6 @@
 
     });
     app.getProduto();
+   
 </script>
 @stop
