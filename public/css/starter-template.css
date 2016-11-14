@@ -5,6 +5,12 @@ html {
     overflow-y: scroll;
 }
 
+/* Corrige quebra do layout pelo bootbox */
+body {
+    position: relative;
+    padding-right: 0 !important;      
+}
+
 /* Select 2 */
 
 .select2-container .select2-selection--single .select2-selection__rendered {
