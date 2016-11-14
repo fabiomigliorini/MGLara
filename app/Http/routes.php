@@ -121,6 +121,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto-variacao','ProdutoVariacaoController');
 
     /* Produto Barra */
+    Route::resource('produto-barra/listagem-json','ProdutoBarraController@listagemJson');
     Route::resource('produto-barra','ProdutoBarraController');
 
     /* Produto Embalagem */

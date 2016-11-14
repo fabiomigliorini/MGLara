@@ -1,13 +1,5 @@
 @extends('layouts.quiosque')
 @section('content')
-<script type="text/javascript">
-$(document).ready(function() {    
-    $("#codproduto").on("select2-selecting", function(e) { 
-        var produtoselecionado = e.val;
-        console.log (produtoselecionado);
-    })
-}); 
-</script>
 <div id="app">
     <div class="col-md-6">
         <div class="row" v-if="produto != null">
@@ -50,7 +42,7 @@ $(document).ready(function() {
                 </div>
             </div>
             <div>
-                {!! Form::select2Produto('codproduto', null, ['class' => 'form-control','id'=>'codproduto', 'somenteAtivos'=>'9']) !!}
+                {!! Form::select2ProdutoBarra('codprodutobarra', null, ['placeholder' => 'Pesquisa de produtos', 'class' => 'form-control', 'id'=>'codprodutobarra', 'somenteAtivos'=>'1']) !!}
             </div>
         </form>
         <br>
@@ -177,6 +169,13 @@ $(document).ready(function() {
 
 <script type="text/javascript">
     
+    $(document).ready(function() {    
+        $("#codprodutobarra").on("select2-selecting", function(e) { 
+            $('#barrasDigitado').val(e.val).trigger('change');
+            $('#barrasDigitado').trigger('change');
+        })
+    }); 
+    
     Number.prototype.formataNumero = function(decPlaces, thouSeparator, decSeparator) {
         var n = this,
             decPlaces = isNaN(decPlaces = Math.abs(decPlaces)) ? 2 : decPlaces,
@@ -223,7 +222,7 @@ $(document).ready(function() {
                 }, (response) => {
                     console.log('errror', response);
                 });                
-            },
+            }
         }
 
     });
