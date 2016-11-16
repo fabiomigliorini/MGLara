@@ -196,6 +196,7 @@ class ProdutoBarraController extends Controller
             {
                 $resultado[$item]=[
                     'id'               => $value->codprodutobarra,
+                    //'id'               => $value->barras,
                     'barras'           => $value->barras,
                     'codproduto'       => formataCodigo($value->codproduto, 6),
                     'produto'          => $value->descricao,

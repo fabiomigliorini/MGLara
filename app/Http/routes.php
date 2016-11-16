@@ -24,6 +24,11 @@ Route::get('estoque/gera-movimento-produto/{id}','EstoqueController@geraMoviment
 Route::get('estoque/gera-movimento-produto-variacao/{id}','EstoqueController@geraMovimentoProdutoVariacao');
 Route::get('estoque/gera-movimento-periodo','EstoqueController@geraMovimentoPeriodo');
 
+/* Acessar da rede interna sem autenticacao, ou da rede externa com autenticacao */
+Route::get('produto/quiosque','ProdutoController@quiosque');
+Route::get('produto/consulta/{barras}','ProdutoController@consulta');
+Route::get('produto-barra/listagem-json','ProdutoBarraController@listagemJson');
+
 
 Route::group(['middleware' => 'auth'], function() {
     
@@ -99,8 +104,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('sub-grupo-produto','SubGrupoProdutoController');
 
     /* Produto */
-    Route::get('produto/quiosque','ProdutoController@quiosque');
-    Route::get('produto/consulta/{barras}','ProdutoController@consulta');
     Route::get('produto/cobre-estoque-negativo','ProdutoController@cobreEstoqueNegativo');
     Route::resource('produto/busca-barras','ProdutoController@buscaPorBarras');
     Route::resource('produto/listagem-json','ProdutoController@listagemJsonProduto');
@@ -121,7 +124,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto-variacao','ProdutoVariacaoController');
 
     /* Produto Barra */
-    Route::resource('produto-barra/listagem-json','ProdutoBarraController@listagemJson');
     Route::resource('produto-barra','ProdutoBarraController');
 
     /* Produto Embalagem */

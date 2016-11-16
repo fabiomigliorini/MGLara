@@ -1,11 +1,12 @@
 @extends('layouts.quiosque')
 @section('content')
+
 <div id="app">
     <div class="col-md-6">
         <div class="row" v-if="produto != null">
             <!-- Carousel
             ================================================== -->
-            <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
+            <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="1500">
                 <!-- Indicators -->
                 <ol class="carousel-indicators" >
                     <li v-for="(imagem, index) in produto.imagens" data-target="#myCarousel" v-bind:data-slide-to="index" v-bind:class="{ active: (index==0) }">{index}</li>
@@ -14,7 +15,7 @@
                 <div class="carousel-inner" role="listbox">
                   <div class="item text-center" v-for="(imagem, index) in produto.imagens"  v-bind:class="{ active: (index==0) }">
                     <div class="text-center">
-                        <img v-bind:src="imagem.url" v-bind:alt="imagem.codimagem">
+                        <img v-bind:src="imagem.url" v-bind:alt="imagem.codimagem" style='max-width: 100%; max-height: 100%'>
                     </div>
                   </div>
                 </div>
@@ -33,19 +34,19 @@
     </div>
     
 
-    <div class="col-md-6">
+    <div class="col-md-6" id='div-resultados'>
         <form class="" role="search">
-            <div class="input-group">
-                <input type="text" class="form-control" id="barrasDigitado" placeholder="Código de Barras" v-model="barrasDigitado" v-on:change="getProduto">
-                <div class="input-group-btn">
-                    <button type="submit" v-on:click='getProduto' class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+            <div class='row' id='div-form'>
+                <div class='col-md-4'>
+                    <input type="text" class="form-control" id="barras" placeholder="Barras" v-model="barrasDigitado" v-on:change="getProduto" autofocus tabindex="1">
                 </div>
-            </div>
-            <div>
-                {!! Form::select2ProdutoBarra('codprodutobarra', null, ['placeholder' => 'Pesquisa de produtos', 'class' => 'form-control', 'id'=>'codprodutobarra', 'somenteAtivos'=>'1']) !!}
+                <div class='col-md-8'>
+                    {!! Form::select2ProdutoBarra('codprodutobarra', null, ['placeholder' => 'Pesquisa de produtos', 'class' => 'form-control', 'id'=>'codprodutobarra', 'tabindex'=>'2', 'somenteAtivos'=>'1']) !!}
+                </div>
             </div>
         </form>
         <br>
+
         
         <div v-if="produto != null">
 
@@ -159,21 +160,57 @@
                 </tbody>
             </table>
         </div>
-        <small class="text-muted">
-            Resultado: @{{ resultado }} - Mensagem: @{{ mensagem }}
-        </small>
+    </div>
+    <div v-if="produto == null" class='col-md-12' style='position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);' id='div-erro'>
+            <div class='alert alert-danger text-center'>
+                <h1>@{{ mensagem }}</h1>
+            </div>
     </div>
 
 </div> 
 
-
 <script type="text/javascript">
+
+    function toggleFullScreen() {
+        var doc = window.document;
+        var docEl = doc.documentElement;
+
+        var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+        var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+        //if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+            requestFullScreen.call(docEl);
+        //}
+        //else {
+        //    cancelFullScreen.call(doc);
+        //}
+    }  
+
+    function focoBarras() {
+        if (!$("#codprodutobarra").select2("isFocused")) {
+            $("#barras").focus();
+        }
+    }
     
-    $(document).ready(function() {    
+    $(document).ready(function() {  
+
+        // Foco no campo de codigo de barras
+        $("#barras").blur(function() {
+            focoBarras();
+        });
+        $("#codprodutobarra").on("select2-blur", function(e) {
+            focoBarras();
+        });
+        focoBarras();
+
+
+        // Ao selecionar #codprodutobarra dispara busca
         $("#codprodutobarra").on("select2-selecting", function(e) { 
-            $('#barrasDigitado').val(e.val).trigger('change');
-            $('#barrasDigitado').trigger('change');
-        })
+            app.barrasDigitado = e.object.barras;
+            app.getProduto();
+        });
+
+        app.getProduto();
     }); 
     
     Number.prototype.formataNumero = function(decPlaces, thouSeparator, decSeparator) {
@@ -190,11 +227,11 @@
     var app = new Vue({
         el: '#app',
         data: {
-            //barrasDigitado: '00070330133020',
-            barrasDigitado: '7891027120832',
+            barrasDigitado: null,
+            barras: null,
             produto: null,
             resultado: null,
-            mensagem: null,
+            mensagem: 'Leia o código de barras!',
         },
 
         ready : function() {
@@ -205,28 +242,36 @@
             
             getProduto: function(e) {
                 
-                if (e) e.preventDefault();
+                this.barras = this.barrasDigitado;
+                this.barrasDigitado = null;
+                this.produto = null;
+                toggleFullScreen();
+
+                if (this.barras != null) {
+                    this.$http.get('/MGLara/produto/consulta/' + this.barras).then((response) => {
+                        
+                        this.mensagem = response.body.mensagem;
+
+                        if (response.body.resultado) {
+                            this.produto = response.body.produto;
+                            Vue.nextTick(function () {
+                                $("#codprodutobarra").select2("val", null);
+                                $('#myCarousel').carousel();
+                            });
+                        }
+
+                    }, (response) => {
+                        console.log('errror', response);
+                        this.mensagem = response.status + ' - ' + response.statusText + ' - ' + response.url;
+                    });
+
+
+                }
                 
-                this.$http.get('/MGLara/produto/consulta/' + this.barrasDigitado).then((response) => {
-                    
-                    this.retorno = response.body.retorno;
-                    this.mensagem = response.body.mensagem;
-
-                    if (response.body.resultado) {
-                        this.produto = response.body.produto;
-                    } else {
-                        console.log(response.body.mensagem);
-                        this.produto = {};
-                    }
-
-                }, (response) => {
-                    console.log('errror', response);
-                });                
             }
         }
 
     });
-    app.getProduto();
    
 </script>
 @stop
