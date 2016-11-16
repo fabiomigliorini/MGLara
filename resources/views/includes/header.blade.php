@@ -48,6 +48,8 @@
                         <!-- <li role="separator" class="divider"></li> -->
                         <!-- <li><a href="#">Consulta de preço</a></li> -->
                         <li><a href="{{ url('produto') }}">Produtos</a><li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{ url('produto/quiosque') }}">Consulta de Preços</a><li>
                         <!-- <li role="separator" class="divider"></li> -->
                         <!-- <li><a href="#">Etiquetas de Produtos</a></li> -->
                         <li role="separator" class="divider"></li>
