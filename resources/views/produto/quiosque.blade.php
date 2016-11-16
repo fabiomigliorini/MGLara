@@ -251,7 +251,7 @@
             var app = new Vue({
                 el: '#app',
                 data: {
-                    barrasDigitado: '010101',
+                    barrasDigitado: null,
                     barras: null,
                     produto: null,
                     resultado: false,
