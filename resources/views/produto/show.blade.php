@@ -34,7 +34,7 @@
             &nbsp;
             <a href="{{ url("produto/$model->codproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o produto '{{ $model->produto }}'?" data-after-delete="location.replace(baseUrl + '/produto');"><i class="glyphicon glyphicon-trash"></i></a>
             &nbsp;
-            <a href="" id="prompt"><span class="glyphicon glyphicon-new-window"></span></a>
+            <a href="" id="btnVaiPara"><span class="glyphicon glyphicon-new-window"></span></a>
         </small>
     </li>
 </ol>
@@ -415,11 +415,12 @@ $(document).ready(function() {
         }); 
     });
     
-    $('#prompt').click(function (e) {
+    $('#btnVaiPara').click(function (e) {
         e.preventDefault();
         bootbox.prompt({
             title: "Digite o código do produto",
             inputType: 'number',
+            value: {{ $model->codproduto }},
             callback: function (result) {
                 if(result) {
                     location.replace(baseUrl + '/produto/' + result)
