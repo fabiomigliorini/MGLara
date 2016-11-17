@@ -95,6 +95,7 @@
 
                     <div class="alert alert-success text-center">
                         <div class='container-fluid'>
+                          <div class="row">
                             <span class="text-muted pull-left">
                                 @{{ produto.unidademedida }}
                                 R$
@@ -102,19 +103,30 @@
                             <strong style="font-size: 5em">
                                 @{{ produto.preco.formataNumero() }}
                             </strong>
-                            <ul class="list-group list-group-condensed list-group-hover list-group-striped pull-right">
+                            <ul v-if="produto.embalagens.length > 1" class="col-md-5 list-group list-group-condensed list-group-hover list-group-striped pull-right" style="margin-bottom: 0px">
                                 <li class="list-group-item" v-for="(embalagem, index) in produto.embalagens">
+                                  <div class="row">
+                                  <div class="col-md-7 text-left">
                                     <span>
                                         @{{ embalagem.unidademedida }}
                                     </span> 
                                     <span v-if="embalagem.quantidade > 1" >
-                                        C/@{{ embalagem.quantidade }} 
+                                      C/<strong>@{{ embalagem.quantidade }} </strong>
                                     </span>
-                                    <strong class="pull-right">
-                                        &nbsp @{{ embalagem.preco.formataNumero() }}
+                                  </div>
+                                  <div class="col-md-5 text-right">
+                                    &nbsp 
+                                    <i v-if="embalagem.precocalculado" class="text-muted">
+                                        (@{{ embalagem.preco.formataNumero() }})*
+                                    </i>
+                                    <strong v-if="!embalagem.precocalculado">
+                                        @{{ embalagem.preco.formataNumero() }}
                                     </strong>
+                                  </div>
+                                  </div>
                                 </li>
                             </ul>
+                          </div>
                         </div>
                     </div>
                     
