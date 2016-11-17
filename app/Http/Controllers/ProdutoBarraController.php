@@ -129,66 +129,52 @@ class ProdutoBarraController extends Controller
 
             $query = DB::table('vwprodutobarra');
             
-                $tokens = $request->get('q');
-                
-                // Decide Ordem
-                $ordem = (strstr($tokens, '$'))?
-                        'vwprodutobarra.preco ASC, vwprodutobarra.produto ASC, vwprodutobarra.quantidade ASC nulls first, vwprodutobarra.descricao asc':
-                        'vwprodutobarra.produto ASC, vwprodutobarra.quantidade ASC nulls first, vwprodutobarra.descricao asc';
+            $tokens = $request->get('q');
 
-                // Limpa string
-                $tokens = str_replace('$', ' ', $tokens);
-                $tokens = trim(preg_replace('/(\s\s+|\t|\n)/', ' ', $tokens));
-                $tokens = explode(' ', $tokens);
-                
-                // Percorre todas strings
-                foreach ($tokens as $str) {
-                    $query->where(function ($q2) use ($str) {
-                        
-                        $q2->where('descricao', 'ILIKE', "%$str%");
-                        
-                        if ($str == formataNumero((float) str_replace(',', '.', $str), 2)) {
-                            $q2->orWhere('preco', '=', (float) str_replace(',', '.', $str));
-                        } elseif (strlen($str) == 6 & is_numeric($str)) {
-                            $q2->orWhere('codproduto', '=', $str);
-                        } elseif (is_numeric($str)) {
-                            $q2->orWhere('barras', 'ilike', "%$str%");
-                        }
-                        
-                        
-                    });
-                }
-                
-                /*
-                if (strlen($tokens) == 6 & is_numeric($tokens)) {
-                    $query->where('codproduto', '=', $tokens);
-                } elseif (is_float($tokens)) {
-                    $query->where('preco', '=', $tokens);
-                } elseif (is_numeric($tokens)) {
-                    $query->where('barras', 'ilike', "%$tokens%");
-                } else {
-                }
-                 * 
-                 */
-                
-                switch ($request->get('ativo')) {
-                    
-                    case 2: //Inativo
-                        $query->whereNotNull('inativo');
-                        break;
-                    
-                    case 1: //Ativo
-                        $query->whereNull('inativo');
-                        break;
-                    
-                    case 9: //Todos
-                    default:
-                        
-                }
-                
-                $query->select('codprodutobarra', 'descricao', 'sigla', 'codproduto', 'barras', 'preco', 'referencia', 'inativo', 'secaoproduto', 'familiaproduto', 'grupoproduto', 'subgrupoproduto', 'marca')
-                    ->orderByRaw($ordem)
-                    ->paginate(20);
+            // Decide Ordem
+            $ordem = (strstr($tokens, '$'))?
+                    'vwprodutobarra.preco ASC, vwprodutobarra.produto ASC, vwprodutobarra.quantidade ASC nulls first, vwprodutobarra.descricao asc':
+                    'vwprodutobarra.produto ASC, vwprodutobarra.quantidade ASC nulls first, vwprodutobarra.descricao asc';
+
+            // Limpa string
+            $tokens = str_replace('$', ' ', $tokens);
+            $tokens = trim(preg_replace('/(\s\s+|\t|\n)/', ' ', $tokens));
+            $tokens = explode(' ', $tokens);
+
+            // Percorre todas strings
+            foreach ($tokens as $str) {
+                $query->where(function ($q2) use ($str) {
+
+                    $q2->where('descricao', 'ILIKE', "%$str%");
+
+                    if ($str == formataNumero((float) str_replace(',', '.', $str), 2)) {
+                        $q2->orWhere('preco', '=', (float) str_replace(',', '.', $str));
+                    } elseif (strlen($str) == 6 & is_numeric($str)) {
+                        $q2->orWhere('codproduto', '=', $str);
+                    } elseif (is_numeric($str)) {
+                        $q2->orWhere('barras', 'ilike', "%$str%");
+                    }
+                });
+            }
+
+            switch ($request->get('ativo')) {
+
+                case 2: //Inativo
+                    $query->whereNotNull('inativo');
+                    break;
+
+                case 1: //Ativo
+                    $query->whereNull('inativo');
+                    break;
+
+                case 9: //Todos
+                default:
+
+            }
+
+            $query->select('codprodutobarra', 'descricao', 'sigla', 'codproduto', 'barras', 'preco', 'referencia', 'inativo', 'secaoproduto', 'familiaproduto', 'grupoproduto', 'subgrupoproduto', 'marca')
+                ->orderByRaw($ordem)
+                ->paginate(20);
 
             $dados = $query->get();
             $resultado = [];
@@ -210,11 +196,14 @@ class ProdutoBarraController extends Controller
                     'unidademedida'    => $value->sigla,
                 ];
             }
+            
             return $resultado;
+            
         } elseif($request->get('id')) {
+            
             $query = DB::table('tblproduto')
-                    ->where('codproduto', '=', $request->get('id'))
-                    ->select('codproduto as id', 'produto', 'referencia', 'preco')
+                    ->where('codprodutobarra', '=', $request->get('id'))
+                    ->select('codprodutobarra as id', 'produto', 'barras', 'referencia', 'preco')
                     ->first();
 
             return $query;

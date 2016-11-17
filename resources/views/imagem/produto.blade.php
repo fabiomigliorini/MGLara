@@ -36,7 +36,6 @@
         <div 
             class="slim" 
             id="my-cropper"
-            data-instant-edit="true" 
             data-label="Arraste a Imagem..." 
             data-ratio="1:1" 
             data-size="1536,1536" 

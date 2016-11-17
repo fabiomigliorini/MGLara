@@ -718,7 +718,9 @@ class ProdutoController extends Controller
             'codproduto' => $barras->codproduto,
             'url' => url("produto/{$barras->codproduto}"),
             'codprodutobarra' => $barras->codprodutobarra,
+            'barras' => $barras->barras,
             'produto' => $barras->descricao(),
+            'inativo' => $barras->Produto->inativo,
             'unidademedida' => $barras->UnidadeMedida->unidademedida,
             'referencia' => $barras->referencia(),
             'marca' => [
@@ -756,28 +758,6 @@ class ProdutoController extends Controller
             'variacoes' => $variacoes,
             'embalagens' => $embalagens,
             'estoquelocais' => $estoquelocais,
-            /*
-            variacoes: [
-            codprodutovariacao,
-            variacao,
-            referencia,
-            barras: [
-            codprodutobarra,
-            unidademedida
-            quantidade,
-            preco,
-            barras
-            ]
-            ]
-            estoque: [
-            codestoquesaldo,
-            codestoquelocal,
-            estoquelocal,
-            saldoquantidade,
-            ]
-             * 
-             */
-            
         ];
         
         

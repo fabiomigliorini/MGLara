@@ -204,8 +204,8 @@
             <div class="col-md-5 small text-muted" >
                 {!! inativo($row->inativo) !!}
                 <?php
-$pvs = $row->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
-?>
+                $pvs = $row->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
+                ?>
                 <table class="table table-striped table-condensed table-hover" style="margin-bottom: 1px">
                 @foreach ($pvs as $pv)
                     <tr>
@@ -226,10 +226,10 @@ $pvs = $row->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC
                         </td>
                         <td class="col-md-6">
                             <?php
-$pbs = $pv->ProdutoBarraS()->leftJoin('tblprodutoembalagem as pe', 'pe.codprodutoembalagem', '=', 'tblprodutobarra.codprodutoembalagem')
-    ->orderBy(DB::raw('coalesce(pe.quantidade, 0)'), 'ASC')
-    ->with('ProdutoEmbalagem')->get();
-?>
+                            $pbs = $pv->ProdutoBarraS()->leftJoin('tblprodutoembalagem as pe', 'pe.codprodutoembalagem', '=', 'tblprodutobarra.codprodutoembalagem')
+                                ->orderBy(DB::raw('coalesce(pe.quantidade, 0)'), 'ASC')
+                                ->with('ProdutoEmbalagem')->get();
+                            ?>
                             @foreach ($pbs as $pb)
                                 <div class="row">
                                     <div class="col-md-7 text-right">
