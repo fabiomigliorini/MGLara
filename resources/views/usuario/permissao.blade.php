@@ -18,11 +18,7 @@
             &nbsp;
             <a title="Alterar" href="{{ url("marca/$model->codmarca/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
             &nbsp;            
-            <a title="Detalhes" href="{{ url("usuario/$model->codusuario") }}"><i class="glyphicon glyphicon-eye-open"></i></a>
-                {!! Form::open(['method' => 'DELETE', 'route' => ['usuario.destroy', $model->codusuario]]) !!}
-                <span class="glyphicon glyphicon-trash"></span>
-                {!! Form::submit('Excluir') !!}
-                {!! Form::close() !!}            
+            <a title="Excluir" href="{{ url("usuario/$model->codusuario") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o usuario'{{ $model->usuario }}'?" data-after-delete="location.replace(baseUrl + '/usuario');"><i class="glyphicon glyphicon-trash"></i></a>
         </small>
     </li>   
 </ol>
