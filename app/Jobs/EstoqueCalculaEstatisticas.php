@@ -17,8 +17,8 @@ use MGLara\Models\EstoqueLocalProdutoVariacao;
 use Illuminate\Support\Facades\DB;
 
 /**
- * @property $codestoquemes bigint
- * @property $ciclo bigint
+ * @property $codprodutovariacao bigint
+ * @property $codestoquelocal bigint
  */
 
 class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueue
@@ -53,8 +53,10 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
         $bimestre = new Carbon('today - 2 months');
         $semestre = new Carbon('today - 6 months');
         $ano = new Carbon('today - 1 year');
-        $agora = new Carbon();
-        
+        $agora = new Carbon('now');
+
+        Log::info('EstoqueCalculaEstatisticas Calculando');
+
         $sql = "
             select 
                 tblnegocio.codestoquelocal
@@ -90,8 +92,6 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
         }
         
         $sql .= "
-            --and tblprodutobarra.codprodutovariacao in (14991, 14992)
-            --and tblprodutobarra.codproduto in (100)
             group by 
                     tblnegocio.codestoquelocal
                     , tblprodutobarra.codprodutovariacao
@@ -100,18 +100,44 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
         
         $regs = DB::select($sql);
         
+        Log::info('EstoqueCalculaEstatisticas Atualizando');
+        
+        $atualizados = [];
         foreach ($regs as $reg) {
             $elpv = EstoqueLocalProdutoVariacao::buscaOuCria($reg->codprodutovariacao, $reg->codestoquelocal);
-            $elpv->vendaanoquantidade = $reg->vendaanoquantidade;
-            $elpv->vendaanovalor = $reg->vendaanovalor;
-            $elpv->vendasemestrequantidade = $reg->vendasemestrequantidade;
-            $elpv->vendasemestrevalor = $reg->vendasemestrevalor;
-            $elpv->vendabimestrequantidade = $reg->vendabimestrequantidade;
-            $elpv->vendabimestrevalor = $reg->vendabimestrevalor;
-            $elpv->vendaultimocalculo = $agora;
-            $elpv->vendadiaquantidadeprevisao = ($reg->vendasemestrequantidade / $semestre->diffInDays());
-            $elpv->save();
+            $ret = EstoqueLocalProdutoVariacao::where('codestoquelocalprodutovariacao', $elpv->codestoquelocalprodutovariacao)->update([
+                'vendaanoquantidade' => $reg->vendaanoquantidade,
+                'vendaanovalor' => $reg->vendaanovalor,
+                'vendasemestrequantidade' => $reg->vendasemestrequantidade,
+                'vendasemestrevalor' => $reg->vendasemestrevalor,
+                'vendabimestrequantidade' => $reg->vendabimestrequantidade,
+                'vendabimestrevalor' => $reg->vendabimestrevalor,
+                'vendaultimocalculo' => $agora,
+                'vendadiaquantidadeprevisao' => ($reg->vendasemestrequantidade / $semestre->diffInDays()),
+            ]);
+            $atualizados[] = $elpv->codestoquelocalprodutovariacao;
         }
+        Log::info('EstoqueCalculaEstatisticas Atualizados', ['atualizados' => sizeof($atualizados), 'calculados' => sizeof($regs)]);
+        
+        $elpvs = EstoqueLocalProdutoVariacao::whereNotIn('codestoquelocalprodutovariacao', $atualizados);
+        if (!empty($this->codprodutovariacao)) {
+            $elpvs = $elpvs->where('codprodutovariacao', $this->codprodutovariacao);
+        }
+        
+        if (!empty($this->codestoquelocal)) {
+            $elpvs = $elpvs->where('codestoquelocal', $this->codestoquelocal);
+        }
+        $ret = $elpvs->update([
+            'vendaanoquantidade' => null,
+            'vendaanovalor' => null,
+            'vendasemestrequantidade' => null,
+            'vendasemestrevalor' => null,
+            'vendabimestrequantidade' => null,
+            'vendabimestrevalor' => null,
+            'vendaultimocalculo' => $agora,
+            'vendadiaquantidadeprevisao' => null,
+        ]);
+        Log::info('EstoqueCalculaEstatisticas Não Calculados', ['ret' => $ret]);
         
     }
 }
