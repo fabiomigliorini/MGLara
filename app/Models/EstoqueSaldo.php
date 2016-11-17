@@ -1022,9 +1022,11 @@ class EstoqueSaldo extends MGModel
         //$query->leftJoin('tblprodutovariacao', 'tblprodutovariacao.codproduto', '=', 'tblproduto.codproduto');
         //$query->leftJoin('tblestoquelocalprodutovariacao', '')
         
+        /*
         header('Content-Type: application/json');
         echo json_encode($ret);
         die();
+        */
         
         return $ret;
     }

@@ -16,7 +16,7 @@ class EstoqueCalculaEstatisticasCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'estoque:calcula-estatisticas';
+    protected $signature = 'estoque:calcula-estatisticas {codprodutovariacao?} {codestoquelocal?}';
 
     /**
      * The console command description.
@@ -42,9 +42,13 @@ class EstoqueCalculaEstatisticasCommand extends Command
      */
     public function handle()
     {
+        
+        $codprodutovariacao = $this->argument('codprodutovariacao');
+        $codestoquelocal = $this->argument('codestoquelocal');
+        
         Log::info('EstoqueCalculaEstatisticasCommand - schedule');
         //$this->dispatch((new EstoqueCalculaEstatisticas(103, 103001))->onQueue('low'));
-        $this->dispatch((new EstoqueCalculaEstatisticas(null, null))->onQueue('low'));
+        $this->dispatch((new EstoqueCalculaEstatisticas($codprodutovariacao, $codestoquelocal))->onQueue('low'));
     }
     
 }
