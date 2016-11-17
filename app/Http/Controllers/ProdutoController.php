@@ -718,6 +718,7 @@ class ProdutoController extends Controller
             'codproduto' => $barras->codproduto,
             'url' => url("produto/{$barras->codproduto}"),
             'codprodutobarra' => $barras->codprodutobarra,
+            'barras' => $barras->barras,
             'produto' => $barras->descricao(),
             'inativo' => $barras->Produto->inativo,
             'unidademedida' => $barras->UnidadeMedida->unidademedida,

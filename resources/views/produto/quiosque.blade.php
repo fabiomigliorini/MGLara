@@ -77,15 +77,20 @@
                     </div>
                 </form>
                 <br>
-
                 
                 <div v-if="produto != null">
 
-                    <div class="well well-sm" style="font-size: 2em">
-                        <span class='label label-danger' v-if='produto.inativo != null' style='font-size: 1em'>Produto Inativo</span>
-                        <a v-bind:href="produto.url">
-                            @{{ produto.produto }}
-                        </a>
+                    <div class="well well-sm">
+                      <div class='pull-right label label-danger' v-if='produto.inativo != null' style="font-size: 1em">Produto Inativo</div>
+                      <a v-bind:href="produto.url" style="font-size: 2em">
+                        @{{ produto.produto }}
+                      </a>
+                      <br>
+                      <div class='text-muted' style="font-size: 1em">
+                        @{{ produto.codproduto.formataCodigo(6) }}
+                        &nbsp;&nbsp;/&nbsp;&nbsp;
+                        @{{ produto.barras }}
+                      </div>
                     </div>
 
                     <div class="alert alert-success text-center">
@@ -112,9 +117,6 @@
                             </ul>
                         </div>
                     </div>
-
-
-                    
                     
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
@@ -198,7 +200,12 @@
             </div>
             <div v-if="resultado == false" class='col-md-12' style='position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);' id='div-erro'>
                     <div class='alert alert-danger text-center'>
-                        <h1>@{{ mensagem }}</h1>
+                        <h1>
+                          <strong v-if="barras != null">
+                            @{{ barras }}<br><hr>
+                          </strong>
+                          @{{ mensagem }}
+                        </h1>
                     </div>
             </div>
 
@@ -206,11 +213,30 @@
 
         <script type="text/javascript">
 
+            Number.prototype.formataCodigo = function (length) {
+                var n = this;
+                var length = (length == undefined)?8:length;
+                var s=n+"",needed=length-s.length;
+                if (needed>0) s=(Math.pow(10,needed)+"").slice(1)+s;
+                return '#' + s;
+            }
+            
+            Number.prototype.formataNumero = function(decPlaces, thouSeparator, decSeparator) {
+                var n = this,
+                    decPlaces = isNaN(decPlaces = Math.abs(decPlaces)) ? 2 : decPlaces,
+                    decSeparator = decSeparator == undefined ? "," : decSeparator,
+                    thouSeparator = thouSeparator == undefined ? "." : thouSeparator,
+                    sign = n < 0 ? "-" : "",
+                    i = parseInt(n = Math.abs(+n || 0).toFixed(decPlaces)) + "",
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+                return sign + (j ? i.substr(0, j) + thouSeparator : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thouSeparator) + (decPlaces ? decSeparator + Math.abs(n - i).toFixed(decPlaces).slice(2) : "");
+            };
+            
+            
             function fullScreen() {
                 var docEl = window.document.documentElement;
-
                 var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-                requestFullScreen.call(docEl);
+                //requestFullScreen.call(docEl);
             }  
 
             function focoBarras() {
@@ -239,17 +265,6 @@
 
                 app.getProduto();
             }); 
-            
-            Number.prototype.formataNumero = function(decPlaces, thouSeparator, decSeparator) {
-                var n = this,
-                    decPlaces = isNaN(decPlaces = Math.abs(decPlaces)) ? 2 : decPlaces,
-                    decSeparator = decSeparator == undefined ? "," : decSeparator,
-                    thouSeparator = thouSeparator == undefined ? "." : thouSeparator,
-                    sign = n < 0 ? "-" : "",
-                    i = parseInt(n = Math.abs(+n || 0).toFixed(decPlaces)) + "",
-                    j = (j = i.length) > 3 ? j % 3 : 0;
-                return sign + (j ? i.substr(0, j) + thouSeparator : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thouSeparator) + (decPlaces ? decSeparator + Math.abs(n - i).toFixed(decPlaces).slice(2) : "");
-            };
              
             var app = new Vue({
                 el: '#app',
@@ -282,7 +297,6 @@
 
                                 if (response.body.resultado) {
                                     this.produto = response.body.produto;
-                                    console.log(this.produto);
                                     Vue.nextTick(function () {
                                         $("#codprodutobarra").select2("val", null);
                                         $('#myCarousel').carousel(0);
