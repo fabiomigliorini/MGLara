@@ -25,10 +25,11 @@ Route::get('estoque/gera-movimento-produto-variacao/{id}','EstoqueController@ger
 Route::get('estoque/gera-movimento-periodo','EstoqueController@geraMovimentoPeriodo');
 
 /* Acessar da rede interna sem autenticacao, ou da rede externa com autenticacao */
-Route::get('produto/quiosque','ProdutoController@quiosque');
-Route::get('produto/consulta/{barras}','ProdutoController@consulta');
-Route::get('produto-barra/listagem-json','ProdutoBarraController@listagemJson');
-
+Route::group(['middleware' => 'ipinterno'], function() {
+    Route::get('produto/quiosque','ProdutoController@quiosque');
+    Route::get('produto/consulta/{barras}','ProdutoController@consulta');
+    Route::get('produto-barra/listagem-json','ProdutoBarraController@listagemJson');
+});
 
 Route::group(['middleware' => 'auth'], function() {
     

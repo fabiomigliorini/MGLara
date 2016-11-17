@@ -31,5 +31,6 @@ class Kernel extends HttpKernel
         'guest'         => \MGLara\Http\Middleware\RedirectIfAuthenticated::class,
         'permissao'     => \MGLara\Http\Middleware\VerificaPermissao::class,
         'parametros'    => \MGLara\Http\Middleware\ParametrosGet::class,
+        'ipinterno'     => \MGLara\Http\Middleware\IpInterno::class,
     ];
 }
