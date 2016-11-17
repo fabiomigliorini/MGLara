@@ -94,15 +94,16 @@
                     </div>
 
                     <div class="alert alert-success text-center">
-                        <div class='container-fluid'>
                           <div class="row">
-                            <span class="text-muted pull-left">
-                                @{{ produto.unidademedida }}
-                                R$
-                            </span>
-                            <strong style="font-size: 5em">
-                                @{{ produto.preco.formataNumero() }}
-                            </strong>
+                            <div class="col-md-7">
+                                <span class="text-muted pull-left">
+                                    @{{ produto.unidademedida }}
+                                    R$
+                                </span>
+                                <strong style="font-size: 5em">
+                                    @{{ produto.preco.formataNumero() }}
+                                </strong>
+                            </div>
                             <ul v-if="produto.embalagens.length > 1" class="col-md-5 list-group list-group-condensed list-group-hover list-group-striped pull-right" style="margin-bottom: 0px">
                                 <li class="list-group-item" v-for="(embalagem, index) in produto.embalagens">
                                   <div class="row">
@@ -127,7 +128,6 @@
                                 </li>
                             </ul>
                           </div>
-                        </div>
                     </div>
                     
                     <ol class="breadcrumb">
@@ -210,15 +210,15 @@
                     </table>
                 </div>
             </div>
-            <div v-if="resultado == false" class='col-md-12' style='position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);' id='div-erro'>
-                    <div class='alert alert-danger text-center'>
-                        <h1>
-                          <strong v-if="barras != null">
-                            @{{ barras }}<br><hr>
-                          </strong>
-                          @{{ mensagem }}
-                        </h1>
-                    </div>
+            <div v-if="resultado == false" class='row' style='position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1' id='div-erro'>
+                <div class='alert alert-danger text-center'>
+                    <h1>
+                      <strong v-if="barras != null">
+                        @{{ barras }}<br><hr>
+                      </strong>
+                      @{{ mensagem }}
+                    </h1>
+                </div>
             </div>
 
         </div> 
@@ -245,10 +245,13 @@
             };
             
             
+            var isMobile = /mobile|android/i.test (navigator.userAgent);
             function fullScreen() {
-                var docEl = window.document.documentElement;
-                var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-                requestFullScreen.call(docEl);
+                if (isMobile) {
+                    var docEl = window.document.documentElement;
+                    var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+                    requestFullScreen.call(docEl);
+                }
             }  
 
             function focoBarras() {
