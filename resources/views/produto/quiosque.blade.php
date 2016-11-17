@@ -236,7 +236,7 @@
             function fullScreen() {
                 var docEl = window.document.documentElement;
                 var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-                //requestFullScreen.call(docEl);
+                requestFullScreen.call(docEl);
             }  
 
             function focoBarras() {
