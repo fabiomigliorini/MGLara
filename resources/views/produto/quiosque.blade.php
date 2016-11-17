@@ -72,7 +72,7 @@
                             <input type="text" class="form-control" id="barras" placeholder="Barras" v-model="barrasDigitado" v-on:change="getProduto" autofocus tabindex="1">
                         </div>
                         <div class='col-md-8'>
-                            {!! Form::select2ProdutoBarra('codprodutobarra', null, ['placeholder' => 'Pesquisa de produtos', 'class' => 'form-control', 'id'=>'codprodutobarra', 'tabindex'=>'2', 'somenteAtivos'=>'1']) !!}
+                            {!! Form::select2ProdutoBarra('codprodutobarra', null, ['placeholder' => 'Pesquisa de produtos', 'class' => 'form-control', 'id'=>'codprodutobarra', 'tabindex'=>'2', 'class'=>'col-md-12', 'somenteAtivos'=>'1']) !!}
                         </div>
                     </div>
                 </form>
@@ -89,14 +89,31 @@
                     </div>
 
                     <div class="alert alert-success text-center">
-                        <span class="text-muted pull-left">
-                            @{{ produto.unidademedida }}
-                            R$
-                        </span>
-                        <strong style="font-size: 5em">
-                            @{{ produto.preco.formataNumero() }}
-                        </strong>
+                        <div class='container-fluid'>
+                            <span class="text-muted pull-left">
+                                @{{ produto.unidademedida }}
+                                R$
+                            </span>
+                            <strong style="font-size: 5em">
+                                @{{ produto.preco.formataNumero() }}
+                            </strong>
+                            <ul class="list-group list-group-condensed list-group-hover list-group-striped pull-right">
+                                <li class="list-group-item" v-for="(embalagem, index) in produto.embalagens">
+                                    <span>
+                                        @{{ embalagem.unidademedida }}
+                                    </span> 
+                                    <span v-if="embalagem.quantidade > 1" >
+                                        C/@{{ embalagem.quantidade }} 
+                                    </span>
+                                    <strong class="pull-right">
+                                        &nbsp @{{ embalagem.preco.formataNumero() }}
+                                    </strong>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
+
+
                     
                     
                     <ol class="breadcrumb">
@@ -144,20 +161,6 @@
                             @{{ produto.referencia }}
                         </li>
                     </ol>
-
-                    <ul class="list-group list-group-condensed list-group-hover list-group-striped">
-                        <li class="list-group-item" v-for="(embalagem, index) in produto.embalagens">
-                            <span>
-                                @{{ embalagem.unidademedida }}
-                            </span> 
-                            <span v-if="embalagem.quantidade > 1" >
-                                C/@{{ embalagem.quantidade }}
-                            </span>
-                            <strong class="pull-right">
-                                @{{ embalagem.preco.formataNumero() }}
-                            </strong>
-                        </li>
-                    </ul>
 
                     <table class="table table-bordered table-condensed table-hover table-striped">
                         <thead>
@@ -207,7 +210,7 @@
                 var docEl = window.document.documentElement;
 
                 var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-                //requestFullScreen.call(docEl);
+                requestFullScreen.call(docEl);
             }  
 
             function focoBarras() {
@@ -268,7 +271,7 @@
                         
                         this.barras = this.barrasDigitado;
                         this.barrasDigitado = null;
-                        this.produto = null;                                    
+                        this.produto = null;
                         fullScreen();
 
                         if (this.barras != null) {
