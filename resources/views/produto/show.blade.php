@@ -420,7 +420,6 @@ $(document).ready(function() {
         bootbox.prompt({
             title: "Digite o código do produto",
             inputType: 'number',
-            value: {{ $model->codproduto }},
             callback: function (result) {
                 if(result) {
                     location.replace(baseUrl + '/produto/' + result)
