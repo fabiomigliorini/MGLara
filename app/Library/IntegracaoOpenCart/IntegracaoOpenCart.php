@@ -5,7 +5,7 @@ namespace MGLara\Library\IntegracaoOpenCart;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
-use MGLara\Library\IntegracaoOpenCart\IntegracaoOpencartBase;
+use MGLara\Library\IntegracaoOpenCart\IntegracaoOpenCartBase;
 use MGLara\Models\Marca;
 use MGLara\Models\SecaoProduto;
 use MGLara\Models\FamiliaProduto;
@@ -13,7 +13,7 @@ use MGLara\Models\GrupoProduto;
 use MGLara\Models\SubGrupoProduto;
 use MGLara\Models\Produto;
 
-class IntegracaoOpenCart extends IntegracaoOpencartBase {
+class IntegracaoOpenCart extends IntegracaoOpenCartBase {
     
     protected $manufacturers = [];
     protected $manufacturersUpdated = [];
