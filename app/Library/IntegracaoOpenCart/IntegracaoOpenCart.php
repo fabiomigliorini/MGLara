@@ -689,6 +689,12 @@ class IntegracaoOpenCart extends IntegracaoOpenCartBase {
     
     public static function sincronizaProdutos ($codproduto = 'all', $excluir_excedentes = 'auto')
     {
+
+        // Marca como site os que tem imagem e estao ativos
+        DB::update('update tblproduto set site = true where site = false and inativo is null and codproduto in (select tblprodutoimagem.codproduto from tblprodutoimagem)');
+        // Tira do site os que estao inativos ou nao tem imagens
+        DB::update('update tblproduto set site = false where site = true and (inativo is not null or codproduto not in (select tblprodutoimagem.codproduto from tblprodutoimagem))');
+        
         Log::info ("Inicio Sincronizacao de Produtos OpenCart ($codproduto)");
         
         $qryProdutos = Produto::where('site', true)->whereNull('inativo')->orderBy('codproduto');
