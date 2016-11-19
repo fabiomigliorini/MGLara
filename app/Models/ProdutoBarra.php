@@ -50,18 +50,16 @@ class ProdutoBarra extends MGModel
     ];
 
     public function validate() {
-
         $this->_regrasValidacao = [            
             'codproduto'          => 'required',
             'codprodutovariacao'  => 'required',
-            //'barras'              => "required|uniqueMultiple:tblprodutobarra,codprodutobarra,$this->codprodutobarra,barras",
+            'barras'              => "uniqueMultiple:tblprodutobarra,codprodutobarra,$this->codprodutobarra,barras",
         ];
     
         $this->_mensagensErro = [
             'codproduto.required'           => 'O Código do Produto não pode ser vazio!',
             'codprodutovariação.required'   => 'A Variação não pode ser vazia!',
             'barras.unique_multiple'        => 'Este Código de Barras já existe!',
-            //'barras.required'               => 'Informe o Código de Barras!',
         ];
         
         return parent::validate();
