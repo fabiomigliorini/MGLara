@@ -68,6 +68,7 @@ use Carbon\Carbon;
  * Tabelas Filhas
  * @property  CobrancaHistorico[]            $CobrancaHistoricoS
  * @property  CupomFiscal[]                  $CupomFiscalS
+ * @property  MetaFilialPessoa[]             $MetaFilialPessoaS
  * @property  Filial[]                       $FilialS
  * @property  LiquidacaoTitulo[]             $LiquidacaoTituloS
  * @property  Negocio[]                      $NegocioPessoaS
@@ -260,6 +261,11 @@ class Pessoa extends MGModel
 
 
     // Tabelas Filhas
+    public function MetaFilialPessoaS()
+    {
+        return $this->hasMany(MetaFilialPessoa::class, 'codpessoa', 'codpessoa');
+    }    
+    
     public function CobrancaHistoricoS()
     {
         return $this->hasMany(CobrancaHistorico::class, 'codpessoa', 'codpessoa');

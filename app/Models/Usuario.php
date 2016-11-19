@@ -187,6 +187,14 @@ namespace MGLara\Models;
  * @property  Tributacao[]                   $TributacaoCriacaoS
  * @property  TributacaoNaturezaOperacao[]   $TributacaoNaturezaOperacaoAlteracaoS
  * @property  TributacaoNaturezaOperacao[]   $TributacaoNaturezaOperacaoCriacaoS
+ * @property  Meta[]                         $MetaAlteracaoS
+ * @property  Meta[]                         $MetaCriacaoS
+ * @property  MetaFilial[]                   $MetaFilialAlteracaoS
+ * @property  MetaFilial[]                   $MetaFilialCriacaoS
+ * @property  MetaFilialPessoa[]             $MetaFilialPessoaAlteracaoS
+ * @property  MetaFilialPessoa[]             $MetaFilialPessoaCriacaoS
+ * @property  Cargo[]                        $CargoAlteracaoS
+ * @property  Cargo[]                        $CargoCriacaoS
  * @property  UnidadeMedida[]                $UnidadeMedidaAlteracaoS
  * @property  UnidadeMedida[]                $UnidadeMedidaCriacaoS
  * @property  Usuario[]                      $UsuarioAlteracaoS
@@ -1083,7 +1091,47 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     {
         return $this->hasMany(UnidadeMedida::class, 'codusuario', 'codusuariocriacao');
     }
+    
+    public function MetaCriacaoS()
+    {
+        return $this->hasMany(Meta::class, 'codusuario', 'codusuarioalteracao');
+    }
 
+    public function MetaAlteracaoS()
+    {
+        return $this->hasMany(Meta::class, 'codusuario', 'codusuariocriacao');
+    }
+
+    public function MetaFilialCriacaoS()
+    {
+        return $this->hasMany(MetaFilial::class, 'codusuario', 'codusuarioalteracao');
+    }
+
+    public function MetaFilialAlteracaoS()
+    {
+        return $this->hasMany(MetaFilial::class, 'codusuario', 'codusuariocriacao');
+    }
+
+    public function MetaFilialPessoaCriacaoS()
+    {
+        return $this->hasMany(MetaFilialPessoa::class, 'codusuario', 'codusuarioalteracao');
+    }
+
+    public function MetaFilialPessoaAlteracaoS()
+    {
+        return $this->hasMany(MetaFilialPessoa::class, 'codusuario', 'codusuariocriacao');
+    }    
+
+    public function CargoCriacaoS()
+    {
+        return $this->hasMany(Cargo::class, 'codusuario', 'codusuarioalteracao');
+    }
+
+    public function CargoAlteracaoS()
+    {
+        return $this->hasMany(Cargo::class, 'codusuario', 'codusuariocriacao');
+    }    
+    
     public function UsuarioAlteracaoS()
     {
         return $this->hasMany(Usuario::class, 'codusuario', 'codusuarioalteracao');
