@@ -13,7 +13,6 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \MGLara\Console\Commands\Inspire::class,
         \MGLara\Console\Commands\EstoqueCalculaEstatisticasCommand::class,
         \MGLara\Console\Commands\OpenCartSincronizaProdutosCommand::class,
     ];
@@ -26,10 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // TODO: DESCOBRIR PQ .env NAO E CARREGADO NO SCHEDULE
-        
-        //$schedule->command('estoque:calcula-estatisticas')->dailyAt('01:00');
-        //$schedule->command('opencart:sincroniza-produtos')->dailyAt('01:00');
-        //$schedule->command('inspire')->hourly();
+        $schedule->command('estoque:calcula-estatisticas')->dailyAt('00:00');
+        $schedule->command('opencart:sincroniza-produtos')->dailyAt('00:00');
     }
 }

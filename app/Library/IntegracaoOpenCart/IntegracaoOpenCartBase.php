@@ -30,10 +30,10 @@ class IntegracaoOpencartBase {
     {
         // Traz variaves de ambiente
         $this->debug = $debug;
-        $this->url = (!empty($url))?$url:$_ENV['OPENCART_BASEURL'];
-        $this->user = (!empty($user))?$user:$_ENV['OPENCART_USER'];
-        $this->password = (!empty($password))?$password:$_ENV['OPENCART_PASSWORD'];
-        $this->languagePTBR = (!empty($language_ptbr))?$language_ptbr:$_ENV['OPENCART_LANGUAGE_PTBR'];
+        $this->url = (!empty($url))?$url:env('OPENCART_BASEURL');
+        $this->user = (!empty($user))?$user:env('OPENCART_USER');
+        $this->password = (!empty($password))?$password:env('OPENCART_PASSWORD');
+        $this->languagePTBR = (!empty($language_ptbr))?$language_ptbr:env('OPENCART_LANGUAGE_PTBR');
     }
     
     public function get($url, $data = null, $http_header = null, $data_as_json = true)
