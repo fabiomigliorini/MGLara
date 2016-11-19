@@ -3,9 +3,29 @@
 namespace MGLara\Http\Middleware;
 
 use Closure;
-use Auth;
+use Illuminate\Contracts\Auth\Guard;
+
 class RedeConfiavel
 {
+    
+    /**
+     * The Guard implementation.
+     *
+     * @var Guard
+     */
+    protected $auth;
+
+    /**
+     * Create a new filter instance.
+     *
+     * @param  Guard  $auth
+     * @return void
+     */
+    public function __construct(Guard $auth)
+    {
+        $this->auth = $auth;
+    }
+    
     /**
      * Handle an incoming request.
      *
@@ -16,8 +36,12 @@ class RedeConfiavel
     public function handle($request, Closure $next)
     {
         if (!$this->verificaRedeConfiavel($request->ip())) {
-            if(!Auth::user()){
-                return redirect()->guest('auth/login');
+            if ($this->auth->guest()) {
+                if ($request->ajax()) {
+                    return response('Unauthorized.', 401);
+                } else {
+                    return redirect()->guest('auth/login');
+                }
             }
         }        
         return $next($request);
