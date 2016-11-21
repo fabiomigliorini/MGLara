@@ -199,6 +199,9 @@ Route::group(['middleware' => 'auth'], function() {
     /* Negocio */
     Route::resource('negocio','NegocioController');
 
+    /* Metas */
+    Route::resource('meta','MetaController');
+
     /* Estoque Movimento */
     Route::get('estoque-movimento/create/{codestoquemes}','EstoqueMovimentoController@create');
     Route::resource('estoque-movimento','EstoqueMovimentoController');
