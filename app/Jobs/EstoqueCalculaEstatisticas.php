@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use MGLara\Models\EstoqueMes;
 use MGLara\Models\EstoqueMovimentoTipo;
 use MGLara\Models\EstoqueLocalProdutoVariacao;
+use MGLara\Models\ProdutoVariacao;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -50,11 +51,58 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
         //DB::enableQueryLog();
         Log::info('EstoqueCalculaEstatisticas', ['codprodutovariacao' => $this->codprodutovariacao, 'codestoquelocal' => $this->codestoquelocal]);
         
+        Log::info('EstoqueCalculaEstatisticas Calculando Ultima Compra');
+        
+        // Busca todos produtos variacao
+        $pvs = ProdutoVariacao::orderBy('codprodutovariacao');
+        if (!empty($this->codprodutovariacao)) {
+            $pvs->where('codprodutovariacao', $this->codprodutovariacao);
+        }
+        
+        // Percorre ajustando a data da ultima compra
+        foreach ($pvs->get() as $pv) {
+            $data = null;
+            $quantidade = null;
+            $custo = null;
+            $sql = "
+                select 
+                    nf.emissao
+                    , sum(nfpb.quantidade * coalesce(pe.quantidade, 1)) as quantidade
+                    , sum(nfpb.valortotal) as valortotal 
+                from tblprodutobarra pb
+                left join tblprodutoembalagem pe on (pe.codprodutoembalagem = pb.codprodutoembalagem)
+                inner join tblnotafiscalprodutobarra nfpb on (nfpb.codprodutobarra = pb.codprodutobarra)
+                inner join tblnotafiscal nf on (nf.codnotafiscal = nfpb.codnotafiscal)
+                inner join tblnaturezaoperacao no on (no.codnaturezaoperacao = nf.codnaturezaoperacao)
+                where pb.codprodutovariacao = {$pv->codprodutovariacao}
+                and no.compra = true
+                group by pb.codprodutovariacao, nf.emissao 
+                order by nf.emissao desc
+                limit 1
+                ";
+            $compra = DB::select($sql);
+            if (isset($compra[0])) {
+                $data = $compra[0]->emissao;
+                $quantidade = $compra[0]->quantidade;
+                $custo = $compra[0]->valortotal;
+            }
+            if ($quantidade > 0) {
+                $custo /= $quantidade;
+            }
+            $ret = ProdutoVariacao::where('codprodutovariacao', $pv->codprodutovariacao)->update([
+                'dataultimacompra' => $data,
+                'quantidadeultimacompra' => $quantidade,
+                'custoultimacompra' => $custo,
+            ]);
+        }
+    
+        Log::info('EstoqueCalculaEstatisticas Fim Calculo Ultima Compra');
+
         $bimestre = new Carbon('today - 2 months');
         $semestre = new Carbon('today - 6 months');
         $ano = new Carbon('today - 1 year');
         $agora = new Carbon('now');
-
+        
         Log::info('EstoqueCalculaEstatisticas Calculando');
 
         $sql = "
