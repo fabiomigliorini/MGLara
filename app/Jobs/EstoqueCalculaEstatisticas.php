@@ -184,7 +184,7 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
             'vendaultimocalculo' => $agora,
             'vendadiaquantidadeprevisao' => null,
         ]);
-        Log::info('EstoqueCalculaEstatisticas Não Calculados', ['ret' => $ret]);
+        Log::info('EstoqueCalculaEstatisticas Limpada estatisticas produtos Não vendidos', ['ret' => $ret]);
         
     }
 }
