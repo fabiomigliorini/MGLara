@@ -48,7 +48,7 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
      */
     public function handle()
     {
-        Log::info('EstoqueCalculaEstatisticas Job Inicializada', ['attemps' => $this->attempts(), 'codprodutovariacao' => $this->codprodutovariacao, 'codestoquelocal' => $this->codestoquelocal]);
+        Log::info('EstoqueCalculaEstatisticas Job Inicializada', ['attempts' => $this->attempts(), 'codprodutovariacao' => $this->codprodutovariacao, 'codestoquelocal' => $this->codestoquelocal]);
         
         Log::info('EstoqueCalculaEstatisticas Início Calculo data Ultima Compra');
         
