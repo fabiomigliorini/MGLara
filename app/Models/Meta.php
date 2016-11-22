@@ -45,7 +45,20 @@ class Meta extends MGModel
         'alteracao',
     ];
 
-
+    public function validate() {
+        
+        $this->_regrasValidacao = [
+            //'periodoinicial' => 'required', 
+        ];
+    
+        $this->_mensagensErro = [
+            'periodoinicial.required' => 'O campo Periodo inicial não pode ser vazio',
+        ];
+        
+        return parent::validate();
+        
+    }
+    
     // Chaves Estrangeiras
     public function UsuarioAlteracao()
     {
