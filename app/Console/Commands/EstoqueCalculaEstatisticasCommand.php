@@ -42,13 +42,12 @@ class EstoqueCalculaEstatisticasCommand extends Command
      */
     public function handle()
     {
-        
         $codprodutovariacao = $this->argument('codprodutovariacao');
         $codestoquelocal = $this->argument('codestoquelocal');
         
-        Log::info('EstoqueCalculaEstatisticasCommand - schedule');
-        //$this->dispatch((new EstoqueCalculaEstatisticas(103, 103001))->onQueue('low'));
-        $this->dispatch((new EstoqueCalculaEstatisticas($codprodutovariacao, $codestoquelocal))->onQueue('low'));
+        Log::info('EstoqueCalculaEstatisticasCommand');
+        $this->dispatch((new EstoqueCalculaEstatisticas($codprodutovariacao, $codestoquelocal))->onQueue('medium'));
+        
     }
     
 }

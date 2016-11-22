@@ -48,10 +48,9 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
      */
     public function handle()
     {
-        //DB::enableQueryLog();
-        Log::info('EstoqueCalculaEstatisticas', ['codprodutovariacao' => $this->codprodutovariacao, 'codestoquelocal' => $this->codestoquelocal]);
+        Log::info('EstoqueCalculaEstatisticas Job Inicializada', ['attemps' => $this->attempts(), 'codprodutovariacao' => $this->codprodutovariacao, 'codestoquelocal' => $this->codestoquelocal]);
         
-        Log::info('EstoqueCalculaEstatisticas Calculando Ultima Compra');
+        Log::info('EstoqueCalculaEstatisticas Início Calculo data Ultima Compra');
         
         // Busca todos produtos variacao
         $pvs = ProdutoVariacao::orderBy('codprodutovariacao');
@@ -103,7 +102,7 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
         $ano = new Carbon('today - 1 year');
         $agora = new Carbon('now');
         
-        Log::info('EstoqueCalculaEstatisticas Calculando');
+        Log::info('EstoqueCalculaEstatisticas Calculando Volume de vendas');
 
         $sql = "
             select 
@@ -148,7 +147,7 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
         
         $regs = DB::select($sql);
         
-        Log::info('EstoqueCalculaEstatisticas Atualizando');
+        Log::info('EstoqueCalculaEstatisticas Atualizando volume de vendas');
         
         $atualizados = [];
         foreach ($regs as $reg) {
@@ -165,7 +164,7 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
             ]);
             $atualizados[] = $elpv->codestoquelocalprodutovariacao;
         }
-        Log::info('EstoqueCalculaEstatisticas Atualizados', ['atualizados' => sizeof($atualizados), 'calculados' => sizeof($regs)]);
+        Log::info('EstoqueCalculaEstatisticas Fim Atualizacao volume de vendas', ['atualizados' => sizeof($atualizados), 'calculados' => sizeof($regs)]);
         
         $elpvs = EstoqueLocalProdutoVariacao::whereNotIn('codestoquelocalprodutovariacao', $atualizados);
         if (!empty($this->codprodutovariacao)) {

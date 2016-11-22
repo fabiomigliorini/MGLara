@@ -217,8 +217,8 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
         }
                 
         //Coloca Recalculo Custo Medio na Fila
-        foreach($mesRecalcular as $mes)
+        foreach($mesRecalcular as $mes) {
             $this->dispatch((new EstoqueCalculaCustoMedio($mes))->onQueue('urgent'));
-        
+        }
     }
 }

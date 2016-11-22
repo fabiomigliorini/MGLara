@@ -55,8 +55,9 @@ class EstoqueGeraMovimentoPeriodo extends Job implements SelfHandling, ShouldQue
 
         $sql = "select codnegocio from tblnegocio where lancamento between '" . $this->inicial->format('Y-m-d H:i:s') . "' and '" . $this->final->format('Y-m-d H:i:s') . "' order by codnegocio";
         $rows = DB::select($sql);
-        foreach ($rows as $row)
+        foreach ($rows as $row) {
             $this->dispatch((new EstoqueGeraMovimentoNegocio($row->codnegocio))->onQueue('medium'));
+        }
         
     }
 }

@@ -53,8 +53,9 @@ class EstoqueGeraMovimentoProdutoVariacao extends Job implements SelfHandling, S
             
         $rows = DB::select($sql);
         
-        foreach ($rows as $row)
+        foreach ($rows as $row) {
             $this->dispatch((new EstoqueGeraMovimentoNegocioProdutoBarra($row->codnegocioprodutobarra))->onQueue('medium'));
+        }
         
     }
 }
