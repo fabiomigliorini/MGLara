@@ -14,7 +14,15 @@
 </ol>
 <hr>
 <br>
-{!! Form::model($model, ['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form-meta', 'route' => 'meta.store']) !!}
+{!! Form::model($model, [
+    'method' => 'POST', 
+    'class' => 'form-horizontal', 
+    'id' => 'form-meta', 
+    'route' => [
+        'meta.store', 
+        'alterar'=> isset(Request::all()['alterar']) ? Request::all()['alterar'] : null
+    ] 
+]) !!}
     @include('errors.form_error')
     @include('meta.form', ['submitTextButton' => 'Salvar'])
  {!! Form::close() !!}   

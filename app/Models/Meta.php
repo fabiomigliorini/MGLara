@@ -77,5 +77,22 @@ class Meta extends MGModel
         return $this->hasMany(MetaFilial::class, 'codmeta', 'codmeta');
     }
 
+    public function buscaProximos($qtd = 7)
+    {
+        $metas = self::where('periodoinicial', '>', $this->periodofinal)
+               ->orderBy('periodoinicial', 'asc')
+               ->take($qtd)
+               ->get();
+        return $metas;
+    }
+    
+    public function buscaAnteriores($qtd = 7)
+    {
+        $metas = self::where('periodofinal', '<', $this->periodoinicial)
+               ->orderBy('periodoinicial', 'desc')
+               ->take($qtd)
+               ->get();
+        return $metas->reverse();
+    }
 
 }
