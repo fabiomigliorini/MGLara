@@ -48,10 +48,13 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
      */
     public function handle()
     {
+        $log_completo = (empty($this->codestoquelocal) && empty($this->codprodutovariacao))?true:false;
         
-        Log::info('EstoqueCalculaEstatisticas Job Inicializada', ['attempts' => $this->attempts(), 'codprodutovariacao' => $this->codprodutovariacao, 'codestoquelocal' => $this->codestoquelocal]);
+        Log::info('EstoqueCalculaEstatisticas', ['attempts' => $this->attempts(), 'codprodutovariacao' => $this->codprodutovariacao, 'codestoquelocal' => $this->codestoquelocal]);
         
-        Log::info('EstoqueCalculaEstatisticas Início Calculo data Ultima Compra');
+        if ($log_completo) {
+            Log::info('EstoqueCalculaEstatisticas Início Calculo data Ultima Compra');
+        }
         
         // Busca todos produtos variacao
         $pvs = ProdutoVariacao::orderBy('codprodutovariacao');
@@ -94,17 +97,20 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
                 'quantidadeultimacompra' => $quantidade,
                 'custoultimacompra' => $custo,
             ]);
-            Log::info("EstoqueCalculaEstatisticas codprodutovariacao:{$pv->codprodutovariacao} Atualizado");
         }
     
-        Log::info('EstoqueCalculaEstatisticas Fim Calculo Ultima Compra');
+        if ($log_completo) {
+            Log::info('EstoqueCalculaEstatisticas Fim Calculo Ultima Compra');
+        }
 
         $bimestre = new Carbon('today - 2 months');
         $semestre = new Carbon('today - 6 months');
         $ano = new Carbon('today - 1 year');
         $agora = new Carbon('now');
         
-        Log::info('EstoqueCalculaEstatisticas Calculando Volume de vendas');
+        if ($log_completo) {
+            Log::info('EstoqueCalculaEstatisticas Calculando Volume de vendas');
+        }
 
         $sql = "
             select 
@@ -149,7 +155,9 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
         
         $regs = DB::select($sql);
         
-        Log::info('EstoqueCalculaEstatisticas Atualizando volume de vendas');
+        if ($log_completo) {
+            Log::info('EstoqueCalculaEstatisticas Atualizando volume de vendas');
+        }
         
         $atualizados = [];
         foreach ($regs as $reg) {
@@ -165,9 +173,10 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
                 'vendadiaquantidadeprevisao' => ($reg->vendasemestrequantidade / $semestre->diffInDays()),
             ]);
             $atualizados[] = $elpv->codestoquelocalprodutovariacao;
-            Log::info("EstoqueCalculaEstatisticas codestoquelocalprodutovariacao:{$elpv->codestoquelocalprodutovariacao} Atualizado");
         }
-        Log::info('EstoqueCalculaEstatisticas Fim Atualizacao volume de vendas', ['atualizados' => sizeof($atualizados), 'calculados' => sizeof($regs)]);
+        if ($log_completo) {
+            Log::info('EstoqueCalculaEstatisticas Fim Atualizacao volume de vendas', ['atualizados' => sizeof($atualizados), 'calculados' => sizeof($regs)]);
+        }
         
         $elpvs = EstoqueLocalProdutoVariacao::whereNotIn('codestoquelocalprodutovariacao', $atualizados);
         if (!empty($this->codprodutovariacao)) {
@@ -187,8 +196,9 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
             'vendaultimocalculo' => $agora,
             'vendadiaquantidadeprevisao' => null,
         ]);
-        Log::info('EstoqueCalculaEstatisticas Limpada estatisticas produtos Não vendidos', ['ret' => $ret]);
-        
+        if ($log_completo) {
+            Log::info('EstoqueCalculaEstatisticas Limpada estatisticas produtos Não vendidos', ['ret' => $ret]);
+        }
     }
     
 }
