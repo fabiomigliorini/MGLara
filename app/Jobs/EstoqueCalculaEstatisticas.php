@@ -48,7 +48,7 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
      */
     public function handle()
     {
-        set_time_limit(1800);
+        
         Log::info('EstoqueCalculaEstatisticas Job Inicializada', ['attempts' => $this->attempts(), 'codprodutovariacao' => $this->codprodutovariacao, 'codestoquelocal' => $this->codestoquelocal]);
         
         Log::info('EstoqueCalculaEstatisticas Início Calculo data Ultima Compra');
@@ -187,11 +187,6 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
         ]);
         Log::info('EstoqueCalculaEstatisticas Limpada estatisticas produtos Não vendidos', ['ret' => $ret]);
         
-    }
-    
-    public function failed() 
-    {
-        Log::error('EstoqueCalculaEstatisticas', ['this' => $this]);
     }
     
 }
