@@ -188,9 +188,11 @@ class EstoqueSaldoController extends Controller
     {
         $filtro = $request->all();
         
-        $agrupamento = $request->agrupamento;
+        $dados = EstoqueSaldo::relatorioAnalise($filtro);
         
-        $dados = EstoqueSaldo::relatorioAnalise($agrupamento, $filtro);
+        if (!empty($filtro['debug'])) {
+            return $dados;
+        }
         
         return view('estoque-saldo.relatorio-analise', compact('dados'));
     }

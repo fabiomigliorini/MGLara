@@ -193,8 +193,11 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
             "));
         }
         
-        foreach ($mesesRecalcular as $mes)
+        $this->dispatch((new EstoqueCalculaEstatisticas($mes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codprodutovariacao, $mes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal))->onQueue('low'));
+        
+        foreach ($mesesRecalcular as $mes) {
             $this->dispatch((new EstoqueCalculaCustoMedio($mes, $this->ciclo +1))->onQueue('urgent'));
+        }
         
     }
 }

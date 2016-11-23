@@ -136,8 +136,9 @@ class EstoqueGeraMovimentoConferencia extends Job implements SelfHandling, Shoul
         }
         
         //Coloca Recalculo Custo Medio na Fila
-        foreach($codestoquemesRecalcular as $codestoquemes)
+        foreach($codestoquemesRecalcular as $codestoquemes) {
             $this->dispatch((new EstoqueCalculaCustoMedio($codestoquemes))->onQueue('urgent'));
+        }
         
     }
 }

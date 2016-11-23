@@ -39,7 +39,7 @@ return [
             'driver' => 'database',
             'table' => 'tbljobs',
             'queue' => 'default',
-            'expire' => 60,
+            'expire' => 1800,
         ],
 
         /*
