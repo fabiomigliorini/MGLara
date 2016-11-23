@@ -94,6 +94,7 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
                 'quantidadeultimacompra' => $quantidade,
                 'custoultimacompra' => $custo,
             ]);
+            Log::info("EstoqueCalculaEstatisticas codprodutovariacao:{$pv->codprodutovariacao} Atualizado");
         }
     
         Log::info('EstoqueCalculaEstatisticas Fim Calculo Ultima Compra');
@@ -164,6 +165,7 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
                 'vendadiaquantidadeprevisao' => ($reg->vendasemestrequantidade / $semestre->diffInDays()),
             ]);
             $atualizados[] = $elpv->codestoquelocalprodutovariacao;
+            Log::info("EstoqueCalculaEstatisticas codestoquelocalprodutovariacao:{$elpv->codestoquelocalprodutovariacao} Atualizado");
         }
         Log::info('EstoqueCalculaEstatisticas Fim Atualizacao volume de vendas', ['atualizados' => sizeof($atualizados), 'calculados' => sizeof($regs)]);
         
