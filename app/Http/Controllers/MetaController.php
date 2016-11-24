@@ -29,9 +29,8 @@ class MetaController extends Controller
      */
     public function index()
     {
-        //$hoje = Carbon::now()->format('Y-m-d');
-        $model = Meta::where('periodoinicial', '<=', Carbon::now())
-                ->where('periodofinal', '>=', Carbon::now())
+        $model = Meta::where('periodoinicial', '<=', Carbon::today())
+                ->where('periodofinal', '>=', Carbon::today())
                 ->first();
 
         return view('meta.index', compact('model'));
@@ -61,7 +60,6 @@ class MetaController extends Controller
                         'codcargo'=> $pessoa['codcargo']
                     ];
                 }
-                //dd($pessoas);
                 $metafilial[$metaf['codfilial']]['pessoas'] = $pessoas;
             }
             $model['metafilial'] = $metafilial;
@@ -121,8 +119,8 @@ class MetaController extends Controller
                 $pessoas = $meta['pessoas'];
                 foreach ($pessoas as $pessoa)
                 {
-                    if( !empty($pessoa['codcargo'] && !empty($pessoa['codpessoa'])) ) {
-                        //dd($pessoa);
+                    if( !empty($pessoa['codcargo'] && !empty($pessoa['codpessoa'])) || !empty($pessoa['codmetafilialpessoa'])) {
+                        
                         if(empty($pessoa['codmetafilialpessoa'])) {
                             $mfp = new MetaFilialPessoa();
                         } else {
@@ -133,8 +131,12 @@ class MetaController extends Controller
                         $mfp->codpessoa     = $pessoa['codpessoa'];
                         $mfp->codcargo      = $pessoa['codcargo'];
                         
-                        if (!$mfp->save()) {
-                            throw new Exception ('Erro ao Criar Meta filial pessoa!');
+                        if($mfp->codcargo){
+                            if (!$mfp->save()) {
+                                throw new Exception ('Erro ao Criar Meta filial pessoa!');
+                            }
+                        } else {
+                            $mfp->delete();
                         }
                     }
                 }

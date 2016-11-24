@@ -1,5 +1,17 @@
 @extends('layouts.default')
 @section('content')
+<ol class="breadcrumb header">
+    {!! titulo(null, 'Metas', null) !!}
+    <li class='active'>
+        <small>
+            <a title="Nova" href="{{ url("meta/create") }}"><i class="glyphicon glyphicon-plus"></i></a>
+            @if($model)
+            <a title="Editar" href="{{ url("meta/create?alterar=$model->codmeta") }}"><i class="glyphicon glyphicon-pencil"></i></a>
+            @endif
+        </small>
+    </li>   
+</ol>
+@if($model)
 <?php
     $proximos = $model->buscaProximos(8);
     $anteriores = $model->buscaAnteriores(16 - sizeof($proximos));
@@ -7,15 +19,6 @@
         $proximos = $model->buscaProximos(16 - sizeof($anteriores));
     }
 ?>
-<ol class="breadcrumb header">
-    {!! titulo(null, 'Metas', null) !!}
-    <li class='active'>
-        <small>
-            <a title="Nova" href="{{ url("meta/create") }}"><i class="glyphicon glyphicon-plus"></i></a>
-            <a title="Editar" href="{{ url("meta/create?alterar=$model->codmeta") }}"><i class="glyphicon glyphicon-pencil"></i></a>
-        </small>
-    </li>   
-</ol>
 <ul class="nav nav-pills">
     @foreach($anteriores as $meta)
     <li role="presentation"><a href="{{ url("meta/?codmeta=$meta->codmeta") }}">{{ formataData($meta->periodofinal, 'EC') }}</a></li>
@@ -25,7 +28,6 @@
     <li role="presentation"><a href="{{ url("meta/?codmeta=$meta->codmeta") }}">{{ formataData($meta->periodofinal, 'EC') }}</a></li>
     @endforeach
 </ul>        
-
 <div>
     <br>
     <ul class="nav nav-tabs" role="tablist">
@@ -43,6 +45,9 @@
         <div role="tabpanel" class="tab-pane" id="settings">...</div>
     </div>
 </div>
+@else
+<h2>Nenhuma meta cadastrada</h2>
+@endif
 
 
 

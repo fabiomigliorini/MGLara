@@ -2,6 +2,7 @@
 use MGLara\Models\Pessoa;
 use MGLara\Models\Filial;
 use MGLara\Models\Cargo;
+use Collective\Html\FormBuilder;
 
 $cargos = [''=>''] + Cargo::orderBy('cargo')->lists('cargo', 'codcargo')->all();        
 $filiais = Filial::whereIn('codfilial', ['102', '103', '104'])->get();
@@ -14,8 +15,8 @@ $pessoas = Pessoa::where('codgrupocliente', 8)
 <div class="form-group">
     {!! Form::label('meta[periodoinicial]', 'Período:', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-md-10">
-        {!! Form::date('meta[periodoinicial]', null, ['class' => 'form-control pull-left', 'id' => 'meta[periodoinicial]', 'placeholder' => 'De', 'style'=>'width:200px; margin-right:10px']) !!}
-        {!! Form::date('meta[periodofinal]', null, ['class' => 'form-control pull-left', 'id' => 'meta[periodofinal]', 'placeholder' => 'Até', 'style'=>'width:200px;']) !!}
+        {!! Form::date('meta[periodoinicial]', $model->periodoinicial, ['class' => 'form-control pull-left', 'id' => 'meta[periodoinicial]', 'placeholder' => 'De', 'style'=>'width:200px; margin-right:10px']) !!}
+        {!! Form::date('meta[periodofinal]', $model->periodofinal, ['class' => 'form-control pull-left', 'id' => 'meta[periodofinal]', 'placeholder' => 'Até', 'style'=>'width:200px;']) !!}
     </div>
 </div>
 
@@ -111,14 +112,16 @@ $pessoas = Pessoa::where('codgrupocliente', 8)
                     {!! Form::label($filial->codfilial.$pessoa->codpessoa, $pessoa->fantasia, ['class'=>'col-sm-2 control-label']) !!}
                     <?php
                         $codmetafilialpessoa = null;
-                        if(array_key_exists($pessoa->codpessoa, $model['metafilial'][$filial->codfilial]['pessoas'])) {
-                            $codmetafilialpessoa = $model['metafilial'][$filial->codfilial]['pessoas'][$pessoa->codpessoa]['codmetafilialpessoa'];
+                        if(!empty($model->getAttributes())) {
+                            if(array_key_exists($pessoa->codpessoa, $model['metafilial'][$filial->codfilial]['pessoas'])) {
+                                $codmetafilialpessoa = $model['metafilial'][$filial->codfilial]['pessoas'][$pessoa->codpessoa]['codmetafilialpessoa'];
+                            }
                         }
                     ?>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         {!! Form::hidden("metafilial[$filial->codfilial][pessoas][$pessoa->codpessoa][codmetafilialpessoa]", $codmetafilialpessoa, ['class' => 'form-control',  'id'=>"metafilial[$filial->codfilial][pessoas][codpessoa]"]) !!}
-                        {!! Form::hidden("metafilial[$filial->codfilial][pessoas][$pessoa->codpessoa][codpessoa]", $pessoa->codpessoa, ['class' => 'form-control',  'id'=>"metafilial[$filial->codfilial][pessoas][codpessoa]"]) !!}
-                        {!! Form::select2("metafilial[$filial->codfilial][pessoas][$pessoa->codpessoa][codcargo]", $cargos, null, ['class'=> 'form-control', 'id'=>$filial->codfilial.$pessoa->codpessoa ]) !!}
+                        {!! Form::hidden("metafilial[$filial->codfilial][pessoas][$pessoa->codpessoa][codpessoa]", $pessoa->codpessoa, ['class' => 'form-control pull-left',  'id'=>"metafilial[$filial->codfilial][pessoas][codpessoa]"]) !!}
+                        {!! Form::select2("metafilial[$filial->codfilial][pessoas][$pessoa->codpessoa][codcargo]", $cargos, null, ['class'=> 'form-control', 'id'=>$filial->codfilial.$pessoa->codpessoa]) !!}
                     </div>
                 </div>
                 @endforeach
