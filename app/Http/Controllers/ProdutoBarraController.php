@@ -149,10 +149,13 @@ class ProdutoBarraController extends Controller
 
                     if ($str == formataNumero((float) str_replace(',', '.', $str), 2)) {
                         $q2->orWhere('preco', '=', (float) str_replace(',', '.', $str));
-                    } elseif (strlen($str) == 6 & is_numeric($str)) {
-                        $q2->orWhere('codproduto', '=', $str);
-                    } elseif (is_numeric($str)) {
-                        $q2->orWhere('barras', 'ilike', "%$str%");
+                    } else {
+                        if (strlen($str) == 6 & is_numeric($str)) {
+                            $q2->orWhere('codproduto', '=', $str);
+                        }
+                        if (is_numeric($str)) {
+                            $q2->orWhere('barras', 'ilike', "%$str%");
+                        }
                     }
                 });
             }
@@ -177,6 +180,7 @@ class ProdutoBarraController extends Controller
                 ->paginate(20);
 
             $dados = $query->get();
+            //dd($query);
             $resultado = [];
             foreach ($dados as $item => $value)
             {

@@ -68,10 +68,10 @@
             <div class="col-md-6" id='div-resultados'>
                 <form class="" role="search">
                     <div class='row' id='div-form'>
-                        <div class='col-md-4'>
-                            <input type="text" class="form-control" id="barras" placeholder="Barras" v-model="barrasDigitado" v-on:change="getProduto" autofocus tabindex="1">
+                        <div class='col-md-12'>
+                            <input type="text" class="form-control text-center" id="barras" placeholder="Barras" v-model="barrasDigitado" v-on:change="getProduto" autofocus tabindex="1">
                         </div>
-                        <div class='col-md-8'>
+                        <div class='col-md-12'>
                             {!! Form::select2ProdutoBarra('codprodutobarra', null, ['placeholder' => 'Pesquisa de produtos', 'class' => 'form-control', 'id'=>'codprodutobarra', 'tabindex'=>'2', 'class'=>'col-md-12', 'somenteAtivos'=>'1']) !!}
                         </div>
                     </div>
