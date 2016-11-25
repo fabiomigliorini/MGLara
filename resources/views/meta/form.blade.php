@@ -2,6 +2,7 @@
 use MGLara\Models\Pessoa;
 use MGLara\Models\Filial;
 use MGLara\Models\Cargo;
+use Collective\Html\FormBuilder;
 
 $cargos = [''=>''] + Cargo::orderBy('cargo')->lists('cargo', 'codcargo')->all();        
 $filiais = Filial::whereIn('codfilial', ['102', '103', '104'])->get();
@@ -14,8 +15,8 @@ $pessoas = Pessoa::where('codgrupocliente', 8)
 <div class="form-group">
     {!! Form::label('meta[periodoinicial]', 'Período:', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-md-10">
-        {!! Form::date('meta[periodoinicial]', null, ['class' => 'form-control pull-left', 'id' => 'meta[periodoinicial]', 'placeholder' => 'De', 'style'=>'width:200px; margin-right:10px']) !!}
-        {!! Form::date('meta[periodofinal]', null, ['class' => 'form-control pull-left', 'id' => 'meta[periodofinal]', 'placeholder' => 'Até', 'style'=>'width:200px;']) !!}
+        {!! Form::date('meta[periodoinicial]', $model->periodoinicial, ['class' => 'form-control pull-left', 'id' => 'meta[periodoinicial]', 'placeholder' => 'De', 'style'=>'width:200px; margin-right:10px']) !!}
+        {!! Form::date('meta[periodofinal]', $model->periodofinal, ['class' => 'form-control pull-left', 'id' => 'meta[periodofinal]', 'placeholder' => 'Até', 'style'=>'width:200px;']) !!}
     </div>
 </div>
 
@@ -77,9 +78,10 @@ $pessoas = Pessoa::where('codgrupocliente', 8)
             @foreach($filiais as $filial)
             <div role="tabpanel" class="tab-pane" id="{{$filial->codfilial}}">
                 <br>
+                {!! Form::hidden("metafilial[$filial->codfilial][codmetafilial]", $filial->codmetafilial, ['class' => 'form-control',  'id'=>'']) !!}
                 <div class="form-group">
                     {!! Form::label('', 'Controla', ['class'=>'col-sm-2 control-label']) !!}
-                    <div class="col-sm-9" id="wrapper-site">{!! Form::checkbox('metafilial[$filial->codfilial][controla]', true, null, ['id'=>'controla', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
+                    <div class="col-sm-9" id="wrapper-site">{!! Form::checkbox('metafilial[$filial->codfilial][controla]', true, null, ['id'=>'controla', 'class'=>'controla', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
                 </div>
                 <div class="form-group">
                     {!! Form::label("metafilial[$filial->codfilial][valormetafilial]", 'Valor meta filial', ['class' => 'col-sm-2 control-label']) !!}
@@ -107,10 +109,19 @@ $pessoas = Pessoa::where('codgrupocliente', 8)
                 </div>
                 @foreach($pessoas as $pessoa)
                 <div class="form-group">
-                    {!! Form::label("metafilialpessoa[$filial->codfilial][pessoas][codcargo]", $pessoa->fantasia, ['class'=>'col-sm-2 control-label']) !!}
-                    <div class="col-md-2">
-                        {!! Form::hidden("metafilial[$filial->codfilial][pessoas][codpessoa]", $pessoa->codpessoa, ['class' => 'form-control',  'id'=>"metafilial[$filial->codfilial][pessoas][codpessoa]"]) !!}
-                        {!! Form::select2("metafilial[$filial->codfilial][pessoas][codcargo]", $cargos, null, ['class'=> 'form-control', 'id'=>$filial->codfilial.$pessoa->codpessoa ]) !!}
+                    {!! Form::label($filial->codfilial.$pessoa->codpessoa, $pessoa->fantasia, ['class'=>'col-sm-2 control-label']) !!}
+                    <?php
+                        $codmetafilialpessoa = null;
+                        if(!empty($model->getAttributes())) {
+                            if(array_key_exists($pessoa->codpessoa, $model['metafilial'][$filial->codfilial]['pessoas'])) {
+                                $codmetafilialpessoa = $model['metafilial'][$filial->codfilial]['pessoas'][$pessoa->codpessoa]['codmetafilialpessoa'];
+                            }
+                        }
+                    ?>
+                    <div class="col-md-3">
+                        {!! Form::hidden("metafilial[$filial->codfilial][pessoas][$pessoa->codpessoa][codmetafilialpessoa]", $codmetafilialpessoa, ['class' => 'form-control',  'id'=>"metafilial[$filial->codfilial][pessoas][codpessoa]"]) !!}
+                        {!! Form::hidden("metafilial[$filial->codfilial][pessoas][$pessoa->codpessoa][codpessoa]", $pessoa->codpessoa, ['class' => 'form-control pull-left',  'id'=>"metafilial[$filial->codfilial][pessoas][codpessoa]"]) !!}
+                        {!! Form::select2("metafilial[$filial->codfilial][pessoas][$pessoa->codpessoa][codcargo]", $cargos, null, ['class'=> 'form-control', 'id'=>$filial->codfilial.$pessoa->codpessoa]) !!}
                     </div>
                 </div>
                 @endforeach
@@ -120,12 +131,6 @@ $pessoas = Pessoa::where('codgrupocliente', 8)
     </div>
 </div>
 
-<!--
-<div class="form-group">
-    {!! Form::label('site', 'Disponível no Site:', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-9" id="wrapper-site">{!! Form::checkbox('site', true, null, ['id'=>'site', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
-</div>
--->
 <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
         {!! Form::submit($submitTextButton, array('class' => 'btn btn-primary')) !!}
@@ -135,7 +140,7 @@ $pessoas = Pessoa::where('codgrupocliente', 8)
 @section('inscript')
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#form-marca').on("submit", function(e){
+    $('#form-meta').on("submit", function(e){
         var currentForm = this;
         e.preventDefault();
         bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
@@ -144,7 +149,7 @@ $(document).ready(function() {
             }
         });
     });
-    $('#controla').bootstrapSwitch();
+    $('.controla').bootstrapSwitch();
     $( "ul.nav-tabs li:first-child, div.tab-content div.tab-pane:first-child").addClass('active');
     
 });
