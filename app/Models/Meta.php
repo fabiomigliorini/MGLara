@@ -70,7 +70,6 @@ class Meta extends MGModel
         return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
     }
 
-
     // Tabelas Filhas
     public function MetaFilialS()
     {

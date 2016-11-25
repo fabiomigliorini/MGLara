@@ -5,8 +5,11 @@
     <li class='active'>
         <small>
             <a title="Nova" href="{{ url("meta/create") }}"><i class="glyphicon glyphicon-plus"></i></a>
+            &nbsp;
             @if($model)
             <a title="Editar" href="{{ url("meta/create?alterar=$model->codmeta") }}"><i class="glyphicon glyphicon-pencil"></i></a>
+            &nbsp;
+            <a title="Excluir" href="{{ url("meta/$model->codmeta") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a meta '{{ $model->observacoes }}'?" data-after-delete="location.replace(baseUrl + '/meta');"><i class="glyphicon glyphicon-trash"></i></a>
             @endif
         </small>
     </li>   
@@ -32,26 +35,22 @@
     <br>
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#geral" aria-controls="geral" role="tab" data-toggle="tab">Geral</a></li>
-        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
-        <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
-        <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+        <li role="presentation"><a href="#103" aria-controls="103" role="tab" data-toggle="tab">Centro</a></li>
+        <li role="presentation"><a href="#102" aria-controls="102" role="tab" data-toggle="tab">Botanico</a></li>
+        <li role="presentation"><a href="#104" aria-controls="104" role="tab" data-toggle="tab">Imperial</a></li>
     </ul>
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="geral">
             <p>Tabela geral</p>
         </div>
-        <div role="tabpanel" class="tab-pane" id="profile">...</div>
-        <div role="tabpanel" class="tab-pane" id="messages">...</div>
-        <div role="tabpanel" class="tab-pane" id="settings">...</div>
+        <div role="tabpanel" class="tab-pane" id="103">Tabela do Centro</div>
+        <div role="tabpanel" class="tab-pane" id="102">Tabela do Botanico</div>
+        <div role="tabpanel" class="tab-pane" id="104">Tabela do Imperial</div>
     </div>
 </div>
 @else
 <h2>Nenhuma meta cadastrada</h2>
 @endif
-
-
-
-
 @section('inscript')
 <style type="text/css">
     .tab-pane {

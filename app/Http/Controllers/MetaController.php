@@ -27,12 +27,17 @@ class MetaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $model = Meta::where('periodoinicial', '<=', Carbon::today())
-                ->where('periodofinal', '>=', Carbon::today())
-                ->first();
+        if($request->codmeta) {
+            $model = Meta::findOrFail($request->codmeta);
+        } else {
+            $model = Meta::where('periodoinicial', '<=', Carbon::today())
+                    ->where('periodofinal', '>=', Carbon::today())
+                    ->first();
+        }
 
+        #dd($model);
         return view('meta.index', compact('model'));
     }
 
@@ -152,48 +157,28 @@ class MetaController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
-    }
+        try{
+            $meta = Meta::findOrFail($id);
+            foreach ($meta->MetaFilialS()->get() as $mf)
+            {
+                foreach ($mf->MetaFilialPessoaS()->get() as $mfp)
+                {
+                    if (!$mfp->delete()){
+                        throw new Exception ('Erro excluir Meta Filial Pessoa!');            
+                    }                    
+                }
+                if (!$mf->delete()){
+                    throw new Exception ('Erro excluir Meta Filial!');            
+                }                    
+            }
+            $meta->delete();
+            $ret = ['resultado' => true, 'mensagem' => 'Meta excluída com sucesso!'];
+        }
+        catch(\Exception $e){
+            $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir meta!', 'exception' => "$e"];
+        }
+        return json_encode($ret);
+    }    
 }
