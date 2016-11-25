@@ -96,11 +96,29 @@ and open the template in the editor.
         text-align: center;
     }
     
-    td.total {
+    td.subtotal {
         border-top: 1px solid black;
         font-weight: bold;
+        padding-top: 2px;
+        padding-bottom: 2px;
     }
-
+    
+    td.total {
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        font-weight: bold;
+    }
+    
+    td.total-geral {
+        border-top: 2px solid black;
+        border-bottom: 2px solid black;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        font-weight: bold;
+    }
+    
     table {
         width: 100%;
         border-spacing: 0.15cm;
@@ -134,5 +152,10 @@ and open the template in the editor.
     a {
         text-decoration: none;
     }
-
+    
+    a:link{ color:rgb(0, 0, 238) }
+    a:active{ color:rgb(0, 0, 238) }
+    a:visited{color:rgb(0, 0, 238) }
+    a:hover{color:rgb(0, 0, 238) }
+    
 }
