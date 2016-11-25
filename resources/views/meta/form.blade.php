@@ -5,7 +5,8 @@ use MGLara\Models\Cargo;
 use Collective\Html\FormBuilder;
 
 $cargos = [''=>''] + Cargo::orderBy('cargo')->lists('cargo', 'codcargo')->all();        
-$filiais = Filial::whereIn('codfilial', ['102', '103', '104'])->get();
+//$filiais = Filial::whereIn('codfilial', ['102', '103', '104'])->get();
+$filiais = Filial::orderBy('codfilial')->get();
 $pessoas = Pessoa::where('codgrupocliente', 8)
         ->where('vendedor', true)
         ->whereNull('inativo')
@@ -15,47 +16,49 @@ $pessoas = Pessoa::where('codgrupocliente', 8)
 <div class="form-group">
     {!! Form::label('meta[periodoinicial]', 'Período:', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-md-10">
-        {!! Form::date('meta[periodoinicial]', $model->periodoinicial, ['class' => 'form-control pull-left', 'id' => 'meta[periodoinicial]', 'placeholder' => 'De', 'style'=>'width:200px; margin-right:10px']) !!}
-        {!! Form::date('meta[periodofinal]', $model->periodofinal, ['class' => 'form-control pull-left', 'id' => 'meta[periodofinal]', 'placeholder' => 'Até', 'style'=>'width:200px;']) !!}
+        <div class="input-group">
+            {!! Form::date('meta[periodoinicial]', $model->periodoinicial, ['class' => 'form-control text-center', 'id' => 'meta[periodoinicial]', 'placeholder' => 'De', 'style'=>'width:200px; margin-right:10px']) !!}
+            {!! Form::date('meta[periodofinal]', $model->periodofinal, ['class' => 'form-control text-center', 'id' => 'meta[periodofinal]', 'placeholder' => 'Até', 'style'=>'width:200px;']) !!}
+        </div>
     </div>
 </div>
 
 <div class="form-group">
-    {!! Form::label('meta[premioprimeirovendedorfilial]', 'Prêmio melhor vendedor', ['class' => 'col-sm-2 control-label']) !!}
+    {!! Form::label('meta[premioprimeirovendedorfilial]', 'Prêmio Melhor Vendedor', ['class' => 'col-sm-2 control-label']) !!}
     <div class="col-md-2">
         <div class="input-group">
             <div class="input-group-addon">R$</div>
-            {!! Form::number('meta[premioprimeirovendedorfilial]', null, ['class' => 'form-control',  'id'=> 'meta[premioprimeirovendedorfilial]', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
+            {!! Form::number('meta[premioprimeirovendedorfilial]', null, ['class' => 'form-control text-right',  'id'=> 'meta[premioprimeirovendedorfilial]', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
         </div>
     </div>
 </div>
 
 <div class="form-group">
-    {!! Form::label('meta[percentualcomissaovendedor]', 'Percentual comissão vendedor', ['class' => 'col-sm-2 control-label']) !!}
+    {!! Form::label('meta[percentualcomissaovendedor]', 'Comissão', ['class' => 'col-sm-2 control-label']) !!}
     <div class="col-md-2">
         <div class="input-group">
+            {!! Form::number('meta[percentualcomissaovendedor]', null, ['class' => 'form-control text-right',  'id'=>'meta[percentualcomissaovendedor]', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
             <div class="input-group-addon">%</div>
-            {!! Form::number('meta[percentualcomissaovendedor]', null, ['class' => 'form-control',  'id'=>'meta[percentualcomissaovendedor]', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
         </div>
     </div>
 </div>
 
 <div class="form-group">
-    {!! Form::label('meta[percentualcomissaovendedormeta]', 'Percentual comissão vendedor meta', ['class' => 'col-sm-2 control-label']) !!}
+    {!! Form::label('meta[percentualcomissaovendedormeta]', 'Prêmio Meta Vendedor', ['class' => 'col-sm-2 control-label']) !!}
     <div class="col-md-2">
         <div class="input-group">
+            {!! Form::number('meta[percentualcomissaovendedormeta]', null, ['class' => 'form-control text-right',  'id'=>'meta[percentualcomissaovendedormeta]', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
             <div class="input-group-addon">%</div>
-            {!! Form::number('meta[percentualcomissaovendedormeta]', null, ['class' => 'form-control',  'id'=>'meta[percentualcomissaovendedormeta]', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
         </div>
     </div>
 </div>
 
 <div class="form-group">
-    {!! Form::label('meta[percentualcomissaosubgerentemeta]', 'Percentual comissão sub-gerente meta', ['class' => 'col-sm-2 control-label']) !!}
+    {!! Form::label('meta[percentualcomissaosubgerentemeta]', 'Prêmio Meta Sub-Gerente', ['class' => 'col-sm-2 control-label']) !!}
     <div class="col-md-2">
         <div class="input-group">
+            {!! Form::number('meta[percentualcomissaosubgerentemeta]', null, ['class' => 'form-control text-right',  'id'=>'meta[percentualcomissaosubgerentemeta]', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
             <div class="input-group-addon">%</div>
-            {!! Form::number('meta[percentualcomissaosubgerentemeta]', null, ['class' => 'form-control',  'id'=>'meta[percentualcomissaosubgerentemeta]', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
         </div>
     </div>
 </div>
@@ -84,20 +87,20 @@ $pessoas = Pessoa::where('codgrupocliente', 8)
                     <div class="col-sm-9" id="wrapper-site">{!! Form::checkbox('metafilial[$filial->codfilial][controla]', true, null, ['id'=>'controla', 'class'=>'controla', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
                 </div>
                 <div class="form-group">
-                    {!! Form::label("metafilial[$filial->codfilial][valormetafilial]", 'Valor meta filial', ['class' => 'col-sm-2 control-label']) !!}
+                    {!! Form::label("metafilial[$filial->codfilial][valormetafilial]", 'Meta Filial', ['class' => 'col-sm-2 control-label']) !!}
                     <div class="col-md-2">
                         <div class="input-group">
                             <div class="input-group-addon">R$</div>
-                            {!! Form::number("metafilial[$filial->codfilial][valormetafilial]", null, ['class' => 'form-control',  'id'=>'valormetafilial', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
+                            {!! Form::number("metafilial[$filial->codfilial][valormetafilial]", null, ['class' => 'form-control text-right',  'id'=>'valormetafilial', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    {!! Form::label("metafilial[$filial->codfilial][valormetavendedor]", 'Valor meta vendedor', ['class' => 'col-sm-2 control-label']) !!}
+                    {!! Form::label("metafilial[$filial->codfilial][valormetavendedor]", 'Meta Vendedor', ['class' => 'col-sm-2 control-label']) !!}
                     <div class="col-md-2">
                         <div class="input-group">
                             <div class="input-group-addon">R$</div>
-                            {!! Form::number("metafilial[$filial->codfilial][valormetavendedor]", null, ['class' => 'form-control',  'id'=>'valormetavendedor', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
+                            {!! Form::number("metafilial[$filial->codfilial][valormetavendedor]", null, ['class' => 'form-control text-right',  'id'=>'valormetavendedor', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
                         </div>
                     </div>
                 </div>
