@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('estoque:calcula-estatisticas')->dailyAt('00:00');
-        $schedule->command('opencart:sincroniza-produtos')->dailyAt('00:00');
+        $schedule->command('opencart:sincroniza-produtos')->dailyAt('00:30');
+        $schedule->command('cache:clear')->dailyAt('01:00');
     }
 }
