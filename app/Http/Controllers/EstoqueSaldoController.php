@@ -170,6 +170,7 @@ class EstoqueSaldoController extends Controller
         ];
         
         $arr_ativo = [
+            '' => '',
             '1' => 'Ativos',
             '2' => 'Inativos',
             '9' => 'Todos',

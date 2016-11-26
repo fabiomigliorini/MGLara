@@ -506,6 +506,7 @@ class EstoqueSaldo extends MGModel
             'p.produto', 
             'p.preco',
             'p.referencia',
+            'p.inativo',
 
             'pv.codprodutovariacao',
             'pv.variacao',
@@ -543,6 +544,7 @@ class EstoqueSaldo extends MGModel
             'elpv.vendasemestrequantidade',
             'elpv.vendaanoquantidade',
             'elpv.vendadiaquantidadeprevisao',
+            'elpv.vencimento',
 
             'el.codestoquelocal',
             'el.sigla as siglaestoquelocal',
@@ -657,6 +659,7 @@ class EstoqueSaldo extends MGModel
         
         $ret = [
             'filtro' => $filtro,
+            'urlfiltro' => urlArrGet($filtro, 'estoque-saldo/relatorio-analise-filtro'),
             'agrupamentos' => [],
         ];
         
@@ -730,7 +733,6 @@ class EstoqueSaldo extends MGModel
                 
                 $filtro_detalhes = $filtro;
                 unset($filtro_detalhes['codmarca']);
-                unset($filtro_detalhes['codestoquelocal']);
                 unset($filtro_detalhes['codgrupoproduto']);
                 unset($filtro_detalhes['codsubgrupoproduto']);
                 unset($filtro_detalhes['codfamiliaproduto']);
@@ -744,6 +746,7 @@ class EstoqueSaldo extends MGModel
                     'siglaunidademedida' => $registro->siglaunidademedida,
                     'codmarca' => $registro->codmarca,
                     'marca' => $registro->marca,
+                    'inativo' => !empty($registro->inativo)?new Carbon($registro->inativo):null,                    
                     'urldetalhes' => urlArrGet($filtro_detalhes, 'estoque-saldo/relatorio-analise'),
                 ];
             }
@@ -790,6 +793,7 @@ class EstoqueSaldo extends MGModel
                     'vendaanoquantidade' => $registro->vendaanoquantidade,
                     'vendaprevisaoquinzena' => $vendaprevisaoquinzena,
                     'vendadiaquantidadeprevisao' => $registro->vendadiaquantidadeprevisao,
+                    'vencimento' => !empty($registro->vencimento)?new Carbon($registro->vencimento):null,
                 ];
             }
             

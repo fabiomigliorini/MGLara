@@ -1,7 +1,7 @@
 @extends('layouts.print-landscape')
 @section('content')
 <div class='cabecalho'>
-  <a href="{{ url('estoque-saldo/relatorio-analise-filtro') }}">
+  <a href="{{ $dados['urlfiltro'] }}">
     Análise Saldo de Estoque
   </a>
 </div>
@@ -29,7 +29,7 @@
                     <td colspan="4"></td>
                     <th colspan="2">Variação</th>
                     <th colspan="3">Última Compra</th>
-                    <th colspan="8">Estoque</th>
+                    <th colspan="9">Estoque</th>
                     <th colspan="3">Vendas</th>
                     <th colspan="1" class="quinzena">Prev</th>
                 </tr>
@@ -44,6 +44,7 @@
                     <th class="quantidade">Qtd</th>
                     <th class="valor">Valor</th>
                     <th class="local">Local</th>
+                    <th class="data">Vencto</th>
                     <th class="prateleira">Prateleira</th>
                     <th class="saldo">Saldo</th>
                     <th class="dias">Dias</th>
@@ -74,9 +75,12 @@
                             <a href='{{ $prod['urldetalhes'] }}'>
                                 <i class="fa fa-search-plus"></i> 
                             </a>
-                            <a href='{{ url("produto/{$codproduto}") }}'>
-                                {{ $prod['produto'] }}
-                            </a>
+                            @if (!empty($prod['inativo']))
+                                <strike><a href='{{ url("produto/{$codproduto}") }}'>{{ $prod['produto'] }}</a></strike>
+                                <span class='text-danger'>Inativo desde {{ formataData($prod['inativo']) }}</span>
+                            @else
+                                <a href='{{ url("produto/{$codproduto}") }}'>{{ $prod['produto'] }}</a>
+                            @endif
                         </td>
                         <td rowspan='{{ $rowspanProduto }}' class='text-right'>{{ formataNumero($prod['preco'], 2) }}</td>
                         <td rowspan='{{ $rowspanProduto }}'>{{ $prod['siglaunidademedida'] }}</td>
@@ -87,11 +91,12 @@
                             ?>
                                 <td rowspan='{{ $rowspanVariacao }}'>{{ $var['variacao'] }}</td>
                                 <td rowspan='{{ $rowspanVariacao }}'>{{ $var['referencia'] }}</td>
-                                <td rowspan='{{ $rowspanVariacao }}' class='text-right'>{{ formataData($var['dataultimacompra']) }}</td>
+                                <td rowspan='{{ $rowspanVariacao }}' class='text-center'>{{ formataData($var['dataultimacompra']) }}</td>
                                 <td rowspan='{{ $rowspanVariacao }}' class='text-right'>{{ formataNumero($var['quantidadeultimacompra'], 0) }}</td>
                                 <td rowspan='{{ $rowspanVariacao }}' class='text-right'>{{ formataNumero($var['custoultimacompra']) }}</td>
                                 @foreach ($var['locais'] as $codestoquelocal => $loc)
                                         <td>{{ $loc['siglaestoquelocal'] }}</td>
+                                        <td style='text-center'>{{ formataData($loc['vencimento']) }}</td>
                                         <td>{{ formataLocalEstoque($loc['corredor'], $loc['prateleira'], $loc['coluna'], $loc['bloco']) }}</td>
                                         <td class='text-right'>
                                             <a href='{{ url("estoque-saldo/{$loc['codestoquesaldo']}") }}'>
@@ -100,7 +105,7 @@
                                         </td>
                                         <td class='text-right'>{{ formataNumero($loc['saldodias'], 0) }}</td>
                                         <td class='text-right'>{{ formataNumero($loc['customedio'], 4) }}</td>
-                                        <td class='text-right'>{{ formataData($loc['dataentrada']) }}</td>
+                                        <td class='text-center'>{{ formataData($loc['dataentrada']) }}</td>
                                         <td class='text-right'>{{ formataNumero($loc['estoqueminimo'], 0) }}</td>
                                         <td class='text-right'>{{ formataNumero($loc['estoquemaximo'], 0) }}</td>
                                         <td class='text-right'>{{ formataNumero($loc['vendabimestrequantidade'], 0) }}</td>
@@ -116,7 +121,7 @@
                                         <td colspan='12' class='text-center'> --- Sem Movimento --- </td>
                                     </tr>
                                 @elseif ($rowspanVariacao > 1)
-                                        <td class='subtotal' colspan='2'>Sub-Total</td>
+                                        <td class='subtotal' colspan='3'>Total Variação</td>
                                         <td class='subtotal text-right'>{{ formataNumero($var['saldoquantidade'], 0) }}</td>
                                         <td class='subtotal text-right'>{{ formataNumero($var['saldodias'], 0) }}</td>
                                         <td class='subtotal text-right'>{{ formataNumero($var['customedio'], 4) }}</td>
@@ -132,10 +137,8 @@
                         @endforeach
                         @if ($qtdVariacoes > 1)
                             <tr>
-                                <td class='subtotal' colspan='3'>Sub-Total Produto</td>
-                                <td class='subtotal text-right'></td>
-                                <td class='subtotal text-right'></td>
-                                <td class='subtotal' colspan='2'></td>
+                                <td class='subtotal' colspan='5'>Total Produto</td>
+                                <td class='subtotal' colspan='3'></td>
                                 <td class='subtotal text-right'>{{ formataNumero($prod['saldoquantidade'], 0) }}</td>
                                 <td class='subtotal text-right'>{{ formataNumero($prod['saldodias'], 0) }}</td>
                                 <td class='subtotal text-right'>{{ formataNumero($prod['customedio'], 4) }}</td>
@@ -152,7 +155,7 @@
             </tbody>
             @if (sizeof($agr['produtos']) > 1)
                 <tfoot>
-                    <td class='total' colspan='11'>Total</td>
+                    <td class='total' colspan='12'>Total</td>
                     <td class='total text-right'>{{ formataNumero($agr['saldoquantidade'], 0) }}</td>
                     <td class='total text-right'>{{ formataNumero($agr['saldodias'], 0) }}</td>
                     <td class='total text-right'>{{ formataNumero($agr['customedio'], 4) }}</td>
