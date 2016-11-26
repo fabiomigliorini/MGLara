@@ -1,7 +1,9 @@
 @extends('layouts.print-landscape')
 @section('content')
 <div class='cabecalho'>
+  <a href="{{ url('estoque-saldo/relatorio-analise-filtro') }}">
     Análise Saldo de Estoque
+  </a>
 </div>
 <div class='conteudo'>
     <!--

@@ -7,18 +7,18 @@
 
 <div class="form-group">
     <label for="codunidademedida" class="col-sm-2 control-label">{!! Form::label('Unidade Medida:') !!}</label>
-    <div class="col-sm-2">{!! Form::select('codunidademedida', $medidas, null, ['class'=> 'form-control', 'id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
+    <div class="col-sm-1">{!! Form::select2UnidadeMedida('codunidademedida', null, ['class'=> 'form-control', 'required'=>true, 'id' => 'codunidademedida', 'id' => 'codunidademedida']) !!}</div>
 </div>
 
 <div class="form-group">
     <label for="preco" class="col-sm-2 control-label">{!! Form::label('Quantidade:') !!}</label>
-    <div class="col-sm-1">{!! Form::text('quantidade', null, ['class'=> 'form-control text-right', 'id'=>'quantidade']) !!}
+    <div class="col-sm-1">{!! Form::number('quantidade', null, ['class'=> 'form-control text-right', 'step'=>'0.001', 'required'=>true, 'id'=>'quantidade']) !!}
     </div>
 </div>
 
 <div class="form-group">
     <label for="preco" class="col-sm-2 control-label">{!! Form::label('Preço:') !!}</label>
-    <div class="col-sm-1">{!! Form::text('preco', null, ['class'=> 'form-control text-right', 'id'=>'preco']) !!}
+    <div class="col-sm-1">{!! Form::number('preco', null, ['class'=> 'form-control text-right', 'step'=>'0.01', 'id'=>'preco']) !!}
     </div>
 </div>
 
@@ -41,15 +41,6 @@ $(document).ready(function() {
             }
         });
     });
-    $('#quantidade, #codunidademedida').prop('required', true);
-    $('#preco').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:2 });
-    $('#quantidade').autoNumeric('init', {aSep:'.', aDec:',', altDec:'.', mDec:3 });
-    $('#codunidademedida').select2({
-        placeholder: 'Unidade Medida',
-        allowClear: true,
-        closeOnSelect: true
-    });
-    
 });
 </script>
 @endsection

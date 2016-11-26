@@ -36,10 +36,6 @@
                     {!! Form::number('bloco', null, ['class' => 'form-control pull-left', 'min' => '0', 'step' => 1, 'style'=>'width:60px; margin-left:10px']) !!}
                 </div>
             </div>
-            <div class="form-group">
-                {!! Form::label('agrupamento', 'Por', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-4">{!! Form::select2('agrupamento', $arr_agrupamentos, null, ['class' => 'form-control', 'placeholder' => 'Agrupado por...']) !!}</div>
-            </div>
             
         </div>
         

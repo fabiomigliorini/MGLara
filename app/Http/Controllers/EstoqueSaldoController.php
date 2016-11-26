@@ -4,14 +4,13 @@ namespace MGLara\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use MGLara\Http\Requests;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\EstoqueSaldo;
 use MGLara\Models\EstoqueMes;
 
 class EstoqueSaldoController extends Controller
 {
-
+    
     public function index(Request $request)
     {
         //$filtro = $request->all();
@@ -149,8 +148,8 @@ class EstoqueSaldoController extends Controller
     
     public function relatorioAnaliseFiltro(Request $request)
     {
-        
-        $filtro = $request->all();
+
+        $filtro = self::filtroEstatico($request, 'estoque-saldo.relatorio-analise', ['ativo' => 1, 'codmarca' => 1]);
         
         $arr_saldos = [
             '' => '', 
@@ -170,23 +169,18 @@ class EstoqueSaldoController extends Controller
             1=>'Acima Máximo'
         ];
         
-        $arr_agrupamentos = [
-            'subgrupoproduto' => 'Sub-Grupo',
-            'marca' => 'Marca',
-        ];
-        
         $arr_ativo = [
             '1' => 'Ativos',
             '2' => 'Inativos',
             '9' => 'Todos',
         ];
         
-        return view('estoque-saldo.relatorio-analise-filtro', compact('arr_ativo', 'arr_valor', 'arr_saldos', 'arr_minimo', 'arr_maximo', 'arr_agrupamentos', 'filtro'));
+        return view('estoque-saldo.relatorio-analise-filtro', compact('arr_ativo', 'arr_valor', 'arr_saldos', 'arr_minimo', 'arr_maximo', 'filtro'));
     }
     
     public function relatorioAnalise(Request $request)
     {
-        $filtro = $request->all();
+        $filtro = self::filtroEstatico($request, 'estoque-saldo.relatorio-analise');
         
         $dados = EstoqueSaldo::relatorioAnalise($filtro);
         
