@@ -59,8 +59,10 @@ abstract class Controller extends BaseController
             
             // Limpa os valores armazenados anteriormente para aquela chave
             $filtros = $request->session()->get($chave);
-            foreach ($filtros as $filtro => $valor) {
-                $request->session()->forget("$chave.$filtro");
+            if (!empty($filtros)) {
+                foreach ($filtros as $filtro => $valor) {
+                    $request->session()->forget("$chave.$filtro");
+                }
             }
             
             // Percorre todos parametros armazenando na sessão, com o prefixo da chave

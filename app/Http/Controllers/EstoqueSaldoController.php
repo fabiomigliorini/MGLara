@@ -149,7 +149,7 @@ class EstoqueSaldoController extends Controller
     public function relatorioAnaliseFiltro(Request $request)
     {
 
-        $filtro = self::filtroEstatico($request, 'estoque-saldo.relatorio-analise', ['ativo' => 1, 'codmarca' => 1]);
+        $filtro = self::filtroEstatico($request, 'estoque-saldo.relatorio-analise', ['ativo' => 1]);
         
         $arr_saldos = [
             '' => '', 
