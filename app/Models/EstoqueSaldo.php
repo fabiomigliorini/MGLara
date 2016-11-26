@@ -634,40 +634,18 @@ class EstoqueSaldo extends MGModel
                 $qry->whereRaw('es.saldoquantidade > 0');
             }
         }
-        
-        // Ordenacao
-        switch ($filtro['agrupamento']) {
-            
-            case 'marca':
-                $campo_codigo = 'codmarca';
-                $campos_descricao = [
-                    'marca'
-                ];
-                $qry->orderBy('m.marca', 'ASC');
-                $qry->orderBy('m.codmarca', 'ASC');
-                break;
-            
-            case 'subgrupoproduto';
-            default:
-                $campo_codigo = 'codsubgrupoproduto';
-                $campos_descricao = [
-                    'secaoproduto',
-                    'familiaproduto',
-                    'grupoproduto',
-                    'subgrupoproduto',
-                ];
-                $qry->orderBy('sp.secaoproduto', 'ASC');
-                $qry->orderBy('sp.codsecaoproduto', 'ASC');
-                $qry->orderBy('fp.familiaproduto', 'ASC');
-                $qry->orderBy('fp.codfamiliaproduto', 'ASC');
-                $qry->orderBy('gp.grupoproduto', 'ASC');
-                $qry->orderBy('gp.codgrupoproduto', 'ASC');
-                $qry->orderBy('sgp.subgrupoproduto', 'ASC');
-                $qry->orderBy('sgp.codsubgrupoproduto', 'ASC');
-                $qry->orderBy('m.codmarca', 'ASC');
-                break;
-            
-        }
+
+        //$campo_codigo = 'codmarca';
+        $qry->orderBy('sp.secaoproduto', 'ASC');
+        $qry->orderBy('sp.codsecaoproduto', 'ASC');
+        $qry->orderBy('fp.familiaproduto', 'ASC');
+        $qry->orderBy('fp.codfamiliaproduto', 'ASC');
+        $qry->orderBy('gp.grupoproduto', 'ASC');
+        $qry->orderBy('gp.codgrupoproduto', 'ASC');
+        $qry->orderBy('sgp.subgrupoproduto', 'ASC');
+        $qry->orderBy('sgp.codsubgrupoproduto', 'ASC');
+        $qry->orderBy('m.marca', 'ASC');
+        $qry->orderBy('m.codmarca', 'ASC');
         $qry->orderBy('p.produto', 'ASC');
         $qry->orderBy('p.codproduto', 'ASC');
         $qry->orderByRaw('pv.variacao ASC NULLS FIRST');
@@ -676,33 +654,89 @@ class EstoqueSaldo extends MGModel
         
         // Busca Registros
         $registros = collect($qry->get());
-        //dd($registros);
         
         $ret = [
-            'agrupamentos' => [],
             'filtro' => $filtro,
+            'agrupamentos' => [],
         ];
+        
         foreach ($registros as $registro) {
             
-            $codigo = $registro->$campo_codigo;
+            $codigo = "{$registro->codsubgrupoproduto}_{$registro->codmarca}";
             
             // Agrupamento Principal
             if (!isset($ret['agrupamentos'][$codigo])) {
                 
-                $descricao = [];
-                foreach ($campos_descricao as $token) {
-                    $descricao[] = $registro->{$token};
-                }
-                $descricao = implode(' / ', $descricao);
+                $filtro_detalhes = $filtro;
+                unset($filtro_detalhes['codproduto']);
+                unset($filtro_detalhes['codmarca']);
+                unset($filtro_detalhes['codgrupoproduto']);
+                unset($filtro_detalhes['codsubgrupoproduto']);
+                unset($filtro_detalhes['codfamiliaproduto']);
+                unset($filtro_detalhes['codsecaoproduto']);
+                
+                $titulos = [];
+                $filtro_detalhes['codsecaoproduto'] = $registro->codsecaoproduto;
+                $titulos[] = [
+                    'model' => 'secao-produto',
+                    'codigo' => $registro->codsecaoproduto,
+                    'descricao' => $registro->secaoproduto,
+                    'urldetalhes' => urlArrGet($filtro_detalhes, 'estoque-saldo/relatorio-analise'),
+                ];
 
+                $filtro_detalhes['codfamiliaproduto'] = $registro->codfamiliaproduto;
+                $titulos[] = [
+                    'model' => 'familia-produto',
+                    'codigo' => $registro->codfamiliaproduto,
+                    'descricao' => $registro->familiaproduto,
+                    'urldetalhes' => urlArrGet($filtro_detalhes, 'estoque-saldo/relatorio-analise'),
+                ];
+
+                $filtro_detalhes['codgrupoproduto'] = $registro->codgrupoproduto;
+                $titulos[] = [
+                    'model' => 'grupo-produto',
+                    'codigo' => $registro->codgrupoproduto,
+                    'descricao' => $registro->grupoproduto,
+                    'urldetalhes' => urlArrGet($filtro_detalhes, 'estoque-saldo/relatorio-analise'),
+                ];
+
+                $filtro_detalhes['codsubgrupoproduto'] = $registro->codsubgrupoproduto;
+                $titulos[] = [
+                    'model' => 'sub-grupo-produto',
+                    'codigo' => $registro->codsubgrupoproduto,
+                    'descricao' => $registro->subgrupoproduto,
+                    'urldetalhes' => urlArrGet($filtro_detalhes, 'estoque-saldo/relatorio-analise'),
+                ];
+                
+                unset($filtro_detalhes['codgrupoproduto']);
+                unset($filtro_detalhes['codsubgrupoproduto']);
+                unset($filtro_detalhes['codfamiliaproduto']);
+                unset($filtro_detalhes['codsecaoproduto']);
+                $filtro_detalhes['codmarca'] = $registro->codmarca;
+                $titulos[] = [
+                    'model' => 'marca',
+                    'codigo' => $registro->codmarca,
+                    'descricao' => $registro->marca,
+                    'urldetalhes' => urlArrGet($filtro_detalhes, 'estoque-saldo/relatorio-analise'),
+                ];
+                
                 $ret['agrupamentos'][$codigo] = [
-                    'codigo' => $codigo,
-                    'descricao' => $descricao,
+                    'titulos' => $titulos,
                 ];
             }
             
             // Agrupamento Produto
             if (!isset($ret['agrupamentos'][$codigo]['produtos'][$registro->codproduto])) {
+                
+                $filtro_detalhes = $filtro;
+                unset($filtro_detalhes['codmarca']);
+                unset($filtro_detalhes['codestoquelocal']);
+                unset($filtro_detalhes['codgrupoproduto']);
+                unset($filtro_detalhes['codsubgrupoproduto']);
+                unset($filtro_detalhes['codfamiliaproduto']);
+                unset($filtro_detalhes['codsecaoproduto']);
+                $filtro_detalhes['codproduto'] = $registro->codproduto;
+                
                 $ret['agrupamentos'][$codigo]['produtos'][$registro->codproduto] = [
                     'codproduto' => $registro->codproduto,
                     'produto' => $registro->produto,
@@ -710,6 +744,7 @@ class EstoqueSaldo extends MGModel
                     'siglaunidademedida' => $registro->siglaunidademedida,
                     'codmarca' => $registro->codmarca,
                     'marca' => $registro->marca,
+                    'urldetalhes' => urlArrGet($filtro_detalhes, 'estoque-saldo/relatorio-analise'),
                 ];
             }
             

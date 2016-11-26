@@ -45,10 +45,6 @@ class ProdutoEmbalagemController extends Controller
      */
     public function store(Request $request)
     {
-        $this->converteNumericos([
-            'preco' => $request->input('preco'),
-            'quantidade' => $request->input('quantidade')
-        ]);
         $model = new ProdutoEmbalagem($request->all());
         $model->codproduto = $request->input('codproduto');
         
@@ -109,11 +105,6 @@ class ProdutoEmbalagemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->converteNumericos([
-            'preco' => $request->input('preco'),
-            'quantidade' => $request->input('quantidade')
-        ]);
-        
         $model = ProdutoEmbalagem::findOrFail($id);
         $model->fill($request->all());
         

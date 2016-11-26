@@ -4,7 +4,6 @@ namespace MGLara\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use MGLara\Http\Requests;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
@@ -28,13 +27,13 @@ class ProdutoController extends Controller
 {
     public function __construct()
     {
-        $this->datas = [];
-        $this->numericos = [];
+        // Permissoes
         $this->middleware('permissao:produto.consulta', ['only' => ['index', 'show']]);
         $this->middleware('permissao:produto.inclusao', ['only' => ['create', 'store']]);
         $this->middleware('permissao:produto.alteracao', ['only' => ['edit', 'update', 'transferirVariacao', 'transferirVariacaoSalvar']]);
         $this->middleware('permissao:produto.exclusao', ['only' => ['delete', 'destroy']]);
         $this->middleware('permissao:produto.inativacao', ['only' => ['inativo']]);
+        
         $this->middleware('parametros', ['only' => ['index', 'show']]);
     }
 
@@ -45,31 +44,22 @@ class ProdutoController extends Controller
      */
     public function index(Request $request) {
         
-        if (!$request->session()->has('produto.index')) {
-            $request->session()->put('produto.index.ativo', '1');
-        }
-        
+        // Busca filtro da sessao
         $parametros = $request->session()->get('produto.index');  
         
-        if (!empty($parametros['criacao_de'])) {
-            $parametros['criacao_de'] = new Carbon($parametros['criacao_de']);
+        // Filtro Padrão
+        if (!isset($parametros['ativo'])) {
+            $parametros['ativo'] = '1';
         }
         
-        if (!empty($parametros['criacao_ate'])) {
-            $parametros['criacao_ate'] = new Carbon($parametros['criacao_ate'] . ' 23:59:59');
+        // Converte Datas em Carbon
+        foreach (['criacao_de', 'criacao_ate', 'alteracao_de', 'alteracao_ate'] as $campo) {
+            if (!empty($parametros[$campo])) {
+                $parametros[$campo] = new Carbon($parametros[$campo]);
+            }
         }
         
-        if (!empty($parametros['alteracao_de'])) {
-            $parametros['alteracao_de'] = new Carbon($parametros['alteracao_de']);
-        }
-        
-        if (!empty($parametros['alteracao_ate'])) {
-            $parametros['alteracao_ate'] = new Carbon($parametros['alteracao_ate'] . ' 23:59:59');
-        }
-        
-        //DB::EnableQueryLog();
         $model = Produto::search($parametros)->orderBy('produto', 'ASC')->paginate(20);
-        //dd(DB::getQueryLog());
         
         return view('produto.index', compact('model'));
     }
@@ -104,8 +94,6 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        $this->converteDatas(['inativo' => $request->input('inativo')], 'd/m/Y');
-        $this->converteNumericos(['preco' => $request->input('preco')]);
         
         $model = new Produto($request->all());
         
@@ -262,8 +250,6 @@ class ProdutoController extends Controller
      */
     public function update(Request $request, $id) 
     {
-        $this->converteDatas(['inativo' => $request->input('inativo')], 'd/m/Y');
-        $this->converteNumericos(['preco' => $request->input('preco')]);
         
         $model = Produto::findOrFail($id);
         $model->fill($request->all());
