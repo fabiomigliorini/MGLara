@@ -33,7 +33,7 @@ use Carbon\Carbon;
 class EstoqueMes extends MGModel
 {
     const CORTE_FISICO = '2016-04-01 00:00:00';
-    const CORTE_FISCAL = '2015-01-01 00:00:00';
+    const CORTE_FISCAL = '2016-01-01 00:00:00';
     
     protected $table = 'tblestoquemes';
     protected $primaryKey = 'codestoquemes';
@@ -111,9 +111,11 @@ class EstoqueMes extends MGModel
         $es = EstoqueSaldo::buscaOuCria($codprodutovariacao, $codestoquelocal, $fiscal);
         $mes = $data;
         $mes->day = 1;
-        //Antes de 2015, cria somente um registro de mes por ano, em dezembro
-        if ($mes->year <= 2015)
+        
+        // Se for fiscal cria somente um mês por ano, dezembro
+        if ($fiscal) {
             $mes->month = 12;
+        }
         
         $em = self::where('codestoquesaldo', $es->codestoquesaldo)->where('mes', $mes)->first();
         if ($em == false)

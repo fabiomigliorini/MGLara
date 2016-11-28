@@ -185,4 +185,22 @@ class NotaFiscal extends MGModel
         return $this->hasMany(NotaFiscalReferenciada::class, 'codnotafiscal', 'codnotafiscal');
     } 
     
+    /**
+     * retorna se Nota Fiscal está ativa
+     * 
+     * @return boolean
+     */
+    public function ativa()
+    {
+        if ($this->emitida == true 
+            && !empty($this->nfeautorizacao) 
+            && empty($this->nfecancelamento) 
+            && empty($this->nfecancelamento)) {
+            return true;
+        }
+        if ($this->emitida == false) {
+            return true;
+        }
+        return false;
+    }
 }

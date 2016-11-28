@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use MGLara\Jobs\EstoqueCalculaCustoMedio;
 use MGLara\Jobs\EstoqueGeraMovimentoNegocioProdutoBarra;
 use MGLara\Jobs\EstoqueGeraMovimentoNegocio;
+use MGLara\Jobs\EstoqueGeraMovimentoNotaFiscalProdutoBarra;
+use MGLara\Jobs\EstoqueGeraMovimentoNotaFiscal;
 use MGLara\Jobs\EstoqueGeraMovimentoProduto;
 use MGLara\Jobs\EstoqueGeraMovimentoProdutoVariacao;
 use MGLara\Jobs\EstoqueGeraMovimentoPeriodo;
@@ -53,6 +55,21 @@ class EstoqueController extends Controller
         //Delay pra aguardar transação do Yii
         $delay = (int)$request->get('delay');
         $job = (new EstoqueGeraMovimentoNegocio($id))->delay($delay)->onQueue('medium');
+        $this->dispatch($job);
+        return response()->json(['response' => 'Agendado', 'delay' => $delay]);
+    }
+    
+    public function geraMovimentoNotaFiscalProdutoBarra(Request $request, $id)
+    {
+        $this->dispatch((new EstoqueGeraMovimentoNotaFiscalProdutoBarra($id))->onQueue('high'));
+        return response()->json(['response' => 'Agendado']);
+    }
+
+    public function geraMovimentoNotaFiscal(Request $request, $id)
+    {
+        //Delay pra aguardar transação do Yii
+        $delay = (int)$request->get('delay');
+        $job = (new EstoqueGeraMovimentoNotaFiscal($id))->delay($delay)->onQueue('medium');
         $this->dispatch($job);
         return response()->json(['response' => 'Agendado', 'delay' => $delay]);
     }

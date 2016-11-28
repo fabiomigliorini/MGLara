@@ -20,6 +20,8 @@ Route::get('auth/logout', 'Auth\AuthController@getLogout');
 Route::get('estoque/calcula-custo-medio/{id}','EstoqueController@calculaCustoMedio');
 Route::get('estoque/gera-movimento-negocio-produto-barra/{id}','EstoqueController@geraMovimentoNegocioProdutoBarra');
 Route::get('estoque/gera-movimento-negocio/{id}','EstoqueController@geraMovimentoNegocio');
+Route::get('estoque/gera-movimento-nota-fiscal-produto-barra/{id}','EstoqueController@geraMovimentoNotaFiscalProdutoBarra');
+Route::get('estoque/gera-movimento-nota-fiscal/{id}','EstoqueController@geraMovimentoNotaFiscal');
 Route::get('estoque/gera-movimento-produto/{id}','EstoqueController@geraMovimentoProduto');
 Route::get('estoque/gera-movimento-produto-variacao/{id}','EstoqueController@geraMovimentoProdutoVariacao');
 Route::get('estoque/gera-movimento-periodo','EstoqueController@geraMovimentoPeriodo');
