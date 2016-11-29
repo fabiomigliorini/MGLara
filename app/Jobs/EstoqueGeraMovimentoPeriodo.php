@@ -47,6 +47,8 @@ class EstoqueGeraMovimentoPeriodo extends Job implements SelfHandling, ShouldQue
     public function handle()
     {
         Log::info('EstoqueGeraMovimentoPeriodo', ['inicial' => $this->inicial, 'final' => $this->final]);
+        
+        /*
 
         $corte = Carbon::createFromFormat('Y-m-d H:i:s', EstoqueMes::CORTE_FISICO);
         
@@ -57,6 +59,19 @@ class EstoqueGeraMovimentoPeriodo extends Job implements SelfHandling, ShouldQue
         $rows = DB::select($sql);
         foreach ($rows as $row) {
             $this->dispatch((new EstoqueGeraMovimentoNegocio($row->codnegocio))->onQueue('medium'));
+        }
+         * 
+         */
+
+        $corte = Carbon::createFromFormat('Y-m-d H:i:s', EstoqueMes::CORTE_FISCAL);
+        
+        $this->inicial = $this->inicial->max($corte);
+        $this->final = $this->final->max($corte);
+
+        $sql = "select codnotafiscal from tblnotafiscal where saida between '" . $this->inicial->format('Y-m-d H:i:s') . "' and '" . $this->final->format('Y-m-d H:i:s') . "' order by codnotafiscal";
+        $rows = DB::select($sql);
+        foreach ($rows as $row) {
+            $this->dispatch((new EstoqueGeraMovimentoNotaFiscal($row->codnotafiscal))->onQueue('medium'));
         }
         
     }

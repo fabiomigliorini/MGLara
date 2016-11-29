@@ -44,17 +44,20 @@ use MGLara\Models\TributacaoNaturezaOperacao;
  * @property  numeric(4,2)                   $irpjpercentual                     
  * @property  numeric(14,2)                  $irpjvalor                          
  * @property  numeric(4,2)                   $cofinspercentual                   
+ * @property  bigint                         $codnotafiscalprodutobarraorigem
  *
  * Chaves Estrangeiras
  * @property  Cfop                           $Cfop                          
  * @property  NegocioProdutoBarra            $NegocioProdutoBarra           
  * @property  NotaFiscal                     $NotaFiscal                    
+ * @property  NotaFiscalProdutoBarraOrigem   $NotaFiscalProdutoBarra
  * @property  ProdutoBarra                   $ProdutoBarra                  
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
  *
  * Tabelas Filhas
  * @property  EstoqueMovimento[]             $EstoqueMovimentoS
+ * @property  NotaFiscalProdutoBarra[]       $NotaFiscalProdutoBarraS
  */
 
 
@@ -134,11 +137,21 @@ class NotaFiscalProdutoBarra extends MGModel
         return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
     }
 
+    public function NotaFiscalProdutoBarraOrigem()
+    {
+        return $this->belongsTo(NotaFiscalProdutoBarra::class, 'codnotafiscalprodutobarraorigem', 'codnotafiscalprodutobarra');
+    }
+
 
     // Tabelas Filhas
     public function EstoqueMovimentoS()
     {
         return $this->hasMany(EstoqueMovimento::class, 'codnotafiscalprodutobarra', 'codnotafiscalprodutobarra');
+    }
+    
+    public function NotaFiscalProdutoBarraS()
+    {
+        return $this->hasMany(NotaFiscalProdutoBarra::class, 'codnotafiscalprodutobarraorigem');
     }
     
     public static function search($parametros, $registros = 20)
