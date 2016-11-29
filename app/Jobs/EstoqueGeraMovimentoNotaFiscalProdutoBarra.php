@@ -16,6 +16,7 @@ use MGLara\Models\EstoqueMes;
 use MGLara\Models\EstoqueMovimento;
 use MGLara\Models\EstoqueMovimentoTipo;
 use MGLara\Models\EstoqueLocal;
+use MGLara\Models\NotaFiscal;
 use MGLara\Models\Operacao;
 
 class EstoqueGeraMovimentoNotaFiscalProdutoBarra extends Job implements SelfHandling, ShouldQueue
@@ -23,6 +24,7 @@ class EstoqueGeraMovimentoNotaFiscalProdutoBarra extends Job implements SelfHand
     use InteractsWithQueue, SerializesModels, DispatchesJobs;
 
     protected $codnotafiscalprodutobarra;
+    
     /**
      * Create a new job instance.
      *
@@ -125,6 +127,23 @@ class EstoqueGeraMovimentoNotaFiscalProdutoBarra extends Job implements SelfHand
             $mov->codnegocioprodutobarra = null;
             $mov->codnotafiscalprodutobarra = $nfpb->codnotafiscalprodutobarra;
             
+            // Vincula movimento de origem
+            if (!empty($nfpb->codnotafiscalprodutobarraorigem)) {
+                if ($orig = $nfpb->NotaFiscalProdutoBarraOrigem->EstoqueMovimentoS->first()) {
+                    $mov->codestoquemovimentoorigem = $orig->codestoquemovimento;
+                }
+            } elseif ($mov->EstoqueMovimentoTipo->preco == EstoqueMovimentoTipo::PRECO_ORIGEM) {
+                foreach ($nfpb->NotaFiscal->NotaFiscalReferenciadaS as $nferef) {
+                    foreach (NotaFiscal::where('nfechave', '=', $nferef->nfechave)->get() as $nf_origem) {
+                        if ($nfpb_origem = $nf_origem->NotaFiscalProdutoBarraS()->where('codprodutobarra', '=', $nfpb->codprodutobarra)->first()) {
+                            if ($orig = $nfpb_origem->EstoqueMovimentoS->first()) {
+                                $mov->codestoquemovimentoorigem = $orig->codestoquemovimento;
+                            }
+                        }
+                    }
+                }
+            }
+            
             if ($mov->isDirty()) {
                 
                 $codestoquemes_recalcular[$mes->codestoquemes] = $mes->codestoquemes;
@@ -141,9 +160,23 @@ class EstoqueGeraMovimentoNotaFiscalProdutoBarra extends Job implements SelfHand
             }
             
             $codestoquemovimento_gerado[] = $mov->codestoquemovimento;
+            
+            // Vincula movimentos de destino
+            foreach ($nfpb->NotaFiscalProdutoBarraS as $nfpb_dest) {
+                foreach ($nfpb_dest->EstoqueMovimentoS as $dest) {
+                    $dest->codestoquemovimentoorigem = $mov->codestoquemovimento;
+                    if ($dest->isDirty()) {
+                        $codestoquemes_recalcular[$dest->codestoquemes] = $dest->codestoquemes;
+                        if (!$dest->save()) {
+                            $this->release(10);
+                        }
+                    }
+                }
+            }
+            
+            
 
             /*
-
             //caso intercompany, gera movimento destino
             $localDest = EstoqueLocal::whereHas('Filial', function($iq) use ($nfpb){
                     $iq->where('codpessoa', $nfpb->NotaFiscal->codpessoa);
@@ -234,7 +267,6 @@ class EstoqueGeraMovimentoNotaFiscalProdutoBarra extends Job implements SelfHand
                 
         //Coloca Recalculo Custo Medio na Fila
         foreach($codestoquemes_recalcular as $codestoquemes => $mes) {
-            echo("$codestoquemes\n<hr>");
             $this->dispatch((new EstoqueCalculaCustoMedio($codestoquemes))->onQueue('urgent'));
         }
         
