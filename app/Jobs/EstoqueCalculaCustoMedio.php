@@ -46,11 +46,11 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
     public function handle()
     {
         
-        Log::info('EstoqueCalculaCustoMedio', ['codestoquemes' => $this->codestoquemes, 'ciclo' => $this->ciclo]);
-        
         if ($this->ciclo >= 8) {
             return;
         }
+
+        Log::info('EstoqueCalculaCustoMedio', ['codestoquemes' => $this->codestoquemes, 'ciclo' => $this->ciclo]);
         
         $mes = EstoqueMes::findOrFail($this->codestoquemes);
         
