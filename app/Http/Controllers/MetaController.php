@@ -82,7 +82,6 @@ class MetaController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->except('_token'));
         if ($request->get('alterar'))
         {
             $model = Meta::findOrFail($request->get('alterar'));
@@ -111,16 +110,16 @@ class MetaController extends Controller
                 if(!empty($meta['controla'])) {
                     if(empty($meta['codmetafilial'])) {
                         $mf = new MetaFilial();
+                        $mf->codfilial = $metafilial;
+                        $mf->codmeta = $model->codmeta;
                     } else {
                         $mf = MetaFilial::findOrFail($meta['codmetafilial']);
                     }
-
-                    $mf->codmeta            = $model->codmeta;
-                    $mf->codfilial          = $metafilial;
+                    
                     $mf->valormetafilial    = $meta['valormetafilial'];
                     $mf->valormetavendedor  = $meta['valormetavendedor'];
                     $mf->observacoes        = $meta['observacoes'];
-
+                    
                     if (!$mf->save()) {
                         throw new Exception ('Erro ao Criar Meta Filial!');
                     }
@@ -129,18 +128,18 @@ class MetaController extends Controller
                     foreach ($pessoas as $pessoa)
                     {
                         //dd($pessoa);
-                        if(isset($meta['codmetafilial'])) {
+                        if(!empty($pessoa['codmetafilialpessoa'])) {
                             $mfp = MetaFilialPessoa::findOrFail($pessoa['codmetafilialpessoa']);
                         } else {
                             $mfp = new MetaFilialPessoa();
+                            $mfp->codmetafilial = $mf->codmetafilial;
                         }
-
-                        $mfp->codmetafilial = $mf->codmetafilial;
+                        
                         $mfp->codpessoa     = $pessoa['codpessoa'];
                         $mfp->codcargo      = $pessoa['codcargo'];
-
-                        //dd($mfp);
-                        if(!empty($mfp->codcargo) || empty(!$mfp->codpessoa)) {
+                        
+                        if($mfp->codcargo && $mfp->codpessoa) {
+                            //dd($mfp);
                             if (!$mfp->save()) {
                                 throw new Exception ('Erro ao Criar Meta filial pessoa!');
                             }

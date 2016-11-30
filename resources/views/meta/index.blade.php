@@ -33,19 +33,22 @@
 </ul>        
 <div>
     <br>
+    <?php
+        $metasfiliais = $model->MetaFilialS()->get();
+    ?>
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#geral" aria-controls="geral" role="tab" data-toggle="tab">Geral</a></li>
-        <li role="presentation"><a href="#103" aria-controls="103" role="tab" data-toggle="tab">Centro</a></li>
-        <li role="presentation"><a href="#102" aria-controls="102" role="tab" data-toggle="tab">Botanico</a></li>
-        <li role="presentation"><a href="#104" aria-controls="104" role="tab" data-toggle="tab">Imperial</a></li>
+        @foreach($metasfiliais as $metafilial)
+        <li role="presentation"><a href="#{{ $metafilial->codfilial }}" aria-controls="{{ $metafilial->codfilial }}" role="tab" data-toggle="tab">{{ $metafilial->Filial->filial }}</a></li>
+        @endforeach
     </ul>
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="geral">
             <p>Tabela geral</p>
         </div>
-        <div role="tabpanel" class="tab-pane" id="103">Tabela do Centro</div>
-        <div role="tabpanel" class="tab-pane" id="102">Tabela do Botanico</div>
-        <div role="tabpanel" class="tab-pane" id="104">Tabela do Imperial</div>
+        @foreach($metasfiliais as $metafilial)
+        <div role="tabpanel" class="tab-pane" id="{{ $metafilial->codfilial }}">Tabela do {{ $metafilial->Filial->filial }}</div>
+        @endforeach
     </div>
 </div>
 @else
