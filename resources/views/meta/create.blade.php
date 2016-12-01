@@ -6,7 +6,7 @@
         null,
         [
             url("meta") => 'Metas',
-            'Nova Meta',
+            (isset(Request::all()['alterar']) ? 'Alterar' : 'Nova Meta'),
         ],
         null
     ) 
