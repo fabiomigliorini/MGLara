@@ -46,10 +46,11 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
     public function handle()
     {
         
-        Log::info('EstoqueCalculaCustoMedio', ['codestoquemes' => $this->codestoquemes, 'ciclo' => $this->ciclo]);
-        
-        if ($this->ciclo > 10)
+        if ($this->ciclo >= 8) {
             return;
+        }
+
+        Log::info('EstoqueCalculaCustoMedio', ['codestoquemes' => $this->codestoquemes, 'ciclo' => $this->ciclo]);
         
         $mes = EstoqueMes::findOrFail($this->codestoquemes);
         
@@ -87,6 +88,10 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         $customedio = 0;
         if ($quantidade != 0) {
             $customedio = abs($valor/$quantidade);
+        }
+
+	if ($customedio > 100000) {
+            return;
         }
         
         //recalcula valor movimentacao com base custo medio
