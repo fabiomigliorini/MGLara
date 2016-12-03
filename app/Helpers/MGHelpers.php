@@ -404,6 +404,11 @@ if(!function_exists('formataEstoqueMinimoMaximo')) {
 if(!function_exists('urlArrGet')) {
     function urlArrGet ($arrGet = [], $path = null, $parameters = [], $secure = null)
     {
+        foreach ($arrGet as $key => $data) {
+            if ($data instanceof Carbon\Carbon) {
+                $arrGet[$key] = $data->format('Y-m-d H:i:s');
+            }
+        }
         return url($path, $parameters, $secure) . '?' . http_build_query($arrGet);
     }
 
