@@ -34,7 +34,7 @@ class ProdutoController extends Controller
         $this->middleware('permissao:produto.exclusao', ['only' => ['delete', 'destroy']]);
         $this->middleware('permissao:produto.inativacao', ['only' => ['inativo']]);
         
-        $this->middleware('parametros', ['only' => ['index', 'show']]);
+        $this->middleware('parametros', ['only' => ['show']]);
     }
 
     /**
@@ -45,19 +45,12 @@ class ProdutoController extends Controller
     public function index(Request $request) {
         
         // Busca filtro da sessao
-        $parametros = $request->session()->get('produto.index');  
-        
-        // Filtro Padrão
-        if (!isset($parametros['ativo'])) {
-            $parametros['ativo'] = '1';
-        }
-        
-        // Converte Datas em Carbon
-        foreach (['criacao_de', 'criacao_ate', 'alteracao_de', 'alteracao_ate'] as $campo) {
-            if (!empty($parametros[$campo])) {
-                $parametros[$campo] = new Carbon($parametros[$campo]);
-            }
-        }
+        $parametros = self::filtroEstatico(
+            $request, 
+            'produto.index', 
+            ['ativo' => '1'], 
+            ['criacao_de', 'criacao_ate', 'alteracao_de', 'alteracao_ate']
+        );
         
         $model = Produto::search($parametros)->orderBy('produto', 'ASC')->paginate(20);
         
@@ -133,8 +126,12 @@ class ProdutoController extends Controller
 
     public function show(Request $request, $id)
     {
-        
         $parametros = $request->session()->get('produto.show');
+        
+        //$parametros = self::filtroEstatico($request, 'produto.show');
+        //$parametrosNpb = self::filtroEstatico($request, 'produto.show.npb');
+        //$parametrosNfpb = self::filtroEstatico($request, 'produto.show.nfpb');
+        
         
         //Parâmetros Negócios
         if (!isset($parametros["negocio_lancamento_de"]))

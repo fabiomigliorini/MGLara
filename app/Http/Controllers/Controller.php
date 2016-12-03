@@ -77,7 +77,12 @@ abstract class Controller extends BaseController
             
             // Se nao existia, utiliza filtro padrao
             if (empty($retorno)) {
-                $retorno = $filtro_padrao;
+                foreach ($filtro_padrao as $filtro => $valor)
+                {
+                    $request->session()->put("$chave.$filtro", $valor);
+                }
+                ///$retorno = $filtro_padrao;
+                $retorno = $request->session()->get($chave);
             }
         }
         

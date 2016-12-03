@@ -4,10 +4,10 @@ use MGLara\Models\Filial;
 use MGLara\Models\Cargo;
 use Collective\Html\FormBuilder;
 
-$cargos = [''=>'Cargo...'] + Cargo::orderBy('cargo')->lists('cargo', 'codcargo')->all();        
+$cargos = [''=>''] + Cargo::orderBy('cargo')->lists('cargo', 'codcargo')->all();        
 //$filiais = Filial::whereIn('codfilial', ['102', '103', '104'])->get();
 $filiais = Filial::orderBy('codfilial')->get();
-$pessoas = [''=>'Pessoa...'] + Pessoa::where('codgrupocliente', 8)
+$pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
         ->where('vendedor', true)
         ->whereNull('inativo')
         ->orderBy('fantasia')
@@ -119,16 +119,16 @@ $pessoas = [''=>'Pessoa...'] + Pessoa::where('codgrupocliente', 8)
                     <a class="btn btn-default adicionar-pessoas" data-filial="{{ $filial->codfilial }}">Adicionar</a>
                 </p>
                 <div  id="add-{{ $filial->codfilial }}">
-                    <div class="cargo-pessoa cargo-pessoa-{{ $filial->codfilial }} col-md-12">
-                        {!! Form::select("metafilial[$filial->codfilial][pessoas]", $pessoas, null, ['class'=> 'form-control adicionar-pessoa', 'style'=>"width: 300px; float:left", 'data-filial'=>$filial->codfilial]) !!}
-                        {!! Form::select("metafilial[$filial->codfilial][pessoas]", $cargos, null, ['class'=> 'form-control adicionar-cargo', 'style'=>"width: 150px", 'data-filial'=>$filial->codfilial]) !!}
+                    <div class="cargo-pessoa cargo-pessoa-{{ $filial->codfilial }} col-md-12 hide">
+                        {!! Form::select("pessoa", $pessoas, null, ['class'=> 'form-control adicionar-pessoa', 'style'=>"width: 300px; float:left", 'data-filial'=>$filial->codfilial]) !!}
+                        {!! Form::select("cargo", $cargos, null, ['class'=> 'form-control adicionar-cargo', 'style'=>"width: 150px", 'data-filial'=>$filial->codfilial]) !!}
                     </div>
                 </div>
                 @if(isset($model['metafilial'][$filial->codfilial]))
                     @foreach($model['metafilial'][$filial->codfilial]['pessoas'] as $pessoa)
                     <div class="cargo-pessoa col-md-12">
-                        {!! Form::select("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codpessoa]", $pessoas, null, ['class'=> 'form-control pull-left', 'style'=>"width: 300px;", 'data-filial'=>$filial->codfilial]) !!}
-                        {!! Form::select("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codcargo]", $cargos, null, ['class'=> 'form-control pull-left', 'style'=>"width: 150px", 'data-filial'=>$filial->codfilial]) !!}
+                        {!! Form::select("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codpessoa]", $pessoas, null, ['class'=> 'form-control select pull-left', 'style'=>"width: 300px;", 'data-filial'=>$filial->codfilial]) !!}
+                        {!! Form::select("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codcargo]", $cargos, null, ['class'=> 'form-control select pull-left', 'style'=>"width: 150px", 'data-filial'=>$filial->codfilial]) !!}
                         {!! Form::text("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codmetafilialpessoa]", null, ['class'=> 'form-control pull-left', 'style'=>"width: 75px"]) !!}
                     </div>
                     @endforeach
@@ -175,12 +175,10 @@ $(document).ready(function() {
     });
     $('.controla').bootstrapSwitch();
     $( "ul.nav-tabs li:first-child, div.tab-content div.tab-pane:first-child").addClass('active');
-    /* 
-    $('select').select2({
+    $('.select').select2({
         allowClear: true,
         closeOnSelect: true        
     });
-    */
     $('.controla').on('switchChange.bootstrapSwitch', function(event, state) {
         var filial = $(this).data("filial");
         if (state === true) {
@@ -193,16 +191,34 @@ $(document).ready(function() {
     
     $('.adicionar-pessoas').on('click', function(e) {
         e.preventDefault();
+        $('.select').select2("destroy");
         var filial = $(this).data("filial");
         var seletor = '.cargo-pessoa-'+filial;
-        $(seletor).first().clone(true, true).appendTo('#add-'+filial);
+        var div = '#add-'+filial;
+        
+        $(seletor).first().clone(true, true).appendTo(div);
+        $(seletor).last().removeClass('hide').addClass('clone');
+        $(seletor+'.clone select').addClass('select');
+        
+        $('.select').select2({
+            allowClear: true,
+            closeOnSelect: true        
+        });
+
+        var nome = $(seletor+'.clone select').prev().attr('id');
+        console.log(nome);
+        $(seletor+'.clone:last-child select').attr('name', nome);
+        $(seletor+'.clone:last-child select:last-child').attr('name', nome+'1');
     });    
-    
-    $('.adicionar-pessoa').change(function () {
-        $(this).attr('name', 'metafilial['+ $(this).data('filial') +'][pessoas]['+$(this).val()+'][codpessoa]');
-        $(this).next().attr('name', 'metafilial['+ $(this).data('filial') +'][pessoas]['+$(this).val()+'][codcargo]');
+    $('.adicionar-pessoa').on('change', function () {
+        var filial = $(this).data('filial');
+        var pessoa = $(this).val();
+        $(this).attr('name', 'metafilial['+filial+'][pessoas]['+pessoa+'][codpessoa]');
+        $(this).next('.adicionar-cargo')
+            .next('.adicionar-cargo')
+            .attr('name', 'metafilial['+filial+'][pessoas]['+pessoa+'][codcargo]');
     });
-    
+
 });
 </script>
 @endsection
