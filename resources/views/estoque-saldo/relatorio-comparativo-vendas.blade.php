@@ -12,7 +12,7 @@
     -->
     
     @foreach($dados['agrupamentos'] as $codigo => $agr)
-        <h2 style="border-bottom: 0px; padding-bottom: 0px;">
+        <h2>
           <a href="{{ url('marca', $agr['codmarca']) }}">
             {{ $agr['marca'] }}
           </a>
