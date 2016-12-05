@@ -34,7 +34,7 @@ class ProdutoController extends Controller
         $this->middleware('permissao:produto.exclusao', ['only' => ['delete', 'destroy']]);
         $this->middleware('permissao:produto.inativacao', ['only' => ['inativo']]);
         
-        $this->middleware('parametros', ['only' => ['show']]);
+        //$this->middleware('parametros', ['only' => ['show']]);
     }
 
     /**
@@ -126,11 +126,11 @@ class ProdutoController extends Controller
 
     public function show(Request $request, $id)
     {
-        $parametros = $request->session()->get('produto.show');
+        #$parametros = $request->session()->get('produto.show');
         
-        //$parametros = self::filtroEstatico($request, 'produto.show');
-        //$parametrosNpb = self::filtroEstatico($request, 'produto.show.npb');
-        //$parametrosNfpb = self::filtroEstatico($request, 'produto.show.nfpb');
+        #$parametros = self::filtroEstatico($request, 'produto.show');
+        $parametrosNpb = self::filtroEstatico($request, 'produto.show.npb');
+        $parametrosNfpb = self::filtroEstatico($request, 'produto.show.nfpb');
         
         
         //Parâmetros Negócios
@@ -171,8 +171,9 @@ class ProdutoController extends Controller
         if (!isset($parametros["notasfiscais_codpessoa"]))
             $parametros["notasfiscais_codpessoa"] = null;
         
-        $model = Produto::findOrFail($id);
         
+        $model = Produto::findOrFail($id);
+
         switch ($request->get('_div'))
         {
             case 'div-imagens':

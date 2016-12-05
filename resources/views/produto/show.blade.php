@@ -144,7 +144,7 @@
                 <div class="collapse" id="filtro-negocio">
                     <br>
                     <div class='well well-sm'>
-                        {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-horizontal', 'method' => 'GET', 'id' => 'produto-negocio-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+                        {!! Form::model(Request::session()->get('produto.show.npb'), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-horizontal', 'method' => 'GET', 'id' => 'produto-negocio-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
 
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">{!! Form::label('negocio_lancamento_de', 'De') !!}</div>
@@ -201,7 +201,7 @@
                 <div class="collapse" id="filtro-notasfiscais">
                     <br>
                     <div class='well well-sm'>
-                        {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-horizontal', 'method' => 'GET', 'id' => 'produto-notasfiscais-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+                        {!! Form::model(Request::session()->get('produto.show.nfpb'), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-horizontal', 'method' => 'GET', 'id' => 'produto-notasfiscais-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
 
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_lancamento_de', 'De') !!}</div>
