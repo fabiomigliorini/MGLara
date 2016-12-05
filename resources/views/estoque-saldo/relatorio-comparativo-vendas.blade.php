@@ -25,7 +25,7 @@
                 <th class="referencia">Referência</th>
                 <th class="barras">Barras</th>
                 <th class="quantidade">Vendas</th>
-                <th class="quantidade">{{ $dados['filtro']['dias_previsao'] }}d</th>
+                <th class="quantidade">Prev. {{ $dados['filtro']['dias_previsao'] }}dd</th>
                 <th class="quantidade">Saldo</th>
                 <th class="min_max">Min</th>
                 <th class="min_max">Máx</th>
