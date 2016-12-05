@@ -229,6 +229,8 @@ class EstoqueSaldoController extends Controller
                 'datainicial' => $inicial, 
                 'datafinal' => $final, 
                 'saldo_deposito' => 1,
+                'saldo_filial' => -1,
+                'dias_previsao' => 15,
             ], 
             [
                 'datainicial',
@@ -236,13 +238,11 @@ class EstoqueSaldoController extends Controller
             ]
         );
         
-        if (!empty($filtro['datainicial'])) {
-            $filtro['datainicial'] = $filtro['datainicial']->format('Y-m-d\TH:i:s');
-        }
-        
-        if (!empty($filtro['datafinal'])) {
-            $filtro['datafinal'] = $filtro['datafinal']->format('Y-m-d\TH:i:s');
-        }
+        $arr_saldo_filial = [
+            '' => '', 
+            1=>'Saldo da Filial maior que previsão vendas',
+            -1=>'Saldo da Filial menor que previsão vendas',
+        ];
         
         $arr_saldo_deposito = [
             '' => '', 
@@ -262,7 +262,7 @@ class EstoqueSaldoController extends Controller
             1=>'Acima Máximo'
         ];
         
-        return view('estoque-saldo.relatorio-comparativo-vendas-filtro', compact('arr_saldo_deposito', 'arr_minimo', 'arr_maximo', 'filtro'));
+        return view('estoque-saldo.relatorio-comparativo-vendas-filtro', compact('arr_saldo_deposito', 'arr_saldo_filial', 'arr_minimo', 'arr_maximo', 'filtro'));
     }
 
     public function relatorioComparativoVendas(Request $request)

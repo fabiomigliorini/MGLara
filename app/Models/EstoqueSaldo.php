@@ -1019,7 +1019,7 @@ class EstoqueSaldo extends MGModel
                 , elpv_deposito.prateleira
                 , elpv_deposito.coluna
                 , elpv_deposito.bloco
-                , elpv_filial.vendadiaquantidadeprevisao * 15 as previsaoquantidade_quinzena
+                , elpv_filial.vendadiaquantidadeprevisao * {$filtro['dias_previsao']} as previsao_vendas
             from (
                 select 
                     iq_pb.codprodutovariacao
@@ -1050,42 +1050,54 @@ class EstoqueSaldo extends MGModel
             
         $s_and = 'WHERE';
         if (!empty($filtro['codmarca'])) {
-            $sql .= "$s_and m.codmarca = {$filtro['codmarca']}";
+            $sql .= " $s_and m.codmarca = {$filtro['codmarca']}";
             $s_and = 'AND';
         }
         
         switch ($filtro['saldo_deposito']) {
             case 1:
-                $sql .= "$s_and es_deposito.saldoquantidade > 0";
+                $sql .= " $s_and es_deposito.saldoquantidade > 0";
                 $s_and = 'AND';
                 break;
 
             case -1:
-                $sql .= "$s_and (es_deposito.saldoquantidade <= 0 or es_deposito.codestoquesaldo is null )";
+                $sql .= " $s_and (es_deposito.saldoquantidade <= 0 or es_deposito.codestoquesaldo is null )";
+                $s_and = 'AND';
+                break;
+        }
+        
+        switch ($filtro['saldo_filial']) {
+            case 1:
+                $sql .= " $s_and (es_filial.saldoquantidade > coalesce(elpv_filial.vendadiaquantidadeprevisao * {$filtro['dias_previsao']}, 0))";
+                $s_and = 'AND';
+                break;
+
+            case -1:
+                $sql .= " $s_and (es_filial.saldoquantidade <= coalesce(elpv_filial.vendadiaquantidadeprevisao * {$filtro['dias_previsao']}, 0))";
                 $s_and = 'AND';
                 break;
         }
         
         switch ($filtro['minimo']) {
             case 1:
-                $sql .= "$s_and es_filial.saldoquantidade > coalesce(elpv_filial.estoqueminimo, 0)";
+                $sql .= " $s_and es_filial.saldoquantidade > coalesce(elpv_filial.estoqueminimo, 0)";
                 $s_and = 'AND';
                 break;
 
             case -1:
-                $sql .= "$s_and es_filial.saldoquantidade <= coalesce(elpv_filial.estoqueminimo, 0)";
+                $sql .= " $s_and es_filial.saldoquantidade <= coalesce(elpv_filial.estoqueminimo, 0)";
                 $s_and = 'AND';
                 break;
         }
         
         switch ($filtro['maximo']) {
             case 1:
-                $sql .= "$s_and es_filial.saldoquantidade > coalesce(elpv_filial.estoquemaximo, es_filial.saldoquantidade)";
+                $sql .= " $s_and es_filial.saldoquantidade > coalesce(elpv_filial.estoquemaximo, es_filial.saldoquantidade)";
                 $s_and = 'AND';
                 break;
 
             case -1:
-                $sql .= "$s_and es_filial.saldoquantidade <= coalesce(elpv_filial.estoquemaximo, es_filial.saldoquantidade)";
+                $sql .= " $s_and es_filial.saldoquantidade <= coalesce(elpv_filial.estoquemaximo, es_filial.saldoquantidade)";
                 $s_and = 'AND';
                 break;
         }

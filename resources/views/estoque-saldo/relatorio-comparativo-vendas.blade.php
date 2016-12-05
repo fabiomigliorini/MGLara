@@ -2,8 +2,11 @@
 @section('content')
 <div class='cabecalho'>
   <a href="{{ $dados['urlfiltro'] }}">
-    Relatório Vendas {{ $dados['estoquelocal_filial'] }} X Saldo {{ $dados['estoquelocal_deposito'] }}
+    Vendas {{ $dados['estoquelocal_filial'] }} X Saldo {{ $dados['estoquelocal_deposito'] }}
   </a>
+    <small class='pull-right' style='font-size: 0.5em'>
+        De: {{ formataData($dados['filtro']['datainicial']) }} à {{ formataData($dados['filtro']['datafinal']) }}
+    </small>
 </div>
 <div class='conteudo'>
     <!--
@@ -25,10 +28,10 @@
                     <th class="referencia">Referência</th>
                     <th class="barras">Barras</th>
                     <th class="quantidade">Vendas</th>
+                    <th class="quantidade">{{ $dados['filtro']['dias_previsao'] }}d</th>
                     <th class="quantidade">Saldo</th>
                     <th class="min_max">Min</th>
                     <th class="min_max">Máx</th>
-                    <th class="quantidade">15d</th>
                     <th class="localizacao">Localização</th>
                     <th class="quantidade">Disp</th>
                 </tr>
@@ -54,6 +57,7 @@
                         @endforeach
                     </td>
                     <td class="quantidade text-right">{{ formataNumero($prod->quantidade_vendida, 0) }}</td>
+                    <td class="quantidade text-right">{{ formataNumero($prod->previsao_vendas, 0) }}</td>
                     <td class="quantidade text-right">
                       <a href="{{ url('estoque-saldo', $prod->codestoquesaldo_filial) }}">
                         {{ formataNumero($prod->saldoquantidade_filial, 0) }}
@@ -61,7 +65,6 @@
                     </td>
                     <td class="min_max text-right">{{ formataNumero($prod->estoqueminimo, 0) }}</td>
                     <td class="min_max text-right">{{ formataNumero($prod->estoquemaximo, 0) }}</td>
-                    <td class="quantidade text-right">{{ formataNumero($prod->previsaoquantidade_quinzena, 0) }}</td>
                     <td class="localizacao text-center">
                         {{ formataLocalEstoque($prod->corredor, $prod->prateleira, $prod->coluna, $prod->bloco) }}
                     </td>
@@ -120,10 +123,8 @@
   
 </style>
 <script type="text/javascript">
-    /*
+/*
 $(document).ready(function() {
-    var color = $('a:link').css('color');
-    console.log(color);
 });
 */
 </script>
