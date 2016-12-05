@@ -14,31 +14,32 @@
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
     -->
     
-    @foreach($dados['agrupamentos'] as $codigo => $agr)
-        <h2>
-          <a href="{{ url('marca', $agr['codmarca']) }}">
-            {{ $agr['marca'] }}
-          </a>
-        </h2>
-        <table class="relatorio">
-            <thead class='negativo'>
-                <tr>
-                    <th class="codigo">#</th>
-                    <th class="produto">Produto</th>
-                    <th class="referencia">Referência</th>
-                    <th class="barras">Barras</th>
-                    <th class="quantidade">Vendas</th>
-                    <th class="quantidade">{{ $dados['filtro']['dias_previsao'] }}d</th>
-                    <th class="quantidade">Saldo</th>
-                    <th class="min_max">Min</th>
-                    <th class="min_max">Máx</th>
-                    <th class="localizacao">Localização</th>
-                    <th class="quantidade">Disp</th>
-                </tr>
-            </thead>
-            <tbody class='zebrada'>
+    <table class="relatorio">
+        <thead class='negativo'>
+            <tr>
+                <th class="marca">Marca</th>
+                <th class="codigo">#</th>
+                <th class="produto">Produto</th>
+                <th class="referencia">Referência</th>
+                <th class="barras">Barras</th>
+                <th class="quantidade">Vendas</th>
+                <th class="quantidade">{{ $dados['filtro']['dias_previsao'] }}d</th>
+                <th class="quantidade">Saldo</th>
+                <th class="min_max">Min</th>
+                <th class="min_max">Máx</th>
+                <th class="localizacao">Localização</th>
+                <th class="quantidade">Disp</th>
+            </tr>
+        </thead>
+        <tbody class='zebrada'>
+            @foreach($dados['agrupamentos'] as $codigo => $agr)
                 @foreach($agr['produtos'] as $codprodutovariacao => $prod)
                 <tr>
+                    <td class="marca">
+                      <a href='{{ url('marca', $agr['codmarca']) }}'>
+                        {{ $agr['marca'] }}
+                      </a>
+                    </td>
                     <td class="codigo">{{ formataCodigo($prod->codproduto, 6) }}</td>
                     <td class="produto">
                         @if (!empty($prod->inativo))
@@ -75,9 +76,9 @@
                     </td>
                 </tr>
                 @endforeach
-            </tbody>
-        </table>
-    @endforeach
+            @endforeach
+        </tbody>
+    </table>
     
 </div>
 <div class='rodape'>
