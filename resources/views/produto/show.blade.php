@@ -144,31 +144,31 @@
                 <div class="collapse" id="filtro-negocio">
                     <br>
                     <div class='well well-sm'>
-                        {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-horizontal', 'method' => 'GET', 'id' => 'produto-negocio-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+                        {!! Form::model(Request::session()->get('produto.show.npb'), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-horizontal', 'method' => 'GET', 'id' => 'produto-negocio-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
 
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">{!! Form::label('negocio_lancamento_de', 'De') !!}</div>
-                                <div class="col-sm-4">{!! Form::date('negocio_lancamento_de', $parametros['negocio_lancamento_de'], ['class' => 'form-control', 'id' => 'negocio_lancamento_de', 'placeholder' => 'De']) !!}</div>
+                                <div class="col-sm-4">{!! Form::date('negocio_lancamento_de', null, ['class' => 'form-control', 'id' => 'negocio_lancamento_de', 'placeholder' => 'De']) !!}</div>
                             </div>
 
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">{!! Form::label('negocio_lancamento_ate', 'Até') !!}</div>
-                                <div class="col-sm-4">{!! Form::date('negocio_lancamento_ate', $parametros['negocio_lancamento_de'], ['class' => 'form-control', 'id' => 'negocio_lancamento_ate', 'placeholder' => 'Até']) !!}</div>
+                                <div class="col-sm-4">{!! Form::date('negocio_lancamento_ate', null, ['class' => 'form-control', 'id' => 'negocio_lancamento_ate', 'placeholder' => 'Até']) !!}</div>
                             </div>
 
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">{!! Form::label('negocio_codfilial', 'Filial') !!}</div>
-                                <div class="col-sm-4">{!! Form::select2Filial('negocio_codfilial', $parametros['negocio_codfilial'], ['style'=>'width:100%', 'id'=>'negocio_codfilial']) !!}</div>
+                                <div class="col-sm-4">{!! Form::select2Filial('negocio_codfilial', null, ['style'=>'width:100%', 'id'=>'negocio_codfilial']) !!}</div>
                             </div>
 
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">{!! Form::label('negocio_codnaturezaoperacao', 'Natureza de Operação') !!}</div>
-                                <div class="col-sm-7">{!! Form::select2NaturezaOperacao('negocio_codnaturezaoperacao', $parametros['negocio_codnaturezaoperacao'], ['style'=>'width:100%', 'id' => 'negocio_codnaturezaoperacao']) !!}</div>
+                                <div class="col-sm-7">{!! Form::select2NaturezaOperacao('negocio_codnaturezaoperacao', null, ['style'=>'width:100%', 'id' => 'negocio_codnaturezaoperacao']) !!}</div>
                             </div>
 
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">{!! Form::label('negocio_codprodutovariacao', 'Variação') !!}</div>
-                                <div class="col-sm-7">{!! Form::select2ProdutoVariacao('negocio_codprodutovariacao', $parametros['negocio_codprodutovariacao'], ['style'=>'width:100%', 'id' => 'negocio_codprodutovariacao', 'codproduto'=>'negocio_codproduto']) !!}</div>
+                                <div class="col-sm-7">{!! Form::select2ProdutoVariacao('negocio_codprodutovariacao', null, ['style'=>'width:100%', 'id' => 'negocio_codprodutovariacao', 'codproduto'=>'negocio_codproduto']) !!}</div>
                             </div>
 
                             <div class="form-group">
@@ -201,31 +201,31 @@
                 <div class="collapse" id="filtro-notasfiscais">
                     <br>
                     <div class='well well-sm'>
-                        {!! Form::model(Request::all(), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-horizontal', 'method' => 'GET', 'id' => 'produto-notasfiscais-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
+                        {!! Form::model(Request::session()->get('produto.show.nfpb'), ['route' => ['produto.show', 'produto'=> $model->codproduto], 'class' => 'form-horizontal', 'method' => 'GET', 'id' => 'produto-notasfiscais-search', 'role' => 'search', 'autocomplete' => 'off'])!!}
 
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_lancamento_de', 'De') !!}</div>
-                                <div class="col-sm-4">{!! Form::date('notasfiscais_lancamento_de', $parametros['notasfiscais_lancamento_de'], ['class' => 'form-control', 'id' => 'notasfiscais_lancamento_de', 'placeholder' => 'De']) !!}</div>
+                                <div class="col-sm-4">{!! Form::date('notasfiscais_lancamento_de', null, ['class' => 'form-control', 'id' => 'notasfiscais_lancamento_de', 'placeholder' => 'De']) !!}</div>
                             </div>
 
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_lancamento_ate', 'Até') !!}</div>
-                                <div class="col-sm-4">{!! Form::date('notasfiscais_lancamento_ate', $parametros['notasfiscais_lancamento_de'], ['class' => 'form-control', 'id' => 'notasfiscais_lancamento_ate', 'placeholder' => 'Até']) !!}</div>
+                                <div class="col-sm-4">{!! Form::date('notasfiscais_lancamento_ate', null, ['class' => 'form-control', 'id' => 'notasfiscais_lancamento_ate', 'placeholder' => 'Até']) !!}</div>
                             </div>
 
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codfilial', 'Filial') !!}</div>
-                                <div class="col-sm-4">{!! Form::select2Filial('notasfiscais_codfilial', $parametros['notasfiscais_codfilial'], ['style'=>'width:100%', 'id'=>'notasfiscais_codfilial']) !!}</div>
+                                <div class="col-sm-4">{!! Form::select2Filial('notasfiscais_codfilial', null, ['style'=>'width:100%', 'id'=>'notasfiscais_codfilial']) !!}</div>
                             </div>
 
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codnaturezaoperacao', 'Natureza de Operação') !!}</div>
-                                <div class="col-sm-7">{!! Form::select2NaturezaOperacao('notasfiscais_codnaturezaoperacao', $parametros['notasfiscais_codnaturezaoperacao'], ['style'=>'width:100%', 'id' => 'notasfiscais_codnaturezaoperacao']) !!}</div>
+                                <div class="col-sm-7">{!! Form::select2NaturezaOperacao('notasfiscais_codnaturezaoperacao', null, ['style'=>'width:100%', 'id' => 'notasfiscais_codnaturezaoperacao']) !!}</div>
                             </div>
 
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">{!! Form::label('notasfiscais_codprodutovariacao', 'Variação') !!}</div>
-                                <div class="col-sm-7">{!! Form::select2('notasfiscais_codprodutovariacao', [''=>''] + $model->ProdutoVariacaoS->lists('variacao', 'codprodutovariacao')->all(), $parametros['negocio_codprodutovariacao'], ['style'=>'width:100%', 'id' => 'notasfiscais_codprodutovariacao', 'placeholder'=>'Variaçao']) !!}</div>
+                                <div class="col-sm-7">{!! Form::select2('notasfiscais_codprodutovariacao', [''=>''] + $model->ProdutoVariacaoS->lists('variacao', 'codprodutovariacao')->all(), null, ['style'=>'width:100%', 'id' => 'notasfiscais_codprodutovariacao', 'placeholder'=>'Variaçao']) !!}</div>
                             </div>
 
                             <div class="form-group">

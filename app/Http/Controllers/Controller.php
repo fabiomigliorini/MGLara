@@ -50,6 +50,7 @@ abstract class Controller extends BaseController
         $chave = !empty($chave)?$chave:str_replace('/', '.', $request->route()->getPath());
         
         $filtro_request = $request->all();
+        //dd($filtro_request);
 
         // Se veio request GET com filtro
         if (count($filtro_request)) {
