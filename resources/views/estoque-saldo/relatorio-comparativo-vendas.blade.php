@@ -32,12 +32,18 @@
             </tr>
         </thead>
         <tbody class='zebrada'>
-            @foreach($dados['agrupamentos'] as $codigo => $agr)
-                @foreach($agr['produtos'] as $codprodutovariacao => $prod)
+          <?php
+              //dd($dados);
+              ?>
+              
+            @foreach($dados['itens'] as $prod)
                 <tr>
+          <?php
+              //dd($prod);
+              ?>
                     <td class="marca">
-                      <a href='{{ url('marca', $agr['codmarca']) }}'>
-                        {{ $agr['marca'] }}
+                      <a href='{{ url('marca', $prod->codmarca) }}'>
+                        {{ $prod->marca }}
                       </a>
                     </td>
                     <td class="codigo">{{ formataCodigo($prod->codproduto, 6) }}</td>
@@ -53,7 +59,7 @@
                     </td>
                     <td class="referencia">{{ $prod->referencia }}</td>
                     <td class="barras">
-                        @foreach ($prod->barrass as $barras)
+                        @foreach (json_decode($prod->json_barras) as $barras)
                         {{ $barras }} <br>
                         @endforeach
                     </td>
@@ -75,7 +81,6 @@
                       </a>
                     </td>
                 </tr>
-                @endforeach
             @endforeach
         </tbody>
     </table>

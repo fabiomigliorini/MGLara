@@ -980,14 +980,6 @@ class EstoqueSaldo extends MGModel
     
     public static function relatorioComparativoVendas ($filtro)
     {
-        $ret = [
-            'filtro' => $filtro,
-            'estoquelocal_deposito' => EstoqueLocal::findOrFail($filtro['codestoquelocaldeposito'])->estoquelocal,
-            'estoquelocal_filial' => EstoqueLocal::findOrFail($filtro['codestoquelocalfilial'])->estoquelocal,
-            'urlfiltro' => urlArrGet($filtro, 'estoque-saldo/relatorio-comparativo-vendas-filtro'),
-            'agrupamentos' => [],
-        ];
-        
         $sql = "
             select 
                 m.codmarca
@@ -1002,7 +994,7 @@ class EstoqueSaldo extends MGModel
                     --order by pe.quantidade nulls first, barras
                     order by barras
                     limit 5
-                    ))) as barrass
+                    ))) as json_barras
                 , p.codproduto
                 , p.produto
                 , p.inativo
@@ -1108,20 +1100,13 @@ class EstoqueSaldo extends MGModel
         
         $regs = DB::select($sql);
         
-        $agrupamentos = [];
-        foreach ($regs as $reg) {
-            if (!isset($agrupamentos[$reg->codmarca])) {
-                $agrupamentos[$reg->codmarca] = [
-                    'codmarca' => $reg->codmarca,
-                    'marca' => $reg->marca,
-                    'produtos' => [],
-                ];
-            }
-            $reg->barrass = json_decode($reg->barrass);
-            $agrupamentos[$reg->codmarca]['produtos'][$reg->codprodutovariacao] = $reg;
-        }
-        
-        $ret['agrupamentos'] = $agrupamentos;
+        $ret = [
+            'filtro' => $filtro,
+            'estoquelocal_deposito' => EstoqueLocal::findOrFail($filtro['codestoquelocaldeposito'])->estoquelocal,
+            'estoquelocal_filial' => EstoqueLocal::findOrFail($filtro['codestoquelocalfilial'])->estoquelocal,
+            'urlfiltro' => urlArrGet($filtro, 'estoque-saldo/relatorio-comparativo-vendas-filtro'),
+            'itens' => $regs,
+        ];
         
         return $ret;
     }
