@@ -977,4 +977,140 @@ class EstoqueSaldo extends MGModel
         
         return $ret;
     }
+    
+    public static function relatorioComparativoVendas ($filtro)
+    {
+        $ret = [
+            'filtro' => $filtro,
+            'estoquelocal_deposito' => EstoqueLocal::findOrFail($filtro['codestoquelocaldeposito'])->estoquelocal,
+            'estoquelocal_filial' => EstoqueLocal::findOrFail($filtro['codestoquelocalfilial'])->estoquelocal,
+            'urlfiltro' => urlArrGet($filtro, 'estoque-saldo/relatorio-comparativo-vendas-filtro'),
+            'agrupamentos' => [],
+        ];
+        
+        $sql = "
+            select 
+                m.codmarca
+                , m.marca
+                , coalesce(pv.referencia, p.referencia) as referencia
+                , (select array_to_json(array(
+                    select pb.barras 
+                    from tblprodutobarra pb 
+                    --left join tblprodutoembalagem pe on (pe.codprodutoembalagem = pb.codprodutoembalagem)
+                    where pb.codprodutovariacao = pv.codprodutovariacao 
+                    and pb.codprodutoembalagem is null
+                    --order by pe.quantidade nulls first, barras
+                    order by barras
+                    limit 5
+                    ))) as barrass
+                , p.codproduto
+                , p.produto
+                , p.inativo
+                , pv.codprodutovariacao
+                , pv.variacao
+                , iq.quantidade_vendida
+                , es_filial.codestoquesaldo as codestoquesaldo_filial
+                , es_filial.saldoquantidade as saldoquantidade_filial
+                , elpv_filial.estoqueminimo
+                , elpv_filial.estoquemaximo
+                , es_deposito.codestoquesaldo as codestoquesaldo_deposito
+                , es_deposito.saldoquantidade as saldoquantidade_deposito
+                , elpv_deposito.corredor
+                , elpv_deposito.prateleira
+                , elpv_deposito.coluna
+                , elpv_deposito.bloco
+                , elpv_filial.vendadiaquantidadeprevisao * 15 as previsaoquantidade_quinzena
+            from (
+                select 
+                    iq_pb.codprodutovariacao
+                    ,  sum(iq_npb.quantidade * coalesce(iq_pe.quantidade, 1)) as quantidade_vendida
+                from tblnegocio iq_n
+                inner join tblnaturezaoperacao iq_no on (iq_no.codnaturezaoperacao = iq_n.codnaturezaoperacao)
+                inner join tblnegocioprodutobarra iq_npb on (iq_npb.codnegocio = iq_n.codnegocio)
+                inner join tblprodutobarra iq_pb on (iq_pb.codprodutobarra = iq_npb.codprodutobarra)
+                inner join tblproduto iq_p on (iq_p.codproduto = iq_pb.codproduto)
+                inner join tbltipoproduto iq_tp on (iq_tp.codtipoproduto = iq_p.codtipoproduto)
+                left join tblprodutoembalagem iq_pe on (iq_pe.codprodutoembalagem = iq_pb.codprodutoembalagem)
+                where iq_n.codnegociostatus = 2
+                and iq_n.codestoquelocal = {$filtro['codestoquelocalfilial']}
+                and iq_n.lancamento between '{$filtro['datainicial']->format('Y-m-d H:i')}' and '{$filtro['datafinal']->format('Y-m-d H:i')}'
+                and iq_no.venda = true
+                and iq_no.estoque = true
+                and iq_tp.estoque = true
+                group by iq_pb.codprodutovariacao
+                ) iq
+            left join tblprodutovariacao pv on (pv.codprodutovariacao = iq.codprodutovariacao)
+            left join tblestoquelocalprodutovariacao elpv_deposito on (elpv_deposito.codprodutovariacao = iq.codprodutovariacao and elpv_deposito.codestoquelocal = {$filtro['codestoquelocaldeposito']})
+            left join tblestoquesaldo es_deposito on (es_deposito.codestoquelocalprodutovariacao = elpv_deposito.codestoquelocalprodutovariacao and es_deposito.fiscal = false)
+            left join tblestoquelocalprodutovariacao elpv_filial on (elpv_filial.codprodutovariacao = iq.codprodutovariacao and elpv_filial.codestoquelocal = {$filtro['codestoquelocalfilial']})
+            left join tblestoquesaldo es_filial on (es_filial.codestoquelocalprodutovariacao = elpv_filial.codestoquelocalprodutovariacao and es_filial.fiscal = false)
+            left join tblproduto p on (p.codproduto = pv.codproduto)
+            left join tblmarca m on (m.codmarca = coalesce(pv.codmarca, p.codmarca))
+            ";
+            
+        $s_and = 'WHERE';
+        if (!empty($filtro['codmarca'])) {
+            $sql .= "$s_and m.codmarca = {$filtro['codmarca']}";
+            $s_and = 'AND';
+        }
+        
+        switch ($filtro['saldo_deposito']) {
+            case 1:
+                $sql .= "$s_and es_deposito.saldoquantidade > 0";
+                $s_and = 'AND';
+                break;
+
+            case -1:
+                $sql .= "$s_and (es_deposito.saldoquantidade <= 0 or es_deposito.codestoquesaldo is null )";
+                $s_and = 'AND';
+                break;
+        }
+        
+        switch ($filtro['minimo']) {
+            case 1:
+                $sql .= "$s_and es_filial.saldoquantidade > coalesce(elpv_filial.estoqueminimo, 0)";
+                $s_and = 'AND';
+                break;
+
+            case -1:
+                $sql .= "$s_and es_filial.saldoquantidade <= coalesce(elpv_filial.estoqueminimo, 0)";
+                $s_and = 'AND';
+                break;
+        }
+        
+        switch ($filtro['maximo']) {
+            case 1:
+                $sql .= "$s_and es_filial.saldoquantidade > coalesce(elpv_filial.estoquemaximo, es_filial.saldoquantidade)";
+                $s_and = 'AND';
+                break;
+
+            case -1:
+                $sql .= "$s_and es_filial.saldoquantidade <= coalesce(elpv_filial.estoquemaximo, es_filial.saldoquantidade)";
+                $s_and = 'AND';
+                break;
+        }
+        
+        $sql .= "
+            order by m.marca, p.produto, p.codproduto, pv.variacao nulls first, pv.codprodutovariacao
+            ";
+        
+        $regs = DB::select($sql);
+        
+        $agrupamentos = [];
+        foreach ($regs as $reg) {
+            if (!isset($agrupamentos[$reg->codmarca])) {
+                $agrupamentos[$reg->codmarca] = [
+                    'codmarca' => $reg->codmarca,
+                    'marca' => $reg->marca,
+                    'produtos' => [],
+                ];
+            }
+            $reg->barrass = json_decode($reg->barrass);
+            $agrupamentos[$reg->codmarca]['produtos'][$reg->codprodutovariacao] = $reg;
+        }
+        
+        $ret['agrupamentos'] = $agrupamentos;
+        
+        return $ret;
+    }
 }

@@ -3,6 +3,7 @@
 namespace MGLara\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\EstoqueSaldo;
@@ -190,6 +191,91 @@ class EstoqueSaldoController extends Controller
         }
         
         return view('estoque-saldo.relatorio-analise', compact('dados'));
+    }
+    
+    public function relatorioComparativoVendasFiltro(Request $request)
+    {
+        $hoje = Carbon::today();
+        
+        // 0-Domingo / 6-Sabado
+        switch ($hoje->dayOfWeek) {
+            
+            case 0: // Domingo
+            case 1: // Segunda
+            case 2: // Terça
+                $inicial = Carbon::parse('last friday');
+                break;
+                
+            case 3: // Quarta
+            case 4: // Quinta
+                $inicial = Carbon::parse('last monday');
+                break;
+            
+            default:
+                $inicial= Carbon::parse('last wednesday');
+            
+        }
+        
+        $final = Carbon::yesterday();
+        
+        $final->hour = 23;
+        $final->minute = 59;
+        
+        $filtro = self::filtroEstatico(
+            $request, 
+            'estoque-saldo.relatorio-comparativo-vendas', 
+            [
+                'codestoquelocaldeposito' => 101001, 
+                'datainicial' => $inicial, 
+                'datafinal' => $final, 
+                'saldo_deposito' => 1,
+            ], 
+            [
+                'datainicial',
+                'datafinal'
+            ]
+        );
+        
+        if (!empty($filtro['datainicial'])) {
+            $filtro['datainicial'] = $filtro['datainicial']->format('Y-m-d\TH:i:s');
+        }
+        
+        if (!empty($filtro['datafinal'])) {
+            $filtro['datafinal'] = $filtro['datafinal']->format('Y-m-d\TH:i:s');
+        }
+        
+        $arr_saldo_deposito = [
+            '' => '', 
+            1=>'Somente com saldo no Depósito',
+            -1=>'Sem saldo no Depósito',
+        ];
+        
+        $arr_minimo = [
+            '' => '', 
+            -1=>'Abaixo Mínimo', 
+            1=>'Acima Mínimo'
+        ];
+        
+        $arr_maximo = [
+            '' => '', 
+            -1=>'Abaixo Máximo', 
+            1=>'Acima Máximo'
+        ];
+        
+        return view('estoque-saldo.relatorio-comparativo-vendas-filtro', compact('arr_saldo_deposito', 'arr_minimo', 'arr_maximo', 'filtro'));
+    }
+
+    public function relatorioComparativoVendas(Request $request)
+    {
+        $filtro = self::filtroEstatico($request, 'estoque-saldo.relatorio-comparativo-vendas', [], ['datainicial', 'datafinal']);
+        
+        $dados = EstoqueSaldo::relatorioComparativoVendas($filtro);
+        
+        if (!empty($filtro['debug'])) {
+            return $dados;
+        }
+        
+        return view('estoque-saldo.relatorio-comparativo-vendas', compact('dados'));
     }
 
 }
