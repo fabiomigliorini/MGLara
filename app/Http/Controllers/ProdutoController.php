@@ -33,8 +33,6 @@ class ProdutoController extends Controller
         $this->middleware('permissao:produto.alteracao', ['only' => ['edit', 'update', 'transferirVariacao', 'transferirVariacaoSalvar']]);
         $this->middleware('permissao:produto.exclusao', ['only' => ['delete', 'destroy']]);
         $this->middleware('permissao:produto.inativacao', ['only' => ['inativo']]);
-        
-        //$this->middleware('parametros', ['only' => ['show']]);
     }
 
     /**
@@ -126,54 +124,7 @@ class ProdutoController extends Controller
 
     public function show(Request $request, $id)
     {
-        #$parametros = $request->session()->get('produto.show');
-        
-        #$parametros = self::filtroEstatico($request, 'produto.show');
-        $parametrosNpb = self::filtroEstatico($request, 'produto.show.npb');
-        $parametrosNfpb = self::filtroEstatico($request, 'produto.show.nfpb');
-        
-        
-        //Parâmetros Negócios
-        if (!isset($parametros["negocio_lancamento_de"]))
-            $parametros["negocio_lancamento_de"] = null;
-        
-        if (!isset($parametros["negocio_lancamento_ate"]))
-            $parametros["negocio_lancamento_ate"] = null;
-        
-        if (!isset($parametros["negocio_codfilial"]))
-            $parametros["negocio_codfilial"] = null;
-        
-        if (!isset($parametros["negocio_codnaturezaoperacao"]))
-            $parametros["negocio_codnaturezaoperacao"] = null;
-        
-        if (!isset($parametros["negocio_codprodutovariacao"]))
-            $parametros["negocio_codprodutovariacao"] = null;
-        
-        if (!isset($parametros["negocio_codpessoa"]))
-            $parametros["negocio_codpessoa"] = null;
-        
-        // Parâmetros Notas Fiscais
-        if (!isset($parametros["notasfiscais_lancamento_de"]))
-            $parametros["notasfiscais_lancamento_de"] = null;
-        
-        if (!isset($parametros["notasfiscais_lancamento_ate"]))
-            $parametros["notasfiscais_lancamento_ate"] = null;
-        
-        if (!isset($parametros["notasfiscais_codfilial"]))
-            $parametros["notasfiscais_codfilial"] = null;
-        
-        if (!isset($parametros["notasfiscais_codnaturezaoperacao"]))
-            $parametros["notasfiscais_codnaturezaoperacao"] = null;
-
-        if (!isset($parametros["notasfiscais_codprodutovariacao"]))
-            $parametros["notasfiscais_codprodutovariacao"] = null;
-        
-        if (!isset($parametros["notasfiscais_codpessoa"]))
-            $parametros["notasfiscais_codpessoa"] = null;
-        
-        
         $model = Produto::findOrFail($id);
-
         switch ($request->get('_div'))
         {
             case 'div-imagens':
@@ -186,35 +137,12 @@ class ProdutoController extends Controller
                 $view = 'produto.show-embalagens';
                 break;
             case 'div-negocios':
-                
-                $parametrosNpb["codproduto"] = $id;
-                
-                if (!empty($parametros["negocio_lancamento_de"]))
-                    $parametrosNpb["lancamento_de"] = new Carbon($parametros["negocio_lancamento_de"]);
-
-                if (!empty($parametros["negocio_lancamento_ate"]))
-                    $parametrosNpb["lancamento_ate"] = new Carbon($parametros["negocio_lancamento_ate"] . ' 23:59:59');
-
-                $parametrosNpb["codfilial"] = $parametros["negocio_codfilial"];
-                $parametrosNpb["codnaturezaoperacao"] = $parametros["negocio_codnaturezaoperacao"];
-                $parametrosNpb["codprodutovariacao"] = $parametros["negocio_codprodutovariacao"];
-                $parametrosNpb["codpessoa"] = $parametros["negocio_codpessoa"];
+                $parametrosNpb = self::filtroEstatico($request, 'produto.show.npb', [], ['negocio_lancamento_de', 'negocio_lancamento_ate']);
                 $npbs = NegocioProdutoBarra::search($parametrosNpb, 10);
                 $view = 'produto.show-negocios';
                 break;
             case 'div-notasfiscais':
-                $parametrosNfpb["codproduto"] = $id;
-                
-                if (!empty($parametros["notasfiscais_lancamento_de"]))
-                    $parametrosNfpb["notasfiscais_lancamento_de"] = new Carbon($parametros["notasfiscais_lancamento_de"]);
-
-                if (!empty($parametros["notasfiscais_lancamento_ate"]))
-                    $parametrosNfpb["notasfiscais_lancamento_ate"] = new Carbon($parametros["notasfiscais_lancamento_ate"] . ' 23:59:59');
-
-                $parametrosNfpb["notasfiscais_codfilial"] = $parametros["notasfiscais_codfilial"];
-                $parametrosNfpb["notasfiscais_codnaturezaoperacao"] = $parametros["notasfiscais_codnaturezaoperacao"];
-                $parametrosNfpb["notasfiscais_codprodutovariacao"] = $parametros["notasfiscais_codprodutovariacao"];
-                $parametrosNfpb["notasfiscais_codpessoa"] = $parametros["notasfiscais_codpessoa"];
+                $parametrosNfpb = self::filtroEstatico($request, 'produto.show.nfpb', [], ['notasfiscais_lancamento_de', 'notasfiscais_lancamento_ate']);
                 $nfpbs = NotaFiscalProdutoBarra::search($parametrosNfpb, 10);
                 $view = 'produto.show-notasfiscais';
                 break;
@@ -225,7 +153,6 @@ class ProdutoController extends Controller
             default:
                 $view = 'produto.show';
         }
-        
         
         $ret = view($view, compact('model', 'nfpbs', 'npbs', 'parametros', 'estoque'));
         

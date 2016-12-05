@@ -120,22 +120,22 @@ class NegocioProdutoBarra extends MGModel
             $join->on('tblnegocio.codnegocio', '=', 'tblnegocioprodutobarra.codnegocio');
         });
         
-        if (!empty($parametros['codpessoa']))
-            $query = $query->where('tblnegocio.codpessoa', '=', $parametros['codpessoa']);
+        if (!empty($parametros['negocio_codpessoa']))
+            $query = $query->where('tblnegocio.codpessoa', '=', $parametros['negocio_codpessoa']);
         
-        if (!empty($parametros['codnaturezaoperacao']))
-            $query = $query->where('tblnegocio.codnaturezaoperacao', '=', $parametros['codnaturezaoperacao']);
+        if (!empty($parametros['negocio_codnaturezaoperacao']))
+            $query = $query->where('tblnegocio.codnaturezaoperacao', '=', $parametros['negocio_codnaturezaoperacao']);
         
-        if (!empty($parametros['codfilial']))
-            $query = $query->where('tblnegocio.codfilial', '=', $parametros['codfilial']);
+        if (!empty($parametros['negocio_codfilial']))
+            $query = $query->where('tblnegocio.codfilial', '=', $parametros['negocio_codfilial']);
         
-        if (!empty($parametros['lancamento_de']))
-            $query = $query->where('tblnegocio.lancamento', '>=', $parametros['lancamento_de']->format('Y-m-d H:i:s'));
+        if (!empty($parametros['negocio_lancamento_de']))
+            $query = $query->where('tblnegocio.lancamento', '>=', $parametros['negocio_lancamento_de']);
         
-        if (!empty($parametros['lancamento_ate']))
-            $query = $query->where('tblnegocio.lancamento', '<=', $parametros['lancamento_ate']->format('Y-m-d H:i:s'));
+        if (!empty($parametros['negocio_lancamento_ate']))
+            $query = $query->where('tblnegocio.lancamento', '<=', $parametros['negocio_lancamento_ate']);
         
-        if (!empty($parametros['codproduto']))
+        if (!empty($parametros['negocio_codproduto']))
         {
             $query = $query->join('tblprodutobarra', function($join) use ($parametros) {
                 $join->on('tblprodutobarra.codprodutobarra', '=', 'tblnegocioprodutobarra.codprodutobarra');
@@ -143,11 +143,11 @@ class NegocioProdutoBarra extends MGModel
             $query = $query->join('tblprodutovariacao', function($join) use ($parametros) {
                 $join->on('tblprodutovariacao.codprodutovariacao', '=', 'tblprodutobarra.codprodutovariacao');
             });
-            $query = $query->where('tblprodutovariacao.codproduto', '=', $parametros['codproduto']);
+            $query = $query->where('tblprodutovariacao.codproduto', '=', $parametros['negocio_codproduto']);
         }
 
-        if (!empty($parametros['codprodutovariacao']))
-            $query->where('tblprodutovariacao.codprodutovariacao', '=', $parametros['codprodutovariacao']);
+        if (!empty($parametros['negocio_codprodutovariacao']))
+            $query->where('tblprodutovariacao.codprodutovariacao', '=', $parametros['negocio_codprodutovariacao']);
         
         //dd($query->toSql());
         return $query->paginate($registros);
