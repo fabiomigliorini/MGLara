@@ -4,8 +4,10 @@
   <a href="{{ $dados['urlfiltro'] }}">
     Vendas {{ $dados['estoquelocal_filial'] }} X Saldo {{ $dados['estoquelocal_deposito'] }}
   </a>
-    <small class='pull-right' style='font-size: 0.5em'>
-        De: {{ formataData($dados['filtro']['datainicial']) }} à {{ formataData($dados['filtro']['datafinal']) }}
+    <small class='pull-right text-right' style='font-size: 0.5em'>
+        De: {{ formataData($dados['filtro']['datainicial'], 'L') }}  
+        <br>
+        Até: {{ formataData($dados['filtro']['datafinal'], 'L') }}
     </small>
 </div>
 <div class='conteudo'>
