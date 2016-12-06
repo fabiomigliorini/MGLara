@@ -16,10 +16,6 @@ use MGLara\Library\SlimImageCropper\Slim;
 
 class ImagemController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('parametros', ['only' => ['index']]);
-    }    
     /**
      * Display a listing of the resource.
      *
@@ -27,12 +23,7 @@ class ImagemController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->session()->has('imagem.index')) {
-            $request->session()->put('imagem.index.ativo', '1');
-        }
-
-        $parametros = $request->session()->get('imagem.index');
-        
+        $parametros = self::filtroEstatico($request, 'imagem.index', ['ativo' => 1]);
         $model = Imagem::search($parametros)->orderBy('codimagem', 'DESC')->paginate(30);
         
         return view('imagem.index', compact('model'));

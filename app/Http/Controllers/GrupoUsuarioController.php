@@ -18,18 +18,10 @@ class GrupoUsuarioController extends Controller
         $this->middleware('permissao:grupo-usuario.inclusao', ['only' => ['create', 'store']]);
         $this->middleware('permissao:grupo-usuario.alteracao', ['only' => ['edit', 'update']]);
         $this->middleware('permissao:grupo-usuario.exclusao', ['only' => ['delete', 'destroy']]);
-        
-        $this->middleware('parametros', ['only' => ['index', 'show']]);
     }
     
     public function index(Request $request) {
-        
-        if (!$request->session()->has('grupo-usuario.index')) {
-            $request->session()->put('grupo-usuario.index', []);
-        }
-
-        $parametros = $request->session()->get('grupo-usuario.index');
-        
+        $parametros = self::filtroEstatico($request, 'grupo-usuario.index');
         $model = GrupoUsuario::search($parametros)->orderBy('grupousuario', 'ASC')->paginate(20);
         return view('grupo-usuario.index', compact('model'));        
     }
@@ -65,12 +57,6 @@ class GrupoUsuarioController extends Controller
     }
     
     public function show(Request $request, $id) {
-        
-        if (!$request->session()->has('grupo-usuario.show')) {
-            $request->session()->put("grupo-usuario.show", []);
-        }
-
-        $parametros = $request->session()->get('grupo-usuario.show');
         $model = GrupoUsuario::find($id);
         $permissoes = Permissao::orderBy('permissao', 'ASC')->get();        
         return view('grupo-usuario.show', compact('model', 'permissoes'));
