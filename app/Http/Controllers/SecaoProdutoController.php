@@ -14,22 +14,13 @@ use Carbon\Carbon;
 
 class SecaoProdutoController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('parametros', ['only' => ['index', 'show']]);
-    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-
-        if (!$request->session()->has('secao-produto.index')) 
-            $request->session()->put('secao-produto.index.ativo', '1');
-        
-        $parametros = $request->session()->get('secao-produto')['index'];
-            
+        $parametros = self::filtroEstatico($request, 'secao-produto.index', ['ativo' => 1]);
         $model = SecaoProduto::search($parametros)->orderBy('secaoproduto', 'ASC')->paginate(20);
         return view('secao-produto.index', compact('model'));
     }
@@ -70,13 +61,9 @@ class SecaoProdutoController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if (!$request->session()->has('secao-produto.show'))
-            $request->session()->put("secao-produto.show.ativo", '1');
-        
-        $request->session()->put("secao-produto.show.codsecaoproduto", $id);
-        $parametros = $request->session()->get('secao-produto')['show'];        
-        
         $model = SecaoProduto::find($id);
+        $parametros = self::filtroEstatico($request, 'secao-produto.show', ['ativo' => 1]);
+        $parametros['codsecaoproduto'] = $id;
         $familias = FamiliaProduto::search($parametros);
         return view('secao-produto.show', compact('model', 'familias'));
     }

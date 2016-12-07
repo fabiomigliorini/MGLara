@@ -17,11 +17,6 @@ use Carbon\Carbon;
 
 class MetaController extends Controller
 {
-    public function __construct()
-    {
-        #$this->middleware('parametros', ['only' => ['index']]);
-    }
-        
     /**
      * Display a listing of the resource.
      *

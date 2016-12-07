@@ -15,10 +15,6 @@ use Carbon\Carbon;
 
 class GrupoProdutoController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('parametros', ['only' => ['show']]);
-    }      
     /**
      * Display a listing of the resource.
      *
@@ -68,13 +64,9 @@ class GrupoProdutoController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if (!$request->session()->has('grupo-produto.show'))
-            $request->session()->put("grupo-produto.show.ativo", '1');
-        
-        $request->session()->put("grupo-produto.show.codgrupoproduto", $id);
-        $parametros = $request->session()->get('grupo-produto.show');               
-            
         $model = GrupoProduto::findOrFail($id);
+        $parametros = self::filtroEstatico($request, 'grupo-produto.show', ['ativo' => 1]);
+        $parametros['codgrupoproduto'] = $id;
         $subgrupos = SubGrupoProduto::search($parametros);
         return view('grupo-produto.show', compact('model','subgrupos'));
     }

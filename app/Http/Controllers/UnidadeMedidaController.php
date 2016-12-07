@@ -13,26 +13,14 @@ use MGLara\Models\UnidadeMedida;
 
 class UnidadeMedidaController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('parametros', ['only' => ['index']]);
-    }
-    
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        
-        if (!$request->session()->has('unidade-medida.index')) {
-            $request->session()->put('unidade-medida.index', []);
-        }
-        
-        $parametros = $request->session()->get('unidade-medida.index');          
-        
+        $parametros = self::filtroEstatico($request, 'unidade-medida.index');
         $model = UnidadeMedida::search($parametros)->orderBy('unidademedida', 'ASC')->paginate(20);
-        
         return view('unidade-medida.index', compact('model'));
     }
 

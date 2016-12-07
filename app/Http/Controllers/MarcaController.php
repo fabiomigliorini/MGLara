@@ -15,11 +15,6 @@ use Carbon\Carbon;
 
 class MarcaController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('parametros', ['only' => ['index']]);
-    }
-    
     /**
      * Display a listing of the resource.
      *
@@ -27,11 +22,7 @@ class MarcaController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->session()->has('marca.index')) {
-            $request->session()->put('marca.index.ativo', '1');
-        }
-
-        $parametros = $request->session()->get('marca.index');
+        $parametros = self::filtroEstatico($request, 'marca.index', ['ativo' => 1]);
         $model = Marca::search($parametros)->orderBy('marca', 'ASC')->paginate(20);
         return view('marca.index', compact('model'));
     }

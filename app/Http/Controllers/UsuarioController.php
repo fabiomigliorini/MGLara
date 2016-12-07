@@ -25,16 +25,10 @@ class UsuarioController extends Controller
         $this->middleware('permissao:usuario.inclusao', ['only' => ['create', 'store']]);
         $this->middleware('permissao:usuario.alteracao', ['only' => ['edit', 'update']]);
         $this->middleware('permissao:usuario.exclusao', ['only' => ['delete', 'destroy']]);
-        $this->middleware('parametros', ['only' => ['index', 'permissao']]);
     }
     
     public function index(Request $request) {
-        
-        if (!$request->session()->has('usuario.index')) {
-            $request->session()->put('usuario.index.ativo', '1');
-        }
-
-        $parametros = $request->session()->get('usuario.index');        
+        $parametros = self::filtroEstatico($request, 'usuario.index', ['ativo' => 1]);
         $model = Usuario::search($parametros)->orderBy('usuario', 'ASC')->paginate(20);
         return view('usuario.index', compact('model'));        
     }
@@ -138,14 +132,9 @@ class UsuarioController extends Controller
     }    
     
     public function permissao(Request $request, $codusuario) {
-        if (!$request->session()->has('usuario.permissao')) {
-            $request->session()->put('usuario.permissao', []);
-        }
-
-        $parametros = $request->session()->get('usuario.permissao');        
-        
         $model = Usuario::find($codusuario);
         $filiais = Filial::orderBy('codfilial', 'asc')->get();
+        $parametros = self::filtroEstatico($request, 'usuario.permissao');        
         $grupos = GrupoUsuario::search($parametros)->orderBy('grupousuario', 'ASC')->paginate(20);
         
         
