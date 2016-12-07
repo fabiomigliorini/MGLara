@@ -11,10 +11,6 @@ use MGLara\Models\Ncm;
 
 class NcmController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('parametros', ['only' => ['index']]);
-    }    
     /**
      * Display a listing of the resource.
      *
@@ -22,13 +18,8 @@ class NcmController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->session()->has('ncm.index')) {
-            $request->session()->put('ncm.index', []);
-        }
-
-        $parametros = $request->session()->get('ncm.index');
+        $parametros = self::filtroEstatico($request, 'ncm.index');
         $parametros['codncmpai'] = 1;
-        
         $model = Ncm::search($parametros)->orderBy('ncm', 'ASC')->paginate(20);
         $ncms = Ncm::find($request->get('ncmpai'));
         return view('ncm.index', compact('model', 'ncms'));        

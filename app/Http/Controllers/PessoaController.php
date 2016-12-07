@@ -12,23 +12,14 @@ use MGLara\Models\RegistroSpc;
 
 class PessoaController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('parametros', ['only' => ['index']]);
-    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-
-        if (!$request->session()->has('pessoa.index'))
-            $request->session()->put('pessoa.index.ativo', '1');
-
-        $parametros = $request->session()->get('pessoa.index');
+        $parametros = self::filtroEstatico($request, 'pessoa.index', ['ativo' => 1]);
         $model = Pessoa::search($parametros)->orderBy('fantasia', 'ASC')->paginate(20);
-
         return view('pessoa.index', compact('model'));
     }
 
