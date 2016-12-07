@@ -66,6 +66,9 @@ use Carbon\Carbon;
  * @property  Usuario                        $UsuarioCriacao
  *
  * Tabelas Filhas
+ * @property  ValeCompraModelo[]             $ValeCompraModeloFavorecidoS
+ * @property  ValeCompra[]                   $ValeCompraS
+ * @property  ValeCompra[]                   $ValeCompraFavorecidoS
  * @property  CobrancaHistorico[]            $CobrancaHistoricoS
  * @property  CupomFiscal[]                  $CupomFiscalS
  * @property  MetaFilialPessoa[]             $MetaFilialPessoaS
@@ -261,10 +264,26 @@ class Pessoa extends MGModel
 
 
     // Tabelas Filhas
+
+    public function ValeCompraModeloFavorecidoS()
+    {
+        return $this->hasMany(ValeCompraModelo::class, 'codpessoa', 'codpessoafavorecido');
+    }
+
+    public function ValeCompraS()
+    {
+        return $this->hasMany(ValeCompra::class, 'codpessoa', 'codpessoa');
+    }
+
+    public function ValeCompraFavorecidoS()
+    {
+        return $this->hasMany(ValeCompra::class, 'codpessoa', 'codpessoafavorecido');
+    }
+
     public function MetaFilialPessoaS()
     {
         return $this->hasMany(MetaFilialPessoa::class, 'codpessoa', 'codpessoa');
-    }    
+    }
     
     public function CobrancaHistoricoS()
     {

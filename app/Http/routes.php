@@ -217,6 +217,10 @@ Route::group(['middleware' => 'auth'], function() {
 
     /* Auxiliares */
     Route::resource('printers','UsuarioController@printers');
+    
+    /* Vale Compras */
+    Route::resource('vale-compra-modelo','ValeCompraModeloController');
+    
 });
 
 /*

@@ -106,7 +106,7 @@ if ($rel->column_name == 'codusuarioalteracao')
 ?>
     public function {{$coluna}}()
     {
-        return $this->belongsTo({{$classe}}::class, '{{$rel->foreign_column_name}}', '{{$rel->column_name}}');
+        return $this->belongsTo({{$classe}}::class, '{{$rel->column_name}}', '{{$rel->foreign_column_name}}');
     }
 
 @endforeach

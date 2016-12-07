@@ -9,7 +9,6 @@ namespace MGLara\Models;
  * @property  bigint                         $codprodutovariacao                 NOT NULL
  * @property  varchar(50)                    $barras                             NOT NULL
  * @property  varchar(50)                    $referencia
- * @property  bigint                         $codprodutovariacao                 
  * @property  bigint                         $codprodutoembalagem                
  * @property  timestamp                      $alteracao                          
  * @property  bigint                         $codusuarioalteracao                
@@ -26,6 +25,8 @@ namespace MGLara\Models;
  * @property  Usuario                        $UsuarioCriacao
  *
  * Tabelas Filhas
+ * @property  ValeCompraModeloProdutoBarra[] $ValeCompraModeloProdutoBarraS
+ * @property  ValeCompraProdutoBarra[]       $ValeCompraProdutoBarraS
  * @property  CupomFiscalProdutoBarra[]      $CupomFiscalProdutoBarraS
  * @property  NegocioProdutoBarra[]          $NegocioProdutoBarraS
  * @property  NfeTerceiroItem[]              $NfeTerceiroItemS
@@ -92,6 +93,16 @@ class ProdutoBarra extends MGModel
 
 
     // Tabelas Filhas
+    public function ValeCompraModeloProdutoBarraS()
+    {
+        return $this->hasMany(ValeCompraModeloProdutoBarra::class, 'codprodutobarra', 'codprodutobarra');
+    }
+
+    public function ValeCompraProdutoBarraS()
+    {
+        return $this->hasMany(ValeCompraProdutoBarra::class, 'codprodutobarra', 'codprodutobarra');
+    }
+    
     public function CupomFiscalProdutoBarraS()
     {
         return $this->hasMany(CupomFiscalProdutoBarra::class, 'codprodutobarra', 'codprodutobarra');
