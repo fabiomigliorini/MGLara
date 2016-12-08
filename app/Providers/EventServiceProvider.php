@@ -16,6 +16,9 @@ class EventServiceProvider extends ServiceProvider
         'MGLara\Events\SomeEvent' => [
             'MGLara\Listeners\EventListener',
         ],
+        'auth.login' => [
+            'MGLara\Handlers\Events\LoginEventhandler'
+        ],
     ];
 
     /**
