@@ -5,7 +5,6 @@ use MGLara\Models\Cargo;
 use Collective\Html\FormBuilder;
 
 $cargos = [''=>''] + Cargo::orderBy('cargo')->lists('cargo', 'codcargo')->all();        
-//$filiais = Filial::whereIn('codfilial', ['102', '103', '104'])->get();
 $filiais = Filial::orderBy('codfilial')->get();
 $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
         ->where('vendedor', true)
@@ -95,7 +94,7 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
                 <div class="col-md-3">
                     <div class="input-group">
                         <div class="input-group-addon">R$</div>
-                        {!! Form::number("metafilial[$filial->codfilial][valormetafilial]", null, ['class' => 'form-control text-right',  'id'=>'valormetafilial', 'placeholder' => '', 'step'=>'0.01']) !!}
+                        {!! Form::number("metafilial[$filial->codfilial][valormetafilial]", null, ['class' => 'form-control text-right',  'id'=>"valormetafilial_$filial->codfilial", 'placeholder' => '', 'step'=>'0.01']) !!}
                     </div>
                 </div>
             </div>
@@ -104,7 +103,7 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
                 <div class="col-md-3">
                     <div class="input-group">
                         <div class="input-group-addon">R$</div>
-                        {!! Form::number("metafilial[$filial->codfilial][valormetavendedor]", null, ['class' => 'form-control text-right',  'id'=>'valormetavendedor', 'placeholder' => '', 'step'=>'0.01']) !!}
+                        {!! Form::number("metafilial[$filial->codfilial][valormetavendedor]", null, ['class' => 'form-control text-right',  'id'=>"valormetavendedor_$filial->codfilial", 'placeholder' => '', 'step'=>'0.01']) !!}
                     </div>
                 </div>
             </div>
@@ -114,9 +113,11 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
                     {!! Form::textarea("metafilial[$filial->codfilial][observacoes]", null, ['class'=> 'form-control', 'id'=>"metafilial[$filial->codfilial][observacoes]", 'rows'=>'3']) !!}
                 </div>
             </div>
+            <br>
+            <br>
             <div class="form-group">
-                <p class="col-md-12">
-                    <a class="btn btn-default adicionar-pessoas" data-filial="{{ $filial->codfilial }}">Adicionar</a>
+                <p class="col-md-12" style="padding-left: 30px;">
+                    <a class="btn btn-primary adicionar-pessoas" data-filial="{{ $filial->codfilial }}">Adicionar Colaborador</a>
                 </p>
                 <div  id="add-{{ $filial->codfilial }}">
                     <div class="cargo-pessoa cargo-pessoa-{{ $filial->codfilial }} col-md-12 hide">
@@ -127,9 +128,16 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
                 @if(isset($model['metafilial'][$filial->codfilial]))
                     @foreach($model['metafilial'][$filial->codfilial]['pessoas'] as $pessoa)
                     <div class="cargo-pessoa col-md-12">
-                        {!! Form::select("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codpessoa]", $pessoas, null, ['class'=> 'form-control select pull-left', 'style'=>"width: 300px;", 'data-filial'=>$filial->codfilial]) !!}
-                        {!! Form::select("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codcargo]", $cargos, null, ['class'=> 'form-control select pull-left', 'style'=>"width: 150px", 'data-filial'=>$filial->codfilial]) !!}
-                        {!! Form::text("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codmetafilialpessoa]", null, ['class'=> 'form-control pull-left', 'style'=>"width: 75px"]) !!}
+                        <div class="col-md-4">
+                        {!! Form::select("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codpessoa]", $pessoas, null, ['class'=> 'form-control select', 'style'=>"width: 100%;", 'data-filial'=>$filial->codfilial]) !!}
+                        </div>
+                        <div class="col-md-3">
+                        {!! Form::select("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codcargo]", $cargos, null, ['class'=> 'form-control select', 'style'=>"width: 100%", 'data-filial'=>$filial->codfilial]) !!}
+                        </div>
+                        <div class="col-md-2">
+                        {!! Form::text("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codmetafilialpessoa]", null, ['class'=> 'form-control', 'readonly'=>'readonly']) !!}
+                        </div>
+                        <!-- <a class="btn text-danger pull-left"><i class="glyphicon glyphicon-remove"></i></a> -->
                     </div>
                     @endforeach
                 @endif
@@ -138,15 +146,13 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
             
         </div>
         @endforeach  
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                {!! Form::submit($submitTextButton, array('class' => 'btn btn-primary')) !!}
+            </div>
+        </div>
     </div>
 </div>  
-
-<div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-        {!! Form::submit($submitTextButton, array('class' => 'btn btn-primary')) !!}
-    </div>
-</div>
-
 
 @section('inscript')
 <link href="{{ URL::asset('public/vendor/bootstrap-vertical-tabs/tabs.css') }}" rel="stylesheet">
@@ -173,22 +179,28 @@ $(document).ready(function() {
             }
         });
     });
+
     $('.controla').bootstrapSwitch();
     $( "ul.nav-tabs li:first-child, div.tab-content div.tab-pane:first-child").addClass('active');
+
     $('.select').select2({
         allowClear: true,
         closeOnSelect: true        
     });
+
     $('.controla').on('switchChange.bootstrapSwitch', function(event, state) {
         var filial = $(this).data("filial");
         if (state === true) {
             $('#dados-filial-'+filial).slideDown('slow');
+            $('#valormetavendedor_'+filial).attr('required', true);
+            $('#valormetafilial_'+filial).attr('required', true);
         } else {
-            console.log(filial);
             $('#dados-filial-'+filial).slideUp('slow');
+            $('#valormetavendedor_'+filial).attr('required', false);
+            $('#valormetafilial_'+filial).attr('required', false);
         }
     });
-    
+
     $('.adicionar-pessoas').on('click', function(e) {
         e.preventDefault();
         $('.select').select2("destroy");
@@ -206,10 +218,10 @@ $(document).ready(function() {
         });
 
         var nome = $(seletor+'.clone select').prev().attr('id');
-        console.log(nome);
         $(seletor+'.clone:last-child select').attr('name', nome);
         $(seletor+'.clone:last-child select:last-child').attr('name', nome+'1');
     });    
+
     $('.adicionar-pessoa').on('change', function () {
         var filial = $(this).data('filial');
         var pessoa = $(this).val();
