@@ -54,17 +54,17 @@ class ValeCompraModelo extends MGModel
     // Chaves Estrangeiras
     public function UsuarioCriacao()
     {
-        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
+        return $this->belongsTo(Usuario::class, 'codusuariocriacao');
     }
 
     public function UsuarioAlteracao()
     {
-        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuarioalteracao');
+        return $this->belongsTo(Usuario::class, 'codusuarioalteracao');
     }
 
     public function PessoaFavorecido()
     {
-        return $this->belongsTo(Pessoa::class, 'codpessoa', 'codpessoafavorecido');
+        return $this->belongsTo(Pessoa::class, 'codpessoafavorecido');
     }
 
 
@@ -79,5 +79,27 @@ class ValeCompraModelo extends MGModel
         return $this->hasMany(ValeCompraModeloProdutoBarra::class, 'codvalecompramodelo', 'codvalecompramodelo');
     }
 
+    public static function search($parametros)
+    {
+        $query = ValeCompraModelo::query();
+        
+        if (!empty($parametros['codpessoafavorecido'])) {
+            $query->where('codpessoafavorecido', $parametros['codpessoafavorecido']);
+        }
+        
+        if (!empty($parametros['ano'])) {
+            $query->where('ano', $parametros['ano']);
+        }
+        
+        if (!empty($parametros['modelo'])) {
+            $palavras = explode($parametros['modelo'], ' ');
+            foreach ($palavras as $palavra) {
+                $query->where('modelo', 'ilike', "%{$palavra}%");
+            }
+        }
+        
+        return $query;
+    }
+    
 
 }

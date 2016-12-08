@@ -1,10 +1,10 @@
 @extends('layouts.default')
 @section('content')
 <ol class="breadcrumb header">
-    {!! titulo(null, 'Tipos de produto', null) !!}
+    {!! titulo(null, 'Modelos de Vale Compras', null) !!}
     <li class='active'>
         <small>
-            <a title="Novo Tipo" href="{{ url("tipo-produto/create") }}"><i class="glyphicon glyphicon-plus"></i></a>
+            <a title="Novo" href="{{ url("vale-compra-modelo/create") }}"><i class="glyphicon glyphicon-plus"></i></a>
             &nbsp;
             <a class="" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro"><span class='glyphicon glyphicon-search'></span></a>
         </small>
@@ -14,29 +14,35 @@
 <div class='collapse' id='div-filtro'>
     <div class='well well-sm' style="padding:9px 0">
     {!! Form::model(
-        Request::session()->get('tipo-produto.index'), 
+        Request::session()->get('vale-compra-modelo.index'), 
         [
-            'route' => 'tipo-produto.index', 
+            'route' => 'vale-compra-modelo.index', 
             'method' => 'GET', 
             'class' => 'form-horizontal', 
-            'id' => 'tipo-produto-search', 
+            'id' => 'vale-compra-modelo-search', 
             'role' => 'search', 
             'autocomplete' => 'off']
         )
     !!}
-        <div class="col-md-2">
+        <div class="col-md-5">
             <div class="form-group">
-                {!! Form::label('codtipoproduto', '#', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-8">{!! Form::text('codtipoproduto', null, ['class' => 'form-control', 'placeholder' => '#']) !!}</div>
+                {!! Form::label('codpessoafavorecido', 'Favorecido', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::select2Pessoa('codpessoafavorecido', null, ['class' => 'form-control', 'placeholder' => 'Favorecido']) !!}</div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
-                {!! Form::label('tipoproduto', 'Tipo', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-8">{!! Form::text('tipoproduto', null, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}</div>
+                {!! Form::label('modelo', 'Modelo', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::text('modelo', null, ['class' => 'form-control', 'placeholder' => 'Modelo']) !!}</div>
             </div>    
         </div>    
-        <div class="col-md-2">      
+        <div class="col-md-2">
+            <div class="form-group">
+                {!! Form::label('ano', 'Ano', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::text('ano', null, ['class' => 'form-control', 'placeholder' => 'Ano']) !!}</div>
+            </div>    
+        </div>    
+        <div class="col-md-1">      
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
                     <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
@@ -49,17 +55,33 @@
 </div>
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
-    @foreach($model as $row)
+    @foreach($model as $i => $row)
       <div class="list-group-item">
         <div class="row item">
             <div class="col-md-1 small text-muted">
-                {{ formataCodigo($row->codtipoproduto) }}
+                {{ formataCodigo($row->codvalecompramodelo) }}
+            </div>                            
+            <div class="col-md-2">
+                <a href="{{ url('pessoa', $row->codpessoafavorecido) }}">{{ $row->PessoaFavorecido->fantasia }}</a>
             </div>                            
             <div class="col-md-4">
-                <a href="{{ url("tipo-produto/$row->codtipoproduto") }}">{{ $row->tipoproduto }}</a>
+              @if (!empty($row->inativo))
+                <s><a href="{{ url('vale-compra-modelo', $row->codvalecompramodelo) }}">{{ $row->modelo }}</a></s>
+                <span class='text-danger'>
+                    inativo desde {{ formataData($row->inativo) }}
+                </span>
+              @else
+                <a href="{{ url('vale-compra-modelo', $row->codvalecompramodelo) }}">{{ $row->modelo }}</a>
+              @endif
+              <div class="pull-right">
+                {{ formataNumero($row->total) }}
+              </div>                            
             </div>                            
-            <div class="col-md-4">
-            
+            <div class="col-md-2">
+                {{ $row->ano }} / {{ $row->turma }}
+            </div>                            
+            <div class="col-md-3 small text-muted">
+              {!! nl2br($row->observacoes) !!}
             </div>                            
         </div>
       </div>    
@@ -68,17 +90,17 @@
         <h3>Nenhum registro encontrado!</h3>
     @endif    
   </div>
-  <?php echo $model->appends(Request::session()->get('tipo-produto.index'))->render();?>
+  <?php echo $model->appends(Request::session()->get('vale-compra-modelo.index'))->render();?>
 </div>
 @section('inscript')
 <script type="text/javascript">
 function atualizaFiltro()
 {
     scroll();
-    var frmValues = $('#tipo-produto-search').serialize();
+    var frmValues = $('#vale-compra-modelo-search').serialize();
     $.ajax({
         type: 'GET',
-        url: baseUrl + '/tipo-produto',
+        url: baseUrl + '/vale-compra-modelo',
         data: frmValues,
         dataType: 'html'
     })
@@ -117,7 +139,7 @@ function scroll()
 
 $(document).ready(function() {
     scroll();
-    $("#tipo-produto-search").on("change", function (event) {
+    $("#vale-compra-modelo-search").on("change", function (event) {
         $('#items').infinitescroll('destroy');
         atualizaFiltro();
     }).on('submit', function (event){
