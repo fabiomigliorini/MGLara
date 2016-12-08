@@ -24,17 +24,34 @@ class MetaController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->codmeta) {
-            $model = Meta::findOrFail($request->codmeta);
+        $model = Meta::where('periodoinicial', '<=', Carbon::today())
+                ->where('periodofinal', '>=', Carbon::today())
+                ->first();
+        
+        if($model) {
+            return redirect("meta/$model->codmeta");
         } else {
-            $model = Meta::where('periodoinicial', '<=', Carbon::today())
-                    ->where('periodofinal', '>=', Carbon::today())
-                    ->first();
+            $model = Meta::orderBy('periodofinal', 'DESC')->first();
+            if(!is_null($model)) {
+                return redirect("meta/$model->codmeta");
+            } else {
+                return view('meta.index', compact('model'));
+            }
         }
-
-        return view('meta.index', compact('model'));
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $model = Meta::findOrFail($id);
+        return view('meta.show', compact('model'));
+    }
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -42,30 +59,7 @@ class MetaController extends Controller
      */
     public function create(Request $request)
     {
-        if ($request->get('alterar'))
-        {
-            $model = Meta::findOrFail($request->get('alterar'));
-            $model['meta'] =  $model->getAttributes();
-            $metasfiliais = [];
-            foreach($model->MetaFilialS()->get() as $metafilial)
-            {
-                $metasfiliais[$metafilial['codfilial']] = $metafilial;
-                $metafilial['controla'] = TRUE;
-                $pessoas = [];
-                foreach ($metafilial->MetaFilialPessoaS()->get() as $pessoa)
-                {
-                    $pessoas[$pessoa['codpessoa']] = [
-                        'codmetafilialpessoa' => $pessoa['codmetafilialpessoa'],
-                        'codpessoa'=> $pessoa['codpessoa'],
-                        'codcargo'=> $pessoa['codcargo']
-                    ];
-                }
-                $metasfiliais[$metafilial['codfilial']]['pessoas'] = $pessoas;
-            }
-            $model['metafilial'] = $metasfiliais;
-        } else {
-            $model = new Meta();
-        }
+        $model = new Meta();
         return view('meta.create', compact('model'));
     }
 
@@ -77,14 +71,7 @@ class MetaController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->get('alterar'))
-        {
-            $model = Meta::findOrFail($request->get('alterar'));
-            $model->fill($request->all()['meta']);
-            
-        } else {
-            $model = new Meta($request->all()['meta']);
-        }
+        $model = new Meta($request->all()['meta']);
         
         DB::beginTransaction();
         
@@ -98,8 +85,103 @@ class MetaController extends Controller
             }
             
             $metasfilial = $request->all()['metafilial'];
-            //dd($metasfilial);
+            foreach ($metasfilial as $metafilial => $meta)
+            {
+                if(!empty($meta['controla'])) {
+
+                    $mf = new MetaFilial();
+                    $mf->codfilial = $metafilial;
+                    $mf->codmeta = $model->codmeta;
+                    $mf->valormetafilial    = $meta['valormetafilial'];
+                    $mf->valormetavendedor  = $meta['valormetavendedor'];
+                    $mf->observacoes        = $meta['observacoes'];
+                    
+                    if (!$mf->save()) {
+                        throw new Exception ('Erro ao Criar Meta Filial!');
+                    }
+                    
+                    $pessoas = $meta['pessoas'];
+                    foreach ($pessoas as $pessoa)
+                    {
+                        $mfp = new MetaFilialPessoa();
+                        $mfp->codmetafilial = $mf->codmetafilial;
+                        $mfp->codpessoa     = $pessoa['codpessoa'];
+                        $mfp->codcargo      = $pessoa['codcargo'];
+                        
+                        if($mfp->codcargo && $mfp->codpessoa) {
+                            if (!$mfp->save()) {
+                                throw new Exception ('Erro ao Criar Meta filial pessoa!');
+                            }
+                        }
+                    }
+                }
+            }
             
+            DB::commit();
+            Session::flash('flash_success', "Meta  criada com sucesso!");
+            return redirect("meta/$model->codmeta");            
+            
+        } catch (Exception $ex) {
+            DB::rollBack();
+            $this->throwValidationException($request, $model->_validator);              
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $model = Meta::findOrFail($id);
+        $model['meta'] =  $model->getAttributes();
+        $metasfiliais = [];
+        foreach($model->MetaFilialS()->get() as $metafilial)
+        {
+            $metasfiliais[$metafilial['codfilial']] = $metafilial;
+            $metafilial['controla'] = TRUE;
+            $pessoas = [];
+            foreach ($metafilial->MetaFilialPessoaS()->get() as $pessoa)
+            {
+                $pessoas[$pessoa['codpessoa']] = [
+                    'codmetafilialpessoa' => $pessoa['codmetafilialpessoa'],
+                    'codpessoa'=> $pessoa['codpessoa'],
+                    'codcargo'=> $pessoa['codcargo']
+                ];
+            }
+            $metasfiliais[$metafilial['codfilial']]['pessoas'] = $pessoas;
+        }
+        $model['metafilial'] = $metasfiliais;
+        
+        return view('meta.edit',  compact('model'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $model = Meta::findOrFail($id);
+        $model->fill($request->all()['meta']);
+
+        DB::beginTransaction();
+
+        if (!$model->validate()) {
+            $this->throwValidationException($request, $model->_validator);
+        }
+
+        try {
+            if (!$model->save()){
+                throw new Exception ('Erro ao Alterar Meta!');            
+            }
+            
+            $metasfilial = $request->all()['metafilial'];
             foreach ($metasfilial as $metafilial => $meta)
             {
                 if(!empty($meta['controla'])) {
@@ -110,19 +192,16 @@ class MetaController extends Controller
                     } else {
                         $mf = MetaFilial::findOrFail($meta['codmetafilial']);
                     }
-                    
                     $mf->valormetafilial    = $meta['valormetafilial'];
                     $mf->valormetavendedor  = $meta['valormetavendedor'];
                     $mf->observacoes        = $meta['observacoes'];
                     
                     if (!$mf->save()) {
-                        throw new Exception ('Erro ao Criar Meta Filial!');
+                        throw new Exception ('Erro ao Alterar Meta Filial!');
                     }
                     $pessoas = $meta['pessoas'];
-                    //dd($pessoas);
                     foreach ($pessoas as $pessoa)
                     {
-                        //dd($pessoa);
                         if(!empty($pessoa['codmetafilialpessoa'])) {
                             $mfp = MetaFilialPessoa::findOrFail($pessoa['codmetafilialpessoa']);
                         } else {
@@ -134,9 +213,8 @@ class MetaController extends Controller
                         $mfp->codcargo      = $pessoa['codcargo'];
                         
                         if($mfp->codcargo && $mfp->codpessoa) {
-                            //dd($mfp);
                             if (!$mfp->save()) {
-                                throw new Exception ('Erro ao Criar Meta filial pessoa!');
+                                throw new Exception ('Erro ao Alterar Meta filial pessoa!');
                             }
                         } else {
                             $mfp->delete();
@@ -146,15 +224,15 @@ class MetaController extends Controller
             }
             
             DB::commit();
-            Session::flash('flash_success', "Meta  criada com sucesso!");
-            return redirect("meta");            
-            
+            Session::flash('flash_success', "Meta alterada!");
+            return redirect("meta/$model->codmeta");           
         } catch (Exception $ex) {
             DB::rollBack();
             $this->throwValidationException($request, $model->_validator);              
-        }
+        }        
     }
-
+    
+    
     public function destroy($id)
     {
         try{
