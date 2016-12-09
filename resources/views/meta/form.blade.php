@@ -28,7 +28,7 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
     <div class="col-md-2">
         <div class="input-group">
             <div class="input-group-addon">R$</div>
-            {!! Form::number('meta[premioprimeirovendedorfilial]', null, ['class' => 'form-control text-right',  'id'=> 'meta[premioprimeirovendedorfilial]', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
+            {!! Form::number('meta[premioprimeirovendedorfilial]', null, ['class' => 'form-control text-right',  'id'=> 'meta[premioprimeirovendedorfilial]', 'required'=>'true', 'placeholder' => '', 'step'=>'0.01']) !!}
         </div>
     </div>
 </div>
@@ -37,7 +37,7 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
     {!! Form::label('meta[percentualcomissaovendedor]', 'Comissão', ['class' => 'col-sm-2 control-label']) !!}
     <div class="col-md-2">
         <div class="input-group">
-            {!! Form::number('meta[percentualcomissaovendedor]', null, ['class' => 'form-control text-right',  'id'=>'meta[percentualcomissaovendedor]', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
+            {!! Form::number('meta[percentualcomissaovendedor]', null, ['class' => 'form-control text-right',  'id'=>'meta[percentualcomissaovendedor]', 'required'=>'true', 'placeholder' => '', 'step'=>'0.01']) !!}
             <div class="input-group-addon">%</div>
         </div>
     </div>
@@ -47,7 +47,7 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
     {!! Form::label('meta[percentualcomissaovendedormeta]', 'Prêmio Meta Vendedor', ['class' => 'col-sm-2 control-label']) !!}
     <div class="col-md-2">
         <div class="input-group">
-            {!! Form::number('meta[percentualcomissaovendedormeta]', null, ['class' => 'form-control text-right',  'id'=>'meta[percentualcomissaovendedormeta]', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
+            {!! Form::number('meta[percentualcomissaovendedormeta]', null, ['class' => 'form-control text-right',  'id'=>'meta[percentualcomissaovendedormeta]', 'required'=>'true', 'placeholder' => '', 'step'=>'0.01']) !!}
             <div class="input-group-addon">%</div>
         </div>
     </div>
@@ -57,7 +57,7 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
     {!! Form::label('meta[percentualcomissaosubgerentemeta]', 'Prêmio Meta Sub-Gerente', ['class' => 'col-sm-2 control-label']) !!}
     <div class="col-md-2">
         <div class="input-group">
-            {!! Form::number('meta[percentualcomissaosubgerentemeta]', null, ['class' => 'form-control text-right',  'id'=>'meta[percentualcomissaosubgerentemeta]', 'required'=>'required', 'placeholder' => '', 'step'=>'0.01']) !!}
+            {!! Form::number('meta[percentualcomissaosubgerentemeta]', null, ['class' => 'form-control text-right',  'id'=>'meta[percentualcomissaosubgerentemeta]', 'required'=>'true', 'placeholder' => '', 'step'=>'0.01']) !!}
             <div class="input-group-addon">%</div>
         </div>
     </div>
@@ -126,6 +126,7 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
                         <div class="col-md-3">                    
                         {!! Form::select("cargo", $cargos, null, ['class'=> 'form-control adicionar-cargo', 'data-filial'=>$filial->codfilial]) !!}
                         </div>
+                        <a class="btn text-danger pull-left remover-pessoa"><i class="glyphicon glyphicon-trash"></i></a>
                     </div>
                 </div>
                 @if(isset($model['metafilial'][$filial->codfilial]))
@@ -137,7 +138,7 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
                         <div class="col-md-3">
                         {!! Form::select("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codcargo]", $cargos, null, ['class'=> 'form-control select', 'style'=>"width: 100%", 'data-filial'=>$filial->codfilial]) !!}
                         </div>
-                        {!! Form::hidden("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codmetafilialpessoa]", null, ['class'=> 'form-control']) !!}
+                        {!! Form::hidden("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codmetafilialpessoa]", null, ['class'=> 'form-control', ]) !!}
                         <a class="btn text-danger pull-left remover-pessoa"><i class="glyphicon glyphicon-trash"></i></a>
                     </div>
                     @endforeach
@@ -219,8 +220,8 @@ $(document).ready(function() {
         });
 
         var nome = $(seletor+'.clone select').prev().attr('id');
-        $(seletor+'.clone:last-child select').attr('name', nome);
-        $(seletor+'.clone:last-child select:last-child').attr('name', nome+'1');
+        $(seletor+'.clone:last-child select').attr('name', nome).attr('required', true);
+        $(seletor+'.clone:last-child select:last-child').attr('name', nome+'1').attr('required', true);
     });    
 
     $('.adicionar-pessoa').on('change', function () {
