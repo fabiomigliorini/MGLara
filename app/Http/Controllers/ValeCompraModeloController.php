@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use MGLara\Http\Controllers\Controller;
 
 use MGLara\Models\ValeCompraModelo;
@@ -23,6 +25,37 @@ class ValeCompraModeloController extends Controller
          * 
          */
     }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $parametros = self::filtroEstatico($request, 'vale-compra-modelo.index', ['ativo' => 1]);
+        $model = ValeCompraModelo::search($parametros)
+            ->orderBy('ano', 'DESC')
+            ->orderBy('turma', 'ASC')
+            ->orderBy('modelo', 'ASC')
+            ->paginate(20);
+        return view('vale-compra-modelo.index', compact('model'));
+    }
+    
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $model = ValeCompraModelo::findOrFail($id);
+        return view('vale-compra-modelo.show', compact('model'));
+    }
+
+    
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -31,7 +64,7 @@ class ValeCompraModeloController extends Controller
     public function create(Request $request)
     {
         $model = new ValeCompraModelo();
-        return view('vale-compra-modelo.create', compact('model', 'produto'));
+        return view('vale-compra-modelo.create', compact('model'));
     }
 
     /**
@@ -42,20 +75,40 @@ class ValeCompraModeloController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
-        $model = new ValeCompraModelo($request->all());
-        $model->codproduto = $request->input('codproduto');
+        DB::beginTransaction();
         
-        if ($model->codprodutoembalagem == 0) {
-            $model->codprodutoembalagem = null;
+        $dados = $request->all();
+        
+        $model = new ValeCompraModelo($dados);
+        $model->totalprodutos = array_sum($dados['item_total']);
+        $model->total = $model->totalprodutos - $model->desconto;
+        
+        if (!$model->validate()) {
+            $this->throwValidationException($request, $model->_validator);
         }
         
-        if (!$model->validate())
-            $this->throwValidationException($request, $model->_validator);
+        if ($model->save()) {
+            foreach ($dados['item_codprodutobarra'] as $key => $codprodutobarra) {
+                if (empty($codprodutobarra)) {
+                    continue;
+                }
+                
+                $prod = new ValeCompraModeloProdutoBarra([
+                    'codvalecompramodelo' => $model->codvalecompramodelo,
+                    'codprodutobarra' => $codprodutobarra,
+                    'quantidade' => $dados['item_quantidade'][$key],
+                    'preco' => $dados['item_preco'][$key],
+                    'total' => $dados['item_total'][$key],
+                ]);
+                
+                $prod->save();
+            }
+        }
         
-        $model->save();
-        Session::flash('flash_success', "Modelo de Vale Compras '{$model->barras}' criado!");
-        return redirect("vale-compra-modelo/$model->codproduto");
+        Session::flash('flash_success', "Modelo de Vale Compras '{$model->modelo}' criado!");
+        
+        DB::commit();
+        return redirect("vale-compra-modelo/$model->codvalecompramodelo");
     }
 
     /**
@@ -64,15 +117,12 @@ class ValeCompraModeloController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    /*
     public function edit($id)
     {
         $model = ValeCompraModelo::findOrFail($id);
         $produto = $model->Produto;
-        return view('vale-compra-modelo.edit',  compact('model', 'produto'));
+        return view('vale-compra-modelo.edit',  compact('model'));
     }
-     * 
-     */
 
     /**
      * Update the specified resource in storage.
@@ -81,34 +131,52 @@ class ValeCompraModeloController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    /*
     public function update(Request $request, $id)
     {
+        $dados = $request->all();
         $model = ValeCompraModelo::findOrFail($id);
-        $codprodutovariacao_original = $model->codprodutovariacao;
-        $model->fill($request->all());
-        
-        if ($model->codprodutoembalagem == 0) {
-            $model->codprodutoembalagem = null;
-        }
+        $model->fill($dados);
+        $model->totalprodutos = array_sum($dados['item_total']);
+        $model->total = $model->totalprodutos - $model->desconto;
         
         if (!$model->validate()) {
             $this->throwValidationException($request, $model->_validator);
         }
         
-        $model->save();
-
-        //Recalcula movimento de estoque caso trocou o codigo de barras de variacao
-        if ($model->codprodutovariacao != $codprodutovariacao_original) {
-            $this->dispatch((new EstoqueGeraMovimentoProdutoVariacao($model->codprodutovariacao))->onQueue('medium'));
-            $this->dispatch((new EstoqueGeraMovimentoProdutoVariacao($codprodutovariacao_original))->onQueue('medium'));
-        }
+        DB::beginTransaction();
         
-        Session::flash('flash_success', "Modelo de Vale Compras '{$model->barras}' atualizado!");
-        return redirect("vale-compra-modelo/$model->codproduto");     
+        if ($model->save()) {
+            $codvalecompramodeloprodutobarra = [];
+            foreach ($dados['item_codprodutobarra'] as $key => $codprodutobarra) {
+                if (empty($codprodutobarra)) {
+                    continue;
+                }
+                $dados_prod = [
+                    'codvalecompramodelo' => $model->codvalecompramodelo,
+                    'codprodutobarra' => $codprodutobarra,
+                    'quantidade' => $dados['item_quantidade'][$key],
+                    'preco' => $dados['item_preco'][$key],
+                    'total' => $dados['item_total'][$key],
+                ];
+    
+                if (!empty($dados['item_codvalecompramodeloprodutobarra'][$key])) {
+                    $prod = ValeCompraModeloProdutoBarra::findOrFail($dados['item_codvalecompramodeloprodutobarra'][$key]);
+                    $prod->fill($dados_prod);
+                } else {
+                    $prod = new ValeCompraModeloProdutoBarra($dados_prod);
+                }
+                
+                $prod->save();
+                $codvalecompramodeloprodutobarra[] = $prod->codvalecompramodeloprodutobarra;
+            }
+            
+            $model->ValeCompraModeloProdutoBarraS()->whereNotIn('codvalecompramodeloprodutobarra', $codvalecompramodeloprodutobarra)->delete();
+            
+        }
+        DB::commit();
+        Session::flash('flash_success', "Modelo de Vale Compras '{$model->modelo}' atualizado!");
+        return redirect("vale-compra-modelo/$model->codvalecompramodelo");
     }
-     * 
-     */
 
     /**
      * Remove the specified resource from storage.
@@ -116,20 +184,26 @@ class ValeCompraModeloController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    /*
     public function destroy($id)
     {
         try{
-            ValeCompraModelo::find($id)->delete();
-            $ret = ['resultado' => true, 'mensagem' => 'Modelo de Vale Compras excluído com sucesso!'];
+            DB::beginTransaction();
+            $model = ValeCompraModelo::find($id);
+            foreach ($model->ValeCompraModeloProdutoBarraS as $vcmpb) {
+                $vcmpb->delete();
+            }
+            if ($model->delete()) {
+                DB::commit();
+                $ret = ['resultado' => true, 'mensagem' => 'Modelo de Vale Compras excluído com sucesso!'];
+            } else {
+                $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir Modelo de Vale Compras!'];                
+            }
         }
         catch(\Exception $e){
             $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir Modelo de Vale Compras!', 'exception' => $e];
         }
         return json_encode($ret);
     }
-     * 
-     */
 
     /*
     public function listagemJson(Request $request) 
@@ -223,5 +297,24 @@ class ValeCompraModeloController extends Controller
         }
     }
     */
+    
+    public function inativo(Request $request)
+    {
+        try{
+            $model = ValeCompraModelo::findOrFail($request->get('id'));
+            if ($request->get('acao') == 'ativar') {
+                $model->inativo = null;
+            } else {
+                $model->inativo = Carbon::now();
+            }
+            $model->save();
+            $acao = ($request->get('acao') == 'ativar') ? 'ativado' : 'inativado';
+            $ret = ['resultado' => true, 'mensagem' => "Vale $model->vale $acao com sucesso!"];
+        }
+        catch(\Exception $e){
+            $ret = ['resultado' => false, 'mensagem' => "Erro ao $acao vale!", 'exception' => $e];
+        }
+        return json_encode($ret);
+    } 
     
 }

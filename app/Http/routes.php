@@ -219,6 +219,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('printers','UsuarioController@printers');
     
     /* Vale Compras */
+    Route::post('vale-compra-modelo/inativo','ValeCompraModeloController@inativo');
     Route::resource('vale-compra-modelo','ValeCompraModeloController');
     
 });

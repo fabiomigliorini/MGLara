@@ -18,6 +18,7 @@ class PessoaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
+        return redirect()->away("/MGsis/index.php?r=pessoa/index");        
         $parametros = self::filtroEstatico($request, 'pessoa.index', ['ativo' => 1]);
         $model = Pessoa::search($parametros)->orderBy('fantasia', 'ASC')->paginate(20);
         return view('pessoa.index', compact('model'));
@@ -61,6 +62,7 @@ class PessoaController extends Controller
      */
     public function show(Request $request, $id)
     {
+        return redirect()->away("/MGsis/index.php?r=pessoa/view&id=$id");        
         $model     = Pessoa::find($id);
         $cobrancas = CobrancaHistorico::byPessoa($id)->paginate(10);
         $spcs      = RegistroSpc::byPessoa($id)->paginate(10);
