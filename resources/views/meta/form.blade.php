@@ -114,15 +114,18 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
                 </div>
             </div>
             <br>
-            <br>
             <div class="form-group">
                 <p class="col-md-12" style="padding-left: 30px;">
                     <a class="btn btn-primary adicionar-pessoas" data-filial="{{ $filial->codfilial }}">Adicionar Colaborador</a>
                 </p>
                 <div  id="add-{{ $filial->codfilial }}">
                     <div class="cargo-pessoa cargo-pessoa-{{ $filial->codfilial }} col-md-12 hide">
-                        {!! Form::select("pessoa", $pessoas, null, ['class'=> 'form-control adicionar-pessoa', 'style'=>"width: 300px; float:left", 'data-filial'=>$filial->codfilial]) !!}
-                        {!! Form::select("cargo", $cargos, null, ['class'=> 'form-control adicionar-cargo', 'style'=>"width: 150px", 'data-filial'=>$filial->codfilial]) !!}
+                        <div class="col-md-4">                    
+                        {!! Form::select("pessoa", $pessoas, null, ['class'=> 'form-control adicionar-pessoa', 'data-filial'=>$filial->codfilial]) !!}
+                        </div>
+                        <div class="col-md-3">                    
+                        {!! Form::select("cargo", $cargos, null, ['class'=> 'form-control adicionar-cargo', 'data-filial'=>$filial->codfilial]) !!}
+                        </div>
                     </div>
                 </div>
                 @if(isset($model['metafilial'][$filial->codfilial]))
@@ -134,10 +137,8 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
                         <div class="col-md-3">
                         {!! Form::select("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codcargo]", $cargos, null, ['class'=> 'form-control select', 'style'=>"width: 100%", 'data-filial'=>$filial->codfilial]) !!}
                         </div>
-                        <div class="col-md-2">
-                        {!! Form::text("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codmetafilialpessoa]", null, ['class'=> 'form-control', 'readonly'=>'readonly']) !!}
-                        </div>
-                        <!-- <a class="btn text-danger pull-left"><i class="glyphicon glyphicon-remove"></i></a> -->
+                        {!! Form::hidden("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codmetafilialpessoa]", null, ['class'=> 'form-control']) !!}
+                        <a class="btn text-danger pull-left remover-pessoa"><i class="glyphicon glyphicon-trash"></i></a>
                     </div>
                     @endforeach
                 @endif
@@ -226,9 +227,14 @@ $(document).ready(function() {
         var filial = $(this).data('filial');
         var pessoa = $(this).val();
         $(this).attr('name', 'metafilial['+filial+'][pessoas]['+pessoa+'][codpessoa]');
-        $(this).next('.adicionar-cargo')
-            .next('.adicionar-cargo')
+        $(this).parent()
+            .next('.col-md-3')
+            .children('select')
             .attr('name', 'metafilial['+filial+'][pessoas]['+pessoa+'][codcargo]');
+    });
+
+    $('.remover-pessoa').on('click', function() {
+        $(this).parent().remove();
     });
 
 });

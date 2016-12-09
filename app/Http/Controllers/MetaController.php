@@ -184,7 +184,8 @@ class MetaController extends Controller
             $metasfilial = $request->all()['metafilial'];
             foreach ($metasfilial as $metafilial => $meta)
             {
-                if(!empty($meta['controla'])) {
+                if(isset($meta['controla'])) {
+                    
                     if(empty($meta['codmetafilial'])) {
                         $mf = new MetaFilial();
                         $mf->codfilial = $metafilial;
@@ -199,26 +200,30 @@ class MetaController extends Controller
                     if (!$mf->save()) {
                         throw new Exception ('Erro ao Alterar Meta Filial!');
                     }
-                    $pessoas = $meta['pessoas'];
-                    foreach ($pessoas as $pessoa)
-                    {
-                        if(!empty($pessoa['codmetafilialpessoa'])) {
-                            $mfp = MetaFilialPessoa::findOrFail($pessoa['codmetafilialpessoa']);
-                        } else {
-                            $mfp = new MetaFilialPessoa();
-                            $mfp->codmetafilial = $mf->codmetafilial;
-                        }
-                        
-                        $mfp->codpessoa     = $pessoa['codpessoa'];
-                        $mfp->codcargo      = $pessoa['codcargo'];
-                        
-                        if($mfp->codcargo && $mfp->codpessoa) {
-                            if (!$mfp->save()) {
-                                throw new Exception ('Erro ao Alterar Meta filial pessoa!');
+
+                    if(isset($meta['pessoas'])) {
+                        $codmetafilialpessoa = [];
+                        foreach ($meta['pessoas'] as $pessoa_dado)
+                        {
+                            $pessoa_dados = [
+                                'codmetafilial' => $mf->codmetafilial,
+                                'codpessoa'     => $pessoa_dado['codpessoa'],
+                                'codcargo'      => $pessoa_dado['codcargo']
+                            ];
+
+                            if(!empty($pessoa_dado['codmetafilialpessoa'])) {
+                                $pessoa = MetaFilialPessoa::findOrFail($pessoa_dado['codmetafilialpessoa']);
+                                $pessoa->fill($pessoa_dados);
+                            } else {
+                                $pessoa = new MetaFilialPessoa($pessoa_dados);
                             }
-                        } else {
-                            $mfp->delete();
+
+                            $pessoa->save();
+                            $codmetafilialpessoa[] = $pessoa->codmetafilialpessoa;
                         }
+                        $mf->MetaFilialPessoaS()->whereNotIn('codmetafilialpessoa', $codmetafilialpessoa)->delete();
+                    } else {
+                        $mf->MetaFilialPessoaS()->delete();
                     }
                 }
             }
