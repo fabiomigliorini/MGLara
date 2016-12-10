@@ -48,75 +48,13 @@ class MetaController extends Controller
      */
     public function show($id, Request $request)
     {
+        $parametros = $request->all();
         $model = Meta::findOrFail($id);
-        
-        /*
-        $dados = $model->totalVendas();
+        $dados = $model->totalVendas($parametros);
         if ($request->get('debug') == true) {
             return $dados;
         }
-        */
-        
-        /*
-         * 
-         * TOTAIS FILIAL / Subgerente
-            select 
-                  f.filial
-                , mf.valormetafilial
-                , (
-                    select 
-                            sum((case when n.codoperacao = 1 then -1 else 1 end) * coalesce(n.valortotal, 0)) as valorvendas
-                    from tblnegocio n
-                    where n.codnegociostatus = 2 -- fechado
-                    and n.codpessoa not in (select distinct f2.codpessoa from tblfilial f2)
-                    and n.codnaturezaoperacao in (1, 2) -- Venda / Devolucao de Vendas -- TODO: Fazer modelagem para tirar o codigo fixo
-                    and n.lancamento between m.periodoinicial and m.periodofinal
-                    and n.codfilial = mf.codfilial
-                ) as valorvendas
-                , mfp.codpessoa
-                , p.pessoa
-            from tblmeta m
-            inner join tblmetafilial mf on (mf.codmeta = m.codmeta)
-            inner join tblfilial f on (f.codfilial = mf.codfilial)
-            left join tblmetafilialpessoa mfp on (mfp.codmetafilial = mf.codmetafilial and mfp.codcargo = 2) -- Subgerente -- TODO: Fazer modelagem
-            left join tblpessoa p on (p.codpessoa = mfp.codpessoa)
-            where m.codmeta = 1
-            --and mf.codfilial =102
 
-        --Totais Vendedor
-        select 
-              mf.codfilial
-            , f.filial
-            , mf.valormetavendedor
-            , mfp.codpessoa
-            , p.fantasia
-            , (
-                select 
-                        sum(coalesce(npb.valortotal, 0) * (case when n.codoperacao = 1 then -1 else 1 end) * (coalesce(n.valortotal, 0) / coalesce(n.valorprodutos, 0))) as valorvendas
-                from tblnegocio n
-                inner join tblnegocioprodutobarra npb on (npb.codnegocio = n.codnegocio)
-                inner join tblprodutobarra pb on (pb.codprodutobarra = npb.codprodutobarra)
-                inner join tblproduto p on (p.codproduto = pb.codproduto)
-                where n.codnegociostatus = 2 -- fechado
-                and n.codpessoa not in (select distinct f2.codpessoa from tblfilial f2)
-                and n.codnaturezaoperacao in (1, 2) -- Venda / Devolucao de Vendas -- TODO: Fazer modelagem para tirar o codigo fixo
-                and p.codsubgrupoproduto != 2951 -- Xerox -- TODO: Fazer modelagem para tirar o codigo fixo
-                and n.lancamento between m.periodoinicial and m.periodofinal
-                and n.codpessoavendedor = mfp.codpessoa
-            ) as valorvendas
-            , m.percentualcomissaovendedor
-        from tblmeta m
-        inner join tblmetafilial mf on (mf.codmeta = m.codmeta)
-        inner join tblfilial f on (mf.codfilial = f.codfilial)
-        inner join tblmetafilialpessoa mfp on (mfp.codmetafilial = mf.codmetafilial and mfp.codcargo = 1) -- Vendedor -- TODO: Fazer modelagem
-        inner join tblpessoa p on (p.codpessoa = mfp.codpessoa)
-        where m.codmeta = 1
-        --and mf.codfilial = 102
-
-
-         */
-        
-        
         return view('meta.show', compact('model', 'dados'));
     }
     
