@@ -1,7 +1,7 @@
 <?php
 
 namespace MGLara\Models;
-
+use DB;
 /**
  * Campos
  * @property  bigint                         $codmeta                            NOT NULL DEFAULT nextval('tblmeta_codmeta_seq'::regclass)
@@ -75,6 +75,86 @@ class Meta extends MGModel
     {
         return $this->hasMany(MetaFilial::class, 'codmeta', 'codmeta');
     }
+
+    public function totalVendas($parametros = null)
+    {
+        $sql_filiais = "
+            select 
+                  f.filial
+                , mf.valormetafilial
+                , mf.valormetavendedor
+                , (
+                    select 
+                            sum((case when n.codoperacao = 1 then -1 else 1 end) * coalesce(n.valortotal, 0)) as valorvendas
+                    from tblnegocio n
+                    where n.codnegociostatus = 2 -- fechado
+                    and n.codpessoa not in (select distinct f2.codpessoa from tblfilial f2)
+                    and n.codnaturezaoperacao in (1, 2) -- Venda / Devolucao de Vendas -- TODO: Fazer modelagem para tirar o codigo fixo
+                    and n.lancamento between m.periodoinicial and m.periodofinal
+                    and n.codfilial = mf.codfilial
+                ) as valorvendas
+                , mfp.codpessoa
+                , p.pessoa
+            from tblmeta m
+            inner join tblmetafilial mf on (mf.codmeta = m.codmeta)
+            inner join tblfilial f on (f.codfilial = mf.codfilial)
+            left join tblmetafilialpessoa mfp on (mfp.codmetafilial = mf.codmetafilial and mfp.codcargo = 2) -- Subgerente -- TODO: Fazer modelagem
+            left join tblpessoa p on (p.codpessoa = mfp.codpessoa)
+            where m.codmeta = {$this->codmeta}
+        ";
+
+        if (!empty($parametros['codfilial'])) {
+            $sql_filiais .= " AND mf.codfilial = {$parametros['codfilial']}";
+        }
+        
+        $sql_vendedores = "
+            select 
+              mf.codfilial
+            , f.filial
+            , mf.valormetavendedor
+            , mfp.codpessoa
+            , p.fantasia
+            , (
+                select 
+                        sum(coalesce(npb.valortotal, 0) * (case when n.codoperacao = 1 then -1 else 1 end) * (coalesce(n.valortotal, 0) / coalesce(n.valorprodutos, 0))) as valorvendas
+                from tblnegocio n
+                inner join tblnegocioprodutobarra npb on (npb.codnegocio = n.codnegocio)
+                inner join tblprodutobarra pb on (pb.codprodutobarra = npb.codprodutobarra)
+                inner join tblproduto p on (p.codproduto = pb.codproduto)
+                where n.codnegociostatus = 2 -- fechado
+                and n.codpessoa not in (select distinct f2.codpessoa from tblfilial f2)
+                and n.codnaturezaoperacao in (1, 2) -- Venda / Devolucao de Vendas -- TODO: Fazer modelagem para tirar o codigo fixo
+                and p.codsubgrupoproduto != 2951 -- Xerox -- TODO: Fazer modelagem para tirar o codigo fixo
+                and n.lancamento between m.periodoinicial and m.periodofinal
+                and n.codpessoavendedor = mfp.codpessoa
+            ) as valorvendas
+            , m.percentualcomissaovendedor
+        from tblmeta m
+        inner join tblmetafilial mf on (mf.codmeta = m.codmeta)
+        inner join tblfilial f on (mf.codfilial = f.codfilial)
+        inner join tblmetafilialpessoa mfp on (mfp.codmetafilial = mf.codmetafilial and mfp.codcargo = 1) -- Vendedor -- TODO: Fazer modelagem
+        inner join tblpessoa p on (p.codpessoa = mfp.codpessoa)
+        where m.codmeta = {$this->codmeta}
+        ";        
+
+        if (!empty($parametros['codfilial'])) {
+            $sql_vendedores .= " AND mf.codfilial = {$parametros['codfilial']}";
+        }
+        
+        $filiais = DB::select($sql_filiais);
+        $vendedores = DB::select($sql_vendedores);
+        
+        $retorno = [
+            'filiais' => $filiais,
+            'vendedores' => $vendedores
+        ];
+        
+        return $retorno;
+    }
+
+    
+
+
 
     public function buscaProximos($qtd = 7)
     {

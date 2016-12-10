@@ -50,10 +50,73 @@
     </ul>
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="geral">
-            <p>Tabela geral</p>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Filial</th>
+                        <th>Meta</th>
+                        <th>Vendas</th>
+                        <th>Meta Vendedor</th>
+                        <th>Sub-Gerente</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($dados['filiais'] as $filial)
+                    <tr>
+                        <th scope="row">{{ $filial->filial }}</th>
+                        <td>{{ formataNumero($filial->valormetafilial) }}</td>
+                        <td>{{ formataNumero($filial->valorvendas) }}</td>
+                        <td>{{ formataNumero($filial->valormetavendedor) }}</td>
+                        <td><a href="{{ url("pessoa/$filial->codpessoa") }}">{{ $filial->pessoa }}</a></td>
+                    </tr>
+                    @endforeach
+                </tbody> 
+            </table>
+            <br>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Filial</th>
+                        <th>Vendedor</th>
+                        <th>Meta</th>
+                        <th>Vendas</th>
+                        <th>Status</th>
+                        <th>1º Vendedor</th>
+                        <th>Comissão</th>
+                        <th>R$ Meta</th>
+                        <th>R$ Total</th>
+                        <th>Falta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($dados['vendedores'] as $vendedor)
+                    <tr>
+                        <th scope="row">{{ $vendedor->filial }}</th>
+                        <td>{{ $vendedor->fantasia }}</td>
+                        <td>{{ formataNumero($vendedor->valormetavendedor) }}</td>
+                        <td>{{ formataNumero($vendedor->valorvendas) }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    @endforeach
+                </tbody> 
+            </table>
         </div>
         @foreach($metasfiliais as $metafilial)
-        <div role="tabpanel" class="tab-pane" id="{{ $metafilial->codfilial }}">Tabela do {{ $metafilial->Filial->filial }}</div>
+        <div role="tabpanel" class="tab-pane" id="{{ $metafilial->codfilial }}">
+            
+            
+            
+            Tabela do {{ $metafilial->Filial->filial }}
+            
+            
+            
+            
+        </div>
         @endforeach
     </div>
 </div>
