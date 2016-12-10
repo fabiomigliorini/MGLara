@@ -1095,3 +1095,45 @@ Form::macro('select2EstoqueMovimentoTipo', function($name, $selected = null, $op
     
     return Form::select2($name, $op, $selected, $options);
 });
+
+/* Vale Compra Modelo */
+Form::macro('select2ValeCompraModelo', function($name, $selected = null, $options = [])
+{
+    $options['ativo'] = (isset($options['ativo']))?$options['ativo']:1;
+    $options['placeholder'] = (isset($options['placeholder']))?$options['placeholder']:'Modelo de Vale Compras';
+    
+    $qry = MGLara\Models\ValeCompraModelo::orderBy('modelo');
+    switch ($options['ativo']) {
+        case 1:
+            $qry->whereNull('inativo');
+            break;
+        case 2:
+            $qry->whereNotNull('inativo');
+            break;
+    }
+    $valores = [''=>''] + $qry->lists('modelo', 'codvalecompramodelo')->all();
+    return Form::select2($name, $valores, $selected, $options);
+});
+
+
+/* Forma de Pagamento */
+Form::macro('select2FormaPagamento', function($name, $selected = null, $options = [])
+{
+    $options['ativo'] = (isset($options['ativo']))?$options['ativo']:1;
+    $options['placeholder'] = (isset($options['placeholder']))?$options['placeholder']:'Forma de Pagamento';
+    
+    $qry = MGLara\Models\FormaPagamento::orderBy('formapagamento');
+    /*
+    switch ($options['ativo']) {
+        case 1:
+            $qry->whereNull('inativo');
+            break;
+        case 2:
+            $qry->whereNotNull('inativo');
+            break;
+    }
+     * 
+     */
+    $valores = [''=>''] + $qry->lists('formapagamento', 'codformapagamento')->all();
+    return Form::select2($name, $valores, $selected, $options);
+});
