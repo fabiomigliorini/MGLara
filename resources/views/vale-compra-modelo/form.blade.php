@@ -5,8 +5,14 @@
         <div class="col-sm-10">{!! Form::text('modelo', null, ['class'=> 'form-control', 'id'=>'modelo', 'required'=>'required']) !!}</div>
     </div>
     <div class="form-group">
+        <?php
+            $ano = date('Y');
+            if (date('m') > 6) {
+                $ano++;
+            }
+        ?>
         {!! Form::label('ano', 'Ano:', ['class'=>'col-sm-2 control-label']) !!}
-        <div class="col-sm-3">{!! Form::number('ano', date("Y"), ['class'=> 'form-control text-center', 'step'=>'1', 'id'=>'ano', 'required'=>'required']) !!}</div>
+        <div class="col-sm-3">{!! Form::number('ano', $ano, ['class'=> 'form-control text-center', 'step'=>'1', 'id'=>'ano', 'required'=>'required']) !!}</div>
     </div>
     <div class="form-group">
         {!! Form::label('turma', 'Turma:', ['class'=>'col-sm-2 control-label']) !!}
@@ -77,7 +83,7 @@
                 {{ $vcmpb->ProdutoBarra->barras }}
               </span>
             </div>
-            <a href='' class='item_link_produto'>
+            <a href='{{ url('produto', $vcmpb->ProdutoBarra->codproduto) }}' class='item_link_produto'>
               <span class='item_produto'>
                 {{ $vcmpb->ProdutoBarra->descricao() }}
               </span>
@@ -92,13 +98,18 @@
             
           </div>
           <div class='col-md-6'>
-            <div class='col-md-3'>
-              {!! Form::number('item_quantidade[]', $vcmpb->quantidade, ['class'=> 'form-control text-right item_quantidade', 'min'=>0.000, 'step'=>0.001]) !!}
+            <div class='col-md-4'>
+                <div class="input-group">
+                    {!! Form::number('item_quantidade[]', $vcmpb->quantidade, ['class'=> 'form-control text-right item_quantidade', 'min'=>0.000, 'step'=>0.001]) !!}
+                    <div class="input-group-addon item_unidademedida">
+                      {{ $vcmpb->ProdutoBarra->UnidadeMedida->sigla }}
+                    </div>
+                </div>
             </div>
             <div class='col-md-3'>
               {!! Form::number('item_preco[]', $vcmpb->preco, ['class'=> 'form-control text-right item_preco', 'min'=>0.00, 'step'=>0.01]) !!}
             </div>
-            <div class='col-md-5'>
+            <div class='col-md-4'>
               {!! Form::number('item_total[]', $vcmpb->total, ['class'=> 'form-control text-right item_total', 'min'=>0.00, 'step'=>0.01]) !!}
             </div>
             <div class='col-md-1 text-right'>
@@ -129,13 +140,17 @@
             </span>
           </div>
           <div class='col-md-6'>
-            <div class='col-md-3'>
-              {!! Form::number('item_quantidade[]', 1, ['class'=> 'form-control text-right item_quantidade', 'min'=>0.000, 'step'=>0.001]) !!}
+            <div class='col-md-4'>
+                <div class="input-group">
+                    {!! Form::number('item_quantidade[]', 1, ['class'=> 'form-control text-right item_quantidade', 'min'=>0.000, 'step'=>0.001]) !!}
+                    <div class="input-group-addon item_unidademedida">
+                    </div>
+                </div>
             </div>
             <div class='col-md-3'>
               {!! Form::number('item_preco[]', null, ['class'=> 'form-control text-right item_preco', 'min'=>0.00, 'step'=>0.01]) !!}
             </div>
-            <div class='col-md-5'>
+            <div class='col-md-4'>
               {!! Form::number('item_total[]', null, ['class'=> 'form-control text-right item_total', 'min'=>0.00, 'step'=>0.01]) !!}
             </div>
             <div class='col-md-1 text-right'>
@@ -217,6 +232,7 @@ function adicionaProduto(produto) {
     div.find(".item_link_produto").first().attr("href", produto.url);
     div.find(".item_codprodutobarra").first().val(produto.codprodutobarra);
     div.find(".item_barras").first().html(produto.barras);
+    div.find(".item_unidademedida").first().html(produto.slglaunidademedida);
     console.log(produto.barras);
     div.find(".item_produto").first().html(produto.produto);
     div.find(".item_preco").first().val(produto.preco);
