@@ -1,4 +1,5 @@
 <div class='row'>
+  {!! Form::hidden('codvalecompramodelo', null, ['class'=> 'form-control', 'id'=>'codvalecompramodelo', 'required'=>'required']) !!}
   {!! Form::hidden('codpessoafavorecido', null, ['class'=> 'form-control', 'id'=>'codpessoafavorecido', 'required'=>'required']) !!}
   <div class='col-md-6'>
     <div class="form-group">
@@ -61,7 +62,7 @@
     <li class='list-group-item linha_produto'>
         <div class="row">
           {!! Form::hidden('item_codprodutobarra[]', $vcmpb->codprodutobarra, ['class'=> 'form-control item_codprodutobarra']) !!}
-          {!! Form::hidden('item_codvalecompraprodutobarra[]', $vcmpb->codvalecompraprodutobarra, ['class'=> 'form-control item_codprodutobarra']) !!}
+          {!! Form::hidden('item_codvalecomprabarra[]', $vcmpb->codvalecomprabarra, ['class'=> 'form-control item_codprodutobarra']) !!}
           <div class='col-md-6'>
             <div class='col-md-3'>
               <span class='item_barras'>

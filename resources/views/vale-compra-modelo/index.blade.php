@@ -58,35 +58,33 @@
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
     @foreach($model as $i => $row)
-      <div class="list-group-item">
-        <div class="row item">
+      <a href="{{ url('vale-compra-modelo', $row->codvalecompramodelo) }}">
+        <div class="list-group-item">
+          <div class="row item">
             <div class="col-md-1 small text-muted">
-                {{ formataCodigo($row->codvalecompramodelo) }}
-            </div>                            
+              {{ formataCodigo($row->codvalecompramodelo) }}
+            </div> 
             <div class="col-md-4">
-              @if (!empty($row->inativo))
-                <s><a href="{{ url('vale-compra-modelo', $row->codvalecompramodelo) }}">{{ $row->modelo }}</a></s>
-                <span class='text-danger'>
-                    inativo desde {{ formataData($row->inativo) }}
-                </span>
-              @else
-                <a href="{{ url('vale-compra-modelo', $row->codvalecompramodelo) }}">{{ $row->modelo }}</a>
-              @endif
+              {{ $row->modelo }}
               <div class="pull-right">
                 {{ formataNumero($row->total) }}
-              </div>                            
+              </div>
+              <div class="clearfix">
+                {!! inativo($row->inativo) !!}
+              </div>
+            </div>
+            <div class="col-md-2">
+              <a href="{{ url('pessoa', $row->codpessoafavorecido) }}">{{ $row->PessoaFavorecido->fantasia }}</a>
             </div>                            
             <div class="col-md-2">
-                <a href="{{ url('pessoa', $row->codpessoafavorecido) }}">{{ $row->PessoaFavorecido->fantasia }}</a>
-            </div>                            
-            <div class="col-md-2">
-                {{ $row->ano }} / {{ $row->turma }}
+              {{ $row->ano }} / {{ $row->turma }}
             </div>                            
             <div class="col-md-3 small text-muted">
               {!! nl2br($row->observacoes) !!}
             </div>                            
         </div>
       </div>    
+         </a>
     @endforeach
     @if (count($model) === 0)
         <h3>Nenhum registro encontrado!</h3>

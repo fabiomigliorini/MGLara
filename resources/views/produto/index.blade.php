@@ -130,7 +130,7 @@
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
     @foreach($model as $row)
-      <div class="list-group-item @if(!empty($row->inativo)) bg-danger @endif"">
+      <div class="list-group-item">
         <div class="row item">
             <div class="col-md-1">
                 <a href="{{ url("produto/$row->codproduto") }}">

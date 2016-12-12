@@ -1,6 +1,7 @@
 <?php
 
 namespace MGLara\Models;
+use Carbon\Carbon;
 
 /**
  * Campos
@@ -195,6 +196,16 @@ class Titulo extends MGModel
     public function NfeTerceiroDuplicataS()
     {
         return $this->hasMany(NfeTerceiroDuplicata::class, 'codtitulo', 'codtitulo');
+    }
+    
+    public function estornar()
+    {
+        if ($this->saldo != ($this->debito - $this->credito)) {
+            return false;
+        }
+        $this->saldo = 0;
+        $this->estornado = Carbon::now();
+        return $this->save();
     }
 
 

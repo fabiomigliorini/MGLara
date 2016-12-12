@@ -6,7 +6,8 @@
             $model->codvalecompra,
             [
                 url("vale-compra") => 'Vale Compras',
-                $model->modelo
+                $model->aluno,
+                $model->turma,
             ],
             $model->inativo
         ) 
@@ -15,15 +16,10 @@
         <small>
             <a title="Novo" href="{{ url('vale-compra/create') }}"><span class="glyphicon glyphicon-plus"></span></a>
             &nbsp;
-            <a title="Alterar" href="{{ url("vale-compra/$model->codvalecompra/edit") }}"><span class="glyphicon glyphicon-pencil"></span></a>
-            &nbsp;
-            @if(empty($model->inativo))
-            <a title='Ativar' href="{{ url('vale-compra/inativo') }}" data-inativar data-codigo="{{ $model->codvalecompra }}" data-acao="inativar" data-pergunta="Tem certeza que deseja inativar o modelo {{ $model->modelo }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ban-circle"></span></a>
-            @else
-            <a title='Inativar' href="{{ url('vale-compra/inativo') }}" data-inativar data-codigo="{{ $model->codvalecompra }}" data-acao="ativar" data-pergunta="Tem certeza que deseja ativar o modelo {{ $model->modelo }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ok-sign"></span></a>
+            @if (empty($model->inativo))
+              <a title='Inativar' href="{{ url('vale-compra/inativo') }}" data-inativar data-codigo="{{ $model->codvalecompra }}" data-acao="inativar" data-pergunta="Tem certeza que deseja inativar o vale {{ formataCodigo($model->codvalecompra) }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ban-circle"></span></a>
+              &nbsp;
             @endif
-            &nbsp;
-            <a title='Excluir' href="{{ url("vale-compra/$model->codvalecompra") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o modelo '{{ $model->modelo }}'?" data-after-delete="location.replace(baseUrl + '/vale-compra');"><i class="glyphicon glyphicon-trash"></i></a>
             
         </small>
     </li>   
@@ -115,32 +111,87 @@
       <li class='list-group-item'>
         <div class='row'>
             <div class='col-md-4'>
-              Modelo
+              Aluno
+              <br>
+              <small class="text-muted">
+                Turma
+              </small>
             </div>
             <div class='col-md-8'>
-              {{ $model->modelo }}
+              {{ $model->aluno }}
+              <br>
+              <small class="text-muted">
+                {{ $model->turma }}
+              </small>
             </div>
         </div>
       </li>
       <li class='list-group-item'>
         <div class='row'>
             <div class='col-md-4'>
-              Ano/Turma
+              Pessoa
             </div>
             <div class='col-md-8'>
-              {{ $model->ano }} / {{ $model->turma }}
+              <a href="{{ url('pessoa', $model->codpessoa) }}">
+                {{ $model->Pessoa->fantasia }}
+              </a>
             </div>
         </div>
       </li>
+      <li class='list-group-item'>
+        <div class='row'>
+            <div class='col-md-4'>
+              Pagamento
+            </div>
+            @foreach ($model->ValeCompraFormaPagamentoS as $pag)
+              <div class='col-md-8'>
+                {{ $pag->FormaPagamento->formapagamento }}
+                @foreach ($pag->TituloS as $titulo)
+                  <br>
+                  <a href='{{ url('titulo', $titulo->codtitulo) }}'>{{ $titulo->numero }}</a>
+                  <small class="pull-right text-muted">
+                    Saldo: {{ formataNumero($titulo->saldo) }}
+                  </small>
+                @endforeach
+              </div>
+            @endforeach
+        </div>
+      </li>      
       <li class='list-group-item'>
         <div class='row'>
             <div class='col-md-4'>
               Favorecido
+              <br>
+              <small class="text-muted">
+                Modelo
+              </small>
             </div>
             <div class='col-md-8'>
               <a href='{{ url('pessoa', $model->codpessoafavorecido) }}'>
                 {{ $model->PessoaFavorecido->fantasia }}
               </a>
+              <br>
+              <small class="text-muted">
+                <a href='{{ url('vale-compra-modelo', $model->codvalecompramodelo) }}'>
+                  {{ $model->ValeCompraModelo->modelo }}
+                </a>
+              </small>
+              
+            </div>
+        </div>
+      </li>
+      <li class='list-group-item'>
+        <div class='row'>
+            <div class='col-md-4'>
+              Crédito
+            </div>
+            <div class='col-md-8'>
+              <a href='{{ url('titulo', $model->codtitulo) }}'>
+                {{ $model->Titulo->numero }}
+              </a>
+              <small class="pull-right text-muted">
+                Saldo: {{ formataNumero($model->Titulo->saldo * -1) }}
+              </small>
             </div>
         </div>
       </li>

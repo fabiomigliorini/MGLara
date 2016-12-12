@@ -14,7 +14,7 @@
 <div class='collapse' id='div-filtro'>
     <div class='well well-sm' style="padding:9px 0">
     {!! Form::model(
-        Request::session()->get('vale-compra.index'), 
+        $parametros, 
         [
             'route' => 'vale-compra.index', 
             'method' => 'GET', 
@@ -25,30 +25,50 @@
         )
     !!}
       <div class="clearfix">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="form-group">
-                {!! Form::label('codvalecompramodelo', 'Modelo', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-7">{!! Form::select2ValeCompraModelo('codvalecompramodelo', null, ['class' => 'form-control']) !!}</div>
+                {!! Form::label('codvalecompra', '#', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-5">{!! Form::number('codvalecompra', null, ['class' => 'form-control text-right', 'placeholder' => '#', 'step'=>1, 'min'=>1]) !!}</div>
+            </div>
+            <div class="form-group">
+                {!! Form::label('codpessoafavorecido', 'Favorecido', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::select2Pessoa('codpessoafavorecido', null, ['class' => 'form-control', 'placeholder' => 'Favorecido']) !!}</div>
+            </div>
+            <div class="form-group">
+                {!! Form::label('codvalecompramodelo', 'Modelo', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::select2ValeCompraModelo('codvalecompramodelo', null, ['class' => 'form-control']) !!}</div>
             </div>    
             <div class="form-group">
-                {!! Form::label('codpessoafavorecido', 'Favorecido', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-10">{!! Form::select2Pessoa('codpessoafavorecido', null, ['class' => 'form-control', 'placeholder' => 'Favorecido']) !!}</div>
+                {!! Form::label('ativo', 'Ativo', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo']) !!}</div>
             </div>
         </div>    
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="form-group">
-                {!! Form::label('turma', 'Turma', ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-md-9">{!! Form::text('turma', null, ['class' => 'form-control', 'step' => 1, 'placeholder' => 'Turma']) !!}</div>
-            </div>    
+                {!! Form::label('codpessoa', 'Pessoa', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::select2Pessoa('codpessoa', null, ['class' => 'form-control', 'placeholder' => 'Pessoa']) !!}</div>
+            </div>
             <div class="form-group">
                 {!! Form::label('aluno', 'Aluno', ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-md-9">{!! Form::text('aluno', null, ['class' => 'form-control', 'step' => 1, 'placeholder' => 'aluno']) !!}</div>
             </div>    
+            <div class="form-group">
+                {!! Form::label('turma', 'Turma', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::text('turma', null, ['class' => 'form-control', 'step' => 1, 'placeholder' => 'Turma']) !!}</div>
+            </div>    
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                {!! Form::label('ativo', 'Ativo', ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-md-9">{!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo']) !!}</div>
+                {!! Form::label('codusuariocriacao', 'Usuário', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::select2Usuario('codusuariocriacao', null, ['class'=> 'form-control', 'id' => 'codusuariocriacao']) !!}</div>
+            </div>
+            <div class="form-group">
+                {!! Form::label('criacao_de', 'De', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::datetimeLocal('criacao_de', null, ['class'=> 'form-control', 'id' => 'criacao_de']) !!}</div>
+            </div>
+            <div class="form-group">
+                {!! Form::label('criacao_ate', 'Até', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::datetimeLocal('criacao_ate', null, ['class'=> 'form-control', 'id' => 'criacao_ate']) !!}</div>
             </div>
             <div class="form-group">
               <div class="col-md-4 col-md-offset-3"><button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button></div>
@@ -62,35 +82,49 @@
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
     @foreach($model as $i => $row)
-      <div class="list-group-item">
-        <div class="row item">
-            <div class="col-md-1 small text-muted">
+      <a href="{{ url('vale-compra', $row->codvalecompra) }}">
+        <div class="list-group-item">
+          <div class="row item">
+            <div class="col-md-1">
+              <small class="text-muted">
                 {{ formataCodigo($row->codvalecompra) }}
+              </small>
+            </div>
+            <div class="col-md-3">
+              {{ $row->aluno }} 
+              <div class="pull-right"> {{ $row->turma }}</div>
+              <div class="clearfix">
+              {!! inativo($row->inativo) !!}
+              </div>
             </div>                            
-            <div class="col-md-4">
-              @if (!empty($row->inativo))
-                <s><a href="{{ url('vale-compra', $row->codvalecompra) }}">{{ $row->modelo }}</a></s>
-                <span class='text-danger'>
-                    inativo desde {{ formataData($row->inativo) }}
-                </span>
-              @else
-                <a href="{{ url('vale-compra', $row->codvalecompra) }}">{{ $row->modelo }}</a>
-              @endif
-              <div class="pull-right">
-                {{ formataNumero($row->total) }}
-              </div>                            
-            </div>                            
+            <div class="col-md-1 text-right">
+              {{ formataNumero($row->total) }}
+            </div>
             <div class="col-md-2">
+              <a href="{{ url('pessoa', $row->codpessoa) }}">{{ $row->Pessoa->fantasia }}</a>
+            </div>
+            <div class="col-md-3">
                 <a href="{{ url('pessoa', $row->codpessoafavorecido) }}">{{ $row->PessoaFavorecido->fantasia }}</a>
+                <div class="pull-right">
+                  <a href="{{ url('vale-compra-modelo', $row->codvalecompramodelo ) }}">{{ $row->ValeCompraModelo->modelo }}</a>
+                </div>
             </div>                            
-            <div class="col-md-2">
-                {{ $row->turma }} / {{ $row->turma }}
+            <div class="col-md-2 small text-muted">
+              {{ formataData($row->criacao, 'L') }}
+              <div class="pull-right">
+                  {{ $row->UsuarioCriacao->usuario }}
+              </div>
             </div>                            
-            <div class="col-md-3 small text-muted">
-              {!! nl2br($row->observacoes) !!}
-            </div>                            
-        </div>
-      </div>    
+          </div>
+          <div class="row item">
+            <div class="col-md-12">
+              <small class="text-muted">
+                {!! nl2br($row->observacoes) !!}
+              </small>
+            </div>
+          </div>
+        </div>    
+      </a>
     @endforeach
     @if (count($model) === 0)
         <h3>Nenhum registro encontrado!</h3>

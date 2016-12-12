@@ -5,7 +5,7 @@ namespace MGLara\Models;
 /**
  * Campos
  * @property  bigint                         $codvalecompra                      NOT NULL DEFAULT nextval('tblvalecompra_codvalecompra_seq'::regclass)
- * @property  bigint                         $codvalecompramodelo                
+ * @property  bigint                         $codvalecompramodelo                NOT NULL
  * @property  bigint                         $codfilial                          NOT NULL
  * @property  bigint                         $codpessoafavorecido                NOT NULL
  * @property  bigint                         $codpessoa                          NOT NULL
@@ -113,12 +113,42 @@ class ValeCompra extends MGModel
     {
         $query = ValeCompra::query();
         
+        if (!empty($parametros['codvalecompra'])) {
+            $query->where('codvalecompra', $parametros['codvalecompra']);
+        }
+        
         if (!empty($parametros['codpessoafavorecido'])) {
             $query->where('codpessoafavorecido', $parametros['codpessoafavorecido']);
         }
         
+        if (!empty($parametros['codpessoa'])) {
+            $query->where('codpessoa', $parametros['codpessoa']);
+        }
+        
+        if (!empty($parametros['codusuariocriacao'])) {
+            $query->where('codusuariocriacao', $parametros['codusuariocriacao']);
+        }
+
+        if (!empty($parametros['criacao_de'])) {
+            $query->where('criacao', '>=', $parametros['criacao_de']);
+        }
+
+        if (!empty($parametros['criacao_ate'])) {
+            $query->where('criacao', '<=', $parametros['criacao_ate']);
+        }
+
+        if (!empty($parametros['aluno'])) {
+            $palavras = explode(' ', $parametros['aluno']);
+            foreach ($palavras as $palavra) {
+                $query->where('aluno', 'ilike', "%{$palavra}%");
+            }
+        }
+        
         if (!empty($parametros['turma'])) {
-            $query->where('turma', $parametros['turma']);
+            $palavras = explode(' ', $parametros['turma']);
+            foreach ($palavras as $palavra) {
+                $query->where('turma', 'ilike', "%{$palavra}%");
+            }
         }
         
         if (!empty($parametros['codvalecompramodelo'])) {

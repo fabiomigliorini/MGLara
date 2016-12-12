@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+
 use MGLara\Http\Controllers\Controller;
 
 use MGLara\Models\ValeCompra;
@@ -37,12 +39,22 @@ class ValeCompraController extends Controller
      */
     public function index(Request $request)
     {
-        $parametros = self::filtroEstatico($request, 'vale-compra.index', ['ativo' => 1]);
+        $parametros = self::filtroEstatico(
+            $request, 
+            'vale-compra.index', 
+            [
+                'ativo' => 1,
+                'codusuariocriacao' => Auth::user()->codusuario
+            ], 
+            [
+                'criacao_de', 
+                'criacao_ate'
+            ]);
         $model = ValeCompra::search($parametros)
             ->orderBy('criacao', 'DESC')
             ->orderBy('alteracao', 'DESC')
             ->paginate(20);
-        return view('vale-compra.index', compact('model'));
+        return view('vale-compra.index', compact('model', 'parametros'));
     }
     
     /**
@@ -195,19 +207,35 @@ class ValeCompraController extends Controller
    
     public function inativo(Request $request)
     {
+        if ($request->get('acao') != 'inativar') {
+            return json_encode(['resultado' => false, 'mensagem' => 'Impossível reativar vale estornado!']);
+        }
         try{
+            DB::BeginTransaction();
             $model = ValeCompra::findOrFail($request->get('id'));
-            if ($request->get('acao') == 'ativar') {
-                $model->inativo = null;
-            } else {
-                $model->inativo = Carbon::now();
+            if (!$model->Titulo->estornar()) {
+                return json_encode(['resultado' => false, 'mensagem' => "Erro ao estornar titulo de Crédito '{$model->Titulo->numero}'!"]);
             }
-            $model->save();
-            $acao = ($request->get('acao') == 'ativar') ? 'ativado' : 'inativado';
-            $ret = ['resultado' => true, 'mensagem' => "Vale $model->vale $acao com sucesso!"];
+            
+            foreach ($model->ValeCompraFormaPagamentoS as $pag) {
+                foreach ($pag->TituloS as $titulo) {
+                    if (!$titulo->estornar()) {
+                        return json_encode(['resultado' => false, 'mensagem' => "Erro ao estornar titulo '{$titulo->numero}'!"]);
+                    }
+                }
+            }
+            
+            $model->inativo = Carbon::now();
+            
+            if (!$model->save()) {
+                return json_encode(['resultado' => false, 'mensagem' => "Erro ao salvar data de inativacao!"]);
+            }
+            
+            DB::Commit();
+            $ret = ['resultado' => true, 'mensagem' => "Vale " . formataCodigo($model->codvalecompra) . " inativado com sucesso!"];
         }
         catch(\Exception $e){
-            $ret = ['resultado' => false, 'mensagem' => "Erro ao $acao vale!", 'exception' => $e];
+            $ret = ['resultado' => false, 'mensagem' => "Erro ao inativar vale!", 'exception' => $e];
         }
         return json_encode($ret);
     } 
