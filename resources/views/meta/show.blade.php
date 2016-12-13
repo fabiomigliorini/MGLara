@@ -45,7 +45,7 @@
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#geral" aria-controls="geral" role="tab" data-toggle="tab">Geral</a></li>
         @foreach($metasfiliais as $metafilial)
-        <li role="presentation"><a href="#{{ $metafilial->codfilial }}" aria-controls="{{ $metafilial->codfilial }}" role="tab" data-toggle="tab">{{ $metafilial->Filial->filial }}</a></li>
+        <li role="presentation"><a href="{{ url("meta/{$model->codmeta}?codfilial=$metafilial->codfilial") }}" aria-controls="{{ $metafilial->codfilial }}" data-target="#{{ $metafilial->codfilial }}" role="tab" data-toggle="tab" class="tab-filial">{{ $metafilial->Filial->filial }}</a></li>
         @endforeach
     </ul>
     <div class="tab-content">
@@ -96,9 +96,17 @@
                         <td>{{ formataNumero($vendedor->valormetavendedor) }}</td>
                         <td>{{ formataNumero($vendedor->valorvendas) }}</td>
                         <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>
+
+                        </td>
+                        <td>
+                            {{ formataNumero(($model->percentualcomissaovendedor / 100 ) * $vendedor->valorvendas) }}
+                        </td>
+                        <td>                            
+                            @if($vendedor->valorvendas >= $vendedor->valormetavendedor)
+                            {{ formataNumero(($model->percentualcomissaovendedormeta / 100 ) * $vendedor->valorvendas) }}
+                            @endif
+                        </td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -106,26 +114,50 @@
                 </tbody> 
             </table>
         </div>
-        @foreach($metasfiliais as $metafilial)
-        <div role="tabpanel" class="tab-pane" id="{{ $metafilial->codfilial }}">
-            
-            
-            
-            Tabela do {{ $metafilial->Filial->filial }}
-            
-            
-            
-            
-        </div>
+        @foreach($metasfiliais as $filial)
+        <div role="tabpanel" class="tab-pane" id="{{ $filial->codfilial }}"></div>
+        <div id="piechart"></div>
         @endforeach
     </div>
 </div>
-
 @section('inscript')
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Lojas', 'Vendas'],
+            @foreach($dados['filiais'] as $filial)
+            ["{{ $filial->filial }}",     {{ $filial->valorvendas }}],
+            @endforeach
+        ]);
+
+        var options = {
+          title: 'Porcentagem de vendas'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+    }
+</script>
 <script type="text/javascript">
 $(document).ready(function() {
-    // ...
+    $('.tab-filial').click(function(e) {
+        var $this = $(this),
+            loadurl = $this.attr('href'),
+            targ = $this.attr('data-target');
+
+        if ($(targ).text().length == 0 ) {
+            $.get(loadurl, function(data) {
+                $(targ).html(jQuery(data).find('#geral').html());
+            });
+        }
+        $this.tab('show');
+        return false;
+    });
 });
 </script>
+
 @endsection
 @stop
