@@ -17,6 +17,8 @@ use MGLara\Models\ValeCompraModelo;
 use MGLara\Models\ValeCompraProdutoBarra;
 use MGLara\Models\ValeCompraFormaPagamento;
 
+use MGLara\Library\EscPrint\EscPrintValeCompra;
+
 use MGLara\Models\Titulo;
 
 
@@ -63,10 +65,12 @@ class ValeCompraController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
         $model = ValeCompra::findOrFail($id);
-        return view('vale-compra.show', compact('model'));
+		$imprimir = ($request->get('imprimir') == 'true')?true:false;
+        
+        return view('vale-compra.show', compact('model', 'imprimir'));
     }
 
     
@@ -202,7 +206,7 @@ class ValeCompraController extends Controller
         Session::flash('flash_success', "Vale Compras '" . formataCodigo($model->codvalecompra) . "' criado!");
         
         DB::commit();
-        return redirect("vale-compra/$model->codvalecompra");
+        return redirect("vale-compra/$model->codvalecompra?imprimir=true");
     }
    
     public function inativo(Request $request)
@@ -238,6 +242,29 @@ class ValeCompraController extends Controller
             $ret = ['resultado' => false, 'mensagem' => "Erro ao inativar vale!", 'exception' => $e];
         }
         return json_encode($ret);
-    } 
+    }
+    
+    public function imprimir($id, Request $request) 
+    {
+        // Pega modelo
+        $model = ValeCompra::findOrFail($id);
+        
+        // Se inativo retorna 403
+        if (!empty($model->inativo)) {
+            abort(403, 'Não é permitido imprimir vale inativado!');
+        }
+        
+        // Monta Relatorio
+        $rel = new EscPrintValeCompra($model);
+        $rel->prepara();
+        
+        // Imprime
+		if ($request->get('imprimir') == 'true') {
+			$rel->imprimir();
+        }
+        
+        // Retorna relatorio em formato HTML
+        return $rel->converteHtml();
+    }
     
 }

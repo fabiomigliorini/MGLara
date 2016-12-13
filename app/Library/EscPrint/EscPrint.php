@@ -2,24 +2,26 @@
 
 namespace MGLara\Library\EscPrint;
 
+use Illuminate\Support\Facades\Auth;
+
 /*
  * Condensado: 137 Colunas
  * Normal:      80 Colunas
  * Large:       40 Colunas
- * 
+ *
  */
 
 class EscPrint
 {
-	
+
 	private $_conteudoSecao = array();
 	public $impressora = "impressoraMatricial";
 	private $_comandos = array();
 	private $_linhas = 31;
 	private $_textoFinal = "";
 	public $quebralaser = 3;
-	
-	function __construct($impressora = null, $linhas = null) 
+
+	function __construct($impressora = null, $linhas = null)
 	{
 		$this->_conteudoSecao =
 			array(
@@ -27,16 +29,17 @@ class EscPrint
 				"cabecalho" => "",
 				"rodape"    => "",
 			);
-		
-		if (!empty($impressora))
+
+		if (!empty($impressora)) {
 			$this->impressora = $impressora;
-		else
-			$this->impressora = Yii::app()->user->impressoraMatricial;
-		
+        } else {
+			$this->impressora = Auth::user()->impressoramatricial;
+        }
+
 		if ($linhas != null)
 			$this->_linhas = $linhas;
-		
-		$this->_comandos = 
+
+		$this->_comandos =
 			array(
 				"Draft"           => array(Chr(27)."x0",   ""     ), //Modo Draft
 				"NLQ"             => array(Chr(27)."x1",   ""     ), //Modo NLQ
@@ -59,8 +62,8 @@ class EscPrint
 				"SupScriptOn"     => array(Chr(27)."S1",  ""      ), //Ativa o modo sobrescrito
 				"SubScriptOn"     => array(Chr(27)."S0",  ""      ), //Ativa o modo subescrito
 				"ScriptOff"       => array(Chr(27)."T",   ""      ), //Desativa os modos sobrescrito e subescrito
-				
-				//Controle de página 
+
+				//Controle de página
 				"6lpp"            => array(Chr(27)."2",   ""      ), //Espaçamento vertical de 6 linhas por polegada
 				"8lpp"            => array(Chr(27)."0",   ""      ), //Espaçamento vertical de 8 linhas por polegada
 				"MarginLeft"      => array(Chr(27)."l",   ""      ), //Margem esquerda, onde "?"
@@ -68,36 +71,40 @@ class EscPrint
 				"PaperSize"       => array(Chr(27)."C",   ""      ), //Tamanho da página, onde "?"
 				"AutoNewPageOn"   => array(Chr(27)."N",   ""      ), //Ativa o salto sobre o picote, onde "?"
 				"AutoNewPageOff"  => array(Chr(27)."O",   ""      ), //Desativa o salto sobre o picote
-				
+
 				//Controle da impressora
 				"Reset"           => array(Chr(27)."@",   ""  ), //Inicializa a impressora (Reset)
 				"LF"              => array(Chr(10),       "\n"    ), //Avança uma linha
 				"FF"              => array(Chr(12),       "<hr>"  ), //Avança uma página
 				"CR"              => array(Chr(13),       ""      ), //Retorno do carro
-				
+
 			);
-		
+
 	}
-	
-	/* 
+
+	/*
 	 * Limpa Conteudo de uma secao
 	 */
 	public function limpaSecao($secao)
 	{
 		$this->_conteudoSecao[$secao] = "";
 	}
-	
+
 	/*
 	 * Imprime na matricial
 	 */
-	public function imprimir()
+	public function imprimir($impressora = null)
 	{
 		$arquivo = tempnam(sys_get_temp_dir(), "EscPrint-Lara");
 		$handle = fopen($arquivo, "w");
 		fwrite($handle, $this->converteEsc());
 		fclose($handle);
-		return exec("lpr -P {$this->impressora} {$arquivo}");		
+        if ($impressora == null) {
+            $impressora = $this->impressora;
+        }
+        $ret = exec("lpr -P {$impressora} {$arquivo}");
 		unlink($arquivo);
+        return $ret;
 	}
 
 	/*
@@ -112,7 +119,7 @@ class EscPrint
 		}
 		return $texto;
 	}
-	
+
 	/*
 	 * Alias para converte()
 	 */
@@ -123,11 +130,11 @@ class EscPrint
 		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt-BR" lang="pt-BR">
 			<head>
 				<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-				<meta name="language" content="pt-BR" />			
+				<meta name="language" content="pt-BR" />
 				<title>MGLara - Relatório Matricial</title>
 			</head>
 			<style>
-				@page 
+				@page
 				{
 					size: auto;   /* auto is the initial value */
 					//margin: 10mm;  /* this affects the margin in the printer settings */
@@ -141,7 +148,7 @@ class EscPrint
 				hr:last-child
 				{
 					page-break-after: avoid;
-				}				
+				}
 			</style>
 			<body>
 				<pre><?php echo $this->converte(1); ?></pre>
@@ -152,7 +159,7 @@ class EscPrint
 		ob_end_clean();
 		return $html;
 	}
-	
+
 	/*
 	 * Alias para converte()
 	 */
@@ -160,7 +167,7 @@ class EscPrint
 	{
 		return $this->converte(0);
 	}
-	
+
 	/*
 	 * Adiciona Texto e depois quebra de linha
 	 */
@@ -178,33 +185,33 @@ class EscPrint
 		//inicializa secão caso necessario
 		if (empty($this->_conteudoSecao[$secao]))
 			$this->_conteudoSecao[$secao] = "";
-		
+
 		//faz o PAD
 		if ($pad_length != null)
 		{
 			//se a string for maior que o tamanho corta
 			if (strlen($texto) >= $pad_length)
 				if ($pad_type == STR_PAD_LEFT)
-					$texto = substr($texto, strlen($texto)-$pad_length,$pad_length); 
+					$texto = substr($texto, strlen($texto)-$pad_length,$pad_length);
 				else
-					$texto = substr($texto, 0, $pad_length); 
+					$texto = substr($texto, 0, $pad_length);
 			else
 				$texto = str_pad ($texto, $pad_length, $pad_string, $pad_type);
 		}
-		
+
 		//concatena
 		$this->_conteudoSecao[$secao] .= $texto;
 	}
-	
+
 	/*
 	 * monta os cabecalhos e rodapes
 	 */
 	public function prepara()
 	{
-		
+
 		// pega codigo do comando LF
 		$lf = "\n";
-		
+
 		// conta linhas de cabecalho e Rodape
 		if (empty($this->_conteudoSecao["cabecalho"]))
 		{
@@ -217,7 +224,7 @@ class EscPrint
 				$this->_conteudoSecao["cabecalho"] .= $lf;
 			$linhasCabecalho = substr_count($this->_conteudoSecao["cabecalho"], $lf);
 		}
-		
+
 		if (empty($this->_conteudoSecao["rodape"]))
 		{
 			$linhasRodape = 0;
@@ -229,9 +236,9 @@ class EscPrint
 			$linhasRodape = substr_count($this->_conteudoSecao["rodape"], $lf);
 			$linhasRodape++;
 		}
-		
+
 		$textoLinhas = explode($lf, $this->_conteudoSecao["documento"]);
-		
+
 		$linha = 1;
 		$textoFinal = "";
 		$linhasDocumento = $this->_linhas - $linhasCabecalho - $linhasRodape;
@@ -244,7 +251,7 @@ class EscPrint
 			// concatena linha
 			$textoFinal .= $textoLinha . $lf;
 			$linha++;
-			
+
 			// se estourou adiciona rodape
 			if ($linha >= $linhasDocumento)
 			{
@@ -253,16 +260,15 @@ class EscPrint
 				$linha = 1;
 			}
 		}
-		
+
 		for ($linha = $linha - 1; $linha < $linhasDocumento; $linha++)
 			$textoFinal .= $lf;
-		
+
 		//adiciona rodape ultima pagina
 		$textoFinal .= $this->_conteudoSecao["rodape"];
 		$textoFinal .= "<FF>";
 
-		
 		$this->_textoFinal = $textoFinal;
 	}
-	
+
 }

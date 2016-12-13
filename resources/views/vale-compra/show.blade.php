@@ -19,6 +19,7 @@
             @if (empty($model->inativo))
               <a title='Inativar' href="{{ url('vale-compra/inativo') }}" data-inativar data-codigo="{{ $model->codvalecompra }}" data-acao="inativar" data-pergunta="Tem certeza que deseja inativar o vale {{ formataCodigo($model->codvalecompra) }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ban-circle"></span></a>
               &nbsp;
+              <a title='Impressão' href="#" data-toggle="modal" data-target="#modalRelatorio" id="linkImpressao"><span class="glyphicon glyphicon-print"></span></a>
             @endif
             
         </small>
@@ -209,10 +210,44 @@
   </div>
 </div>
 
+<!-- Large modal -->
+
+<div class="modal fade" id="modalRelatorio" tabindex="-1" role="dialog" aria-labelledby="modalRelatorioLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <iframe id="frameImpressao" src="" style="border: 0px; width: 100%; height: 300px">
+        </iframe>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" title="Imprimir" id="btnImprimir">
+            <i class="glyphicon glyphicon-print"></i>
+          </button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 @section('inscript')
 <script type="text/javascript">
 $(document).ready(function() {
     
+    @if ($imprimir == true)
+        $('#frameImpressao').attr('src', '{{ url("vale-compra/{$model->codvalecompra}/imprimir?imprimir=true") }}');
+        $('#modalRelatorio').modal('show')
+    @endif
+    
+    $('#linkImpressao').click(function (e) {
+        $('#frameImpressao').attr('src', '{{ url("vale-compra/{$model->codvalecompra}/imprimir?imprimir=false") }}');
+    });
+    
+    
+    $('#btnImprimir').click(function (e) {
+        $('#frameImpressao').attr('src', '{{ url("vale-compra/{$model->codvalecompra}/imprimir?imprimir=true") }}');
+        $('#modalRelatorio').modal('hide')
+        bootbox.alert('Documento enviado para impressora!');
+    });
     
 });
 </script>
