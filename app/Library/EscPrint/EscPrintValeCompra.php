@@ -131,70 +131,6 @@ class EscPrintValeCompra extends EscPrint
              */
         }
         
-        // Cliente
-        if ($vale->codpessoa != Pessoa::CONSUMIDOR)
-        {
-
-            $this->adicionaTexto("<CondensedOff><DblStrikeOn>");
-            
-            $linha = "Cliente.: "
-                    . formataCodigo($vale->codpessoa)
-                    . " "
-                    . $vale->Pessoa->fantasia;
-
-            if (!empty($vale->Pessoa->telefone1))
-                $linha .= " - " . trim($vale->Pessoa->telefone1);
-
-            if (!empty($vale->Pessoa->telefone2))
-                $linha .= " / " . trim($vale->Pessoa->telefone2);
-
-            if (!empty($vale->Pessoa->telefone3))
-                $linha .= " / " . trim($vale->Pessoa->telefone3);
-
-            $this->adicionaLinha(
-                    $linha
-                    , "documento", 80);
-
-            $this->adicionaTexto("<DblStrikeOff><CondensedOn>");
-
-            if ($vale->Pessoa->fisica)
-                $linha = "CPF....: ";
-            else
-                $linha = "CNPJ...: ";
-
-            $linha .=
-                    formataCnpjCpf($vale->Pessoa->cnpj, $vale->Pessoa->fisica)
-                    . " - "
-                    . $vale->Pessoa->pessoa;
-
-            $this->adicionaLinha(
-                    $linha
-                    , "documento", 137);
-
-            $endereco =
-                "End....: "
-                .$vale->Pessoa->endereco
-                .", "
-                .$vale->Pessoa->numero
-                ." - ";
-
-            if (!empty($vale->Pessoa->complemento))
-                $endereco .=
-                    $vale->Pessoa->complemento
-                    ." - ";
-
-            $endereco .=
-                $vale->Pessoa->bairro
-                ." - "
-                .$vale->Pessoa->Cidade->cidade
-                ."/"
-                .$vale->Pessoa->Cidade->Estado->sigla
-                ." - "
-                .formataCep($vale->Pessoa->cep);
-
-            $this->adicionaLinha($endereco, "documento", 137);
-        }
-
         // Aluno
         $this->adicionaTexto("<CondensedOff><DblStrikeOn>");
 
@@ -206,13 +142,148 @@ class EscPrintValeCompra extends EscPrint
                 $linha
                 , "documento", 80);
         
+        
+		$this->adicionaTexto("<CondensedOn><DblStrikeOff>");
+		$this->adicionaLinha("", "documento", 137, STR_PAD_LEFT, "-");
+
+		$this->adicionaTexto("<DblStrikeOn>");
+		$this->adicionaTexto("Codigo", "documento", 20);
+		$this->adicionaTexto("Descricao", "documento", 70);
+		$this->adicionaTexto("UM", "documento", 7);
+		$this->adicionaTexto("Quant", "documento", 10, STR_PAD_LEFT);
+		$this->adicionaTexto("Preco", "documento", 15, STR_PAD_LEFT);
+		$this->adicionaTexto("Total", "documento", 15, STR_PAD_LEFT);
+		$this->adicionaTexto("<DblStrikeOff>");
+		$this->adicionaLinha();
+
+		//percorre produtos
+		foreach ($vale->ValeCompraProdutoBarraS as $prod)
+		{
+			$this->adicionaTexto($prod->ProdutoBarra->barras, "documento", 20);
+			$this->adicionaTexto($prod->ProdutoBarra->descricao(), "documento", 65);
+			$this->adicionaTexto($prod->ProdutoBarra->UnidadeMedida->sigla, "documento", 7, STR_PAD_LEFT);
+			$this->adicionaTexto(formataNumero($prod->quantidade), "documento", 15, STR_PAD_LEFT);
+			$this->adicionaTexto(formataNumero($prod->preco), "documento", 15, STR_PAD_LEFT);
+			$this->adicionaTexto(formataNumero($prod->total), "documento", 15, STR_PAD_LEFT);
+			$this->adicionaLinha();
+		}
+
+		//linha divisoria
+		$this->adicionaLinha("", "documento", 137, STR_PAD_LEFT, "-");
+
+		//linha com totais
+		$this->adicionaTexto("<DblStrikeOn>");
+		$this->adicionaTexto("Subtotal:");
+		$this->adicionaTexto(formataNumero($vale->totalprodutos), "documento", 20, STR_PAD_LEFT);
+		$this->adicionaTexto("Desconto:", "documento", 35, STR_PAD_LEFT);
+		$this->adicionaTexto(formataNumero($vale->desconto), "documento", 20, STR_PAD_LEFT);
+		$this->adicionaTexto("Total...:", "documento", 35, STR_PAD_LEFT);
+		$this->adicionaTexto(formataNumero($vale->total), "documento", 18, STR_PAD_LEFT);
+		$this->adicionaLinha("<DblStrikeOff>");
+
+        // Observacoes
+        if (!empty($vale->observacoes))
+        {
+            $this->adicionaLinha();
+            $observacoes = "Observacoes: ";
+            $observacoes .= $vale->observacoes;
+
+            $observacoes = str_split($observacoes, 137);
+
+            foreach($observacoes as $linha)
+                $this->adicionaLinha($linha);
+
+            $this->adicionaLinha();
+
+        }
+
         $this->adicionaTexto("<DblStrikeOff><CondensedOn>");
+
 
         // Duplicatas
         foreach ($vale->ValeCompraFormaPagamentoS as $pag) {
             
             if (count($pag->TituloS) > 0) {
                 
+                // Adiciona Linhas para quebrar Página
+                $linhas = 0;
+                foreach ($this->_conteudoSecao as $key => $cont) {
+                    $linhas += substr_count($cont, "\n");
+                }
+                $linhas = $this->_linhas - $linhas -2;
+                for ($i = 0; $i < $linhas; $i++) {
+                    $this->adicionaLinha();
+                }
+
+                // Cliente
+                $this->adicionaLinha();
+                $this->adicionaLinha();
+                if ($vale->codpessoa != Pessoa::CONSUMIDOR)
+                {
+
+                    $this->adicionaTexto("<CondensedOff><DblStrikeOn>");
+
+                    $linha = "Cliente.: "
+                            . formataCodigo($vale->codpessoa)
+                            . " "
+                            . $vale->Pessoa->fantasia;
+
+                    if (!empty($vale->Pessoa->telefone1))
+                        $linha .= " - " . trim($vale->Pessoa->telefone1);
+
+                    if (!empty($vale->Pessoa->telefone2))
+                        $linha .= " / " . trim($vale->Pessoa->telefone2);
+
+                    if (!empty($vale->Pessoa->telefone3))
+                        $linha .= " / " . trim($vale->Pessoa->telefone3);
+
+                    $this->adicionaLinha(
+                            $linha
+                            , "documento", 80);
+
+                    $this->adicionaTexto("<DblStrikeOff><CondensedOn>");
+
+                    if ($vale->Pessoa->fisica)
+                        $linha = "CPF....: ";
+                    else
+                        $linha = "CNPJ...: ";
+
+                    $linha .=
+                            formataCnpjCpf($vale->Pessoa->cnpj, $vale->Pessoa->fisica)
+                            . " - "
+                            . $vale->Pessoa->pessoa;
+
+                    $this->adicionaLinha(
+                            $linha
+                            , "documento", 137);
+
+                    $endereco =
+                        "End....: "
+                        .$vale->Pessoa->endereco
+                        .", "
+                        .$vale->Pessoa->numero
+                        ." - ";
+
+                    if (!empty($vale->Pessoa->complemento))
+                        $endereco .=
+                            $vale->Pessoa->complemento
+                            ." - ";
+
+                    $endereco .=
+                        $vale->Pessoa->bairro
+                        ." - "
+                        .$vale->Pessoa->Cidade->cidade
+                        ."/"
+                        .$vale->Pessoa->Cidade->Estado->sigla
+                        ." - "
+                        .formataCep($vale->Pessoa->cep);
+
+                    $this->adicionaLinha($endereco, "documento", 137);
+                }
+                
+                //Titulos
+                $this->adicionaLinha();
+                $this->adicionaLinha();
                 $this->adicionaLinha("", "documento", 137, STR_PAD_LEFT, "-");
                 $this->adicionaTexto("<DblStrikeOn>");
 
@@ -266,94 +337,41 @@ class EscPrintValeCompra extends EscPrint
                     }
                     $this->adicionaLinha();
                 }
+                $this->adicionaLinha("", "documento", 137, STR_PAD_LEFT, "-");
+                $this->adicionaLinha();
+                $this->adicionaLinha();
                 
+                // Texto da confissao de divida
+                $this->adicionaLinha("Confissao de Divida: Confesso(amos) e me(nos) constituo(imos) devedor(es) do valor de R$ " . formataNumero($vale->total) . ", obrigando-me(nos) a pagar em moeda");
+                $this->adicionaTexto("corrente do pais, conforme vencimento(s) acima descrito(s). Declaro(amos) ainda ter(mos) recebido o Vale Compras número " . formataCodigo($vale->codvalecompra) . ", sem");
+                $this->adicionaLinha();
+                $this->adicionaTexto("nada a reclamar!");
+                $this->adicionaLinha();
+                $this->adicionaLinha();
+                $this->adicionaLinha();
+                $this->adicionaLinha();
+                $this->adicionaLinha();
+
+                //linha da assinatura e nome pessoa
+                $this->adicionaTexto("", "documento", 25);
+                $this->adicionaLinha("", "documento", 80, STR_PAD_BOTH, "_");
+
+                $this->adicionaTexto("<DblStrikeOn>");
+                $this->adicionaTexto("", "documento", 25);
+                $this->adicionaTexto(
+                        $vale->codvalecompra
+                        ." - "
+                        .$vale->Pessoa->pessoa
+                        , "documento"
+                        , 80);
+                $this->adicionaTexto("<DblStrikeOff>");
+
             }
+            
+            
         }
         
-		$this->adicionaTexto("<DblStrikeOff>");
-		$this->adicionaLinha("", "documento", 137, STR_PAD_LEFT, "-");
 
-		$this->adicionaTexto("<DblStrikeOn>");
-		$this->adicionaTexto("Codigo", "documento", 20);
-		$this->adicionaTexto("Descricao", "documento", 70);
-		$this->adicionaTexto("UM", "documento", 7);
-		$this->adicionaTexto("Quant", "documento", 10, STR_PAD_LEFT);
-		$this->adicionaTexto("Preco", "documento", 15, STR_PAD_LEFT);
-		$this->adicionaTexto("Total", "documento", 15, STR_PAD_LEFT);
-		$this->adicionaTexto("<DblStrikeOff>");
-		$this->adicionaLinha();
-
-		//percorre produtos
-		foreach ($vale->ValeCompraProdutoBarraS as $prod)
-		{
-			$this->adicionaTexto($prod->ProdutoBarra->barras, "documento", 20);
-			$this->adicionaTexto($prod->ProdutoBarra->descricao(), "documento", 65);
-			$this->adicionaTexto($prod->ProdutoBarra->UnidadeMedida->sigla, "documento", 7, STR_PAD_LEFT);
-			$this->adicionaTexto(formataNumero($prod->quantidade), "documento", 15, STR_PAD_LEFT);
-			$this->adicionaTexto(formataNumero($prod->preco), "documento", 15, STR_PAD_LEFT);
-			$this->adicionaTexto(formataNumero($prod->total), "documento", 15, STR_PAD_LEFT);
-			$this->adicionaLinha();
-		}
-
-		//linha divisoria
-		$this->adicionaLinha("", "documento", 137, STR_PAD_LEFT, "-");
-
-		//linha com totais
-		$this->adicionaTexto("<DblStrikeOn>");
-		$this->adicionaTexto("Subtotal:");
-		$this->adicionaTexto(formataNumero($vale->totalprodutos), "documento", 20, STR_PAD_LEFT);
-		$this->adicionaTexto("Desconto:", "documento", 35, STR_PAD_LEFT);
-		$this->adicionaTexto(formataNumero($vale->desconto), "documento", 20, STR_PAD_LEFT);
-		$this->adicionaTexto("Total...:", "documento", 35, STR_PAD_LEFT);
-		$this->adicionaTexto(formataNumero($vale->total), "documento", 18, STR_PAD_LEFT);
-		$this->adicionaLinha("<DblStrikeOff>");
-
-        // Observacoes
-        if (!empty($vale->observacoes))
-        {
-            $this->adicionaLinha();
-            $observacoes = "Observacoes: ";
-            $observacoes .= $vale->observacoes;
-
-            $observacoes = str_split($observacoes, 137);
-
-            foreach($observacoes as $linha)
-                $this->adicionaLinha($linha);
-
-            $this->adicionaLinha();
-
-        }
-        
-		//Confissao de divida
-        if (isset($vencimentos))
-        {
-
-            // Texto da confissao de divida
-
-            //$this->adicionaLinha("Observação");
-
-            $this->adicionaLinha("Confissao de Divida: Confesso(amos) e me(nos) constituo(imos) devedor(es) do valor descrito nesse vale, obrigando-me(nos) a pagar em");
-            $this->adicionaTexto("moeda corrente do pais, conforme vencimento.");
-            $this->adicionaLinha();
-            $this->adicionaLinha();
-            $this->adicionaLinha();
-
-            //linha da assinatura
-            $this->adicionaTexto("", "documento", 25);
-            $this->adicionaLinha("", "documento", 80, STR_PAD_BOTH, "_");
-
-            //nome pessoa
-            $this->adicionaTexto("<DblStrikeOn>");
-            $this->adicionaTexto("", "documento", 25);
-            $this->adicionaTexto(
-                    $vale->codvalecompra
-                    ." - "
-                    .$vale->Pessoa->pessoa
-                    , "documento"
-                    , 80);
-            $this->adicionaTexto("<DblStrikeOff>");
-
-        }
         
 	}
 

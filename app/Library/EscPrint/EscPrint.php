@@ -14,11 +14,12 @@ use Illuminate\Support\Facades\Auth;
 class EscPrint
 {
 
-	private $_conteudoSecao = array();
+	protected $_conteudoSecao = array();
+	protected $_comandos = array();
+	protected $_linhas = 31;
+	protected $_textoFinal = "";
+    
 	public $impressora = "impressoraMatricial";
-	private $_comandos = array();
-	private $_linhas = 31;
-	private $_textoFinal = "";
 	public $quebralaser = 3;
 
 	function __construct($impressora = null, $linhas = null)
