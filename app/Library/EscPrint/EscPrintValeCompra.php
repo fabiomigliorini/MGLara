@@ -205,6 +205,7 @@ class EscPrintValeCompra extends EscPrint
             
             if (count($pag->TituloS) > 0) {
                 
+                // Adiciona Linhas para quebrar Página
                 $linhas = 0;
                 foreach ($this->_conteudoSecao as $key => $cont) {
                     $linhas += substr_count($cont, "\n");
@@ -214,9 +215,9 @@ class EscPrintValeCompra extends EscPrint
                     $this->adicionaLinha();
                 }
 
-                $this->adicionaLinha();
-                $this->adicionaLinha();
                 // Cliente
+                $this->adicionaLinha();
+                $this->adicionaLinha();
                 if ($vale->codpessoa != Pessoa::CONSUMIDOR)
                 {
 
@@ -280,6 +281,7 @@ class EscPrintValeCompra extends EscPrint
                     $this->adicionaLinha($endereco, "documento", 137);
                 }
                 
+                //Titulos
                 $this->adicionaLinha();
                 $this->adicionaLinha();
                 $this->adicionaLinha("", "documento", 137, STR_PAD_LEFT, "-");
@@ -350,11 +352,10 @@ class EscPrintValeCompra extends EscPrint
                 $this->adicionaLinha();
                 $this->adicionaLinha();
 
-                //linha da assinatura
+                //linha da assinatura e nome pessoa
                 $this->adicionaTexto("", "documento", 25);
                 $this->adicionaLinha("", "documento", 80, STR_PAD_BOTH, "_");
 
-                //nome pessoa
                 $this->adicionaTexto("<DblStrikeOn>");
                 $this->adicionaTexto("", "documento", 25);
                 $this->adicionaTexto(
