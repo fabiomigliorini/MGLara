@@ -24,67 +24,67 @@
             'autocomplete' => 'off']
         )
     !!}
-        <div class="col-md-5">
+      <div class="clearfix">
+        <div class="col-md-6">
             <div class="form-group">
-                {!! Form::label('codpessoafavorecido', 'Favorecido', ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-md-9">{!! Form::select2Pessoa('codpessoafavorecido', null, ['class' => 'form-control', 'placeholder' => 'Favorecido']) !!}</div>
+                {!! Form::label('modelo', 'Modelo', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-7">{!! Form::text('modelo', null, ['class' => 'form-control', 'placeholder' => 'Modelo']) !!}</div>
+            </div>    
+            <div class="form-group">
+                {!! Form::label('codpessoafavorecido', 'Favorecido', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-md-10">{!! Form::select2Pessoa('codpessoafavorecido', null, ['class' => 'form-control', 'placeholder' => 'Favorecido']) !!}</div>
             </div>
+        </div>    
+        <div class="col-md-3">
+            <div class="form-group">
+                {!! Form::label('ano', 'Ano', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-5">{!! Form::number('ano', null, ['class' => 'form-control text-center', 'step' => 1, 'placeholder' => 'Ano']) !!}</div>
+            </div>    
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                {!! Form::label('modelo', 'Modelo', ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-md-9">{!! Form::text('modelo', null, ['class' => 'form-control', 'placeholder' => 'Modelo']) !!}</div>
-            </div>    
-        </div>    
-        <div class="col-md-2">
-            <div class="form-group">
-                {!! Form::label('ano', 'Ano', ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-md-9">{!! Form::text('ano', null, ['class' => 'form-control', 'placeholder' => 'Ano']) !!}</div>
-            </div>    
-        </div>    
-        <div class="col-md-1">      
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
-                </div>
+                {!! Form::label('ativo', 'Ativo', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo']) !!}</div>
             </div>
-        </div>
-        <div class="clearfix"></div>
+            <div class="form-group">
+              <div class="col-md-4 col-md-offset-3"><button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button></div>
+            </div>
+        </div>    
+            
+      </div>
     </div>
     {!! Form::close() !!}
 </div>
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
     @foreach($model as $i => $row)
-      <div class="list-group-item">
-        <div class="row item">
+      <a href="{{ url('vale-compra-modelo', $row->codvalecompramodelo) }}">
+        <div class="list-group-item">
+          <div class="row item">
             <div class="col-md-1 small text-muted">
-                {{ formataCodigo($row->codvalecompramodelo) }}
-            </div>                            
-            <div class="col-md-2">
-                <a href="{{ url('pessoa', $row->codpessoafavorecido) }}">{{ $row->PessoaFavorecido->fantasia }}</a>
-            </div>                            
+              {{ formataCodigo($row->codvalecompramodelo) }}
+            </div> 
             <div class="col-md-4">
-              @if (!empty($row->inativo))
-                <s><a href="{{ url('vale-compra-modelo', $row->codvalecompramodelo) }}">{{ $row->modelo }}</a></s>
-                <span class='text-danger'>
-                    inativo desde {{ formataData($row->inativo) }}
-                </span>
-              @else
-                <a href="{{ url('vale-compra-modelo', $row->codvalecompramodelo) }}">{{ $row->modelo }}</a>
-              @endif
+              {{ $row->modelo }}
               <div class="pull-right">
                 {{ formataNumero($row->total) }}
-              </div>                            
+              </div>
+              <div class="clearfix">
+                {!! inativo($row->inativo) !!}
+              </div>
+            </div>
+            <div class="col-md-2">
+              <a href="{{ url('pessoa', $row->codpessoafavorecido) }}">{{ $row->PessoaFavorecido->fantasia }}</a>
             </div>                            
             <div class="col-md-2">
-                {{ $row->ano }} / {{ $row->turma }}
+              {{ $row->ano }} / {{ $row->turma }}
             </div>                            
             <div class="col-md-3 small text-muted">
               {!! nl2br($row->observacoes) !!}
             </div>                            
         </div>
       </div>    
+         </a>
     @endforeach
     @if (count($model) === 0)
         <h3>Nenhum registro encontrado!</h3>

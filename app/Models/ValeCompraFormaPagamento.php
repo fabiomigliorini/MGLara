@@ -41,29 +41,29 @@ class ValeCompraFormaPagamento extends MGModel
     // Chaves Estrangeiras
     public function ValeCompra()
     {
-        return $this->belongsTo(ValeCompra::class, 'codvalecompra', 'codvalecompra');
+        return $this->belongsTo(ValeCompra::class, 'codvalecompra');
     }
 
     public function FormaPagamento()
     {
-        return $this->belongsTo(FormaPagamento::class, 'codformapagamento', 'codformapagamento');
+        return $this->belongsTo(FormaPagamento::class, 'codformapagamento');
     }
 
     public function UsuarioAlteracao()
     {
-        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuarioalteracao');
+        return $this->belongsTo(Usuario::class, 'codusuarioalteracao');
     }
 
     public function UsuarioCriacao()
     {
-        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuariocriacao');
+        return $this->belongsTo(Usuario::class, 'codusuariocriacao');
     }
 
 
     // Tabelas Filhas
     public function TituloS()
     {
-        return $this->hasMany(Titulo::class, 'codvalecompraformapagamento', 'codvalecompraformapagamento');
+        return $this->hasMany(Titulo::class, 'codvalecompraformapagamento');
     }
 
 

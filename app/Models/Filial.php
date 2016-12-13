@@ -45,6 +45,7 @@ namespace MGLara\Models;
  * @property  NotaFiscal[]                   $NotaFiscalS
  * @property  Titulo[]                       $TituloS
  * @property  Usuario[]                      $UsuarioS
+ * @property  ValeCompra[]                   $ValeCompraS
  */
 
 class Filial extends MGModel
@@ -174,6 +175,11 @@ class Filial extends MGModel
     public function UsuarioS()
     {
         return $this->hasMany(Usuario::class, 'codfilial', 'codfilial');
+    }
+
+    public function ValeCompraS()
+    {
+        return $this->hasMany(ValeCompra::class, 'codfilial');
     }
     
     public function scopeFilial($query, $filial)

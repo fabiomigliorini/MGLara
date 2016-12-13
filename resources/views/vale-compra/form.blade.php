@@ -1,32 +1,28 @@
 <div class='row'>
+  {!! Form::hidden('codvalecompramodelo', null, ['class'=> 'form-control', 'id'=>'codvalecompramodelo', 'required'=>'required']) !!}
+  {!! Form::hidden('codpessoafavorecido', null, ['class'=> 'form-control', 'id'=>'codpessoafavorecido', 'required'=>'required']) !!}
   <div class='col-md-6'>
     <div class="form-group">
-        {!! Form::label('modelo', 'Modelo:', ['class'=>'col-sm-2 control-label']) !!}
-        <div class="col-sm-10">{!! Form::text('modelo', null, ['class'=> 'form-control', 'id'=>'modelo', 'required'=>'required']) !!}</div>
+        {!! Form::label('aluno', 'Aluno:', ['class'=>'col-sm-2 control-label']) !!}
+        <div class="col-sm-10">{!! Form::text('aluno', null, ['class'=> 'form-control', 'id'=>'aluno', 'required'=>'required']) !!}</div>
     </div>
     <div class="form-group">
-        <?php
-            $ano = date('Y');
-            if (date('m') > 6) {
-                $ano++;
-            }
-        ?>
-        {!! Form::label('ano', 'Ano:', ['class'=>'col-sm-2 control-label']) !!}
-        <div class="col-sm-3">{!! Form::number('ano', $ano, ['class'=> 'form-control text-center', 'step'=>'1', 'id'=>'ano', 'required'=>'required']) !!}</div>
+        {!! Form::label('codpessoa', 'Cliente:', ['class'=>'col-sm-2 control-label']) !!}
+        <div class="col-sm-10">{!! Form::select2Pessoa('codpessoa', null, ['class'=> 'form-control', 'id'=>'codpessoa', 'placeholder'=>'Cliente', 'required'=>'required']) !!}</div>
     </div>
     <div class="form-group">
         {!! Form::label('turma', 'Turma:', ['class'=>'col-sm-2 control-label']) !!}
         <div class="col-sm-4">{!! Form::text('turma', null, ['class'=> 'form-control', 'id'=>'turma', 'required'=>'required']) !!}</div>
     </div>
-    <div class="form-group">
-        {!! Form::label('codpessoafavorecido', 'Favorecido:', ['class'=>'col-sm-2 control-label']) !!}
-        <div class="col-sm-10">{!! Form::select2Pessoa('codpessoafavorecido', null, ['class'=> 'form-control', 'id'=>'codpessoafavorecido', 'required'=>'required']) !!}</div>
-    </div>
   </div>
   <div class='col-md-6'>
     <div class="form-group">
+        {!! Form::label('codfilial', 'Filial:', ['class'=>'col-sm-2 control-label']) !!}
+        <div class="col-sm-4">{!! Form::select2Filial('codfilial', Auth::user()->codfilial, ['class'=> 'form-control', 'id'=>'codfilial', 'required'=>'required']) !!}</div>
+    </div>
+    <div class="form-group">
         {!! Form::label('observacoes', 'Observacoes:', ['class'=>'col-sm-2 control-label']) !!}
-        <div class="col-sm-10">{!! Form::textarea('observacoes', null, ['class'=> 'form-control', 'id'=>'observacoes', 'rows'=>8, 'tabindex'=>-1]) !!}</div>
+        <div class="col-sm-10">{!! Form::textarea('observacoes', null, ['class'=> 'form-control', 'id'=>'observacoes', 'rows'=>3, 'tabindex'=>-1]) !!}</div>
     </div>
   </div>
 </div>
@@ -58,25 +54,15 @@
   </div>
 </div>
 
-<div class="form-group">
-  <div class='col-md-2'>
-  </div>
-  <div class='col-md-3'>
-  </div>
-  <div class='col-md-5'>
-  </div>
-</div>
-
- 
+<br>
 
 <ul class="list-group list-group-condensed list-group-hover list-group-striped" id='divListagemProdutos'>
   
-  
-  @foreach ($model->ValeCompraModeloProdutoBarras as $vcmpb)
+  @foreach ($prods as $vcmpb)
     <li class='list-group-item linha_produto'>
         <div class="row">
           {!! Form::hidden('item_codprodutobarra[]', $vcmpb->codprodutobarra, ['class'=> 'form-control item_codprodutobarra']) !!}
-          {!! Form::hidden('item_codvalecompramodeloprodutobarra[]', $vcmpb->codvalecompramodeloprodutobarra, ['class'=> 'form-control item_codprodutobarra']) !!}
+          {!! Form::hidden('item_codvalecomprabarra[]', $vcmpb->codvalecomprabarra, ['class'=> 'form-control item_codprodutobarra']) !!}
           <div class='col-md-6'>
             <div class='col-md-3'>
               <span class='item_barras'>
@@ -174,7 +160,14 @@
     <div class="row">
       <div class='col-md-offset-6 col-md-6'>
         {!! Form::label('desconto', 'Desconto:', ['class'=>'col-sm-6 control-label']) !!}
-        <div class="col-sm-5">{!! Form::number('desconto', null, ['class'=> 'form-control text-right', 'id'=>'desconto', 'step'=> 0.01, 'min'=>0.00]) !!}</div>
+        <div class="col-sm-5">
+          <div class='input-group'>
+            <?php $percentual_desconto = ($model->totalprodutos > 0)?round(($model->desconto / $model->totalprodutos)*100, 2):null ?>
+            {!! Form::number('percentual_desconto', $percentual_desconto, ['class'=> 'form-control text-right', 'id'=>'percentual_desconto', 'step'=> 0.01, 'min'=>0.00, 'max'=>99.99]) !!}
+            <div class='input-group-addon'>%</div>
+          </div>
+          {!! Form::number('desconto', null, ['class'=> 'form-control text-right', 'id'=>'desconto', 'step'=> 0.01, 'min'=>0.00]) !!}
+        </div>
       </div>
     </div>
   </li>
@@ -183,6 +176,14 @@
       <div class='col-md-offset-6 col-md-6'>
         {!! Form::label('total', 'Total:', ['class'=>'col-sm-6 control-label']) !!}
         <div class="col-sm-5">{!! Form::number('total', null, ['class'=> 'form-control text-right', 'disabled'=>'disabled', 'id'=>'total']) !!}</div>
+      </div>
+    </div>
+  </li>
+  <li class='list-group-item'>
+    <div class="row">
+      <div class='col-md-offset-6 col-md-6'>
+        {!! Form::label('codformapagamento', 'Forma de Pagamento:', ['class'=>'col-sm-6 control-label']) !!}
+        <div class="col-sm-5">{!! Form::select2FormaPagamento('codformapagamento', 1010, ['class'=> 'form-control ', 'id'=>'codformapagamento', 'required'=>true]) !!}</div>
       </div>
     </div>
   </li>
@@ -215,6 +216,10 @@ function calculaTotais () {
     totalprodutos = Math.round(totalprodutos * 100)/100
     $('#totalprodutos').val(totalprodutos);
     $('#desconto').prop('max', totalprodutos);
+    if (totalprodutos>0) {
+        var perc_desc = Math.round(($('#desconto').val() / totalprodutos)*100*100)/100;
+        $('#percentual_desconto').val(perc_desc);
+    }
     $('#total').val(Math.round((totalprodutos - $('#desconto').val()) * 100)/100);
 }
 
@@ -308,12 +313,12 @@ $(document).ready(function() {
 
     $(':input:enabled:visible:first').focus();
     
-    $('#modelo').Setcase();
+    $('#aluno').Setcase();
     $('#turma').Setcase();
 
     //$('#barras').focus();
 
-    $('#form-vale-compra-modelo').on("submit", function(e) {
+    $('#form-vale-compra').on("submit", function(e) {
         var currentForm = this;
         e.preventDefault();
         bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
@@ -363,6 +368,12 @@ $(document).ready(function() {
     
     $(document).on('hidden.bs.modal','.bootbox', function () {
         $('#barras').focus();
+    });
+    
+    $('#percentual_desconto').change(function (e) {
+        var desc = Math.round($('#percentual_desconto').val() * $('#totalprodutos').val())/100;
+        $('#desconto').val(desc);
+        calculaTotais();
     });
     
     $("#barras").keyup(function(){ 

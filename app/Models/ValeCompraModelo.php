@@ -92,10 +92,25 @@ class ValeCompraModelo extends MGModel
         }
         
         if (!empty($parametros['modelo'])) {
-            $palavras = explode($parametros['modelo'], ' ');
+            $palavras = explode(' ', $parametros['modelo']);
             foreach ($palavras as $palavra) {
                 $query->where('modelo', 'ilike', "%{$palavra}%");
             }
+        }
+        
+        //dd($query->toSql());
+        
+        switch ($parametros['ativo']) {
+            case 1:
+                $query->whereNull('inativo');
+                break;
+
+            case 2:
+                $query->whereNotNull('inativo');
+                break;
+
+            default:
+                break;
         }
         
         return $query;

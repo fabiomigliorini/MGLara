@@ -221,6 +221,8 @@ Route::group(['middleware' => 'auth'], function() {
     /* Vale Compras */
     Route::post('vale-compra-modelo/inativo','ValeCompraModeloController@inativo');
     Route::resource('vale-compra-modelo','ValeCompraModeloController');
+    Route::post('vale-compra/inativo','ValeCompraController@inativo');
+    Route::resource('vale-compra','ValeCompraController');
     
 });
 

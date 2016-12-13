@@ -633,6 +633,7 @@ class ProdutoController extends Controller
             'produto' => $barras->descricao(),
             'inativo' => $barras->Produto->inativo,
             'unidademedida' => $barras->UnidadeMedida->unidademedida,
+            'slglaunidademedida' => $barras->UnidadeMedida->sigla,
             'referencia' => $barras->referencia(),
             'marca' => [
                 'codmarca' => $barras->Marca->codmarca,
