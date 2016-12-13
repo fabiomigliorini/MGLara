@@ -43,7 +43,7 @@
         $metasfiliais = $model->MetaFilialS()->get();
     ?>
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#geral" aria-controls="geral" role="tab" data-toggle="tab">Geral</a></li>
+        <li role="presentation" class="active"><a href="#geral" aria-controls="geral" role="tab" data-target="#geral" data-toggle="tab">Geral</a></li>
         @foreach($metasfiliais as $metafilial)
         <li role="presentation"><a href="{{ url("meta/{$model->codmeta}?codfilial=$metafilial->codfilial") }}" aria-controls="{{ $metafilial->codfilial }}" data-target="#{{ $metafilial->codfilial }}" role="tab" data-toggle="tab" class="tab-filial">{{ $metafilial->Filial->filial }}</a></li>
         @endforeach
@@ -113,34 +113,54 @@
                     @endforeach
                 </tbody> 
             </table>
+            
+            @if(Request::get('codfilial'))
+            <div id="piechart{{ $filial->filial }}" style="width:700px; height:500px"></div>
+            @else
+            <div id="piechartGeral" style="width:700px; height:500px"></div>
+            @endif
+            
+            <script type="text/javascript">
+                google.charts.load('current', {'packages':['corechart']});
+                google.charts.setOnLoadCallback(drawChart);
+                
+                @if(Request::get('codfilial'))
+                    var piechart = 'piechart{{ $filial->filial }}';
+                    var DataTable = [
+                        ['Vendedores', 'Vendas'],
+                        @foreach($dados['vendedores'] as $vendedor)
+                        ["{{ $vendedor->fantasia }}", {{ $vendedor->valorvendas }}],
+                        @endforeach
+                    ];
+                @else
+                    var piechart = 'piechartGeral';
+                    var DataTable = [
+                        ['Lojas', 'Vendas'],
+                        @foreach($dados['filiais'] as $filial)
+                        ["{{ $filial->filial }}", {{ $filial->valorvendas }}],
+                        @endforeach
+                    ];
+                @endif
+                //console.log(piechart);
+                function drawChart() {
+                    var data = google.visualization.arrayToDataTable(DataTable);
+
+                    var options = {
+                      title: 'Porcentagem de vendas'
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById(piechart));
+                    chart.draw(data, options);
+                }
+            </script>            
         </div>
         @foreach($metasfiliais as $filial)
         <div role="tabpanel" class="tab-pane" id="{{ $filial->codfilial }}"></div>
-        <div id="piechart"></div>
         @endforeach
     </div>
 </div>
 @section('inscript')
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
-    google.charts.load('current', {'packages':['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
-    function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-            ['Lojas', 'Vendas'],
-            @foreach($dados['filiais'] as $filial)
-            ["{{ $filial->filial }}",     {{ $filial->valorvendas }}],
-            @endforeach
-        ]);
-
-        var options = {
-          title: 'Porcentagem de vendas'
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-        chart.draw(data, options);
-    }
-</script>
 <script type="text/javascript">
 $(document).ready(function() {
     $('.tab-filial').click(function(e) {
@@ -151,8 +171,10 @@ $(document).ready(function() {
         if ($(targ).text().length == 0 ) {
             $.get(loadurl, function(data) {
                 $(targ).html(jQuery(data).find('#geral').html());
+                drawChart();
             });
         }
+        
         $this.tab('show');
         return false;
     });
