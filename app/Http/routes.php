@@ -224,6 +224,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('vale-compra/inativo','ValeCompraController@inativo');
     Route::resource('vale-compra','ValeCompraController');
     Route::get('vale-compra/{id}/imprimir','ValeCompraController@imprimir');
+
+    Route::resource('/caixa','CaixaController@index');
     
 });
 
