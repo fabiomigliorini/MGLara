@@ -115,9 +115,9 @@
             </table>
             
             @if(Request::get('codfilial'))
-            <div id="piechart{{ $filial->filial }}" style="width:700px; height:500px"></div>
+            <div id="piechart{{ $filial->filial }}"></div>
             @else
-            <div id="piechartGeral" style="width:700px; height:500px"></div>
+            <div id="piechartGeral"></div>
             @endif
             
             <script type="text/javascript">
@@ -146,8 +146,11 @@
                     var data = google.visualization.arrayToDataTable(DataTable);
 
                     var options = {
-                      title: 'Porcentagem de vendas'
+                        title: 'Porcentagem de vendas',
+                        'width':700,
+                        'height':500
                     };
+
 
                     var chart = new google.visualization.PieChart(document.getElementById(piechart));
                     chart.draw(data, options);

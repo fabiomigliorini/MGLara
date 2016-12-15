@@ -51,6 +51,7 @@ class MetaController extends Controller
         $parametros = $request->all();
         $model = Meta::findOrFail($id);
         $dados = $model->totalVendas($parametros);
+        
         if ($request->get('debug') == true) {
             return $dados;
         }
