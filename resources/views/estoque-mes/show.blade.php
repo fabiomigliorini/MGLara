@@ -22,15 +22,16 @@ function decideIconeUltimaConferencia($data)
 <ol class="breadcrumb header">
     {!!
         titulo(
-                $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto, 
+                $model->codestoquesaldo, 
                 [
+                    'Saldos de Estoque',
+                    ($model->EstoqueSaldo->fiscal)?"Fiscal":"Fisico",
+                    url("estoque-local/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal}")=>$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->EstoqueLocal->estoquelocal,
                     url("produto/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto}")=>$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->produto,
                     (empty($model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->variacao))?"<i class='text-muted'>{ Sem Variação }</i>":$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->variacao,
-                    url("estoque-local/{$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal}")=>$model->EstoqueSaldo->EstoqueLocalProdutoVariacao->EstoqueLocal->estoquelocal,
-                    ($model->EstoqueSaldo->fiscal)?"Fiscal":"Fisico"
                 ],
                 $model->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->inativo,
-                6
+                8
         )
     !!}
     <li class='active'>
