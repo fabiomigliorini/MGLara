@@ -34,7 +34,7 @@ class EstoqueGeraMovimentoProduto extends Job implements SelfHandling, ShouldQue
      *
      * @return void
      */
-    public function __construct(int $codproduto, bool $fisico = true, bool $fiscal = true)
+    public function __construct($codproduto, $fisico = true, $fiscal = true)
     {
         $this->codproduto = $codproduto;
         $this->fisico = $fisico;

@@ -35,7 +35,7 @@ class EstoqueGeraMovimentoProdutoVariacao extends Job implements SelfHandling, S
      *
      * @return void
      */
-    public function __construct(int $codprodutovariacao, bool $fisico = true, bool $fiscal = true)
+    public function __construct($codprodutovariacao, $fisico = true, $fiscal = true)
     {
         $this->codprodutovariacao = $codprodutovariacao;
         $this->fisico = $fisico;

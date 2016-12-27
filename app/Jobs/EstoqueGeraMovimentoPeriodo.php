@@ -36,7 +36,7 @@ class EstoqueGeraMovimentoPeriodo extends Job implements SelfHandling, ShouldQue
      *
      * @return void
      */
-    public function __construct(Carbon $inicial, Carbon $final, bool $fisico = true, bool $fiscal = true)
+    public function __construct(Carbon $inicial, Carbon $final, $fisico = true, $fiscal = true)
     {
         $this->inicial = $inicial;
         $this->final = $final;
