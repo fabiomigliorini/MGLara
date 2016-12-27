@@ -115,7 +115,7 @@ class EstoqueMes extends MGModel
         $mes->year = $data->year;
         
         // Se for fiscal cria somente um mês por ano, dezembro
-        if ($fiscal) {
+        if ($fiscal && $mes->year <= 2015) {
             $mes->month = 12;
         }
         
