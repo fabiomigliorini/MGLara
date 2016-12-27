@@ -76,22 +76,31 @@ class EstoqueController extends Controller
     
     public function geraMovimentoProduto(Request $request, $id)
     {
-        $this->dispatch((new EstoqueGeraMovimentoProduto($id))->onQueue('low'));
+        $fisico = ($request->get('fisico') === 'false')?false:true;
+        $fiscal = ($request->get('fiscal') === 'false')?false:true;
+        
+        $this->dispatch((new EstoqueGeraMovimentoProduto($id, $fisico, $fiscal))->onQueue('low'));
         return response()->json(['response' => 'Agendado']);
     }
     
     public function geraMovimentoProdutoVariacao(Request $request, $id)
     {
-        $this->dispatch((new EstoqueGeraMovimentoProdutoVariacao($id))->onQueue('low'));
+        $fisico = ($request->get('fisico') === 'false')?false:true;
+        $fiscal = ($request->get('fiscal') === 'false')?false:true;
+        
+        $this->dispatch((new EstoqueGeraMovimentoProdutoVariacao($id, $fisico, $fiscal))->onQueue('low'));
         return response()->json(['response' => 'Agendado']);
     }
     
-    public function geraMovimentoPeriodo(Request $request)
+    public function geraMovimentoPeriodo(Request $request, $inicial, $final)
     {
-        $inicial = Carbon::createFromFormat('d/m/Y H:i:s', $request->inicial); // 1975-05-21 22:00:00
-        $final = Carbon::createFromFormat('d/m/Y H:i:s', $request->final); // 1975-05-21 22:00:00
-
-        $this->dispatch((new EstoqueGeraMovimentoPeriodo($inicial, $final))->onQueue('low'));
+        $inicial = new Carbon($inicial);
+        $final = new Carbon($final);
+        
+        $fisico = ($request->get('fisico') === 'false')?false:true;
+        $fiscal = ($request->get('fiscal') === 'false')?false:true;
+        
+        $this->dispatch((new EstoqueGeraMovimentoPeriodo($inicial, $final, $fisico, $fiscal))->onQueue('low'));
         
         return response()->json(['response' => 'Agendado']);
     }
