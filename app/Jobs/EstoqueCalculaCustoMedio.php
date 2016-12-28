@@ -136,7 +136,8 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         
         //calcula custo medio e totais novamente
         $mes->inicialquantidade = $inicialquantidade;
-        $mes->inicialvalor = $mes->inicialquantidade * $customedio;
+        //$mes->inicialvalor = $mes->inicialquantidade * $customedio;
+        $mes->inicialvalor = $inicialvalor;
         $mes->entradaquantidade = $mov->entradaquantidade;
         $mes->entradavalor = $mov->entradavalor;
         $mes->saidaquantidade = $mov->saidaquantidade;
