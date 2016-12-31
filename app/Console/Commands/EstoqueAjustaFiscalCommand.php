@@ -113,6 +113,7 @@ class EstoqueAjustaFiscalCommand extends Command
                 where pv.codproduto = {$negativo->codproduto}
                 and es.codestoquelocalprodutovariacao != {$negativo->codestoquelocalprodutovariacao}
                 and es.saldoquantidade > 0
+                order by es.saldoquantidade DESC, pv.variacao ASC NULLS FIRST
             ";
             
             $alternativas = DB::select($sql);
