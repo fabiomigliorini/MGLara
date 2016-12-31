@@ -22,7 +22,7 @@ class EstoqueAjustaFiscalCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'estoque:ajusta-fiscal {metodo?} {--codestoquelocal=}';
+    protected $signature = 'estoque:ajusta-fiscal {metodo?} {--codestoquelocal=} {--auto}';
 
     /**
      * The console command description.
@@ -64,7 +64,7 @@ class EstoqueAjustaFiscalCommand extends Command
         $this->line('');
         $this->info('Utilização:');
         $this->line('');
-        $this->line('php artisan estoque:ajusta-fiscal metodo --codestoquelocal=?');
+        $this->line('php artisan estoque:ajusta-fiscal metodo --codestoquelocal=? --auto=true');
         $this->line('');
         $this->info('Métodos Disponíveis:');
         $this->line('');
@@ -74,6 +74,8 @@ class EstoqueAjustaFiscalCommand extends Command
     public function variacaoNegativa()
     {
         $codestoquelocal = $this->option('codestoquelocal');
+        $auto = $this->option('auto');
+        
         if (empty($codestoquelocal)) {
             $this->line('');
             $this->error('codestoquelocal não informado! Utilize --codestoquelocal=?');
@@ -134,10 +136,15 @@ class EstoqueAjustaFiscalCommand extends Command
             $choices[] = 'Nenhum';
 
             $this->table($headers, $data); 
-            $escolhido = $this->choice('Transferir de qual alternativa?', $choices, false);
             
-            if ($escolhido == 'Nenhum') {
-                continue;
+            if (!$auto) {
+                $escolhido = $this->choice('Transferir de qual alternativa?', $choices, false);
+
+                if ($escolhido == 'Nenhum') {
+                    continue;
+                }
+            } else {
+                $escolhido = 0;
             }
             
             $origem = $alternativas[$escolhido];
@@ -200,6 +207,8 @@ class EstoqueAjustaFiscalCommand extends Command
         $this->dispatch((new EstoqueCalculaCustoMedio($mes_origem->codestoquemes))->onQueue('urgent'));
         $this->dispatch((new EstoqueCalculaCustoMedio($mes_destino->codestoquemes))->onQueue('urgent'));
                 
+        // aguarda meio segundo para rodar recalculo dos custos medios
+        sleep(0.5);
     }
     
 }
