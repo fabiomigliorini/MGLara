@@ -196,6 +196,7 @@ class EstoqueAjustaFiscalCommand extends Command
                         $nfs[$alternativas[$i]->codestoquelocal]->codpessoa = $el->Filial->codpessoa;
                         $nfs[$alternativas[$i]->codestoquelocal]->modelo = NotaFiscal::MODELO_NFE;
                         $nfs[$alternativas[$i]->codestoquelocal]->codnaturezaoperacao = 15; //Transferencia de Saida
+                        $nfs[$alternativas[$i]->codestoquelocal]->codoperacao = $nfs[$alternativas[$i]->codestoquelocal]->NaturezaOperacao->codoperacao;
                         $nfs[$alternativas[$i]->codestoquelocal]->serie = 1;
                         $nfs[$alternativas[$i]->codestoquelocal]->numero = 0;
                         $nfs[$alternativas[$i]->codestoquelocal]->emitida = true;
