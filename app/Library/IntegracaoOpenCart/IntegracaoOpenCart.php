@@ -175,7 +175,8 @@ class IntegracaoOpenCart extends IntegracaoOpenCartBase {
                     if (isset($this->responseObject->error->keyword) && $this->responseObject->error->keyword == 'SEO keyword already in use!') {
                         $codigos = array_keys($this->manufacturers);
                         $i = array_search($marca->marca, array_column($this->manufacturers, 'name'));
-                        DB::table('tblmarca')->where('codmarca', '=', $marca->codmarca)->update(['codopencart', $codigos[$i]]);
+                        DB::table('tblmarca')->where('codmarca', $marca->codmarca)->update(['codopencart' => $codigos[$i]]);
+
                         $marca = $marca->fresh();
                     // senao loga o erro
                     } else {
@@ -231,7 +232,7 @@ class IntegracaoOpenCart extends IntegracaoOpenCartBase {
                     
                 // salva o id do opencart no sistema
                 } else {
-                    DB::table('tblsecaoproduto')->where('codsecaoproduto', '=', $secao->codsecaoproduto)->update(['codopencart', $id]);
+                    DB::table('tblsecaoproduto')->where('codsecaoproduto', '=', $secao->codsecaoproduto)->update(['codopencart' => $id]);
                     $secao = $secao->fresh();
                 }
                 
@@ -274,7 +275,7 @@ class IntegracaoOpenCart extends IntegracaoOpenCartBase {
                     
                 // salva o id do opencart no sistema
                 } else {
-                    DB::table('tblfamiliaproduto')->where('codfamiliaproduto', '=', $familia->codfamiliaproduto)->update(['codopencart', $id]);
+                    DB::table('tblfamiliaproduto')->where('codfamiliaproduto', '=', $familia->codfamiliaproduto)->update(['codopencart' => $id]);
                     $familia = $familia->fresh();
                 }
                 
@@ -316,7 +317,7 @@ class IntegracaoOpenCart extends IntegracaoOpenCartBase {
                     
                 // salva o id do opencart no sistema
                 } else {
-                    DB::table('tblgrupoproduto')->where('codgrupoproduto', '=', $grupo->codgrupoproduto)->update(['codopencart', $id]);
+                    DB::table('tblgrupoproduto')->where('codgrupoproduto', '=', $grupo->codgrupoproduto)->update(['codopencart' => $id]);
                     $grupo = $grupo->fresh();
                 }
                 
@@ -358,7 +359,7 @@ class IntegracaoOpenCart extends IntegracaoOpenCartBase {
                     
                 // salva o id do opencart no sistema
                 } else {
-                    DB::table('tblsubgrupoproduto')->where('codsubgrupoproduto', '=', $subgrupo->codsubgrupoproduto)->update(['codopencart', $id]);
+                    DB::table('tblsubgrupoproduto')->where('codsubgrupoproduto', '=', $subgrupo->codsubgrupoproduto)->update(['codopencart' => $id]);
                     $subgrupo = $subgrupo->fresh();
                 }
                 
@@ -438,7 +439,7 @@ class IntegracaoOpenCart extends IntegracaoOpenCartBase {
 
                         // salva o id do opencart no sistema
                         } else {
-                            DB::table('tblprodutovariacao')->where('codprodutovariacao', '=', $pv->codprodutovariacao)->update(['codopencart', $id]);
+                            DB::table('tblprodutovariacao')->where('codprodutovariacao', '=', $pv->codprodutovariacao)->update(['codopencart' => $id]);
                             $pv = $pv->fresh();
                         }
 
@@ -472,13 +473,13 @@ class IntegracaoOpenCart extends IntegracaoOpenCartBase {
 
                     // salva o id do opencart no sistema
                     } else {
-                        DB::table('tblproduto')->where('codproduto', '=', $produto->codproduto)->update(['codopencartvariacao', $id]);
+                        DB::table('tblproduto')->where('codproduto', '=', $produto->codproduto)->update(['codopencartvariacao' => $id]);
                         $produto = $produto->fresh();
                         
                         // salva id das opcoes
                         $i = 0;
                         foreach ($this->responseObject->data->option_values as $opt) {
-                            DB::table('tblprodutovariacao')->where('codprodutovariacao', '=', $variacoes[$i]->codprodutovariacao)->update(['codopencart', $opt->option_value_id]);
+                            DB::table('tblprodutovariacao')->where('codprodutovariacao', '=', $variacoes[$i]->codprodutovariacao)->update(['codopencart' => $opt->option_value_id]);
                             $variacoes[$i] = $variacoes[$i]->fresh();
                             $i++;
                         }
@@ -664,7 +665,7 @@ class IntegracaoOpenCart extends IntegracaoOpenCartBase {
                     
                 // salva o id do opencart no sistema
                 } else {
-                    DB::table('tblproduto')->where('codproduto', '=', $produto->codproduto)->update(['codopencart', $id]);
+                    DB::table('tblproduto')->where('codproduto', '=', $produto->codproduto)->update(['codopencart' => $id]);
                     $produto = $produto->fresh();
                 }
                 
