@@ -185,7 +185,7 @@ class IntegracaoOpenCart extends IntegracaoOpenCartBase {
                 
                 // salva o id do opencart no sistem
                 } else {
-                    DB::table('tblmarca')->where('codmarca', '=', $marca->codmarca)->update(['codopencart', $id]);
+                    DB::table('tblmarca')->where('codmarca', $marca->codmarca)->update(['codopencart' => $id]);
                     $marca = $marca->fresh();
                 }
             }
