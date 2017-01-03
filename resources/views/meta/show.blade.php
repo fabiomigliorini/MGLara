@@ -42,6 +42,7 @@
     <?php
         $metasfiliais = $model->MetaFilialS()->get();
     ?>
+@if(count($metasfiliais)>0)
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#geral" aria-controls="geral" role="tab" data-target="#geral" data-toggle="tab">Geral</a></li>
         @foreach($metasfiliais as $metafilial)
@@ -161,6 +162,10 @@
         <div role="tabpanel" class="tab-pane" id="{{ $filial->codfilial }}"></div>
         @endforeach
     </div>
+@else
+<h3>Nenhuma filial cadastrada para esse meta!</h3>
+@endif
+
 </div>
 @section('inscript')
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>

@@ -78,8 +78,11 @@ class MetaController extends Controller
      */
     public function store(Request $request)
     {
-        $model = new Meta($request->all()['meta']);
-        
+        $request_meta = $request->all()['meta'];
+        $request_meta['periodoinicial'] = new Carbon($request_meta['periodoinicial']);
+        $request_meta['periodofinal'] = new Carbon($request_meta['periodofinal']);
+        $model = new Meta($request_meta);
+
         DB::beginTransaction();
         
         if (!$model->validate()) {
@@ -175,8 +178,11 @@ class MetaController extends Controller
     public function update(Request $request, $id)
     {
         $model = Meta::findOrFail($id);
-        $model->fill($request->all()['meta']);
-
+        $dados_meta = $request->all()['meta'];
+        $dados_meta['periodoinicial'] = new Carbon($dados_meta['periodoinicial']);
+        $dados_meta['periodofinal'] = new Carbon($dados_meta['periodofinal']);
+        $model->fill($dados_meta);
+        
         DB::beginTransaction();
 
         if (!$model->validate()) {
@@ -225,7 +231,12 @@ class MetaController extends Controller
                                 $pessoa = new MetaFilialPessoa($pessoa_dados);
                             }
 
+
+                            if (!$pessoa->validate()) {
+                                $this->throwValidationException($request, $pessoa->_validator);
+                            }                            
                             $pessoa->save();
+                            
                             $codmetafilialpessoa[] = $pessoa->codmetafilialpessoa;
                         }
                         $mf->MetaFilialPessoaS()->whereNotIn('codmetafilialpessoa', $codmetafilialpessoa)->delete();

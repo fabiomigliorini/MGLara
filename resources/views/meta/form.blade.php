@@ -17,8 +17,8 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
     {!! Form::label('meta[periodoinicial]', 'Período:', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-md-10">
         <div class="input-group">
-            {!! Form::date('meta[periodoinicial]', $model->periodoinicial, ['class' => 'form-control text-center', 'id' => 'meta[periodoinicial]', 'placeholder' => 'De', 'style'=>'width:200px; margin-right:10px']) !!}
-            {!! Form::date('meta[periodofinal]', $model->periodofinal, ['class' => 'form-control text-center', 'id' => 'meta[periodofinal]', 'placeholder' => 'Até', 'style'=>'width:200px;']) !!}
+            {!! Form::datetimeLocal('meta[periodoinicial]', $model->periodoinicial, ['class' => 'form-control text-center', 'id' => 'meta[periodoinicial]', 'placeholder' => 'De', 'style'=>'width:200px; margin-right:10px']) !!}
+            {!! Form::datetimeLocal('meta[periodofinal]', $model->periodofinal, ['class' => 'form-control text-center', 'id' => 'meta[periodofinal]', 'placeholder' => 'Até', 'style'=>'width:200px;']) !!}
         </div>
     </div>
 </div>
@@ -133,10 +133,10 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
                     @foreach($model['metafilial'][$filial->codfilial]['pessoas'] as $pessoa)
                     <div class="cargo-pessoa col-md-12">
                         <div class="col-md-4">
-                        {!! Form::select("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codpessoa]", $pessoas, null, ['class'=> 'form-control select', 'style'=>"width: 100%;", 'data-filial'=>$filial->codfilial]) !!}
+                        {!! Form::select("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codpessoa]", $pessoas, null, ['class'=> 'form-control select pessoa', 'style'=>"width: 100%;", 'data-filial'=>$filial->codfilial]) !!}
                         </div>
                         <div class="col-md-3">
-                        {!! Form::select("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codcargo]", $cargos, null, ['class'=> 'form-control select', 'style'=>"width: 100%", 'data-filial'=>$filial->codfilial]) !!}
+                        {!! Form::select("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codcargo]", $cargos, null, ['class'=> 'form-control select cargo', 'style'=>"width: 100%", 'data-filial'=>$filial->codfilial]) !!}
                         </div>
                         {!! Form::hidden("metafilial[$filial->codfilial][pessoas][$pessoa[codpessoa]][codmetafilialpessoa]", null, ['class'=> 'form-control', ]) !!}
                         <a class="btn text-danger pull-left remover-pessoa"><i class="glyphicon glyphicon-trash"></i></a>
@@ -171,15 +171,32 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
 }
 </style>
 <script type="text/javascript">
+function validaMeta() {
+    //var arrText= $('input[type=select]').map(function(){
+    //    return this.value;
+    //}).get();    
+
+    var pessoas = [];
+    $("select.select.pessoa").each( function(index) {
+        pessoas.push($(this).val());
+        //Array.prototype.push.apply(pessoas, $(this).val());
+        //console.log(index + ": " + $(this).val());
+    });
+    console.log(pessoas);
+    return false;
+}
+
 $(document).ready(function() {
     $('#form-meta').on("submit", function(e){
         var currentForm = this;
         e.preventDefault();
-        bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
-            if (result) {
-                currentForm.submit();
-            }
-        });
+        //if(validaMeta()) {
+            bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
+                if (result) {
+                    currentForm.submit();
+                }
+            });
+        //}
     });
 
     $('.controla').bootstrapSwitch();
@@ -222,6 +239,8 @@ $(document).ready(function() {
         var nome = $(seletor+'.clone select').prev().attr('id');
         $(seletor+'.clone:last-child select').attr('name', nome).attr('required', true);
         $(seletor+'.clone:last-child select:last-child').attr('name', nome+'1').attr('required', true);
+
+
     });    
 
     $('.adicionar-pessoa').on('change', function () {

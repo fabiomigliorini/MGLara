@@ -1,6 +1,7 @@
 <?php
 
 namespace MGLara\Models;
+use Validator;
 
 /**
  * Campos
@@ -37,6 +38,22 @@ class MetaFilialPessoa extends MGModel
         'alteracao',
     ];
 
+    public function validate() {
+        
+        $this->_regrasValidacao = [
+            'codpessoa' => "uniqueMultiple:tblmetafilialpessoa,codmetafilialpessoa,$this->codmetafilialpessoa,codpessoa,codmetafilial,$this->codmetafilial",
+            'codcargo' => "unique:tblmetafilialpessoa,codcargo,$this->codmetafilialpessoa,codmetafilialpessoa,codmetafilial,$this->codmetafilial,codcargo,2"
+            
+        ];
+    
+        $this->_mensagensErro = [
+            'codpessoa.unique_multiple' => 'Uma pessoa foi selecionada mais de uma vez!',
+            'codcargo.unique' => 'Mais de um Sub Gerente foi selecionado para uma filial!',
+        ];
+        
+        return parent::validate();
+        
+    }    
 
     // Chaves Estrangeiras
     public function Pessoa()

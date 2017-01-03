@@ -48,11 +48,11 @@ class Meta extends MGModel
     public function validate() {
         
         $this->_regrasValidacao = [
-            //'periodoinicial' => 'required', 
+            'premioprimeirovendedorfilial' => 'required', 
         ];
     
         $this->_mensagensErro = [
-            'periodoinicial.required' => 'O campo Periodo inicial não pode ser vazio',
+            'premioprimeirovendedorfilial.required' => 'O campo Prêmio Melhor Vendedor não pode ser vazio',
         ];
         
         return parent::validate();
