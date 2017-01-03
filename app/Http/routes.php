@@ -24,7 +24,7 @@ Route::get('estoque/gera-movimento-nota-fiscal-produto-barra/{id}','EstoqueContr
 Route::get('estoque/gera-movimento-nota-fiscal/{id}','EstoqueController@geraMovimentoNotaFiscal');
 Route::get('estoque/gera-movimento-produto/{id}','EstoqueController@geraMovimentoProduto');
 Route::get('estoque/gera-movimento-produto-variacao/{id}','EstoqueController@geraMovimentoProdutoVariacao');
-Route::get('estoque/gera-movimento-periodo','EstoqueController@geraMovimentoPeriodo');
+Route::get('estoque/gera-movimento-periodo/{inicial}/{final}','EstoqueController@geraMovimentoPeriodo');
 
 /* Acessar da rede interna sem autenticacao, ou da rede externa com autenticacao */
 Route::group(['middleware' => 'redeconfiavel'], function() {

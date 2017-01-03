@@ -53,6 +53,19 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         Log::info('EstoqueCalculaCustoMedio', ['codestoquemes' => $this->codestoquemes, 'ciclo' => $this->ciclo]);
         
         $mes = EstoqueMes::findOrFail($this->codestoquemes);
+
+        // recalcula valor movimentacao com base no registro de origem
+        $sql = "
+            update tblestoquemovimento
+            set entradavalor = orig.saidavalor
+                , saidavalor = orig.entradavalor
+            from tblestoquemovimento orig
+            where tblestoquemovimento.codestoquemovimentoorigem = orig.codestoquemovimento
+            and tblestoquemovimento.codestoquemes = {$mes->codestoquemes}
+            ";
+            
+        $ret = DB::update($sql);
+        
         
         //busca totais de registros nao baseados no custo medio
         $sql = "
@@ -90,7 +103,7 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
             $customedio = abs($valor/$quantidade);
         }
 
-	if ($customedio > 100000) {
+        if ($customedio > 100000) {
             return;
         }
         
@@ -102,18 +115,6 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
             where tblestoquemovimento.codestoquemes = {$mes->codestoquemes} 
             and tblestoquemovimento.codestoquemovimentotipo in 
                 (select t.codestoquemovimentotipo from tblestoquemovimentotipo t where t.preco = " . EstoqueMovimentoTipo::PRECO_MEDIO . ")
-            ";
-            
-        $ret = DB::update($sql);
-        
-        //recalcula valor movimentacao para registros originados a partir deste mes
-        $sql = "
-            update tblestoquemovimento
-            set entradavalor = orig.saidavalor
-                , saidavalor = orig.entradavalor
-            from tblestoquemovimento orig
-            where tblestoquemovimento.codestoquemovimentoorigem = orig.codestoquemovimento
-            and orig.codestoquemes = {$mes->codestoquemes}
             ";
             
         $ret = DB::update($sql);
@@ -135,7 +136,8 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         
         //calcula custo medio e totais novamente
         $mes->inicialquantidade = $inicialquantidade;
-        $mes->inicialvalor = $mes->inicialquantidade * $customedio;
+        //$mes->inicialvalor = $mes->inicialquantidade * $customedio;
+        $mes->inicialvalor = $inicialvalor;
         $mes->entradaquantidade = $mov->entradaquantidade;
         $mes->entradavalor = $mov->entradavalor;
         $mes->saidaquantidade = $mov->saidaquantidade;
@@ -164,10 +166,9 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         }
         
         $proximo = $mes->buscaProximos(1);
-        if (isset($proximo[0]))
+        if (isset($proximo[0])) {
             $mesesRecalcular[] = $proximo[0]->codestoquemes;
-        else
-        {
+        } else {
             $mes->EstoqueSaldo->saldoquantidade = $mes->saldoquantidade;
             $mes->EstoqueSaldo->saldovalor = $mes->saldovalor;
             $mes->EstoqueSaldo->customedio = $mes->customedio;

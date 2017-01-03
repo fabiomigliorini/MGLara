@@ -135,12 +135,12 @@
 
         </td>
         <td class='text-right'>
-          {{ formataNumero($vale->total) }}
+          {{ formataNumero($vale->avista) }}
         </td>
         <td class='text-right'>
-
         </td>
         <td class='text-right'>
+          {{ formataNumero($vale->aprazo) }}
         </td>
       </tr>
     @endforeach
@@ -176,47 +176,6 @@
   </tbody>
 </table>
 
-
-<div id="registros">
-  <div class="list-group list-group-striped list-group-hover" >
-    <?php /*
-    @foreach($model as $i => $row)
-      <a href="{{ url('caixa', $row->codvalecompramodelo) }}">
-        <div class="list-group-item">
-          <div class="row item">
-            <div class="col-md-1 small text-muted">
-              {{ formataCodigo($row->codvalecompramodelo) }}
-            </div>
-            <div class="col-md-4">
-              {{ $row->modelo }}
-              <div class="pull-right">
-                {{ formataNumero($row->total) }}
-              </div>
-              <div class="clearfix">
-                {!! inativo($row->inativo) !!}
-              </div>
-            </div>
-            <div class="col-md-2">
-              <a href="{{ url('pessoa', $row->codpessoafavorecido) }}">{{ $row->PessoaFavorecido->fantasia }}</a>
-            </div>
-            <div class="col-md-2">
-              {{ $row->ano }} / {{ $row->turma }}
-            </div>
-            <div class="col-md-3 small text-muted">
-              {!! nl2br($row->observacoes) !!}
-            </div>
-        </div>
-      </div>
-         </a>
-    @endforeach
-    @if (count($model) === 0)
-        <h3>Nenhum registro encontrado!</h3>
-    @endif
-     *
-     */
-        ?>
-  </div>
-</div>
 
 @section('inscript')
 <script type="text/javascript">

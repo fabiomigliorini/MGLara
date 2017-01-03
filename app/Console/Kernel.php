@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        \MGLara\Console\Commands\EstoqueAjustaFiscalCommand::class,
         \MGLara\Console\Commands\EstoqueCalculaEstatisticasCommand::class,
         \MGLara\Console\Commands\OpenCartSincronizaProdutosCommand::class,
     ];
