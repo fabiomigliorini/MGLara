@@ -171,32 +171,36 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
 }
 </style>
 <script type="text/javascript">
-function validaMeta() {
-    //var arrText= $('input[type=select]').map(function(){
-    //    return this.value;
-    //}).get();    
-
+   
+function validaPessoas() {
     var pessoas = [];
     $("select.select.pessoa").each( function(index) {
         pessoas.push($(this).val());
-        //Array.prototype.push.apply(pessoas, $(this).val());
-        //console.log(index + ": " + $(this).val());
     });
-    console.log(pessoas);
-    return false;
+    
+    var pessoasFiltradas = pessoas.filter(function(pessoa, i) {
+        return pessoas.indexOf(pessoa) === i;
+    });
+
+    if(pessoas.length === pessoasFiltradas.length){
+        return true;
+    } else {
+        bootbox.alert("Uma pessoa foi lançada duas vezes");
+        return false;
+    }
 }
 
 $(document).ready(function() {
     $('#form-meta').on("submit", function(e){
         var currentForm = this;
         e.preventDefault();
-        //if(validaMeta()) {
+        if(validaPessoas()) {
             bootbox.confirm("Tem certeza que deseja salvar?", function(result) {
                 if (result) {
                     currentForm.submit();
                 }
             });
-        //}
+        }
     });
 
     $('.controla').bootstrapSwitch();
