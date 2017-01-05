@@ -171,21 +171,53 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
 }
 </style>
 <script type="text/javascript">
-   
+function removePessoasDuplicadas(array, prop) {
+     var novoArray = [];
+     var objeto  = {};
+ 
+     for (var i in array) {
+         objeto[array[i][prop]] = array[i];
+     }
+ 
+     for (i in objeto) {
+         novoArray.push(objeto[i]);
+     }
+ 
+     return novoArray;
+}    
+
 function validaPessoas() {
     var pessoas = [];
     $("select.select.pessoa").each( function(index) {
-        pessoas.push($(this).val());
+        pessoas.push({
+            'codpessoa': $(this).val(),
+            'pessoa': $('option:selected',this).text()
+        });
     });
     
-    var pessoasFiltradas = pessoas.filter(function(pessoa, i) {
-        return pessoas.indexOf(pessoa) === i;
+    var pessoasFiltradas = removePessoasDuplicadas(pessoas, "codpessoa");
+    var pessoasRepetidas = [];
+    
+    jQuery.grep(pessoas, function(el) {
+        if (jQuery.inArray(el, pessoasFiltradas) === -1) pessoasRepetidas.push(el);
     });
+    
+    if(pessoasRepetidas.length === 1) {
+        var pessoaMensagem = pessoasRepetidas[0].pessoa;
+        var mensagem = pessoaMensagem +" foi lançada(o) mais de uma vez!";
+    } else {
+        var pessoasMensagem = [];
+        for (var i = 0; i < pessoasRepetidas.length; i++) {
+           pessoasMensagem.push(pessoasRepetidas[i].pessoa);
+        }            
+        var pessoaMensagem = pessoasMensagem.toString();
+        var mensagem = pessoaMensagem.replace(',',', ') +" foram lançadas(os) mais de uma vez!";
+    }
 
     if(pessoas.length === pessoasFiltradas.length){
         return true;
     } else {
-        bootbox.alert("Uma pessoa foi lançada duas vezes");
+        bootbox.alert(mensagem);
         return false;
     }
 }
