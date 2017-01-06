@@ -91,25 +91,28 @@
                 </thead>
                 <tbody>
                     @foreach($dados['vendedores'] as $vendedor)
+                    <?php
+                        $comissao       = ($model->percentualcomissaovendedor / 100 ) * $vendedor->valorvendas;
+                        $meta_vendedor  = ($vendedor->valorvendas >= $vendedor->valormetavendedor ? ($model->percentualcomissaovendedormeta / 100 ) * $vendedor->valorvendas : null);
+                        $total_comissao = $comissao + $meta_vendedor;
+                        $falta          = ($vendedor->valorvendas < $vendedor->valormetavendedor ? $vendedor->valormetavendedor - $vendedor->valorvendas : null);
+                        
+                    ?>
                     <tr>
                         <th scope="row">{{ $vendedor->filial }}</th>
                         <td>{{ $vendedor->fantasia }}</td>
                         <td>{{ formataNumero($vendedor->valormetavendedor) }}</td>
                         <td>{{ formataNumero($vendedor->valorvendas) }}</td>
-                        <td></td>
                         <td>
-
-                        </td>
-                        <td>
-                            {{ formataNumero(($model->percentualcomissaovendedor / 100 ) * $vendedor->valorvendas) }}
-                        </td>
-                        <td>                            
                             @if($vendedor->valorvendas >= $vendedor->valormetavendedor)
-                            {{ formataNumero(($model->percentualcomissaovendedormeta / 100 ) * $vendedor->valorvendas) }}
+                                <span class="label label-success">Meta Atingida</span>
                             @endif
                         </td>
                         <td></td>
-                        <td></td>
+                        <td>{{ formataNumero($comissao) }}</td>
+                        <td>{{ formataNumero($meta_vendedor) }}</td>
+                        <td>{{ formataNumero($total_comissao) }}</td>
+                        <td>{{ formataNumero($falta) }}</td>
                     </tr>
                     @endforeach
                 </tbody> 
