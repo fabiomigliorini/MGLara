@@ -131,8 +131,7 @@
     }
 
     .codigo {
-        font-size: 0.7em;
-        width: 0.8cm;
+        width: 0.9cm;
     }
     
     .produto {
