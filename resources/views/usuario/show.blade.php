@@ -113,7 +113,7 @@ $(document).ready(function() {
         }        
         bootbox.confirm("Tem certeza que deseja "+acao+"?", function(result) {
             if(result) {
-                $.post(baseUrl + '/usuario/inativo', {
+                $.post(baseUrl + '/usuario/inativar', {
                     codusuario: codusuario,
                     acao: acao,
                     _token: token

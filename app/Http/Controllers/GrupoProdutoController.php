@@ -122,7 +122,7 @@ class GrupoProdutoController extends Controller
         return json_encode($ret);
     }    
 
-    public function inativo(Request $request)
+    public function inativar(Request $request)
     {
         $model = GrupoProduto::find($request->get('codgrupoproduto'));
         if($request->get('acao') == 'ativar')

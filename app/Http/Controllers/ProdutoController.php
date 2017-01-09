@@ -416,7 +416,7 @@ class ProdutoController extends Controller
         return  response()->json($resultado);
     }
 
-    public function inativo(Request $request)
+    public function inativar(Request $request)
     {
         try{
             $model = Produto::find($request->get('id'));

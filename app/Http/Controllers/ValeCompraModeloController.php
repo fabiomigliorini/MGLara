@@ -298,7 +298,7 @@ class ValeCompraModeloController extends Controller
     }
     */
     
-    public function inativo(Request $request)
+    public function inativar(Request $request)
     {
         try{
             $model = ValeCompraModelo::findOrFail($request->get('id'));

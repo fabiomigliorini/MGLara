@@ -123,7 +123,7 @@ class FamiliaProdutoController extends Controller
         return json_encode($ret);
     }    
 
-    public function inativo(Request $request)
+    public function inativar(Request $request)
     {
         $model = FamiliaProduto::find($request->get('codfamiliaproduto'));
         if($request->get('acao') == 'ativar')

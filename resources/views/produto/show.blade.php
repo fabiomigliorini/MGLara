@@ -27,9 +27,9 @@
             <a href="<?php echo url("produto/create/?duplicar={$model->codproduto}");?>"><span class="glyphicon glyphicon-duplicate"></span></a>
             &nbsp;
             @if(empty($model->inativo))
-            <a href="{{ url('produto/inativo') }}" data-inativar data-codigo="{{ $model->codproduto }}" data-acao="inativar" data-pergunta="Tem certeza que deseja inativar o produto {{ $model->produto }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ban-circle"></span></a>
+            <a href="{{ url('produto/inativar') }}" data-inativar data-codigo="{{ $model->codproduto }}" data-acao="inativar" data-pergunta="Tem certeza que deseja inativar o produto {{ $model->produto }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ban-circle"></span></a>
             @else
-            <a href="{{ url('produto/inativo') }}" data-inativar data-codigo="{{ $model->codproduto }}" data-acao="ativar" data-pergunta="Tem certeza que deseja ativar o produto {{ $model->produto }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ok-sign"></span></a>
+            <a href="{{ url('produto/inativar') }}" data-inativar data-codigo="{{ $model->codproduto }}" data-acao="ativar" data-pergunta="Tem certeza que deseja ativar o produto {{ $model->produto }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ok-sign"></span></a>
             @endif
             &nbsp;
             <a href="{{ url("produto/$model->codproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o produto '{{ $model->produto }}'?" data-after-delete="location.replace(baseUrl + '/produto');"><i class="glyphicon glyphicon-trash"></i></a>

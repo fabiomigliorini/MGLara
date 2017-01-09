@@ -17,7 +17,7 @@
             <a title="Novo" href="{{ url('vale-compra/create') }}"><span class="glyphicon glyphicon-plus"></span></a>
             &nbsp;
             @if (empty($model->inativo))
-              <a title='Inativar' href="{{ url('vale-compra/inativo') }}" data-inativar data-codigo="{{ $model->codvalecompra }}" data-acao="inativar" data-pergunta="Tem certeza que deseja inativar o vale {{ formataCodigo($model->codvalecompra) }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ban-circle"></span></a>
+              <a title='Inativar' href="{{ url('vale-compra/inativar') }}" data-inativar data-codigo="{{ $model->codvalecompra }}" data-acao="inativar" data-pergunta="Tem certeza que deseja inativar o vale {{ formataCodigo($model->codvalecompra) }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ban-circle"></span></a>
               &nbsp;
               <a title='Impressão' href="#" data-toggle="modal" data-target="#modalRelatorio" id="linkImpressao"><span class="glyphicon glyphicon-print"></span></a>
             @endif

@@ -209,7 +209,7 @@ class ValeCompraController extends Controller
         return redirect("vale-compra/$model->codvalecompra?imprimir=true");
     }
    
-    public function inativo(Request $request)
+    public function inativar(Request $request)
     {
         if ($request->get('acao') != 'inativar') {
             return json_encode(['resultado' => false, 'mensagem' => 'Impossível reativar vale estornado!']);

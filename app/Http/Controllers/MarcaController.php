@@ -150,7 +150,7 @@ class MarcaController extends Controller
         echo json_encode($arr_codproduto);        
     }
 
-    public function inativo(Request $request)
+    public function inativar(Request $request)
     {
         $model = Marca::find($request->get('codmarca'));
         if($request->get('acao') == 'ativar')

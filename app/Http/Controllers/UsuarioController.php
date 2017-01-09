@@ -113,7 +113,7 @@ class UsuarioController extends Controller
         return json_encode($ret);
     }
     
-    public function inativo(Request $request)
+    public function inativar(Request $request)
     {
         $model = Usuario::find($request->get('codusuario'));
         if($request->get('acao') == 'ativar')

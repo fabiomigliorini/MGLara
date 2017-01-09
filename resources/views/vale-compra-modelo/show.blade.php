@@ -18,9 +18,9 @@
             <a title="Alterar" href="{{ url("vale-compra-modelo/$model->codvalecompramodelo/edit") }}"><span class="glyphicon glyphicon-pencil"></span></a>
             &nbsp;
             @if(empty($model->inativo))
-              <a title='Inativar' href="{{ url('vale-compra-modelo/inativo') }}" data-inativar data-codigo="{{ $model->codvalecompramodelo }}" data-acao="inativar" data-pergunta="Tem certeza que deseja inativar o modelo {{ $model->modelo }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ban-circle"></span></a>
+              <a title='Inativar' href="{{ url('vale-compra-modelo/inativar') }}" data-inativar data-codigo="{{ $model->codvalecompramodelo }}" data-acao="inativar" data-pergunta="Tem certeza que deseja inativar o modelo {{ $model->modelo }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ban-circle"></span></a>
             @else
-              <a title='Ativar' href="{{ url('vale-compra-modelo/inativo') }}" data-inativar data-codigo="{{ $model->codvalecompramodelo }}" data-acao="ativar" data-pergunta="Tem certeza que deseja ativar o modelo {{ $model->modelo }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ok-sign"></span></a>
+              <a title='Ativar' href="{{ url('vale-compra-modelo/inativar') }}" data-inativar data-codigo="{{ $model->codvalecompramodelo }}" data-acao="ativar" data-pergunta="Tem certeza que deseja ativar o modelo {{ $model->modelo }}? " data-after-inativar="location.reload()"><span class="glyphicon glyphicon-ok-sign"></span></a>
             @endif
             &nbsp;
             <a title='Excluir' href="{{ url("vale-compra-modelo/$model->codvalecompramodelo") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o modelo '{{ $model->modelo }}'?" data-after-delete="location.replace(baseUrl + '/vale-compra-modelo');"><i class="glyphicon glyphicon-trash"></i></a>

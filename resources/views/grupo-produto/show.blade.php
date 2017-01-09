@@ -194,7 +194,7 @@ $(document).ready(function() {
         }        
         bootbox.confirm("Tem certeza que deseja "+acao+"?", function(result) {
             if(result) {
-                $.post(baseUrl + '/grupo-produto/inativo', {
+                $.post(baseUrl + '/grupo-produto/inativar', {
                     codgrupoproduto: codgrupoproduto,
                     acao: acao,
                     _token: token
