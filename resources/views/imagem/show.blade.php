@@ -87,7 +87,7 @@ $(document).ready(function() {
         }        
         bootbox.confirm("Tem certeza que deseja "+acao+"?", function(result) {
             if(result) {
-                $.post(baseUrl + '/imagem/inativo', {
+                $.post(baseUrl + '/imagem/inativar', {
                     codimagem: codimagem,
                     produto:produto,
                     acao: acao,

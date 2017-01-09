@@ -127,7 +127,7 @@ $(document).ready(function() {
         }        
         bootbox.confirm("Tem certeza que deseja "+acao+"?", function(result) {
             if(result) {
-                $.post(baseUrl + '/marca/inativo', {
+                $.post(baseUrl + '/marca/inativar', {
                     codmarca: codmarca,
                     acao: acao,
                     _token: token

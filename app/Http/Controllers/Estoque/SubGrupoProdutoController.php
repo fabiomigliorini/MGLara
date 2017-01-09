@@ -130,7 +130,7 @@ class SubGrupoProdutoController extends Controller
         echo json_encode($arr_codproduto);        
     }
 
-    public function inativo(Request $request)
+    public function inativar(Request $request)
     {
         $model = SubGrupoProduto::find($request->get('codsubgrupoproduto'));
         if($request->get('acao') == 'ativar')

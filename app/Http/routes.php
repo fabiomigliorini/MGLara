@@ -50,7 +50,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     /* Usuários */
     Route::resource('usuario','UsuarioController');
-    Route::post('usuario/inativo','UsuarioController@inativo');
+    Route::post('usuario/inativar','UsuarioController@inativar');
     Route::resource('usuario/{codusuario}/permissao','UsuarioController@permissao');
     Route::post('usuario/attach-permissao','UsuarioController@attachPermissao');
     Route::post('usuario/detach-permissao','UsuarioController@detachPermissao');
@@ -85,7 +85,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('estoque-saldo/{id}/zera','EstoqueSaldoController@zera');
 
     /* GrupoProduto */
-    Route::post('grupo-produto/inativo','GrupoProdutoController@inativo');
+    Route::post('grupo-produto/inativar','GrupoProdutoController@inativar');
     Route::resource('grupo-produto/listagem-json','GrupoProdutoController@listagemJson');
     Route::resource('grupo-produto/{id}/busca-codproduto','GrupoProdutoController@buscaCodproduto');
     Route::resource('grupo-produto','GrupoProdutoController');
@@ -100,14 +100,14 @@ Route::group(['middleware' => 'auth'], function() {
 
     /* Marca */
     Route::get('marca/listagem-json','MarcaController@listagemJson');
-    Route::resource('marca/inativo','MarcaController@inativo');
+    Route::resource('marca/inativar','MarcaController@inativar');
     Route::resource('marca/{id}/busca-codproduto','MarcaController@buscaCodproduto');
     Route::resource('marca','MarcaController');
 
     /* SubGrupoProduto */
     Route::resource('sub-grupo-produto/{id}/busca-codproduto','SubGrupoProdutoController@buscaCodproduto');
     Route::get('sub-grupo-produto/listagem-json','SubGrupoProdutoController@listagemJson');
-    Route::post('sub-grupo-produto/inativo','SubGrupoProdutoController@inativo');
+    Route::post('sub-grupo-produto/inativar','SubGrupoProdutoController@inativar');
     Route::resource('sub-grupo-produto','SubGrupoProdutoController');
 
     /* Produto */
@@ -118,7 +118,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto/popula-secao-produto','ProdutoController@populaSecaoProduto');
     Route::resource('produto/estoque-saldo','ProdutoController@estoqueSaldo');
     Route::resource('produto/sincroniza-produto-open-cart','ProdutoController@sincronizaProdutoOpenCart');
-    Route::resource('produto/inativo','ProdutoController@inativo');
+    Route::resource('produto/inativar','ProdutoController@inativar');
     Route::patch('produto/{id}/transferir-variacao-salvar','ProdutoController@transferirVariacaoSalvar');
     Route::get('produto/{id}/transferir-variacao','ProdutoController@transferirVariacao');
     Route::resource('produto','ProdutoController');
@@ -178,11 +178,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('negocio-produto-barra', 'NegocioProdutoBarraController');
 
     /* Seção Produto */
-    Route::post('secao-produto/inativo','SecaoProdutoController@inativo');
+    Route::post('secao-produto/inativar','SecaoProdutoController@inativar');
     Route::resource('secao-produto','SecaoProdutoController');
 
     /* Família Produto */
-    Route::post('familia-produto/inativo','FamiliaProdutoController@inativo');
+    Route::post('familia-produto/inativar','FamiliaProdutoController@inativar');
     Route::resource('familia-produto/listagem-json','FamiliaProdutoController@listagemJson');
     Route::resource('familia-produto','FamiliaProdutoController');
 
@@ -195,7 +195,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('imagem/edit','ImagemController@edit');
     Route::resource('imagem/lixeira','ImagemController@lixeira');
     Route::get('imagem/esvaziar-lixeira','ImagemController@esvaziarLixeira');
-    Route::post('imagem/inativo','ImagemController@inativo');
+    Route::post('imagem/inativar','ImagemController@inativar');
     Route::resource('imagem','ImagemController');
 
     /* Nota Fiscal */
@@ -221,9 +221,9 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('printers','UsuarioController@printers');
     
     /* Vale Compras */
-    Route::post('vale-compra-modelo/inativo','ValeCompraModeloController@inativo');
+    Route::post('vale-compra-modelo/inativar','ValeCompraModeloController@inativar');
     Route::resource('vale-compra-modelo','ValeCompraModeloController');
-    Route::post('vale-compra/inativo','ValeCompraController@inativo');
+    Route::post('vale-compra/inativar','ValeCompraController@inativar');
     Route::resource('vale-compra','ValeCompraController');
     Route::get('vale-compra/{id}/imprimir','ValeCompraController@imprimir');
 
