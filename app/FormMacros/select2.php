@@ -575,6 +575,14 @@ Form::macro('select2TipoProduto', function($name, $selected = null, $options = [
     return Form::select2($name, $tipos, $selected, $options);
 });
 
+/* EMPRESA */
+Form::macro('select2Empresa', function($name, $selected = null, $options = [])
+{
+    if (empty($options['placeholder'])) $options['placeholder'] = 'Empresa';
+    $regs = [''=>''] + MGLara\Models\Empresa::orderBy('codempresa')->lists('empresa', 'codempresa')->all();
+    return Form::select2($name, $regs, $selected, $options);
+});
+
 /* FILIAL */
 Form::macro('select2Filial', function($name, $selected = null, $options = [])
 {

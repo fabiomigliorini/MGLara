@@ -79,6 +79,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('estoque-saldo/relatorio-analise','EstoqueSaldoController@relatorioAnalise');
     Route::get('estoque-saldo/relatorio-comparativo-vendas-filtro','EstoqueSaldoController@relatorioComparativoVendasFiltro');
     Route::get('estoque-saldo/relatorio-comparativo-vendas','EstoqueSaldoController@relatorioComparativoVendas');
+    Route::get('estoque-saldo/relatorio-fisico-fiscal-filtro','EstoqueSaldoController@relatorioFisicoFiscalFiltro');
+    Route::get('estoque-saldo/relatorio-fisico-fiscal','EstoqueSaldoController@relatorioFisicoFiscal');
     Route::resource('estoque-saldo','EstoqueSaldoController');
     Route::get('estoque-saldo/{id}/zera','EstoqueSaldoController@zera');
 

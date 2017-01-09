@@ -62,6 +62,7 @@
                         <li><a href="{{ url('estoque-saldo') }}">Saldos de Estoque</a></li>
                         <li><a href="{{ url('estoque-saldo/relatorio-analise-filtro') }}">Relatório Análise Saldos de Estoque</a></li>
                         <li><a href="{{ url('estoque-saldo/relatorio-comparativo-vendas-filtro') }}">Relatório Vendas Filial X Saldo Depósito</a></li>
+                        <li><a href="{{ url('estoque-saldo/relatorio-fisico-fiscal-filtro') }}">Relatório Saldos Fisico x Fiscal</a></li>
                         <li><a href="{{ url('estoque-saldo-conferencia') }}">Conferência de Saldos</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="{{ url('marca') }}">Marcas</a><li>
