@@ -16,19 +16,19 @@ use Illuminate\Support\Facades\DB;
  * @property  bigint                         $codestoquesaldo                    NOT NULL DEFAULT nextval('tblestoquesaldo_codestoquesaldo_seq'::regclass)
  * @property  bigint                         $codestoquelocalprodutovariacao             NOT NULL
  * @property  boolean                        $fiscal                             NOT NULL
- * @property  numeric(14,3)                  $saldoquantidade                    
- * @property  numeric(14,2)                  $saldovalor                         
- * @property  numeric(14,6)                  $customedio                 
+ * @property  numeric(14,3)                  $saldoquantidade
+ * @property  numeric(14,2)                  $saldovalor
+ * @property  numeric(14,6)                  $customedio
  * @property  timestamp                      $dataentrada
  * @property  timestamp                      $ultimaconferencia
- * @property  timestamp                      $alteracao                          
- * @property  bigint                         $codusuarioalteracao                
- * @property  timestamp                      $criacao                            
- * @property  bigint                         $codusuariocriacao                  
+ * @property  timestamp                      $alteracao
+ * @property  bigint                         $codusuarioalteracao
+ * @property  timestamp                      $criacao
+ * @property  bigint                         $codusuariocriacao
  * @property  bigint                         $codestoquelocal                    NOT NULL
  *
  * Chaves Estrangeiras
- * @property  Produto                        $Produto                       
+ * @property  Produto                        $Produto
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
  * @property  EstoqueLocalProdutoVariacao    $EstoqueLocalProdutoVariacao
@@ -56,7 +56,7 @@ class EstoqueSaldo extends MGModel
         'ultimaconferencia',
         'dataentrada',
     ];
-    
+
     // Chaves Estrangeiras
     public function UsuarioAlteracao()
     {
@@ -79,12 +79,12 @@ class EstoqueSaldo extends MGModel
     {
         return $this->hasMany(EstoqueMes::class, 'codestoquesaldo', 'codestoquesaldo');
     }
-    
+
     public function EstoqueSaldoConferenciaS()
     {
         return $this->hasMany(EstoqueSaldoConferencia::class, 'codestoquesaldo', 'codestoquesaldo');
     }
-    
+
     public static function buscaOuCria($codprodutovariacao, $codestoquelocal, $fiscal)
     {
         $elpv = EstoqueLocalProdutoVariacao::buscaOuCria($codprodutovariacao, $codestoquelocal);
@@ -99,7 +99,7 @@ class EstoqueSaldo extends MGModel
         }
         return $es;
     }
-    
+
     public static function totais($agrupamento, $valor = 'custo', $filtro = [])
     {
         //$query = DB::table('tblestoquesaldo');
@@ -110,7 +110,7 @@ class EstoqueSaldo extends MGModel
             $query->groupBy('tblestoquelocal.codestoquelocal');
             $query->groupBy('tblestoquelocal.estoquelocal');
         }
-        
+
         $query->join('tblestoquelocal', 'tblestoquelocal.codestoquelocal', '=', 'tblestoquelocalprodutovariacao.codestoquelocal');
         $query->join('tblprodutovariacao', 'tblprodutovariacao.codprodutovariacao', '=', 'tblestoquelocalprodutovariacao.codprodutovariacao');
         $query->join('tblproduto', 'tblproduto.codproduto', '=', 'tblprodutovariacao.codproduto');
@@ -118,8 +118,8 @@ class EstoqueSaldo extends MGModel
         $query->leftJoin('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
         $query->leftJoin('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto');
         $query->leftJoin('tblfamiliaproduto', 'tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto');
-        
-        
+
+
         switch ($agrupamento) {
             case 'variacao':
                 $query->select(
@@ -140,7 +140,7 @@ class EstoqueSaldo extends MGModel
                 $query->orderBy('tblproduto.produto');
                 $query->orderBy('variacao');
                 break;
-            
+
             case 'produto':
                 $query->select(
                     DB::raw(
@@ -160,7 +160,7 @@ class EstoqueSaldo extends MGModel
                 $query->groupBy('tblproduto.produto');
                 $query->orderBy('produto');
                 break;
-            
+
             case 'marca':
                 $query->select(
                     DB::raw(
@@ -181,7 +181,7 @@ class EstoqueSaldo extends MGModel
                 $query->groupBy('tblmarca.marca');
                 $query->orderBy('marca');
                 break;
-            
+
             case 'subgrupoproduto':
                 $query->select(
                     DB::raw(
@@ -201,7 +201,7 @@ class EstoqueSaldo extends MGModel
                 $query->groupBy('tblsubgrupoproduto.subgrupoproduto');
                 $query->orderBy('subgrupoproduto');
                 break;
-            
+
             case 'grupoproduto':
                 $query->select(
                     DB::raw(
@@ -221,7 +221,7 @@ class EstoqueSaldo extends MGModel
                 $query->groupBy('tblgrupoproduto.grupoproduto');
                 $query->orderBy('grupoproduto');
                 break;
-            
+
             case 'familiaproduto':
                 $query->select(
                     DB::raw(
@@ -241,7 +241,7 @@ class EstoqueSaldo extends MGModel
                 $query->groupBy('tblfamiliaproduto.familiaproduto');
                 $query->orderBy('familiaproduto');
                 break;
-            
+
             case 'secaoproduto':
             default:
                 $query->select(
@@ -264,13 +264,13 @@ class EstoqueSaldo extends MGModel
                 $query->orderBy('secaoproduto');
                 break;
         }
-        
+
         $query->orderBy('tblestoquelocal.codestoquelocal');
-        
+
         if (!empty($filtro['codsecaoproduto'])) {
             $query->where('tblfamiliaproduto.codsecaoproduto', '=', $filtro['codsecaoproduto']);
         }
-        
+
         if (!empty($filtro['codestoquelocal'])) {
             $query->where('tblestoquelocalprodutovariacao.codestoquelocal', '=', $filtro['codestoquelocal']);
         }
@@ -314,28 +314,28 @@ class EstoqueSaldo extends MGModel
         if (!empty($filtro['codmarca'])) {
             $query->where(function ($q2) use($filtro) {
                 $q2->orWhere('tblproduto.codmarca', '=', $filtro['codmarca']);
-                $q2->orWhere('tblprodutovariacao.codmarca', '=', $filtro['codmarca']);                        
+                $q2->orWhere('tblprodutovariacao.codmarca', '=', $filtro['codmarca']);
             });
         }
 
         if (!empty($filtro['saldo']) || !empty($filtro['minimo']) || !empty($filtro['maximo'])) {
-            
+
             $query->whereIn('tblestoquesaldo.codestoquelocalprodutovariacao', function($q2) use ($filtro){
-                
+
                 $q2->select('tblestoquesaldo.codestoquelocalprodutovariacao')
                     ->from('tblestoquesaldo')
                     ->join('tblestoquelocalprodutovariacao', 'tblestoquelocalprodutovariacao.codestoquelocalprodutovariacao', '=', 'tblestoquesaldo.codestoquelocalprodutovariacao')
                     ->whereRaw('fiscal = false');
-                
+
                 if (!empty($filtro['minimo'])) {
                     if ($filtro['minimo'] == -1) {
                         $q2->whereRaw('saldoquantidade < estoqueminimo');
                     } else if ($filtro['minimo'] == 1) {
                         $q2->whereRaw('saldoquantidade >= estoqueminimo');
-                        
+
                     }
                 }
-                
+
                 if (!empty($filtro['maximo'])) {
                     if ($filtro['maximo'] == -1) {
                         $q2->whereRaw('saldoquantidade <= estoquemaximo');
@@ -343,25 +343,25 @@ class EstoqueSaldo extends MGModel
                         $q2->whereRaw('saldoquantidade > estoquemaximo');
                     }
                 }
-                
+
                 if (!empty($filtro['saldo'])) {
                     if ($filtro['saldo'] == -1) {
                         $q2->whereRaw('saldoquantidade < 0');
                     } else if ($filtro['saldo'] == 1) {
                         $q2->whereRaw('saldoquantidade > 0');
-                        
+
                     }
                 }
-                
+
             });
         }
 
         $query->whereRaw('tblestoquesaldo.saldoquantidade != 0');
-        
+
         $rows = $query->get();
-        
+
         $ret = [];
-        
+
         $total = [
             'coditem' => null,
             'item' => null,
@@ -376,11 +376,11 @@ class EstoqueSaldo extends MGModel
                     'fiscal' => [
                         'saldoquantidade' => null,
                         'saldovalor' => null,
-                    ]                    
+                    ]
                 ]
             ]
         ];
-                
+
         foreach($rows as $row) {
 
             if (!isset($ret[$row->coditem])) {
@@ -390,7 +390,7 @@ class EstoqueSaldo extends MGModel
                     'estoquelocal' => [
                         'total' => [
                             'estoqueminimo' => null,
-                            'estoquemaximo' => null,                            
+                            'estoquemaximo' => null,
                             'fisico' => [
                                 'saldoquantidade' => null,
                                 'saldovalor' => null,
@@ -420,7 +420,7 @@ class EstoqueSaldo extends MGModel
                     ]
                 ];
             }
-            
+
             if (!isset($total['estoquelocal'][$row->codestoquelocal])) {
                 $total['estoquelocal'][$row->codestoquelocal] = [
                     'codestoquelocal' => $row->codestoquelocal,
@@ -434,36 +434,36 @@ class EstoqueSaldo extends MGModel
                     'fiscal' => [
                         'saldoquantidade' => null,
                         'saldovalor' => null,
-                    ]                    
+                    ]
                 ];
             }
-            
+
             if  (empty($ret[$row->coditem]['estoquelocal'][$row->codestoquelocal]['estoqueminimo'])) {
                 $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal]['estoqueminimo'] = $row->estoqueminimo;
                 $ret[$row->coditem]['estoquelocal']['total']['estoqueminimo'] += $row->estoqueminimo;
                 $total['estoquelocal'][$row->codestoquelocal]['estoqueminimo'] += $row->estoqueminimo;
                 $total['estoquelocal']['total']['estoqueminimo'] += $row->estoqueminimo;
             }
-            
+
             if  (empty($ret[$row->coditem]['estoquelocal'][$row->codestoquelocal]['estoquemaximo'])) {
                 $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal]['estoquemaximo'] = $row->estoquemaximo;
                 $ret[$row->coditem]['estoquelocal']['total']['estoquemaximo'] += $row->estoquemaximo;
                 $total['estoquelocal'][$row->codestoquelocal]['estoquemaximo'] += $row->estoquemaximo;
                 $total['estoquelocal']['total']['estoquemaximo'] += $row->estoquemaximo;
             }
-            
+
             $fiscal = ($row->fiscal)?'fiscal':'fisico';
-            
+
             $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal][$fiscal]['saldoquantidade'] = $row->saldoquantidade;
             $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal][$fiscal]['saldovalor'] = $row->saldovalor;
-            
+
             if (!empty($row->codestoquesaldo)) {
                 $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal][$fiscal]['codestoquesaldo'] = $row->codestoquesaldo;
             }
-            
+
             $ret[$row->coditem]['estoquelocal']['total'][$fiscal]['saldoquantidade'] += $row->saldoquantidade;
             $ret[$row->coditem]['estoquelocal']['total'][$fiscal]['saldovalor'] += $row->saldovalor;
-            
+
             $total['estoquelocal'][$row->codestoquelocal][$fiscal]['saldoquantidade'] += $row->saldoquantidade;
             $total['estoquelocal'][$row->codestoquelocal][$fiscal]['saldovalor'] += $row->saldovalor;
 
@@ -471,15 +471,15 @@ class EstoqueSaldo extends MGModel
             $total['estoquelocal']['total'][$fiscal]['saldovalor'] += $row->saldovalor;
 
         }
-        
+
         $ret['total'] = $total;
-        
+
         return $ret;
     }
-    
-    public static function relatorioAnalise($filtro) 
+
+    public static function relatorioAnalise($filtro)
     {
-        
+
         // Monta tabelas da Query
         $qry = DB::table('tblproduto as p');
         $qry->join('tblprodutovariacao as pv', 'pv.codproduto', '=', 'p.codproduto');
@@ -499,11 +499,11 @@ class EstoqueSaldo extends MGModel
             $join->on('es.fiscal', '=', DB::RAW('false'));
 
         });
-        
+
         // Monta campos Selecionados
         $qry->select([
-            'p.codproduto', 
-            'p.produto', 
+            'p.codproduto',
+            'p.produto',
             'p.preco',
             'p.referencia',
             'p.inativo',
@@ -514,22 +514,22 @@ class EstoqueSaldo extends MGModel
             'pv.dataultimacompra',
             'pv.quantidadeultimacompra',
             'pv.custoultimacompra',
-            
-            'm.codmarca', 
+
+            'm.codmarca',
             'm.marca',
-            
+
             'um.codunidademedida',
-            'um.sigla as siglaunidademedida', 
-            
+            'um.sigla as siglaunidademedida',
+
             'sgp.codsubgrupoproduto',
             'sgp.subgrupoproduto',
-            
+
             'gp.codgrupoproduto',
             'gp.grupoproduto',
 
             'fp.codfamiliaproduto',
             'fp.familiaproduto',
-            
+
             'sp.codsecaoproduto',
             'sp.secaoproduto',
 
@@ -555,7 +555,7 @@ class EstoqueSaldo extends MGModel
             'es.saldovalor',
             'es.customedio',
         ]);
-        
+
         // Aplica Filtro
         if (!empty($filtro['codproduto'])) {
             $qry->where('p.codproduto', $filtro['codproduto']);
@@ -568,19 +568,19 @@ class EstoqueSaldo extends MGModel
         if (!empty($filtro['codsubgrupoproduto'])) {
             $qry->where('p.codsubgrupoproduto', $filtro['codsubgrupoproduto']);
         }
-        
+
         if (!empty($filtro['codgrupoproduto'])) {
             $qry->where('sgp.codgrupoproduto', $filtro['codgrupoproduto']);
         }
-        
+
         if (!empty($filtro['codfamiliaproduto'])) {
             $qry->where('gp.codfamiliaproduto', $filtro['codfamiliaproduto']);
         }
-        
+
         if (!empty($filtro['codsecaoproduto'])) {
             $qry->where('fp.codsecaoproduto', $filtro['codsecaoproduto']);
         }
-        
+
         switch (isset($filtro['ativo'])?$filtro['ativo']:'9') {
             case 1: //Ativos
                 $qry->whereNull('p.inativo');
@@ -591,7 +591,7 @@ class EstoqueSaldo extends MGModel
             case 9; //Todos
             default:
         }
-        
+
         if (!empty($filtro['codestoquelocal'])) {
             $qry->where('elpv.codestoquelocal', '=', $filtro['codestoquelocal']);
         }
@@ -653,23 +653,23 @@ class EstoqueSaldo extends MGModel
         $qry->orderByRaw('pv.variacao ASC NULLS FIRST');
         $qry->orderBy('pv.codprodutovariacao', 'ASC');
         $qry->orderBy('el.codestoquelocal', 'ASC');
-        
+
         // Busca Registros
         $registros = collect($qry->get());
-        
+
         $ret = [
             'filtro' => $filtro,
             'urlfiltro' => urlArrGet($filtro, 'estoque-saldo/relatorio-analise-filtro'),
             'agrupamentos' => [],
         ];
-        
+
         foreach ($registros as $registro) {
-            
+
             $codigo = "{$registro->codsubgrupoproduto}_{$registro->codmarca}";
-            
+
             // Agrupamento Principal
             if (!isset($ret['agrupamentos'][$codigo])) {
-                
+
                 $filtro_detalhes = $filtro;
                 unset($filtro_detalhes['codproduto']);
                 unset($filtro_detalhes['codmarca']);
@@ -677,7 +677,7 @@ class EstoqueSaldo extends MGModel
                 unset($filtro_detalhes['codsubgrupoproduto']);
                 unset($filtro_detalhes['codfamiliaproduto']);
                 unset($filtro_detalhes['codsecaoproduto']);
-                
+
                 $titulos = [];
                 $filtro_detalhes['codsecaoproduto'] = $registro->codsecaoproduto;
                 $titulos[] = [
@@ -710,7 +710,7 @@ class EstoqueSaldo extends MGModel
                     'descricao' => $registro->subgrupoproduto,
                     'urldetalhes' => urlArrGet($filtro_detalhes, 'estoque-saldo/relatorio-analise'),
                 ];
-                
+
                 unset($filtro_detalhes['codgrupoproduto']);
                 unset($filtro_detalhes['codsubgrupoproduto']);
                 unset($filtro_detalhes['codfamiliaproduto']);
@@ -722,15 +722,15 @@ class EstoqueSaldo extends MGModel
                     'descricao' => $registro->marca,
                     'urldetalhes' => urlArrGet($filtro_detalhes, 'estoque-saldo/relatorio-analise'),
                 ];
-                
+
                 $ret['agrupamentos'][$codigo] = [
                     'titulos' => $titulos,
                 ];
             }
-            
+
             // Agrupamento Produto
             if (!isset($ret['agrupamentos'][$codigo]['produtos'][$registro->codproduto])) {
-                
+
                 $filtro_detalhes = $filtro;
                 unset($filtro_detalhes['codmarca']);
                 unset($filtro_detalhes['codgrupoproduto']);
@@ -738,7 +738,7 @@ class EstoqueSaldo extends MGModel
                 unset($filtro_detalhes['codfamiliaproduto']);
                 unset($filtro_detalhes['codsecaoproduto']);
                 $filtro_detalhes['codproduto'] = $registro->codproduto;
-                
+
                 $ret['agrupamentos'][$codigo]['produtos'][$registro->codproduto] = [
                     'codproduto' => $registro->codproduto,
                     'produto' => $registro->produto,
@@ -746,11 +746,11 @@ class EstoqueSaldo extends MGModel
                     'siglaunidademedida' => $registro->siglaunidademedida,
                     'codmarca' => $registro->codmarca,
                     'marca' => $registro->marca,
-                    'inativo' => !empty($registro->inativo)?new Carbon($registro->inativo):null,                    
+                    'inativo' => !empty($registro->inativo)?new Carbon($registro->inativo):null,
                     'urldetalhes' => urlArrGet($filtro_detalhes, 'estoque-saldo/relatorio-analise'),
                 ];
             }
-            
+
             // Agrupamento Variacao
             if (!isset($ret['agrupamentos'][$codigo]['produtos'][$registro->codproduto]['variacoes'][$registro->codprodutovariacao])) {
                 $ret['agrupamentos'][$codigo]['produtos'][$registro->codproduto]['variacoes'][$registro->codprodutovariacao] = [
@@ -763,7 +763,7 @@ class EstoqueSaldo extends MGModel
                     'locais' => [],
                 ];
             }
-            
+
             // Agrupamento Local Estoque
             if (!empty($registro->codestoquelocal)) {
                 //dd($registro);
@@ -796,31 +796,31 @@ class EstoqueSaldo extends MGModel
                     'vencimento' => !empty($registro->vencimento)?new Carbon($registro->vencimento):null,
                 ];
             }
-            
+
         }
-        
+
         foreach ($ret['agrupamentos'] as $codigo => $agrupamento) {
-            
+
             foreach ($agrupamento['produtos'] as $codproduto => $produto) {
-                
+
                 foreach ($produto['variacoes'] as $codprodutovariacao => $variacao) {
-                    
+
                     // Totaliza Variacao
                     $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['saldoquantidade'] =
-                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'saldoquantidade')); 
-                    
+                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'saldoquantidade'));
+
                     $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['saldovalor'] =
-                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'saldovalor')); 
-                    
+                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'saldovalor'));
+
                     $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['customedio'] = null;
                     if (!empty($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['saldoquantidade'])) {
                         $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['customedio'] =
                             $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['saldovalor'] /
                             $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['saldoquantidade'];
                     }
-                    
+
                     $vendadiaquantidadeprevisao =
-                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'vendadiaquantidadeprevisao')); 
+                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'vendadiaquantidadeprevisao'));
                     $saldodias = null;
                     $vendaprevisaoquinzena = null;
                     if (!empty($vendadiaquantidadeprevisao)) {
@@ -832,28 +832,28 @@ class EstoqueSaldo extends MGModel
                     $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['vendaprevisaoquinzena'] = $vendaprevisaoquinzena;
 
                     $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['estoqueminimo'] =
-                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'estoqueminimo')); 
+                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'estoqueminimo'));
 
                     $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['estoquemaximo'] =
-                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'estoquemaximo')); 
+                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'estoquemaximo'));
 
                     $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['vendabimestrequantidade'] =
-                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'vendabimestrequantidade')); 
+                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'vendabimestrequantidade'));
 
                     $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['vendasemestrequantidade'] =
-                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'vendasemestrequantidade')); 
+                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'vendasemestrequantidade'));
 
                     $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['vendaanoquantidade'] =
-                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'vendaanoquantidade')); 
-                    
+                        array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'vendaanoquantidade'));
+
                 }
-                
+
                 // Totaliza Produto
                 $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['saldoquantidade'] =
-                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'saldoquantidade')); 
+                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'saldoquantidade'));
 
                 $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['saldovalor'] =
-                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'saldovalor')); 
+                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'saldovalor'));
 
                 $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['customedio'] = null;
                 if (!empty($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['saldoquantidade'])) {
@@ -863,7 +863,7 @@ class EstoqueSaldo extends MGModel
                 }
 
                 $vendadiaquantidadeprevisao =
-                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'vendadiaquantidadeprevisao')); 
+                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'vendadiaquantidadeprevisao'));
                 $saldodias = null;
                 $vendaprevisaoquinzena = null;
                 if (!empty($vendadiaquantidadeprevisao)) {
@@ -875,28 +875,28 @@ class EstoqueSaldo extends MGModel
                 $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['vendaprevisaoquinzena'] = $vendaprevisaoquinzena;
 
                 $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['estoqueminimo'] =
-                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'estoqueminimo')); 
+                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'estoqueminimo'));
 
                 $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['estoquemaximo'] =
-                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'estoquemaximo')); 
+                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'estoquemaximo'));
 
                 $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['vendabimestrequantidade'] =
-                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'vendabimestrequantidade')); 
+                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'vendabimestrequantidade'));
 
                 $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['vendasemestrequantidade'] =
-                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'vendasemestrequantidade')); 
+                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'vendasemestrequantidade'));
 
                 $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['vendaanoquantidade'] =
-                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'vendaanoquantidade')); 
-                
+                    array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'vendaanoquantidade'));
+
             }
-            
+
             // Totaliza Agrupamento
             $ret['agrupamentos'][$codigo]['saldoquantidade'] =
-                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'saldoquantidade')); 
+                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'saldoquantidade'));
 
             $ret['agrupamentos'][$codigo]['saldovalor'] =
-                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'saldovalor')); 
+                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'saldovalor'));
 
             $ret['agrupamentos'][$codigo]['customedio'] = null;
             if (!empty($ret['agrupamentos'][$codigo]['saldoquantidade'])) {
@@ -906,7 +906,7 @@ class EstoqueSaldo extends MGModel
             }
 
             $vendadiaquantidadeprevisao =
-                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'vendadiaquantidadeprevisao')); 
+                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'vendadiaquantidadeprevisao'));
             $saldodias = null;
             $vendaprevisaoquinzena = null;
             if (!empty($vendadiaquantidadeprevisao)) {
@@ -918,28 +918,28 @@ class EstoqueSaldo extends MGModel
             $ret['agrupamentos'][$codigo]['vendaprevisaoquinzena'] = $vendaprevisaoquinzena;
 
             $ret['agrupamentos'][$codigo]['estoqueminimo'] =
-                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'estoqueminimo')); 
+                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'estoqueminimo'));
 
             $ret['agrupamentos'][$codigo]['estoquemaximo'] =
-                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'estoquemaximo')); 
+                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'estoquemaximo'));
 
             $ret['agrupamentos'][$codigo]['vendabimestrequantidade'] =
-                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'vendabimestrequantidade')); 
+                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'vendabimestrequantidade'));
 
             $ret['agrupamentos'][$codigo]['vendasemestrequantidade'] =
-                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'vendasemestrequantidade')); 
+                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'vendasemestrequantidade'));
 
             $ret['agrupamentos'][$codigo]['vendaanoquantidade'] =
-                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'vendaanoquantidade')); 
-                
+                array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'vendaanoquantidade'));
+
         }
-        
+
         // Totaliza Relatorio
         $ret['saldoquantidade'] =
-            array_sum(array_column($ret['agrupamentos'], 'saldoquantidade')); 
+            array_sum(array_column($ret['agrupamentos'], 'saldoquantidade'));
 
         $ret['saldovalor'] =
-            array_sum(array_column($ret['agrupamentos'], 'saldovalor')); 
+            array_sum(array_column($ret['agrupamentos'], 'saldovalor'));
 
         $ret['customedio'] = null;
         if (!empty($ret['saldoquantidade'])) {
@@ -949,7 +949,7 @@ class EstoqueSaldo extends MGModel
         }
 
         $vendadiaquantidadeprevisao =
-            array_sum(array_column($ret['agrupamentos'], 'vendadiaquantidadeprevisao')); 
+            array_sum(array_column($ret['agrupamentos'], 'vendadiaquantidadeprevisao'));
         $saldodias = null;
         $vendaprevisaoquinzena = null;
         if (!empty($vendadiaquantidadeprevisao)) {
@@ -974,22 +974,22 @@ class EstoqueSaldo extends MGModel
 
         $ret['vendaanoquantidade'] =
             array_sum(array_column($ret['agrupamentos'], 'vendaanoquantidade'));
-        
+
         return $ret;
     }
-    
+
     public static function relatorioComparativoVendas ($filtro)
     {
         $sql = "
-            select 
+            select
                 m.codmarca
                 , m.marca
                 , coalesce(pv.referencia, p.referencia) as referencia
                 , (select array_to_json(array(
-                    select pb.barras 
-                    from tblprodutobarra pb 
+                    select pb.barras
+                    from tblprodutobarra pb
                     --left join tblprodutoembalagem pe on (pe.codprodutoembalagem = pb.codprodutoembalagem)
-                    where pb.codprodutovariacao = pv.codprodutovariacao 
+                    where pb.codprodutovariacao = pv.codprodutovariacao
                     and pb.codprodutoembalagem is null
                     --order by pe.quantidade nulls first, barras
                     order by barras
@@ -1013,7 +1013,7 @@ class EstoqueSaldo extends MGModel
                 , elpv_deposito.bloco
                 , elpv_filial.vendadiaquantidadeprevisao * {$filtro['dias_previsao']} as previsao_vendas
             from (
-                select 
+                select
                     iq_pb.codprodutovariacao
                     ,  sum(iq_npb.quantidade * coalesce(iq_pe.quantidade, 1)) as quantidade_vendida
                 from tblnegocio iq_n
@@ -1039,13 +1039,13 @@ class EstoqueSaldo extends MGModel
             left join tblproduto p on (p.codproduto = pv.codproduto)
             left join tblmarca m on (m.codmarca = coalesce(pv.codmarca, p.codmarca))
             ";
-            
+
         $s_and = 'WHERE';
         if (!empty($filtro['codmarca'])) {
             $sql .= " $s_and m.codmarca = {$filtro['codmarca']}";
             $s_and = 'AND';
         }
-        
+
         switch ($filtro['saldo_deposito']) {
             case 1:
                 $sql .= " $s_and es_deposito.saldoquantidade > 0";
@@ -1057,7 +1057,7 @@ class EstoqueSaldo extends MGModel
                 $s_and = 'AND';
                 break;
         }
-        
+
         switch ($filtro['saldo_filial']) {
             case 1:
                 $sql .= " $s_and (es_filial.saldoquantidade > coalesce(elpv_filial.vendadiaquantidadeprevisao * {$filtro['dias_previsao']}, 0))";
@@ -1069,7 +1069,7 @@ class EstoqueSaldo extends MGModel
                 $s_and = 'AND';
                 break;
         }
-        
+
         switch ($filtro['minimo']) {
             case 1:
                 $sql .= " $s_and es_filial.saldoquantidade > coalesce(elpv_filial.estoqueminimo, 0)";
@@ -1081,7 +1081,7 @@ class EstoqueSaldo extends MGModel
                 $s_and = 'AND';
                 break;
         }
-        
+
         switch ($filtro['maximo']) {
             case 1:
                 $sql .= " $s_and es_filial.saldoquantidade > coalesce(elpv_filial.estoquemaximo, es_filial.saldoquantidade)";
@@ -1093,13 +1093,13 @@ class EstoqueSaldo extends MGModel
                 $s_and = 'AND';
                 break;
         }
-        
+
         $sql .= "
             order by m.marca, p.produto, p.codproduto, pv.variacao nulls first, pv.codprodutovariacao
             ";
-        
+
         $regs = DB::select($sql);
-        
+
         $ret = [
             'filtro' => $filtro,
             'estoquelocal_deposito' => EstoqueLocal::findOrFail($filtro['codestoquelocaldeposito'])->estoquelocal,
@@ -1107,7 +1107,154 @@ class EstoqueSaldo extends MGModel
             'urlfiltro' => urlArrGet($filtro, 'estoque-saldo/relatorio-comparativo-vendas-filtro'),
             'itens' => $regs,
         ];
+
+        return $ret;
+    }
+
+    public static function relatorioFisicoFiscal ($filtro)
+    {
+        $sql = "
+            select
+                p.codproduto
+                , p.produto
+                , fiscal.saldoquantidade as fiscal_saldoquantidade
+                , fiscal.saldovalor as fiscal_saldovalor
+                , fiscal.customedio as fiscal_customedio
+                , fisico.saldoquantidade as fisico_saldoquantidade
+                , fisico.saldovalor as fisico_saldovalor
+                , fisico.customedio as fisico_customedio
+                , p.preco
+                , m.codmarca
+                , m.marca
+                , sp.codsecaoproduto
+                , sp.secaoproduto
+                , fp.codfamiliaproduto
+                , fp.familiaproduto
+                , gp.codgrupoproduto
+                , gp.grupoproduto
+                , sgp.codsubgrupoproduto
+                , sgp.subgrupoproduto
+            from tblproduto p
+            left join tblmarca m on (m.codmarca = p.codmarca)
+            left join tblsubgrupoproduto sgp on (sgp.codsubgrupoproduto = p.codsubgrupoproduto)
+            left join tblgrupoproduto gp on (gp.codgrupoproduto = sgp.codgrupoproduto)
+            left join tblfamiliaproduto fp on (fp.codfamiliaproduto = gp.codfamiliaproduto)
+            left join tblsecaoproduto sp on (sp.codsecaoproduto = fp.codsecaoproduto)
+            left join (
+                select pv.codproduto, sum(em.saldoquantidade) as saldoquantidade, sum(em.saldovalor) as saldovalor, avg(em.customedio) as customedio
+                from tblestoquelocalprodutovariacao elpv
+                inner join tblprodutovariacao pv on (pv.codprodutovariacao = elpv.codprodutovariacao)
+                inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
+                inner join tblfilial f on (f.codfilial = el.codfilial)
+                inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = false)
+                inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '{$filtro['ano']}-{$filtro['mes']}-31' order by mes desc limit 1))
+                where f.codempresa = {$filtro['codempresa']}";
+                
+        if (!empty($filtro['codestoquelocal'])) {
+            $sql .= " AND el.codestoquelocal = {$filtro['codestoquelocal']}";
+        }
         
+        $sql .= "
+                group by pv.codproduto
+                ) fisico on (fisico.codproduto = p.codproduto)
+            left join (
+                select pv.codproduto, sum(em.saldoquantidade) as saldoquantidade, sum(em.saldovalor) as saldovalor, avg(em.customedio) as customedio
+                from tblestoquelocalprodutovariacao elpv
+                inner join tblprodutovariacao pv on (pv.codprodutovariacao = elpv.codprodutovariacao)
+                inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
+                inner join tblfilial f on (f.codfilial = el.codfilial)
+                inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = true)
+                inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '{$filtro['ano']}-{$filtro['mes']}-31' order by mes desc limit 1))
+                where f.codempresa = {$filtro['codempresa']}";
+                
+        if (!empty($filtro['codestoquelocal'])) {
+            $sql .= " AND el.codestoquelocal = {$filtro['codestoquelocal']}";
+        }
+        
+        $sql .= "
+                group by pv.codproduto
+                ) fiscal on (fiscal.codproduto = p.codproduto)
+            where p.codtipoproduto = 0
+            and p.inativo is null
+            ";
+
+        if (!empty($filtro['codmarca'])) {
+            $sql .= " AND m.codmarca = {$filtro['codmarca']}";
+        }
+
+        if (!empty($filtro['preco_de'])) {
+            $sql .= " AND p.preco >= {$filtro['preco_de']}";
+        }
+
+        if (!empty($filtro['preco_ate'])) {
+            $sql .= " AND p.preco <= {$filtro['preco_ate']}";
+        }
+        
+        if (!empty($filtro['produto'])) {
+            $palavras = explode(' ', $filtro['produto']);
+            foreach ($palavras as $palavra) {
+                if (empty($palavra)) {
+                    continue;
+                }
+                $sql .= " AND p.produto ilike '%{$palavra}%'";
+            }
+        }
+
+        if (!empty($filtro['codsubgrupoproduto'])) {
+            $sql .= " AND p.codsubgrupoproduto = {$filtro['codsubgrupoproduto']}";
+        } elseif (!empty($filtro['codgrupoproduto'])) {
+            $sql .= " AND sgp.codgrupoproduto = {$filtro['codgrupoproduto']}";
+        } elseif (!empty($filtro['codfamiliaproduto'])) {
+            $sql .= " AND gp.codfamiliaproduto = {$filtro['codfamiliaproduto']}";
+        } elseif (!empty($filtro['codsecaoproduto'])) {
+            $sql .= " AND fp.codsecaoproduto = {$filtro['codsecaoproduto']}";
+        }
+
+        switch ($filtro['saldo_fisico']) {
+            case -1:
+                $sql .= " AND fisico.saldoquantidade < 0";
+                break;
+            case 1:
+                $sql .= " AND fisico.saldoquantidade > 0";
+                break;
+        }
+
+        switch ($filtro['saldo_fiscal']) {
+            case -1:
+                $sql .= " AND fiscal.saldoquantidade < 0";
+                break;
+            case 1:
+                $sql .= " AND fiscal.saldoquantidade > 0";
+                break;
+        }
+
+        switch ($filtro['saldo_fisico_fiscal']) {
+            case -1:
+                $sql .= " AND coalesce(fiscal.saldoquantidade, 0) < coalesce(fisico.saldoquantidade, 0)";
+                break;
+            case 1:
+                $sql .= " AND coalesce(fiscal.saldoquantidade, 0) > coalesce(fisico.saldoquantidade, 0)";
+                break;
+        }
+
+        $sql .= "
+            order by p.produto, p.codproduto
+            ";
+        
+        $regs = DB::select($sql);
+        
+        $totais['fisico_saldoquantidade'] = array_sum(array_column($regs, 'fisico_saldoquantidade'));
+        $totais['fisico_saldovalor'] = array_sum(array_column($regs, 'fisico_saldovalor'));
+        $totais['fiscal_saldoquantidade'] = array_sum(array_column($regs, 'fiscal_saldoquantidade'));
+        $totais['fiscal_saldovalor'] = array_sum(array_column($regs, 'fiscal_saldovalor'));
+
+        $ret = [
+            'filtro' => $filtro,
+            'urlfiltro' => urlArrGet($filtro, 'estoque-saldo/relatorio-fisico-fiscal-filtro'),
+            'itens' => $regs,
+            'totais' => $totais,
+        ];
+
         return $ret;
     }
 }
