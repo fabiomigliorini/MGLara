@@ -2,6 +2,7 @@
 
 namespace MGLara\Models;
 use Validator;
+use DB;
 
 /**
  * Campos
@@ -26,6 +27,8 @@ use Validator;
 
 class MetaFilialPessoa extends MGModel
 {
+    public $codcargo_subgerente = 2;
+    
     protected $table = 'tblmetafilialpessoa';
     protected $primaryKey = 'codmetafilialpessoa';
     protected $fillable = [
@@ -41,16 +44,27 @@ class MetaFilialPessoa extends MGModel
     
 
     public function validate() {
+        Validator::extend('uniqueGerente', function ($attribute, $value, $parameters)
+        {
+            $query = DB::table('tblmetafilialpessoa')
+                    ->where('codmetafilial', $parameters[0])
+                    ->where('codcargo', env('CODCARGO_SUBGERENTE'));
+            
+            $count = $query->count();
+            if ($count > 1){
+                return false;
+            }
+            return true;        
+        });  
         
         $this->_regrasValidacao = [
             'codpessoa' => "uniqueMultiple:tblmetafilialpessoa,codmetafilialpessoa,$this->codmetafilialpessoa,codpessoa,codmetafilial,$this->codmetafilial",
-            'codcargo' => "unique:tblmetafilialpessoa,codcargo,$this->codmetafilialpessoa,codmetafilialpessoa,codmetafilial,$this->codmetafilial,codcargo,".env('CODCARGO_SUBGERENTE').""
-            
+            'codcargo'=>"uniqueGerente:$this->codmetafilial"
         ];
     
         $this->_mensagensErro = [
             'codpessoa.unique_multiple' => 'Uma pessoa foi selecionada mais de uma vez!',
-            'codcargo.unique' => 'Mais de um Sub Gerente foi selecionado para uma filial!',
+            'codcargo.unique_gerente' => 'Mais de um Sub-Gerente foi selecionado para uma filial!',
         ];
         
         return parent::validate();
