@@ -1,0 +1,30 @@
+﻿update tblprodutobarra set codprodutovariacao = null
+
+delete from tblprodutovariacao
+
+insert into tblprodutovariacao (codproduto, codmarca, variacao, referencia, codusuariocriacao, criacao, codusuarioalteracao, alteracao)
+select codproduto, codmarca, variacao, max(referencia), max(codusuariocriacao), max(criacao), max(codusuarioalteracao), max(alteracao) from tblprodutobarra
+group by codproduto, codmarca, variacao
+
+update tblprodutobarra
+set codprodutovariacao = pv.codprodutovariacao
+from tblprodutovariacao pv
+where pv.codproduto = tblprodutobarra.codproduto
+and coalesce(pv.codmarca, 0) = coalesce(tblprodutobarra.codmarca, 0)
+and coalesce(pv.variacao, '') = coalesce(tblprodutobarra.variacao, '')
+
+alter table tblprodutobarra alter column codprodutovariacao set not null
+
+select count(*) from tblprodutobarra where codprodutovariacao is null
+
+select pb.codproduto, pv.codproduto, pb.codmarca, pv.codmarca, pb.variacao, pv.variacao, pb.referencia, pv.referencia
+from tblprodutobarra pb
+inner join tblprodutovariacao pv on (pv.codprodutovariacao = pb.codprodutovariacao)
+where pb.variacao is not null
+limit 10000
+
+                        select pe.codproduto
+                        from tblprodutoembalagem pe
+                        inner join tblproduto p on (p.codproduto = pe.codproduto)
+                        where coalesce(pe.preco, pe.quantidade * p.preco) >= 158.00
+                        or p.preco >= 158.00
