@@ -37,12 +37,14 @@ class MetaFilialPessoa extends MGModel
         'criacao',
         'alteracao',
     ];
+    
+    
 
     public function validate() {
         
         $this->_regrasValidacao = [
             'codpessoa' => "uniqueMultiple:tblmetafilialpessoa,codmetafilialpessoa,$this->codmetafilialpessoa,codpessoa,codmetafilial,$this->codmetafilial",
-            'codcargo' => "unique:tblmetafilialpessoa,codcargo,$this->codmetafilialpessoa,codmetafilialpessoa,codmetafilial,$this->codmetafilial,codcargo,2"
+            'codcargo' => "unique:tblmetafilialpessoa,codcargo,$this->codmetafilialpessoa,codmetafilialpessoa,codmetafilial,$this->codmetafilial,codcargo,".env('CODCARGO_SUBGERENTE').""
             
         ];
     
