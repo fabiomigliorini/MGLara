@@ -6391,12 +6391,22 @@ FROM
 		<entity schema="mgsis" name="tbljobsfailed" color="94c3ea" x="60" y="200" />
 	</layout>
 	<layout name="Layout_Meta" id="Layout_dd20140" confirmed="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblpessoa" color="c1d8ee" x="60" y="60" />
 		<entity schema="mgsis" name="tblcargo" color="c1d8ee" x="360" y="440" />
-		<entity schema="mgsis" name="tblmetafilial" color="c1d8ee" x="620" y="160" />
-		<entity schema="mgsis" name="tblmetafilialpessoa" color="c1d8ee" x="600" y="400" />
-		<entity schema="mgsis" name="tblmeta" color="c1d8ee" x="300" y="120" />
-		<entity schema="mgsis" name="tblfilial" color="c1d8ee" x="820" y="60" />
+		<entity schema="mgsis" name="tblfilial" color="c1d8ee" x="960" y="60" />
+		<entity schema="mgsis" name="tblmetafilial" color="c1d8ee" x="700" y="120" />
+		<entity schema="mgsis" name="tblmetafilialpessoa" color="c1d8ee" x="680" y="480" />
+		<entity schema="mgsis" name="tblmeta" color="c1d8ee" x="320" y="120" />
+		<entity schema="mgsis" name="tblpessoa" color="c1d8ee" x="60" y="60" >
+			<column name="codpessoa" />
+			<column name="codsexo" />
+			<column name="codestadocivil" />
+			<column name="codcidade" />
+			<column name="codcidadecobranca" />
+			<column name="codformapagamento" />
+			<column name="codusuarioalteracao" />
+			<column name="codusuariocriacao" />
+			<column name="codgrupocliente" />
+		</entity>
 	</layout>
 	<layout name="Layout_NCM" id="Layout9248750" confirmed="y" show_column_type="y" show_relation="columns" >
 		<entity schema="mgsis" name="tblregulamentoicmsstmt" color="b2cdf7" x="60" y="60" />

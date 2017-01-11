@@ -61,6 +61,10 @@ class EstoqueAjustaFiscalCommand extends Command
                 $this->emiteTransferencias();
                 break;
 
+            case 'transferencia-manual':
+                $this->transferenciaManual();
+                break;
+
             default:
                 $this->metodoDesconhecido();
                 break;
@@ -78,6 +82,50 @@ class EstoqueAjustaFiscalCommand extends Command
         $this->line('');
         $this->line('- variacao-negativa: Ajusta estoque negativo da variação transferindo o saldo de outra variacao do mesmo produto, do mesmo local de estoque!');
         $this->line('- emite-transferencias: Gera notas de transferencia de uma filial para outra a fim de corrigir o estoque negativo!');
+        $this->line('- transferencia-manual: Solicita codestoquemes de onde transferir saldo para cobrir saldo negativo!');
+    }
+    
+    public function transfereSaldo($quantidade, Carbon $data, $codprodutovariacaoorigem, $codestoquelocalorigem, $codprodutovariacaodestino, $codestoquelocaldestino) 
+    {
+        DB::beginTransaction();
+        
+        $mes_origem = EstoqueMes::buscaOuCria($codprodutovariacaoorigem, $codestoquelocalorigem, true, $data);
+        $mes_destino = EstoqueMes::buscaOuCria($codprodutovariacaodestino, $codestoquelocaldestino, true, $data);
+        
+        $tipo = EstoqueMovimentoTipo::findOrFail(4201);
+        
+        $mov_origem = new EstoqueMovimento();
+        $mov_origem->codestoquemes = $mes_origem->codestoquemes;
+        $mov_origem->codestoquemovimentotipo = $tipo->codestoquemovimentotipoorigem;
+        $mov_origem->data = $data;
+        $mov_origem->manual = true;
+        $mov_origem->saidaquantidade = $quantidade;
+        if (!$mov_origem->save()) {
+            throw new Exception('Erro ao Salvar Movimento de Destino!');
+        }
+        
+        $mov_destino = new EstoqueMovimento();
+        $mov_destino->codestoquemes = $mes_destino->codestoquemes;
+        $mov_destino->codestoquemovimentotipo = $tipo->codestoquemovimentotipo;
+        $mov_destino->codestoquemovimentoorigem = $mov_origem->codestoquemovimento;
+        $mov_destino->data = $data;
+        $mov_destino->manual = true;
+        $mov_destino->entradaquantidade = $quantidade;
+            
+        if (!$mov_destino->save()) {
+            throw new Exception('Erro ao Salvar Movimento de Destino!');
+        }
+        
+        $this->info("Criada Transferência de {$mes_origem->codestoquemes}({$mov_origem->codestoquemovimento}) para {$mes_destino->codestoquemes}({$mov_destino->codestoquemovimento})!");
+        $this->line('');
+
+        DB::commit();
+        
+        $this->dispatch((new EstoqueCalculaCustoMedio($mes_origem->codestoquemes))->onQueue('urgent'));
+        $this->dispatch((new EstoqueCalculaCustoMedio($mes_destino->codestoquemes))->onQueue('urgent'));
+                
+        // aguarda meio segundo para rodar recalculo dos custos medios
+        sleep(3);
     }
     
     public function emiteTransferencias()
@@ -350,47 +398,119 @@ class EstoqueAjustaFiscalCommand extends Command
         
     }
     
-    public function transfereSaldo($quantidade, Carbon $data, $codprodutovariacaoorigem, $codestoquelocalorigem, $codprodutovariacaodestino, $codestoquelocaldestino) 
+    
+    public function transferenciaManual()
     {
-        DB::beginTransaction();
-        
-        $mes_origem = EstoqueMes::buscaOuCria($codprodutovariacaoorigem, $codestoquelocalorigem, true, $data);
-        $mes_destino = EstoqueMes::buscaOuCria($codprodutovariacaodestino, $codestoquelocaldestino, true, $data);
-        
-        $tipo = EstoqueMovimentoTipo::findOrFail(4201);
-        
-        $mov_origem = new EstoqueMovimento();
-        $mov_origem->codestoquemes = $mes_origem->codestoquemes;
-        $mov_origem->codestoquemovimentotipo = $tipo->codestoquemovimentotipoorigem;
-        $mov_origem->data = $data;
-        $mov_origem->manual = true;
-        $mov_origem->saidaquantidade = $quantidade;
-        if (!$mov_origem->save()) {
-            throw new Exception('Erro ao Salvar Movimento de Destino!');
-        }
-        
-        $mov_destino = new EstoqueMovimento();
-        $mov_destino->codestoquemes = $mes_destino->codestoquemes;
-        $mov_destino->codestoquemovimentotipo = $tipo->codestoquemovimentotipo;
-        $mov_destino->codestoquemovimentoorigem = $mov_origem->codestoquemovimento;
-        $mov_destino->data = $data;
-        $mov_destino->manual = true;
-        $mov_destino->entradaquantidade = $quantidade;
-            
-        if (!$mov_destino->save()) {
-            throw new Exception('Erro ao Salvar Movimento de Destino!');
-        }
-        
-        $this->info("Criada Transferência de {$mes_origem->codestoquemes}({$mov_origem->codestoquemovimento}) para {$mes_destino->codestoquemes}({$mov_destino->codestoquemovimento})!");
-        $this->line('');
 
-        DB::commit();
+        $sql = "
+            select p.codproduto, p.produto, pv.variacao, p.preco, el.sigla, em.saldoquantidade, em.saldovalor, em.customedio, em.codestoquemes, em.mes, elpv.codprodutovariacao, elpv.codestoquelocal
+            from tblestoquemes em
+            inner join tblestoquesaldo es on (es.codestoquesaldo = em.codestoquesaldo and es.fiscal = true)
+            inner join tblestoquelocalprodutovariacao elpv on (elpv.codestoquelocalprodutovariacao = es.codestoquelocalprodutovariacao)
+            inner join tblprodutovariacao pv on (pv.codprodutovariacao = elpv.codprodutovariacao)
+            inner join tblproduto p on (p.codproduto = pv.codproduto)
+            inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
+            where em.saldoquantidade < 0
+            order by em.mes, p.produto, pv.variacao nulls first, elpv.codestoquelocal
+            limit 1
+            ";
         
-        $this->dispatch((new EstoqueCalculaCustoMedio($mes_origem->codestoquemes))->onQueue('urgent'));
-        $this->dispatch((new EstoqueCalculaCustoMedio($mes_destino->codestoquemes))->onQueue('urgent'));
+        
+        while ($dados = DB::select($sql))
+        {
+            $negativo = $dados[0];
+            $this->line('');
+            $this->line('');
+            $this->line('');
+            $this->line('');
+            $this->info("http://192.168.1.204/MGLara/estoque-mes/$negativo->codestoquemes");
+
+            $data = Carbon::createFromFormat('Y-m-d', $negativo->mes)->endOfMonth();
                 
-        // aguarda meio segundo para rodar recalculo dos custos medios
-        sleep(3);
+            $this->table(
+                [
+                    'Mês',
+                    '#',
+                    'Produto',
+                    'Variação',
+                    'Venda',
+                    'Loc',
+                    'Qtd',
+                    'Val',
+                    'Médio',
+                ], [[
+                    $negativo->mes,
+                    $negativo->codproduto,
+                    $negativo->produto,
+                    $negativo->variacao,
+                    $negativo->preco,
+                    $negativo->sigla,
+                    $negativo->saldoquantidade,
+                    $negativo->saldovalor,
+                    $negativo->customedio,
+                ]]); 
+            
+            do {
+                
+                $codestoquemes_origem = $this->ask('Informe o codestoquemes para transferir o saldo:');
+                
+                if (!$mes_origem = EstoqueMes::find($codestoquemes_origem)) {
+                    $this->error('Estoque Mes não localizado!');
+                    continue;
+                }
+
+                $this->table(
+                    [
+                        '#',
+                        'Produto',
+                        'Variação',
+                        'Venda',
+                        'Loc',
+                        'Qtd',
+                        'Val',
+                        'Médio',
+                    ], [[
+                        $mes_origem->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto,
+                        $mes_origem->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->produto,
+                        $mes_origem->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->variacao,
+                        $mes_origem->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->preco,
+                        $mes_origem->EstoqueSaldo->EstoqueLocalProdutoVariacao->EstoqueLocal->sigla,
+                        $mes_origem->EstoqueSaldo->saldoquantidade,
+                        $mes_origem->EstoqueSaldo->saldovalor,
+                        $mes_origem->EstoqueSaldo->customedio,
+                    ]]); 
+                
+                if ($mes_origem->EstoqueSaldo->saldoquantidade <= 0) {
+                    $this->error('Este produto não tem saldo de estoque disponível!');
+                    continue;
+                }
+                
+                if ($this->confirm('Transferir deste Saldo?', true) == true) {
+                    break;
+                }
+                
+            } while (true);
+            
+            $quantidade = min([abs($negativo->saldoquantidade), abs($mes_origem->saldoquantidade)]);
+            $quantidade = $this->ask('Informe a quantidade:', $quantidade);
+            
+            if ($quantidade <= 0) {
+                continue;
+            }
+            
+            $this->transfereSaldo(
+                $quantidade, 
+                $data, 
+                $mes_origem->EstoqueSaldo->EstoqueLocalProdutoVariacao->codprodutovariacao, 
+                $mes_origem->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal, 
+                $negativo->codprodutovariacao, 
+                $negativo->codestoquelocal
+                );
+            
+            
+        }
+        
     }
+    
     
 }
