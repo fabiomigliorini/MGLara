@@ -219,22 +219,23 @@ class MetaController extends Controller
                         foreach ($meta['pessoas'] as $pessoa_dado)
                         {
                             $pessoa_dados = [
-                                'codmetafilial' => $mf->codmetafilial,
-                                'codpessoa'     => $pessoa_dado['codpessoa'],
-                                'codcargo'      => $pessoa_dado['codcargo']
+                                'codmetafilial' => (int) $mf->codmetafilial,
+                                'codpessoa'     => (int) $pessoa_dado['codpessoa'],
+                                'codcargo'      => (int) $pessoa_dado['codcargo']
                             ];
 
                             if(!empty($pessoa_dado['codmetafilialpessoa'])) {
                                 $pessoa = MetaFilialPessoa::findOrFail($pessoa_dado['codmetafilialpessoa']);
                                 $pessoa->fill($pessoa_dados);
                             } else {
-                                $pessoa = new MetaFilialPessoa($pessoa_dados);
+                                $pessoa = new MetaFilialPessoa();
+                                $pessoa->fill($pessoa_dados);
                             }
-
 
                             if (!$pessoa->validate()) {
                                 $this->throwValidationException($request, $pessoa->_validator);
-                            }                            
+                            }
+                            
                             $pessoa->save();
                             
                             $codmetafilialpessoa[] = $pessoa->codmetafilialpessoa;
