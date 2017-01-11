@@ -79,8 +79,9 @@ class Meta extends MGModel
     public function totalVendas($parametros = null)
     {
         $sql_filiais = "
-            select 
-                  f.filial
+            select
+                  f.codfilial
+                , f.filial
                 , mf.valormetafilial
                 , mf.valormetavendedor
                 , (
@@ -140,13 +141,50 @@ class Meta extends MGModel
         if (!empty($parametros['codfilial'])) {
             $sql_vendedores .= " AND mf.codfilial = {$parametros['codfilial']}";
         }
+        $sql_vendedores .= " ORDER by valorvendas DESC";
         
         $filiais = DB::select($sql_filiais);
         $vendedores = DB::select($sql_vendedores);
         
+        $array_melhoresvendedores = [];
+        foreach ($filiais as $filial){
+            $array_melhoresvendedores[$filial->codfilial]=[];
+            foreach ($vendedores as $vendedor){
+                if($vendedor->codfilial == $filial->codfilial)
+                {
+                    array_push($array_melhoresvendedores[$filial->codfilial], $vendedor->valorvendas);
+                }
+            }
+        }
+
+        $retorno_vendedores = [];
+        foreach ($vendedores as $vendedor){
+            
+            $valorcomissaovendedor = ($vendedor->percentualcomissaovendedor / 100 ) * $vendedor->valorvendas;
+            $valorcomissaometavendedor = ($vendedor->valorvendas >= $vendedor->valormetavendedor ? ($this->percentualcomissaovendedormeta / 100 ) * $vendedor->valorvendas : null);
+            $falta = ($vendedor->valorvendas < $vendedor->valormetavendedor ? $vendedor->valormetavendedor - $vendedor->valorvendas : null);
+            //$primeirovendedor = ($vendedor->valorvendas == max($array_melhoresvendedores[$vendedor->codfilial]) ? true : false);
+            //dd($array_melhoresvendedores[$vendedor->codfilial]);
+            $retorno_vendedores[] = [
+                'codfilial'                 => $vendedor->codfilial,
+                'filial'                    => $vendedor->filial,
+                'valormetavendedor'         => $vendedor->valormetavendedor,
+                'codpessoa'                 => $vendedor->codpessoa,
+                'pessoa'                    => $vendedor->fantasia, 
+                'valorvendas'               => $vendedor->valorvendas,
+                'percentualcomissaovendedor' =>  $vendedor->percentualcomissaovendedor,
+                'valorcomissaovendedor'     => $valorcomissaovendedor,
+                'valorcomissaometavendedor' => $valorcomissaometavendedor,
+                'valortotalcomissao'        => $valorcomissaovendedor + $valorcomissaometavendedor,
+                'metaatingida'              => ($vendedor->valorvendas >= $vendedor->valormetavendedor) ? true : false,
+                'primeirovendedor'          => ($vendedor->valorvendas == max($array_melhoresvendedores[$vendedor->codfilial]) ? true : false),
+                'falta'                     => $falta,
+            ];            
+        }
+        
         $retorno = [
             'filiais' => $filiais,
-            'vendedores' => $vendedores
+            'vendedores' => $retorno_vendedores
         ];
         
         return $retorno;

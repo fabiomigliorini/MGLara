@@ -55,9 +55,9 @@
                 <thead>
                     <tr>
                         <th>Filial</th>
-                        <th>Meta</th>
-                        <th>Vendas</th>
-                        <th>Meta Vendedor</th>
+                        <th class="text-right">Meta</th>
+                        <th class="text-right">Vendas</th>
+                        <th class="text-right">Meta Vendedor</th>
                         <th>Sub-Gerente</th>
                     </tr>
                 </thead>
@@ -65,9 +65,9 @@
                     @foreach($dados['filiais'] as $filial)
                     <tr>
                         <th scope="row">{{ $filial->filial }}</th>
-                        <td>{{ formataNumero($filial->valormetafilial) }}</td>
-                        <td>{{ formataNumero($filial->valorvendas) }}</td>
-                        <td>{{ formataNumero($filial->valormetavendedor) }}</td>
+                        <td class="text-right">{{ formataNumero($filial->valormetafilial) }}</td>
+                        <td class="text-right">{{ formataNumero($filial->valorvendas) }}</td>
+                        <td class="text-right">{{ formataNumero($filial->valormetavendedor) }}</td>
                         <td><a href="{{ url("pessoa/$filial->codpessoa") }}">{{ $filial->pessoa }}</a></td>
                     </tr>
                     @endforeach
@@ -79,40 +79,41 @@
                     <tr>
                         <th>Filial</th>
                         <th>Vendedor</th>
-                        <th>Meta</th>
-                        <th>Vendas</th>
-                        <th>Status</th>
-                        <th>1º Vendedor</th>
-                        <th>Comissão</th>
-                        <th>R$ Meta</th>
-                        <th>R$ Total</th>
-                        <th>Falta</th>
+                        <th class="text-right">Meta</th>
+                        <th class="text-right">Vendas</th>
+                        <th class="text-right">Falta</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">1º Vendedor</th>
+                        <th class="text-right">Comissão</th>
+                        <th class="text-right">R$ Meta</th>
+                        <th class="text-right">R$ Total</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <?php $i = 1;?>
                     @foreach($dados['vendedores'] as $vendedor)
-                    <?php
-                        $comissao       = ($model->percentualcomissaovendedor / 100 ) * $vendedor->valorvendas;
-                        $meta_vendedor  = ($vendedor->valorvendas >= $vendedor->valormetavendedor ? ($model->percentualcomissaovendedormeta / 100 ) * $vendedor->valorvendas : null);
-                        $total_comissao = $comissao + $meta_vendedor;
-                        $falta          = ($vendedor->valorvendas < $vendedor->valormetavendedor ? $vendedor->valormetavendedor - $vendedor->valorvendas : null);
-                        
-                    ?>
                     <tr>
-                        <th scope="row">{{ $vendedor->filial }}</th>
-                        <td>{{ $vendedor->fantasia }}</td>
-                        <td>{{ formataNumero($vendedor->valormetavendedor) }}</td>
-                        <td>{{ formataNumero($vendedor->valorvendas) }}</td>
+                        <th scope="row">{{ $vendedor['filial'] }}</th>
                         <td>
-                            @if($vendedor->valorvendas >= $vendedor->valormetavendedor)
-                                <span class="label label-success">Meta Atingida</span>
+                            <a href="{{ url('pessoa/'.$vendedor['codpessoa']) }}">{{ $vendedor['pessoa'] }}</a>
+                            <span class="label label-success pull-right">{{$i++}}º</span>
+                        </td>
+                        <td class="text-right">{{ formataNumero($vendedor['valormetavendedor']) }}</td>
+                        <td class="text-right">{{ formataNumero($vendedor['valorvendas']) }}</td>
+                        <td class="text-right">{{ formataNumero($vendedor['falta']) }}</td>
+                        <td class="text-center">
+                            @if($vendedor['metaatingida'])
+                                <span class="label label-success">Atingida</span>
                             @endif
                         </td>
-                        <td></td>
-                        <td>{{ formataNumero($comissao) }}</td>
-                        <td>{{ formataNumero($meta_vendedor) }}</td>
-                        <td>{{ formataNumero($total_comissao) }}</td>
-                        <td>{{ formataNumero($falta) }}</td>
+                        <td class="text-center">
+                            @if($vendedor['primeirovendedor'])
+                            <i class="glyphicon glyphicon-star text-success"></i>
+                            @endif
+                        </td>
+                        <td class="text-right">{{ formataNumero($vendedor['valorcomissaovendedor']) }}</td>
+                        <td class="text-right">{{ formataNumero($vendedor['valorcomissaometavendedor']) }}</td>
+                        <td class="text-right">{{ formataNumero($vendedor['valortotalcomissao']) }}</td>
                     </tr>
                     @endforeach
                 </tbody> 
@@ -133,8 +134,9 @@
                     var DataTable = [
                         ['Vendedores', 'Vendas'],
                         @foreach($dados['vendedores'] as $vendedor)
-                        ["{{ $vendedor->fantasia }}", {{ $vendedor->valorvendas }}],
+                        ["{{ $vendedor['pessoa'] }}", {{ $vendedor['valorvendas'] }}],
                         @endforeach
+                        ['Sem Vendedor', {{ $filial->valorvendas - array_sum(array_column($dados['vendedores'], 'valorvendas')) }}]
                     ];
                 @else
                     var piechart = 'piechartGeral';
@@ -151,7 +153,7 @@
 
                     var options = {
                         title: 'Porcentagem de vendas',
-                        'width':700,
+                        'width':900,
                         'height':500
                     };
 
