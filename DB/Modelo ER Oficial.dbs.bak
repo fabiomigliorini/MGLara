@@ -3630,6 +3630,7 @@
 		<table name="tblvalecompra" >
 			<column name="codvalecompra" type="bigserial" jt="-5" mandatory="y" />
 			<column name="codvalecompramodelo" type="bigint" jt="-5" />
+			<column name="codfilial" type="bigint" jt="-5" mandatory="y" />
 			<column name="codpessoafavorecido" type="bigint" jt="-5" mandatory="y" />
 			<column name="codpessoa" type="bigint" jt="-5" mandatory="y" />
 			<column name="observacoes" type="varchar" length="200" jt="12" />
@@ -3665,6 +3666,9 @@
 			<index name="idx_tblvalecompra_7" unique="NORMAL" >
 				<column name="codtitulo" />
 			</index>
+			<index name="idx_tblvalecompra_8" unique="NORMAL" >
+				<column name="codfilial" />
+			</index>
 			<fk name="fk_tblvalecompra_tblusuario_criacao" to_schema="mgsis" to_table="tblusuario" >
 				<fk_column name="codusuariocriacao" pk="codusuario" />
 			</fk>
@@ -3682,6 +3686,9 @@
 			</fk>
 			<fk name="fk_tblvalecompra_0" to_schema="mgsis" to_table="tbltitulo" >
 				<fk_column name="codtitulo" pk="codtitulo" />
+			</fk>
+			<fk name="fk_tblvalecompra_tblfilial" to_schema="mgsis" to_table="tblfilial" >
+				<fk_column name="codfilial" pk="codfilial" />
 			</fk>
 		</table>
 		<table name="tblvalecompraformapagamento" >
@@ -6496,8 +6503,16 @@ FROM
 			<column name="codusuarioalteracao" />
 			<column name="codusuariocriacao" />
 		</entity>
-		<entity schema="mgsis" name="tblvalecompra" color="c1d8ee" x="440" y="440" />
 		<entity schema="mgsis" name="tblvalecompramodeloprodutobarra" color="c1d8ee" x="760" y="80" />
 		<entity schema="mgsis" name="tblvalecompramodelo" color="c1d8ee" x="440" y="60" />
+		<entity schema="mgsis" name="tblvalecompra" color="c1d8ee" x="440" y="440" />
+		<entity schema="mgsis" name="tblfilial" color="c1d8ee" x="800" y="1060" >
+			<column name="codfilial" />
+			<column name="codempresa" />
+			<column name="codpessoa" />
+			<column name="acbrnfemonitorcodusuario" />
+			<column name="codusuarioalteracao" />
+			<column name="codusuariocriacao" />
+		</entity>
 	</layout>
 </project>
