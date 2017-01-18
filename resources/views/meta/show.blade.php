@@ -27,6 +27,7 @@
     if (sizeof($anteriores) < 8) {
         $proximos = $model->buscaProximos(16 - sizeof($anteriores));
     }
+    
 ?>
 <ul class="nav nav-pills">
     @foreach($anteriores as $meta)
@@ -83,9 +84,9 @@
                         <th class="text-right">Vendas</th>
                         <th class="text-right">Falta</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">1º Vendedor</th>
                         <th class="text-right">Comissão</th>
                         <th class="text-right">R$ Meta</th>
+                        <th class="text-right">1º Vendedor</th>
                         <th class="text-right">R$ Total</th>
                     </tr>
                 </thead>
@@ -106,13 +107,9 @@
                                 <span class="label label-success">Atingida</span>
                             @endif
                         </td>
-                        <td class="text-center">
-                            @if($vendedor['primeirovendedor'])
-                            <i class="glyphicon glyphicon-star text-success"></i>
-                            @endif
-                        </td>
                         <td class="text-right">{{ formataNumero($vendedor['valorcomissaovendedor']) }}</td>
                         <td class="text-right">{{ formataNumero($vendedor['valorcomissaometavendedor']) }}</td>
+                        <td class="text-right">{{ formataNumero($vendedor['primeirovendedor']) }}</td>
                         <td class="text-right">{{ formataNumero($vendedor['valortotalcomissao']) }}</td>
                     </tr>
                     @endforeach
@@ -126,7 +123,10 @@
             @endif
             
             <script type="text/javascript">
-                google.charts.load('current', {'packages':['corechart']});
+                google.charts.load('current', {
+                    'packages':['corechart'],
+                    'language': 'pt_BR'
+                });
                 google.charts.setOnLoadCallback(drawChart);
                 
                 @if(Request::get('codfilial'))
@@ -154,7 +154,7 @@
                     var options = {
                         title: 'Porcentagem de vendas',
                         'width':900,
-                        'height':500
+                        'height':500,
                     };
 
 
@@ -162,6 +162,7 @@
                     chart.draw(data, options);
                 }
             </script>            
+        -->
         </div>
         @foreach($metasfiliais as $filial)
         <div role="tabpanel" class="tab-pane" id="{{ $filial->codfilial }}"></div>

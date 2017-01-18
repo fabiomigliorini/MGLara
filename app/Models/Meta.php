@@ -161,10 +161,13 @@ class Meta extends MGModel
         foreach ($vendedores as $vendedor){
             
             $valorcomissaovendedor = ($vendedor->percentualcomissaovendedor / 100 ) * $vendedor->valorvendas;
-            $valorcomissaometavendedor = ($vendedor->valorvendas >= $vendedor->valormetavendedor ? ($this->percentualcomissaovendedormeta / 100 ) * $vendedor->valorvendas : null);
+            $valorcomissaometavendedor = ($vendedor->valorvendas >= $vendedor->valormetavendedor ? ($this->percentualcomissaovendedormeta / 100 ) * $vendedor->valorvendas : 0);
             $falta = ($vendedor->valorvendas < $vendedor->valormetavendedor ? $vendedor->valormetavendedor - $vendedor->valorvendas : null);
-            //$primeirovendedor = ($vendedor->valorvendas == max($array_melhoresvendedores[$vendedor->codfilial]) ? true : false);
-            //dd($array_melhoresvendedores[$vendedor->codfilial]);
+            $melhorvendedor = 0;
+            if($vendedor->valorvendas == max($array_melhoresvendedores[$vendedor->codfilial]) && $vendedor->valorvendas >= $vendedor->valormetavendedor){
+                $melhorvendedor = 200;
+            }
+            
             $retorno_vendedores[] = [
                 'codfilial'                 => $vendedor->codfilial,
                 'filial'                    => $vendedor->filial,
@@ -175,9 +178,9 @@ class Meta extends MGModel
                 'percentualcomissaovendedor' =>  $vendedor->percentualcomissaovendedor,
                 'valorcomissaovendedor'     => $valorcomissaovendedor,
                 'valorcomissaometavendedor' => $valorcomissaometavendedor,
-                'valortotalcomissao'        => $valorcomissaovendedor + $valorcomissaometavendedor,
+                'valortotalcomissao'        => $valorcomissaovendedor + $valorcomissaometavendedor + $melhorvendedor,
                 'metaatingida'              => ($vendedor->valorvendas >= $vendedor->valormetavendedor) ? true : false,
-                'primeirovendedor'          => ($vendedor->valorvendas == max($array_melhoresvendedores[$vendedor->codfilial]) ? true : false),
+                'primeirovendedor'          => $melhorvendedor,
                 'falta'                     => $falta,
             ];            
         }
@@ -189,10 +192,6 @@ class Meta extends MGModel
         
         return $retorno;
     }
-
-    
-
-
 
     public function buscaProximos($qtd = 7)
     {
