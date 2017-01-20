@@ -50,7 +50,7 @@ class MetaController extends Controller
     {
         $parametros = $request->all();
         $model = Meta::findOrFail($id);
-        $dados = $model->totalVendas($parametros);
+        $dados = $model->totalVendas();
         
         if ($request->get('debug') == true) {
             return $dados;

@@ -27,6 +27,9 @@
     if (sizeof($anteriores) < 8) {
         $proximos = $model->buscaProximos(16 - sizeof($anteriores));
     }
+    $filiais = collect($dados['filiais']);
+    $vendedores = collect($dados['vendedores']);
+    $metasfiliais = $model->MetaFilialS()->get();
     
 ?>
 <ul class="nav nav-pills">
@@ -40,10 +43,7 @@
 </ul>        
 <div>
     <br>
-    <?php
-        $metasfiliais = $model->MetaFilialS()->get();
-    ?>
-@if(count($metasfiliais)>0)
+    @if(count($metasfiliais) > 0)
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#geral" aria-controls="geral" role="tab" data-target="#geral" data-toggle="tab">Geral</a></li>
         @foreach($metasfiliais as $metafilial)
@@ -63,7 +63,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($dados['filiais'] as $filial)
+                    @foreach($filiais as $filial)
                     <tr>
                         <th scope="row">{{ $filial->filial }}</th>
                         <td class="text-right">{{ formataNumero($filial->valormetafilial) }}</td>
@@ -92,7 +92,7 @@
                 </thead>
                 <tbody>
                     <?php $i = 1;?>
-                    @foreach($dados['vendedores'] as $vendedor)
+                    @foreach($vendedores as $vendedor)
                     <tr>
                         <th scope="row">{{ $vendedor['filial'] }}</th>
                         <td>
@@ -115,69 +115,51 @@
                     @endforeach
                 </tbody> 
             </table>
-            
-            @if(Request::get('codfilial'))
-            <div id="piechart{{ $filial->filial }}"></div>
-            @else
             <div id="piechartGeral"></div>
-            @endif
-            
             <script type="text/javascript">
                 google.charts.load('current', {
                     'packages':['corechart'],
                     'language': 'pt_BR'
                 });
                 google.charts.setOnLoadCallback(drawChart);
-                
-                @if(Request::get('codfilial'))
-                    var piechart = 'piechart{{ $filial->filial }}';
-                    var DataTable = [
-                        ['Vendedores', 'Vendas'],
-                        @foreach($dados['vendedores'] as $vendedor)
-                        ["{{ $vendedor['pessoa'] }}", {{ $vendedor['valorvendas'] }}],
-                        @endforeach
-                        ['Sem Vendedor', {{ $filial->valorvendas - array_sum(array_column($dados['vendedores'], 'valorvendas')) }}]
-                    ];
-                @else
-                    var piechart = 'piechartGeral';
-                    var DataTable = [
-                        ['Lojas', 'Vendas'],
-                        @foreach($dados['filiais'] as $filial)
-                        ["{{ $filial->filial }}", {{ $filial->valorvendas }}],
-                        @endforeach
-                    ];
-                @endif
-                //console.log(piechart);
+                var DataTable = [
+                    ['Lojas', 'Vendas'],
+                    @foreach($filiais as $filial)
+                    ["{{ $filial->filial }}", {{ $filial->valorvendas }}],
+                    @endforeach
+                ];
                 function drawChart() {
                     var data = google.visualization.arrayToDataTable(DataTable);
-
                     var options = {
                         title: 'Porcentagem de vendas',
                         'width':900,
                         'height':500,
                     };
-
-
-                    var chart = new google.visualization.PieChart(document.getElementById(piechart));
-                    chart.draw(data, options);
+                    var chartGeral = new google.visualization.PieChart(document.getElementById('piechartGeral'));
+                    chartGeral.draw(data, options);
                 }
             </script>            
-        -->
         </div>
         @foreach($metasfiliais as $filial)
-        <div role="tabpanel" class="tab-pane" id="{{ $filial->codfilial }}"></div>
+        <div role="tabpanel" class="tab-pane" id="{{ $filial->codfilial }}">
+            @include('meta.filial', [
+                'vendedores' => $vendedores->where('codfilial', $filial->codfilial),
+                'filiais' => $filiais->where('codfilial', $filial->codfilial)
+            ])
+        </div>
         @endforeach
     </div>
 @else
 <h3>Nenhuma filial cadastrada para esse meta!</h3>
 @endif
-
 </div>
 @section('inscript')
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
+/*
 $(document).ready(function() {
-    $('.tab-filial').click(function(e) {
+
+     $('.tab-filial').click(function(e) {
         var $this = $(this),
             loadurl = $this.attr('href'),
             targ = $this.attr('data-target');
@@ -193,6 +175,7 @@ $(document).ready(function() {
         return false;
     });
 });
+*/
 </script>
 
 @endsection
