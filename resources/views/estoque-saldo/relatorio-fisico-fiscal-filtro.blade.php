@@ -78,17 +78,22 @@
         </div>
 
         <div class='col-md-4'>
+            <div class="form-group">
+                {!! Form::label('codncm', 'NCM', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::select2Ncm('codncm', null, ['class' => 'form-control','id'=>'codncm', 'placeholder' => 'NCM']) !!}</div>
+            </div>
+
 
             <div class="form-group">
-                {!! Form::label('saldo_fiscal', 'Fiscal', ['class' => 'col-md-4 control-label']) !!}
+                {!! Form::label('saldo_fiscal', 'Fiscal', ['class' => 'col-md-3 control-label']) !!}
                 <div class="col-md-5">{!! Form::select2('saldo_fiscal', ['' => '', -1=>'Negativo', 1=>'Positivo'], null, ['class' => 'form-control', 'placeholder' => 'Fiscal...']) !!}</div>
             </div>
             <div class="form-group">
-                {!! Form::label('saldo_fisico', 'Fisico', ['class' => 'col-md-4 control-label']) !!}
+                {!! Form::label('saldo_fisico', 'Fisico', ['class' => 'col-md-3 control-label']) !!}
                 <div class="col-md-5">{!! Form::select2('saldo_fisico', ['' => '', -1=>'Negativo', 1=>'Positivo'], null, ['class' => 'form-control', 'placeholder' => 'Fisico...']) !!}</div>
             </div>
             <div class="form-group">
-                {!! Form::label('saldo_fisico_fiscal', 'Comparação', ['class' => 'col-md-4 control-label']) !!}
+                {!! Form::label('saldo_fisico_fiscal', 'Comparação', ['class' => 'col-md-3 control-label']) !!}
                 <div class="col-md-7">{!! Form::select2('saldo_fisico_fiscal', ['' => '', -1=>'Faltando Fiscal', 1=>'Sobrando Fiscal'], null, ['class' => 'form-control', 'placeholder' => 'Fisico x Fiscal...']) !!}</div>
             </div>
             <div class="form-group">

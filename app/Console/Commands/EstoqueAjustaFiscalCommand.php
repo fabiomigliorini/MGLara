@@ -403,13 +403,14 @@ class EstoqueAjustaFiscalCommand extends Command
     {
 
         $sql = "
-            select p.codproduto, p.produto, pv.variacao, p.preco, el.sigla, em.saldoquantidade, em.saldovalor, em.customedio, em.codestoquemes, em.mes, elpv.codprodutovariacao, elpv.codestoquelocal
+            select p.codproduto, p.produto, pv.variacao, p.preco, el.sigla, em.saldoquantidade, em.saldovalor, em.customedio, em.codestoquemes, em.mes, elpv.codprodutovariacao, elpv.codestoquelocal, n.ncm
             from tblestoquemes em
             inner join tblestoquesaldo es on (es.codestoquesaldo = em.codestoquesaldo and es.fiscal = true)
             inner join tblestoquelocalprodutovariacao elpv on (elpv.codestoquelocalprodutovariacao = es.codestoquelocalprodutovariacao)
             inner join tblprodutovariacao pv on (pv.codprodutovariacao = elpv.codprodutovariacao)
             inner join tblproduto p on (p.codproduto = pv.codproduto)
             inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
+            inner join tblncm n on (n.codncm = p.codncm)
             where em.saldoquantidade < 0
             order by em.mes, p.produto, pv.variacao nulls first, elpv.codestoquelocal
             limit 1
@@ -438,6 +439,7 @@ class EstoqueAjustaFiscalCommand extends Command
                     'Qtd',
                     'Val',
                     'Médio',
+                    'NCM',
                 ], [[
                     $negativo->mes,
                     $negativo->codproduto,
@@ -447,7 +449,7 @@ class EstoqueAjustaFiscalCommand extends Command
                     $negativo->sigla,
                     $negativo->saldoquantidade,
                     $negativo->saldovalor,
-                    $negativo->customedio,
+                    $negativo->ncm,
                 ]]); 
             
             do {
@@ -469,6 +471,7 @@ class EstoqueAjustaFiscalCommand extends Command
                         'Qtd',
                         'Val',
                         'Médio',
+                        'NCM',
                     ], [[
                         $mes_origem->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto,
                         $mes_origem->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->produto,
@@ -478,6 +481,7 @@ class EstoqueAjustaFiscalCommand extends Command
                         $mes_origem->EstoqueSaldo->saldoquantidade,
                         $mes_origem->EstoqueSaldo->saldovalor,
                         $mes_origem->EstoqueSaldo->customedio,
+                        $mes_origem->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->Produto->Ncm->ncm,
                     ]]); 
                 
                 if ($mes_origem->EstoqueSaldo->saldoquantidade <= 0) {

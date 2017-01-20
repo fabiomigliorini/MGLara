@@ -1182,6 +1182,10 @@ class EstoqueSaldo extends MGModel
             $sql .= " AND m.codmarca = {$filtro['codmarca']}";
         }
 
+        if (!empty($filtro['codncm'])) {
+            $sql .= " AND p.codncm = {$filtro['codncm']}";
+        }
+
         if (!empty($filtro['preco_de'])) {
             $sql .= " AND p.preco >= {$filtro['preco_de']}";
         }
