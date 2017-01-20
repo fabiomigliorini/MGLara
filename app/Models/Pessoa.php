@@ -82,6 +82,7 @@ use Carbon\Carbon;
  * @property  TituloAgrupamento[]            $TituloAgrupamentoS
  * @property  Titulo[]                       $TituloS
  * @property  Usuario[]                      $UsuarioS
+ * @property  Cheque[]                       $ChequeS
  */
 
 class Pessoa extends MGModel
@@ -343,6 +344,11 @@ class Pessoa extends MGModel
     public function UsuarioS()
     {
         return $this->hasMany(Usuario::class, 'codpessoa', 'codpessoa');
+    }
+
+    public function ChequeS()
+    {
+        return $this->hasMany(Cheque::class, 'codpessoa', 'codpessoa');
     }
 
     public static function getNotaFiscalOpcoes()

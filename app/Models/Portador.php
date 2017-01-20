@@ -36,6 +36,7 @@ namespace MGLara\Models;
  * @property  MovimentoTitulo[]              $MovimentoTituloS
  * @property  Titulo[]                       $TituloS
  * @property  Usuario[]                      $UsuarioS
+ * @property  ChequeRepasse[]                $ChequeRepasseS
  */
 
 class Portador extends MGModel
@@ -134,6 +135,11 @@ class Portador extends MGModel
     public function UsuarioS()
     {
         return $this->hasMany(Usuario::class, 'codportador', 'codportador');
+    }
+
+    public function ChequeRepasseS()
+    {
+        return $this->hasMany(ChequeRepasse::class, 'codportador', 'codportador');
     }
     
     // Buscas 
