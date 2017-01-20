@@ -103,10 +103,6 @@ class Meta extends MGModel
             left join tblpessoa p on (p.codpessoa = mfp.codpessoa)
             where m.codmeta = {$this->codmeta}
         ";
-
-        if (!empty($parametros['codfilial'])) {
-            $sql_filiais .= " AND mf.codfilial = {$parametros['codfilial']}";
-        }
         
         $sql_vendedores = "
             select 
@@ -136,12 +132,8 @@ class Meta extends MGModel
         inner join tblmetafilialpessoa mfp on (mfp.codmetafilial = mf.codmetafilial and mfp.codcargo = 1) -- Vendedor -- TODO: Fazer modelagem
         inner join tblpessoa p on (p.codpessoa = mfp.codpessoa)
         where m.codmeta = {$this->codmeta}
+        order by valorvendas desc
         ";        
-
-        if (!empty($parametros['codfilial'])) {
-            $sql_vendedores .= " AND mf.codfilial = {$parametros['codfilial']}";
-        }
-        $sql_vendedores .= " ORDER by valorvendas DESC";
         
         $filiais = DB::select($sql_filiais);
         $vendedores = DB::select($sql_vendedores);
