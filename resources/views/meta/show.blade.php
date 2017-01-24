@@ -30,7 +30,6 @@
     $filiais = collect($dados['filiais']);
     $vendedores = collect($dados['vendedores']);
     $metasfiliais = $model->MetaFilialS()->get();
-    
 ?>
 <ul class="nav nav-pills">
     @foreach($anteriores as $meta)
@@ -138,6 +137,9 @@
                     var chartGeral = new google.visualization.PieChart(document.getElementById('piechartGeral'));
                     chartGeral.draw(data, options);
                 }
+                var piechartFilial = [];
+                var optionsFilial = [];
+                var DataTableFilial = [];
             </script>            
         </div>
         @foreach($metasfiliais as $filial)
@@ -155,28 +157,5 @@
 </div>
 @section('inscript')
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
-/*
-$(document).ready(function() {
-
-     $('.tab-filial').click(function(e) {
-        var $this = $(this),
-            loadurl = $this.attr('href'),
-            targ = $this.attr('data-target');
-
-        if ($(targ).text().length == 0 ) {
-            $.get(loadurl, function(data) {
-                $(targ).html(jQuery(data).find('#geral').html());
-                drawChart();
-            });
-        }
-        
-        $this.tab('show');
-        return false;
-    });
-});
-*/
-</script>
-
 @endsection
 @stop
