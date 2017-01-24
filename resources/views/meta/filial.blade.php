@@ -73,6 +73,7 @@
         @foreach($vendedores as $vendedor)
         ["{{ $vendedor['pessoa'] }}", {{ $vendedor['valorvendas'] }}],
         @endforeach
+        ['Sem Vendedor', {{ $filial->valorvendas - array_sum(array_column($vendedores->toArray(), 'valorvendas')) }}]
     ];
     function drawChart() {
         var data = google.visualization.arrayToDataTable(DataTableFilial[{{ $filial->codfilial }}]);
