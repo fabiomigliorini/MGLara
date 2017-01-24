@@ -65,6 +65,7 @@ and tp.estoque = true
 and no.estoque = true
 and em.codestoquemovimento is null
 order by n.saida, n.codfilial, n.codnotafiscal, p.produto
+limit 50
 
 --Notas Canceladas/Inutilizadas/Nao Autorizadas Com Movimentacao de estoque
 select n.codfilial, n.codnotafiscal, npb.codnotafiscalprodutobarra, em.codestoquemovimento, p.codproduto, p.produto
