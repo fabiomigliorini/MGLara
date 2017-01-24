@@ -36,6 +36,7 @@ class Meta extends MGModel
         'percentualcomissaovendedor',
         'percentualcomissaovendedormeta',
         'percentualcomissaosubgerentemeta',
+        'percentualcomissaoxerox',
         'observacoes',
     ];
     protected $dates = [
@@ -94,6 +95,20 @@ class Meta extends MGModel
                     and n.lancamento between m.periodoinicial and m.periodofinal
                     and n.codfilial = mf.codfilial
                 ) as valorvendas
+                , (
+                    select
+                        sum((case when n.codoperacao = 1 then -1 else 1 end) * coalesce(n.valortotal, 0)) as valorvendas
+                    from tblnegocio n
+                    inner join tblnegocioprodutobarra npb on (npb.codnegocio = n.codnegocio)
+                    inner join tblprodutobarra pb on (pb.codprodutobarra = npb.codprodutobarra)
+                    inner join tblproduto p on (p.codproduto = pb.codproduto)
+                    where n.codnegociostatus = 2 -- fechado
+                    and n.codpessoa not in (select distinct f2.codpessoa from tblfilial f2)
+                    and n.codnaturezaoperacao in (1, 2) -- Venda / Devolucao de Vendas -- TODO: Fazer modelagem para tirar o codigo fixo
+                    and n.lancamento between m.periodoinicial and m.periodofinal
+                    and n.codfilial = mf.codfilial
+                    and p.codsubgrupoproduto = 2951 -- Somente Xerox
+                ) as valorvendasxerox                
                 , mfp.codpessoa
                 , p.pessoa
             from tblmeta m
@@ -153,9 +168,9 @@ class Meta extends MGModel
         foreach ($vendedores as $vendedor){
             
             $valorcomissaovendedor = ($vendedor->percentualcomissaovendedor / 100 ) * $vendedor->valorvendas;
-            $valorcomissaometavendedor = ($vendedor->valorvendas >= $vendedor->valormetavendedor ? ($this->percentualcomissaovendedormeta / 100 ) * $vendedor->valorvendas : 0);
+            $valorcomissaometavendedor = ($vendedor->valorvendas >= $vendedor->valormetavendedor ? ($this->percentualcomissaovendedormeta / 100 ) * $vendedor->valorvendas : null);
             $falta = ($vendedor->valorvendas < $vendedor->valormetavendedor ? $vendedor->valormetavendedor - $vendedor->valorvendas : null);
-            $melhorvendedor = 0;
+            $melhorvendedor = null;
             if($vendedor->valorvendas == max($array_melhoresvendedores[$vendedor->codfilial]) && $vendedor->valorvendas >= $vendedor->valormetavendedor){
                 $melhorvendedor = 200;
             }
@@ -176,8 +191,25 @@ class Meta extends MGModel
                 'falta'                     => $falta,
             ];            
         }
+/*        
+        $retorno_filiais = [];
+        foreach ($filiais as $filial){
+            $retorno_filiais[] = [
+                "codfilial"             => $filial->codfilial,
+                "filial"                => $filial->filial,
+                "valormetafilial"       => $filial->valormetafilial,
+                "valormetavendedor"     => $filial->valormetavendedor,
+                "valorvendas"           => $filial->valorvendas,
+                "valorvendasxerox"      => $filial->valorvendasxerox,
+                "valorcomissaovendasxerox"=> $filial->valorvendasxerox * $this->percentualcomissaoxerox,
+                "codpessoa"             => $filial->codpessoa,
+                "pessoa"                => $filial->pessoa
+            ];
+        }        
+  */      
         
         $retorno = [
+            //'filiais' => $retorno_filiais,
             'filiais' => $filiais,
             'vendedores' => $retorno_vendedores
         ];

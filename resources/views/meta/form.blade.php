@@ -64,6 +64,16 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
 </div>
 
 <div class="form-group">
+    {!! Form::label('meta[percentualcomissaoxerox]', 'Comissao Xerox', ['class' => 'col-sm-2 control-label']) !!}
+    <div class="col-md-2">
+        <div class="input-group">
+            {!! Form::number('meta[percentualcomissaoxerox]', null, ['class' => 'form-control text-right',  'id'=>'meta[percentualcomissaoxerox]', 'required'=>'true', 'placeholder' => '', 'step'=>'0.01']) !!}
+            <div class="input-group-addon">%</div>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
     {!! Form::label('meta[observacoes]', 'Observações:', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-md-4 col-xs-4">
         {!! Form::textarea('meta[observacoes]', null, ['class'=> 'form-control', 'id'=>'meta[observacoes]', 'rows'=>'3']) !!}
