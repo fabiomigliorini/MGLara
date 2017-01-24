@@ -333,12 +333,33 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="codpessoa" type="bigint" jt="-5" />
+			<column name="indstatus" type="smallint" jt="5" >
+				<comment><![CDATA[1 - À Repassar
+2 - Repassado
+3 - Devolvido
+4 - Em Cobranca
+5 - Liquidado]]></comment>
+			</column>
+			<column name="codtitulo" type="bigint" jt="-5" />
 			<index name="tblcheque_pkey" unique="PRIMARY_KEY" >
 				<column name="codcheque" />
 			</index>
 			<index name="tblcheque_codbanco_idx" unique="NORMAL" >
 				<column name="codbanco" />
 			</index>
+			<index name="idx_tblcheque" unique="NORMAL" >
+				<column name="codpessoa" />
+			</index>
+			<index name="idx_tblcheque_0" unique="NORMAL" >
+				<column name="codtitulo" />
+			</index>
+			<index name="idx_tblcheque_indstatus" unique="NORMAL" >
+				<column name="indstatus" />
+			</index>
+			<constraint name="ck_0" >
+				<string>indstatus in (1, 2, 3, 4, 5)</string>
+			</constraint>
 			<fk name="tblcheque_codbanco_fkey" to_schema="mgsis" to_table="tblbanco" >
 				<fk_column name="codbanco" pk="codbanco" />
 			</fk>
@@ -347,6 +368,52 @@
 			</fk>
 			<fk name="tblcheque_codusuariocriacao_fkey" to_schema="mgsis" to_table="tblusuario" >
 				<fk_column name="codusuariocriacao" pk="codusuario" />
+			</fk>
+			<fk name="fk_tblcheque" to_schema="mgsis" to_table="tblpessoa" >
+				<fk_column name="codpessoa" pk="codpessoa" />
+			</fk>
+			<fk name="fk_tblcheque_0" to_schema="mgsis" to_table="tbltitulo" >
+				<fk_column name="codtitulo" pk="codtitulo" />
+			</fk>
+		</table>
+		<table name="tblchequedevolucao" >
+			<column name="codchequedevolucao" type="bigserial" jt="-5" mandatory="y" />
+			<column name="codchequerepassecheque" type="bigint" jt="-5" mandatory="y" />
+			<column name="codchequemotivodevolucao" type="bigint" jt="-5" mandatory="y" />
+			<column name="data" type="date" jt="91" mandatory="y" />
+			<column name="observacoes" type="varchar" jt="12" >
+				<defo>200</defo>
+			</column>
+			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
+			<index name="pk_tblchequedevolucao" unique="PRIMARY_KEY" >
+				<column name="codchequedevolucao" />
+			</index>
+			<index name="idx_tblchequedevolucao" unique="NORMAL" >
+				<column name="codchequemotivodevolucao" />
+			</index>
+			<index name="idx_tblchequedevolucao_0" unique="NORMAL" >
+				<column name="codchequerepassecheque" />
+			</index>
+			<index name="idx_tblchequedevolucao_1" unique="NORMAL" >
+				<column name="codusuariocriacao" />
+			</index>
+			<index name="idx_tblchequedevolucao_2" unique="NORMAL" >
+				<column name="codusuarioalteracao" />
+			</index>
+			<fk name="fk_tblchequedevolucao" to_schema="mgsis" to_table="tblchequemotivodevolucao" >
+				<fk_column name="codchequemotivodevolucao" pk="codchequemotivodevolucao" />
+			</fk>
+			<fk name="fk_tblchequedevolucao_0" to_schema="mgsis" to_table="tblchequerepassecheque" >
+				<fk_column name="codchequerepassecheque" pk="codchequerepassecheque" />
+			</fk>
+			<fk name="fk_tblchequedevolucao_1" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuariocriacao" pk="codusuario" />
+			</fk>
+			<fk name="fk_tblchequedevolucao_2" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuarioalteracao" pk="codusuario" />
 			</fk>
 		</table>
 		<table name="tblchequeemitente" >
@@ -376,6 +443,101 @@
 			</fk>
 			<fk name="tblchequeemitente_codusuariocriacao_fkey" to_schema="mgsis" to_table="tblusuario" >
 				<fk_column name="codusuariocriacao" pk="codusuario" />
+			</fk>
+		</table>
+		<table name="tblchequemotivodevolucao" >
+			<column name="codchequemotivodevolucao" type="bigserial" jt="-5" mandatory="y" />
+			<column name="numero" type="smallint" jt="5" mandatory="y" />
+			<column name="chequemotivodevolucao" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
+			<index name="pk_tblchequemotivodevolucao" unique="PRIMARY_KEY" >
+				<column name="codchequemotivodevolucao" />
+			</index>
+			<index name="idx_tblchequemotivodevolucao" unique="NORMAL" >
+				<column name="codusuariocriacao" />
+			</index>
+			<index name="idx_tblchequemotivodevolucao_0" unique="NORMAL" >
+				<column name="codusuarioalteracao" />
+			</index>
+			<fk name="fk_tblchequemotivodevolucao" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuariocriacao" pk="codusuario" />
+			</fk>
+			<fk name="fk_tblchequemotivodevolucao_0" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuarioalteracao" pk="codusuario" />
+			</fk>
+		</table>
+		<table name="tblchequerepasse" >
+			<column name="codchequerepasse" type="bigserial" jt="-5" mandatory="y" />
+			<column name="codportador" type="bigint" jt="-5" mandatory="y" />
+			<column name="data" type="date" jt="91" mandatory="y" />
+			<column name="observacoes" type="varchar" jt="12" >
+				<defo>200</defo>
+			</column>
+			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" jt="93" />
+			<index name="pk_tblchequerepasse" unique="PRIMARY_KEY" >
+				<column name="codchequerepasse" />
+			</index>
+			<index name="idx_tblchequerepasse" unique="NORMAL" >
+				<column name="codusuariocriacao" />
+			</index>
+			<index name="idx_tblchequerepasse_0" unique="NORMAL" >
+				<column name="codusuarioalteracao" />
+			</index>
+			<index name="idx_tblchequerepasse_1" unique="NORMAL" >
+				<column name="codportador" />
+			</index>
+			<fk name="fk_tblchequerepasse" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuariocriacao" pk="codusuario" />
+			</fk>
+			<fk name="fk_tblchequerepasse_0" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuarioalteracao" pk="codusuario" />
+			</fk>
+			<fk name="fk_tblchequerepasse_1" to_schema="mgsis" to_table="tblportador" >
+				<fk_column name="codportador" pk="codportador" />
+			</fk>
+		</table>
+		<table name="tblchequerepassecheque" >
+			<column name="codchequerepassecheque" type="bigserial" jt="-5" mandatory="y" />
+			<column name="codcheque" type="bigint" jt="-5" mandatory="y" />
+			<column name="codchequerepasse" type="bigint" jt="-5" mandatory="y" />
+			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="compensacao" type="date" jt="91" />
+			<index name="pk_tblchequerepassecheque" unique="PRIMARY_KEY" >
+				<column name="codchequerepassecheque" />
+			</index>
+			<index name="idx_tblchequerepassecheque" unique="NORMAL" >
+				<column name="codcheque" />
+			</index>
+			<index name="idx_tblchequerepassecheque_0" unique="NORMAL" >
+				<column name="codchequerepasse" />
+			</index>
+			<index name="idx_tblchequerepassecheque_1" unique="NORMAL" >
+				<column name="codusuariocriacao" />
+			</index>
+			<index name="idx_tblchequerepassecheque_2" unique="NORMAL" >
+				<column name="codusuarioalteracao" />
+			</index>
+			<fk name="fk_tblchequerepassecheque" to_schema="mgsis" to_table="tblcheque" >
+				<fk_column name="codcheque" pk="codcheque" />
+			</fk>
+			<fk name="fk_tblchequerepassecheque_0" to_schema="mgsis" to_table="tblchequerepasse" >
+				<fk_column name="codchequerepasse" pk="codchequerepasse" />
+			</fk>
+			<fk name="fk_tblchequerepassecheque_1" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuariocriacao" pk="codusuario" />
+			</fk>
+			<fk name="fk_tblchequerepassecheque_2" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuarioalteracao" pk="codusuario" />
 			</fk>
 		</table>
 		<table name="tblcidade" >
@@ -3629,7 +3791,7 @@
 		</table>
 		<table name="tblvalecompra" >
 			<column name="codvalecompra" type="bigserial" jt="-5" mandatory="y" />
-			<column name="codvalecompramodelo" type="bigint" jt="-5" />
+			<column name="codvalecompramodelo" type="bigint" length="19" decimal="0" jt="-5" mandatory="y" />
 			<column name="codfilial" type="bigint" jt="-5" mandatory="y" />
 			<column name="codpessoafavorecido" type="bigint" jt="-5" mandatory="y" />
 			<column name="codpessoa" type="bigint" jt="-5" mandatory="y" />
@@ -5978,6 +6140,46 @@ $function$
 			<browse_table schema="mgsis" entity="tblgrupousuario" x="10" y="10" width="453" height="349" />
 		</browser>
 	</layout>
+	<layout name="Layout_Cheques" id="Layout_3a399d00" show_relation="columns" >
+		<entity schema="mgsis" name="tblpessoa" color="c1d8ee" x="940" y="60" >
+			<column name="codpessoa" />
+			<column name="codsexo" />
+			<column name="codestadocivil" />
+			<column name="codcidade" />
+			<column name="codcidadecobranca" />
+			<column name="codformapagamento" />
+			<column name="codusuarioalteracao" />
+			<column name="codusuariocriacao" />
+			<column name="codgrupocliente" />
+		</entity>
+		<entity schema="mgsis" name="tblchequeemitente" color="c1d8ee" x="680" y="60" />
+		<entity schema="mgsis" name="tblchequedevolucao" color="c1d8ee" x="600" y="580" />
+		<entity schema="mgsis" name="tblchequemotivodevolucao" color="c1d8ee" x="920" y="620" />
+		<entity schema="mgsis" name="tblbanco" color="c1d8ee" x="60" y="120" />
+		<entity schema="mgsis" name="tblchequerepasse" color="c1d8ee" x="940" y="320" />
+		<entity schema="mgsis" name="tblportador" color="c1d8ee" x="1200" y="300" >
+			<column name="codportador" />
+			<column name="codbanco" />
+			<column name="codfilial" />
+			<column name="codusuarioalteracao" />
+			<column name="codusuariocriacao" />
+		</entity>
+		<entity schema="mgsis" name="tblcheque" color="c1d8ee" x="320" y="60" />
+		<entity schema="mgsis" name="tblchequerepassecheque" color="c1d8ee" x="540" y="300" />
+		<entity schema="mgsis" name="tbltitulo" color="c1d8ee" x="180" y="660" >
+			<column name="codtitulo" />
+			<column name="codtipotitulo" />
+			<column name="codfilial" />
+			<column name="codportador" />
+			<column name="codpessoa" />
+			<column name="codcontacontabil" />
+			<column name="codnegocioformapagamento" />
+			<column name="codtituloagrupamento" />
+			<column name="codusuarioalteracao" />
+			<column name="codusuariocriacao" />
+			<column name="codvalecompraformapagamento" />
+		</entity>
+	</layout>
 	<layout name="Layout_Devolucao" id="Layout7285461" confirmed="y" show_relation="columns" >
 		<entity schema="mgsis" name="tblnotafiscal" color="b2cdf7" x="1240" y="60" />
 		<entity schema="mgsis" name="tblpessoa" color="b2cdf7" x="60" y="180" />
@@ -6391,12 +6593,22 @@ FROM
 		<entity schema="mgsis" name="tbljobsfailed" color="94c3ea" x="60" y="200" />
 	</layout>
 	<layout name="Layout_Meta" id="Layout_dd20140" confirmed="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblpessoa" color="c1d8ee" x="60" y="60" />
 		<entity schema="mgsis" name="tblcargo" color="c1d8ee" x="360" y="440" />
-		<entity schema="mgsis" name="tblmetafilial" color="c1d8ee" x="620" y="160" />
-		<entity schema="mgsis" name="tblmetafilialpessoa" color="c1d8ee" x="600" y="400" />
-		<entity schema="mgsis" name="tblmeta" color="c1d8ee" x="300" y="120" />
-		<entity schema="mgsis" name="tblfilial" color="c1d8ee" x="820" y="60" />
+		<entity schema="mgsis" name="tblfilial" color="c1d8ee" x="960" y="60" />
+		<entity schema="mgsis" name="tblmetafilial" color="c1d8ee" x="700" y="120" />
+		<entity schema="mgsis" name="tblmetafilialpessoa" color="c1d8ee" x="680" y="480" />
+		<entity schema="mgsis" name="tblmeta" color="c1d8ee" x="320" y="120" />
+		<entity schema="mgsis" name="tblpessoa" color="c1d8ee" x="60" y="60" >
+			<column name="codpessoa" />
+			<column name="codsexo" />
+			<column name="codestadocivil" />
+			<column name="codcidade" />
+			<column name="codcidadecobranca" />
+			<column name="codformapagamento" />
+			<column name="codusuarioalteracao" />
+			<column name="codusuariocriacao" />
+			<column name="codgrupocliente" />
+		</entity>
 	</layout>
 	<layout name="Layout_NCM" id="Layout9248750" confirmed="y" show_column_type="y" show_relation="columns" >
 		<entity schema="mgsis" name="tblregulamentoicmsstmt" color="b2cdf7" x="60" y="60" />

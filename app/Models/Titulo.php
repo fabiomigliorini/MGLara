@@ -60,6 +60,7 @@ use Carbon\Carbon;
  * @property  MovimentoTitulo[]              $MovimentoTituloS
  * @property  MovimentoTitulo[]              $MovimentoTituloRelacionadoS
  * @property  Nfeterceiroduplicata[]         $NfeTerceiroDuplicataS
+ * @property  Cheque[]                       $ChequeS
  */
 
 class Titulo extends MGModel
@@ -196,6 +197,11 @@ class Titulo extends MGModel
     public function NfeTerceiroDuplicataS()
     {
         return $this->hasMany(NfeTerceiroDuplicata::class, 'codtitulo', 'codtitulo');
+    }
+
+    public function ChequeS()
+    {
+        return $this->hasMany(Cheque::class, 'codtitulo', 'codtitulo');
     }
     
     public function estornar()

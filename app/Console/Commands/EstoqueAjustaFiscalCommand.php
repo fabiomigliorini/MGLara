@@ -412,7 +412,7 @@ class EstoqueAjustaFiscalCommand extends Command
             inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
             inner join tblncm n on (n.codncm = p.codncm)
             where em.saldoquantidade < 0
-            order by em.mes, p.produto, pv.variacao nulls first, elpv.codestoquelocal
+            order by em.mes, n.ncm, p.produto, pv.variacao nulls first, elpv.codestoquelocal
             limit 1
             ";
         
@@ -424,7 +424,7 @@ class EstoqueAjustaFiscalCommand extends Command
             $this->line('');
             $this->line('');
             $this->line('');
-            $this->info("http://192.168.1.204/MGLara/estoque-mes/$negativo->codestoquemes");
+            $this->info("http://192.168.1.205/MGLara/estoque-mes/$negativo->codestoquemes");
 
             $data = Carbon::createFromFormat('Y-m-d', $negativo->mes)->endOfMonth();
                 
@@ -449,6 +449,7 @@ class EstoqueAjustaFiscalCommand extends Command
                     $negativo->sigla,
                     $negativo->saldoquantidade,
                     $negativo->saldovalor,
+                    $negativo->customedio,
                     $negativo->ncm,
                 ]]); 
             

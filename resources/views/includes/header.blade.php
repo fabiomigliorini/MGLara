@@ -54,8 +54,8 @@
                         <li><a href="{{ url('produto') }}">Produtos</a><li>
                         <li role="separator" class="divider"></li>
                         <li><a href="{{ url('produto/quiosque') }}">Consulta de Preços</a><li>
-                        <!-- <li role="separator" class="divider"></li> -->
-                        <!-- <li><a href="#">Etiquetas de Produtos</a></li> -->
+                            <!-- <li role="separator" class="divider"></li> -->
+                            <!-- <li><a href="#">Etiquetas de Produtos</a></li> -->
                         <li role="separator" class="divider"></li>
                         <li><a href="{{ url('produto-historico-preco') }}">Histórico de Preços</a></li>
                         <li role="separator" class="divider"></li>
@@ -85,6 +85,13 @@
                     </ul>
                 </li>
                 -->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Financeiro <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url('cheque') }}">Cheques</a></li>
+                        <li><a href="{{ url('cheque-motivo-devolucao') }}">Motivos de Devolução de Cheques</a></li>
+                    </ul>
+                </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
                     <ul class="dropdown-menu">
