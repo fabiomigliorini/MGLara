@@ -65,7 +65,7 @@
                             <th class="text-right">Meta Vendedor</th>
                             <th class="text-right">Vendas</th>
                             <th class="text-right">Falta</th>
-                            <th class="text-right">Prêmio</th>
+                            <th class="text-right">Comissão</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,16 +81,17 @@
                             <td class="text-right"><strong>{{ formataNumero($filial['valorvendas']) }}</strong></td>
                             <td class="text-right">
                                 <span class="text-danger">{{ formataNumero($filial['falta']) }}</span>
-                                @if($filial['premio'])
+                                @if($filial['comissao'])
                                     <span class="label label-success">Atingida</span>
                                 @endif                                
                             </td>
-                            <td class="text-right">{{ formataNumero($filial['premio']) }}</td>
+                            <td class="text-right">{{ formataNumero($filial['comissao']) }}</td>
                         </tr>
                         @endforeach
                     </tbody> 
                 </table>
             </div>
+            <div class="clearfix"></div>
             <h3>Vendedores</h3>
             <div class="panel panel-default">            
                 <table class="table table-striped table-hover">
@@ -101,8 +102,8 @@
                             <th class="text-right">Meta</th>
                             <th class="text-right">Vendas</th>
                             <th class="text-right">Falta</th>
+                            <th class="text-right">Comissão</th>
                             <th class="text-right">Prêmio</th>
-                            <th class="text-right">Meta</th>
                             <th class="text-right">Primeiro</th>
                             <th class="text-right">Total</th>
                         </tr>
@@ -132,7 +133,6 @@
                     </tbody> 
                 </table>
             </div>
-            <br>
             <div class="col-sm-6">
                 <div class="row">
                     <h3>Xerox</h3>
@@ -143,7 +143,7 @@
                                     <th>Filial</th>
                                     <th>Vendedor</th>
                                     <th class="text-right">Vendas</th>
-                                    <th class="text-right">Prêmio</th>
+                                    <th class="text-right">Comissão</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -152,7 +152,7 @@
                                     <td>{{ $xerox['filial'] }}</td>
                                     <td><a href="{{ url('pessoa/'.$xerox['codpessoa']) }}">{{ $xerox['pessoa'] }}</a></td>
                                     <td class="text-right"><strong>{{ formataNumero($xerox['valorvendas']) }}</strong></td>
-                                    <td class="text-right"><strong>{{ formataNumero($xerox['premio']) }}</strong></td>
+                                    <td class="text-right"><strong>{{ formataNumero($xerox['comissao']) }}</strong></td>
                                 </tr>
                                 @endforeach
                             </tbody> 
@@ -162,6 +162,7 @@
             </div>
             <div class="col-sm-6"></div>
             <div class="col-sm-8">
+                <h3>Gráfico</h3>
                 <div id="piechartGeral"></div>
             </div>
             <script type="text/javascript">

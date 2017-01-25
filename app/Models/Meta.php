@@ -144,7 +144,7 @@ class Meta extends MGModel
             , f.filial
             , (
                 select
-                    sum((case when n.codoperacao = 1 then -1 else 1 end) * coalesce(n.valortotal, 0)) as valorvendas
+                    sum(coalesce(npb.valortotal, 0) * (case when n.codoperacao = 1 then -1 else 1 end) * (coalesce(n.valortotal, 0) / coalesce(n.valorprodutos, 0))) as valorvendas
                 from tblnegocio n
                 inner join tblnegocioprodutobarra npb on (npb.codnegocio = n.codnegocio)
                 inner join tblprodutobarra pb on (pb.codprodutobarra = npb.codprodutobarra)
@@ -152,10 +152,10 @@ class Meta extends MGModel
                 where n.codnegociostatus = 2 -- fechado
                 and n.codpessoa not in (select distinct f2.codpessoa from tblfilial f2)
                 and n.codnaturezaoperacao in (1, 2) -- Venda / Devolucao de Vendas -- TODO: Fazer modelagem para tirar o codigo fixo
+                and p.codsubgrupoproduto = 2951 -- Xerox -- TODO: Fazer modelagem para tirar o codigo fixo
                 and n.lancamento between m.periodoinicial and m.periodofinal
                 and n.codfilial = mf.codfilial
-                and p.codsubgrupoproduto = 2951 -- Somente Xerox
-            ) as valorvendas
+            ) as valorvendas 
             , m.percentualcomissaoxerox
             , mfp.codpessoa
             , p.pessoa
@@ -214,7 +214,7 @@ class Meta extends MGModel
         $retorno_filiais = [];
         foreach ($filiais as $filial){
             $falta = ($filial->valorvendas < $filial->valormetafilial ? $filial->valormetafilial - $filial->valorvendas : null);
-            $premio = ($filial->valorvendas >= $filial->valormetafilial ? ($filial->valormetafilial / 100 ) * $this->percentualcomissaosubgerentemeta : null);
+            $premio = ($filial->valorvendas >= $filial->valormetafilial ? ($filial->valorvendas / 100 ) * $this->percentualcomissaosubgerentemeta : null);
             $retorno_filiais[] = [
                 'codfilial'                 => $filial->codfilial,
                 'filial'                    => $filial->filial,
@@ -224,7 +224,7 @@ class Meta extends MGModel
                 'codpessoa'                 => $filial->codpessoa,
                 'pessoa'                    => $filial->pessoa,
                 'falta'                     => $falta,
-                'premio'                    => $premio,
+                'comissao'                    => $premio,
             ];
         }        
         
@@ -237,7 +237,7 @@ class Meta extends MGModel
                 "percentualcomissaoxerox"=> $xerox->percentualcomissaoxerox,
                 "codpessoa"             => $xerox->codpessoa,
                 "pessoa"                => $xerox->pessoa,
-                'premio'                => ($xerox->valorvendas / 100 ) * $xerox->percentualcomissaoxerox,
+                'comissao'                => ($xerox->valorvendas / 100 ) * $xerox->percentualcomissaoxerox,
             ];
         }        
         
