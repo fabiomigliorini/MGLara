@@ -497,7 +497,7 @@ class EstoqueAjustaFiscalCommand extends Command
                 AND p.codncm = {$negativo->codncm}
                 AND coalesce(fiscal.saldoquantidade_atual, 0) > coalesce(fisico.saldoquantidade_atual, 0)
                 AND coalesce(fiscal.saldoquantidade, 0) > coalesce(fisico.saldoquantidade, 0)
-                order by abs(p.preco - 2.25)
+                order by abs(p.preco - {$negativo->preco})
             ";
 
             $alt_prods = DB::select($sql);
