@@ -13,11 +13,11 @@
         <tbody>
             @foreach($filiais as $filial)
             <tr>
-                <th scope="row">{{ $filial->filial }}</th>
-                <td class="text-right">{{ formataNumero($filial->valormetafilial) }}</td>
-                <td class="text-right">{{ formataNumero($filial->valorvendas) }}</td>
-                <td class="text-right">{{ formataNumero($filial->valormetavendedor) }}</td>
-                <td><a href="{{ url("pessoa/$filial->codpessoa") }}">{{ $filial->pessoa }}</a></td>
+                <th scope="row">{{ $filial['filial'] }}</th>
+                <td class="text-right">{{ formataNumero($filial['valormetafilial']) }}</td>
+                <td class="text-right">{{ formataNumero($filial['valorvendas']) }}</td>
+                <td class="text-right">{{ formataNumero($filial['valormetavendedor']) }}</td>
+                <td><a href="{{ url('pessoa/'.$filial['codpessoa']) }}">{{ $filial['pessoa'] }}</a></td>
             </tr>
             @endforeach
         </tbody> 
@@ -81,9 +81,9 @@
                 <tbody>
                     @foreach($filiais as $filial)
                     <tr>
-                        <th scope="row">{{ $filial->filial }}</th>
-                        <td class="text-right">{{ formataNumero($filial->valorvendasxerox) }}</td>
-                        <td class="text-right"></td>
+                        <th scope="row">{{ $filial['filial'] }}</th>
+                        <td class="text-right">{{ formataNumero($filial['valorvendasxerox']) }}</td>
+                        <td class="text-right">{{ formataNumero($filial['valorcomissaovendasxerox']) }}</td>
                     </tr>
                     @endforeach
                 </tbody> 
@@ -92,7 +92,7 @@
     </div>
 </div>
 <div class="col-sm-9">
-    <div id="piechart{{ $filial->codfilial }}"></div>
+    <div id="piechart{{ $filial['codfilial'] }}"></div>
 </div>
 <script type="text/javascript">
     google.charts.load('current', {
@@ -100,23 +100,23 @@
         'language': 'pt_BR'
     });
     google.charts.setOnLoadCallback(drawChart);
-    DataTableFilial[{{ $filial->codfilial }}] = [
+    DataTableFilial[{{ $filial['codfilial'] }}] = [
         ['Vendedores', 'Vendas'],
         @foreach($vendedores as $vendedor)
         ["{{ $vendedor['pessoa'] }}", {{ $vendedor['valorvendas'] }}],
         @endforeach
-        ['Xerox', {{ $filial->valorvendasxerox }}],
-        ['Sem Vendedor', {{ $filial->valorvendas - array_sum(array_column($vendedores->toArray(), 'valorvendas')) -  $filial->valorvendasxerox}}]
+        ['Xerox', {{ $filial['valorvendasxerox'] }}],
+        ['Sem Vendedor', {{ $filial['valorvendas'] - array_sum(array_column($vendedores->toArray(), 'valorvendas')) -  $filial['valorvendasxerox'] }}]
     ];
     function drawChart() {
-        var data = google.visualization.arrayToDataTable(DataTableFilial[{{ $filial->codfilial }}]);
-        optionsFilial[{{ $filial->codfilial }}] = {
+        var data = google.visualization.arrayToDataTable(DataTableFilial[{{ $filial['codfilial'] }}]);
+        optionsFilial[{{ $filial['codfilial'] }}] = {
             title: 'Divisão',
             'width':900,
             'height':500,
         };
 
-        piechartFilial[{{ $filial->codfilial }}] = new google.visualization.PieChart(document.getElementById('piechart'+{{ $filial->codfilial }}));
-        piechartFilial[{{ $filial->codfilial }}].draw(data, optionsFilial[{{ $filial->codfilial }}]);
+        piechartFilial[{{ $filial['codfilial'] }}] = new google.visualization.PieChart(document.getElementById('piechart'+{{ $filial['codfilial'] }}));
+        piechartFilial[{{ $filial['codfilial'] }}].draw(data, optionsFilial[{{ $filial['codfilial'] }}]);
     }
 </script>

@@ -191,7 +191,7 @@ class Meta extends MGModel
                 'falta'                     => $falta,
             ];            
         }
-/*        
+
         $retorno_filiais = [];
         foreach ($filiais as $filial){
             $retorno_filiais[] = [
@@ -201,16 +201,15 @@ class Meta extends MGModel
                 "valormetavendedor"     => $filial->valormetavendedor,
                 "valorvendas"           => $filial->valorvendas,
                 "valorvendasxerox"      => $filial->valorvendasxerox,
-                "valorcomissaovendasxerox"=> $filial->valorvendasxerox * $this->percentualcomissaoxerox,
+                "valorcomissaovendasxerox"=> ($filial->valorvendasxerox / 100) * $this->percentualcomissaoxerox,
                 "codpessoa"             => $filial->codpessoa,
                 "pessoa"                => $filial->pessoa
             ];
         }        
-  */      
         
         $retorno = [
-            //'filiais' => $retorno_filiais,
-            'filiais' => $filiais,
+            'filiais' => $retorno_filiais,
+            //'filiais' => $filiais,
             'vendedores' => $retorno_vendedores
         ];
         

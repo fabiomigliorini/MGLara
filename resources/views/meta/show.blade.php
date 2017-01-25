@@ -66,11 +66,11 @@
                     <tbody>
                         @foreach($filiais as $filial)
                         <tr>
-                            <th scope="row">{{ $filial->filial }}</th>
-                            <td class="text-right">{{ formataNumero($filial->valormetafilial) }}</td>
-                            <td class="text-right">{{ formataNumero($filial->valorvendas) }}</td>
-                            <td class="text-right">{{ formataNumero($filial->valormetavendedor) }}</td>
-                            <td><a href="{{ url("pessoa/$filial->codpessoa") }}">{{ $filial->pessoa }}</a></td>
+                            <th scope="row">{{ $filial['filial'] }}</th>
+                            <td class="text-right">{{ formataNumero($filial['valormetafilial']) }}</td>
+                            <td class="text-right">{{ formataNumero($filial['valorvendas']) }}</td>
+                            <td class="text-right">{{ formataNumero($filial['valormetavendedor']) }}</td>
+                            <td><a href="{{ url('pessoa/'.$filial['codpessoa']) }}">{{ $filial['pessoa'] }}</a></td>
                         </tr>
                         @endforeach
                     </tbody> 
@@ -135,9 +135,9 @@
                             <tbody>
                                 @foreach($filiais as $filial)
                                 <tr>
-                                    <th scope="row">{{ $filial->filial }}</th>
-                                    <td class="text-right">{{ formataNumero($filial->valorvendasxerox) }}</td>
-                                    <td class="text-right"></td>
+                                    <th scope="row">{{ $filial['filial'] }}</th>
+                                    <td class="text-right">{{ formataNumero($filial['valorvendasxerox']) }}</td>
+                                    <td class="text-right">{{ formataNumero($filial['valorcomissaovendasxerox']) }}</td>
                                 </tr>
                                 @endforeach
                             </tbody> 
@@ -157,7 +157,7 @@
                 var DataTable = [
                     ['Lojas', 'Vendas'],
                     @foreach($filiais as $filial)
-                    ["{{ $filial->filial }}", {{ $filial->valorvendas }}],
+                    ["{{ $filial['filial'] }}", {{ $filial['valorvendas'] }}],
                     @endforeach
                 ];
                 function drawChart() {
@@ -176,10 +176,10 @@
             </script>            
         </div>
         @foreach($metasfiliais as $filial)
-        <div role="tabpanel" class="tab-pane" id="{{ $filial->codfilial }}">
+        <div role="tabpanel" class="tab-pane" id="{{ $filial['codfilial'] }}">
             @include('meta.filial', [
-                'vendedores' => $vendedores->where('codfilial', $filial->codfilial),
-                'filiais' => $filiais->where('codfilial', $filial->codfilial)
+                'vendedores' => $vendedores->where('codfilial', $filial['codfilial']),
+                'filiais' => $filiais->where('codfilial', $filial['codfilial'])
             ])
         </div>
         @endforeach
