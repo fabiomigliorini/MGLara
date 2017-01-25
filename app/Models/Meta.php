@@ -95,21 +95,8 @@ class Meta extends MGModel
                     and n.lancamento between m.periodoinicial and m.periodofinal
                     and n.codfilial = mf.codfilial
                 ) as valorvendas
-                , (
-                    select
-                        sum((case when n.codoperacao = 1 then -1 else 1 end) * coalesce(n.valortotal, 0)) as valorvendas
-                    from tblnegocio n
-                    inner join tblnegocioprodutobarra npb on (npb.codnegocio = n.codnegocio)
-                    inner join tblprodutobarra pb on (pb.codprodutobarra = npb.codprodutobarra)
-                    inner join tblproduto p on (p.codproduto = pb.codproduto)
-                    where n.codnegociostatus = 2 -- fechado
-                    and n.codpessoa not in (select distinct f2.codpessoa from tblfilial f2)
-                    and n.codnaturezaoperacao in (1, 2) -- Venda / Devolucao de Vendas -- TODO: Fazer modelagem para tirar o codigo fixo
-                    and n.lancamento between m.periodoinicial and m.periodofinal
-                    and n.codfilial = mf.codfilial
-                    and p.codsubgrupoproduto = 2951 -- Somente Xerox
-                ) as valorvendasxerox                
                 , mfp.codpessoa
+                , mfp.codcargo
                 , p.pessoa
             from tblmeta m
             inner join tblmetafilial mf on (mf.codmeta = m.codmeta)
@@ -117,6 +104,7 @@ class Meta extends MGModel
             left join tblmetafilialpessoa mfp on (mfp.codmetafilial = mf.codmetafilial and mfp.codcargo = 2) -- Subgerente -- TODO: Fazer modelagem
             left join tblpessoa p on (p.codpessoa = mfp.codpessoa)
             where m.codmeta = {$this->codmeta}
+            order by valorvendas desc
         ";
         
         $sql_vendedores = "
@@ -148,10 +136,40 @@ class Meta extends MGModel
         inner join tblpessoa p on (p.codpessoa = mfp.codpessoa)
         where m.codmeta = {$this->codmeta}
         order by valorvendas desc
-        ";        
+        ";
         
-        $filiais = DB::select($sql_filiais);
+        $sql_xerox = "
+            select
+              f.codfilial
+            , f.filial
+            , (
+                select
+                    sum((case when n.codoperacao = 1 then -1 else 1 end) * coalesce(n.valortotal, 0)) as valorvendas
+                from tblnegocio n
+                inner join tblnegocioprodutobarra npb on (npb.codnegocio = n.codnegocio)
+                inner join tblprodutobarra pb on (pb.codprodutobarra = npb.codprodutobarra)
+                inner join tblproduto p on (p.codproduto = pb.codproduto)
+                where n.codnegociostatus = 2 -- fechado
+                and n.codpessoa not in (select distinct f2.codpessoa from tblfilial f2)
+                and n.codnaturezaoperacao in (1, 2) -- Venda / Devolucao de Vendas -- TODO: Fazer modelagem para tirar o codigo fixo
+                and n.lancamento between m.periodoinicial and m.periodofinal
+                and n.codfilial = mf.codfilial
+                and p.codsubgrupoproduto = 2951 -- Somente Xerox
+            ) as valorvendas
+            , m.percentualcomissaoxerox
+            , mfp.codpessoa
+            , p.pessoa
+            from tblmeta m
+            inner join tblmetafilial mf on (mf.codmeta = m.codmeta)
+            inner join tblfilial f on (f.codfilial = mf.codfilial)
+            left join tblmetafilialpessoa mfp on (mfp.codmetafilial = mf.codmetafilial and mfp.codcargo = 7) -- Subgerente -- TODO: Fazer modelagem
+            left join tblpessoa p on (p.codpessoa = mfp.codpessoa)
+            where m.codmeta = {$this->codmeta} 
+        ";
+        
+        $filiais    = DB::select($sql_filiais);
         $vendedores = DB::select($sql_vendedores);
+        $xeroxs     = DB::select($sql_xerox);
         
         $array_melhoresvendedores = [];
         foreach ($filiais as $filial){
@@ -191,26 +209,41 @@ class Meta extends MGModel
                 'falta'                     => $falta,
             ];            
         }
-
+        
         $retorno_filiais = [];
         foreach ($filiais as $filial){
+            $falta = ($filial->valorvendas < $filial->valormetafilial ? $filial->valormetafilial - $filial->valorvendas : null);
+            $premio = ($filial->valorvendas >= $filial->valormetafilial ? ($filial->valormetafilial / 100 ) * $this->percentualcomissaosubgerentemeta : null);
             $retorno_filiais[] = [
-                "codfilial"             => $filial->codfilial,
-                "filial"                => $filial->filial,
-                "valormetafilial"       => $filial->valormetafilial,
-                "valormetavendedor"     => $filial->valormetavendedor,
-                "valorvendas"           => $filial->valorvendas,
-                "valorvendasxerox"      => $filial->valorvendasxerox,
-                "valorcomissaovendasxerox"=> ($filial->valorvendasxerox / 100) * $this->percentualcomissaoxerox,
-                "codpessoa"             => $filial->codpessoa,
-                "pessoa"                => $filial->pessoa
+                'codfilial'                 => $filial->codfilial,
+                'filial'                    => $filial->filial,
+                'valormetafilial'           => $filial->valormetafilial,
+                'valormetavendedor'         => $filial->valormetavendedor,
+                'valorvendas'               => $filial->valorvendas,
+                'codpessoa'                 => $filial->codpessoa,
+                'pessoa'                    => $filial->pessoa,
+                'falta'                     => $falta,
+                'premio'                    => $premio,
+            ];
+        }        
+        
+        $retorno_xerox = [];
+        foreach ($xeroxs as $xerox){
+            $retorno_xerox[] = [
+                "codfilial"             => $xerox->codfilial,
+                "filial"                => $xerox->filial,
+                "valorvendas"           => $xerox->valorvendas,
+                "percentualcomissaoxerox"=> $xerox->percentualcomissaoxerox,
+                "codpessoa"             => $xerox->codpessoa,
+                "pessoa"                => $xerox->pessoa,
+                'premio'                => ($xerox->valorvendas / 100 ) * $xerox->percentualcomissaoxerox,
             ];
         }        
         
         $retorno = [
             'filiais' => $retorno_filiais,
-            //'filiais' => $filiais,
-            'vendedores' => $retorno_vendedores
+            'vendedores' => $retorno_vendedores,
+            'xerox' => $retorno_xerox
         ];
         
         return $retorno;
