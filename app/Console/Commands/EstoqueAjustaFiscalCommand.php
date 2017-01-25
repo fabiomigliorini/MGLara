@@ -410,7 +410,7 @@ class EstoqueAjustaFiscalCommand extends Command
         $auto = $this->option('auto');
         
         $sql_negativos = "
-            select p.codproduto, p.produto, pv.variacao, p.preco, el.sigla, em.saldoquantidade, em.saldovalor, em.customedio, em.codestoquemes, em.mes, elpv.codprodutovariacao, elpv.codestoquelocal, n.ncm, p.codncm, f.codempresa, es.saldoquantidade as saldoquantidade_atual
+            select p.codproduto, p.produto, pv.variacao, coalesce(p.preco, 0) as preco, el.sigla, em.saldoquantidade, em.saldovalor, em.customedio, em.codestoquemes, em.mes, elpv.codprodutovariacao, elpv.codestoquelocal, n.ncm, p.codncm, f.codempresa, es.saldoquantidade as saldoquantidade_atual
             from tblestoquemes em
             inner join tblestoquesaldo es on (es.codestoquesaldo = em.codestoquesaldo and es.fiscal = true)
             inner join tblestoquelocalprodutovariacao elpv on (elpv.codestoquelocalprodutovariacao = es.codestoquelocalprodutovariacao)
