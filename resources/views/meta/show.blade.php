@@ -161,9 +161,9 @@
                 </div>
             </div>
             <div class="col-sm-6"></div>
-            
-            <div class="col-sm-8"><div id="piechartGeral"></div></div>
-            
+            <div class="col-sm-8">
+                <div id="piechartGeral"></div>
+            </div>
             <script type="text/javascript">
                 google.charts.load('current', {
                     'packages':['corechart'],
@@ -194,9 +194,11 @@
         @foreach($metasfiliais as $filial)
         <div role="tabpanel" class="tab-pane" id="{{ $filial['codfilial'] }}">
             @include('meta.filial', [
-                'vendedores' => $vendedores->where('codfilial', $filial['codfilial']),
-                'filiais' => $filiais->where('codfilial', $filial['codfilial']),
-                'xeroxs' => $xeroxs->where('codfilial', $filial['codfilial'])
+                'vendedores'    => $vendedores->where('codfilial', $filial['codfilial']),
+                'filiais'       => $filiais->where('codfilial', $filial['codfilial']),
+                'xeroxs'        => $xeroxs->where('codfilial', $filial['codfilial']),
+                'if'            => 1,
+                'iv'            => 1
             ])
         </div>
         @endforeach

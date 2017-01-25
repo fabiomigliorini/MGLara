@@ -1,40 +1,40 @@
 <h3>Total de vendas</h3>
-            <div class="panel panel-default">            
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Filial</th>
-                            <th>Sub-Gerente</th>
-                            <th class="text-right">Meta</th>
-                            <th class="text-right">Meta Vendedor</th>
-                            <th class="text-right">Vendas</th>
-                            <th class="text-right">Falta</th>
-                            <th class="text-right">Prêmio</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($filiais as $filial)
-                        <tr>
-                            <td scope="row">{{ $filial['filial'] }}</td>
-                            <td>
-                                <a href="{{ url('pessoa/'.$filial['codpessoa']) }}">{{ $filial['pessoa'] }}</a>
-                                <span class="label label-success pull-right">{{ $if++ }}º</span>
-                            </td>
-                            <td class="text-right"><span class="text-muted">{{ formataNumero($filial['valormetafilial']) }}</span></td>
-                            <td class="text-right"><span class="text-muted">{{ formataNumero($filial['valormetavendedor']) }}</span></td>
-                            <td class="text-right"><strong>{{ formataNumero($filial['valorvendas']) }}</strong></td>
-                            <td class="text-right">
-                                <span class="text-danger">{{ formataNumero($filial['falta']) }}</span>
-                                @if($filial['premio'])
-                                    <span class="label label-success">Atingida</span>
-                                @endif                                
-                            </td>
-                            <td class="text-right">{{ formataNumero($filial['premio']) }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody> 
-                </table>
-            </div>
+    <div class="panel panel-default">            
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Filial</th>
+                    <th>Sub-Gerente</th>
+                    <th class="text-right">Meta</th>
+                    <th class="text-right">Meta Vendedor</th>
+                    <th class="text-right">Vendas</th>
+                    <th class="text-right">Falta</th>
+                    <th class="text-right">Prêmio</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($filiais as $filial)
+                <tr>
+                    <td scope="row">{{ $filial['filial'] }}</td>
+                    <td>
+                        <a href="{{ url('pessoa/'.$filial['codpessoa']) }}">{{ $filial['pessoa'] }}</a>
+                        <span class="label label-success pull-right">{{ $if++ }}º</span>
+                    </td>
+                    <td class="text-right"><span class="text-muted">{{ formataNumero($filial['valormetafilial']) }}</span></td>
+                    <td class="text-right"><span class="text-muted">{{ formataNumero($filial['valormetavendedor']) }}</span></td>
+                    <td class="text-right"><strong>{{ formataNumero($filial['valorvendas']) }}</strong></td>
+                    <td class="text-right">
+                        <span class="text-danger">{{ formataNumero($filial['falta']) }}</span>
+                        @if($filial['premio'])
+                            <span class="label label-success">Atingida</span>
+                        @endif                                
+                    </td>
+                    <td class="text-right">{{ formataNumero($filial['premio']) }}</td>
+                </tr>
+                @endforeach
+            </tbody> 
+        </table>
+    </div>
 <h3>Vendedores</h3>
 <div class="panel panel-default">            
     <table class="table table-striped table-hover">
@@ -94,8 +94,8 @@
                     <tr>
                         <td>{{ $xerox['filial'] }}</td>
                         <td><a href="{{ url('pessoa/'.$xerox['codpessoa']) }}">{{ $xerox['pessoa'] }}</a></td>
-                        <td class="text-right">{{ formataNumero($xerox['valorvendas']) }}</td>
-                        <td class="text-right">{{ formataNumero($xerox['premio']) }}</td>
+                        <td class="text-right"><strong>{{ formataNumero($xerox['valorvendas']) }}</strong></td>
+                        <td class="text-right"><strong>{{ formataNumero($xerox['premio']) }}</strong></td>
                     </tr>
                     @endforeach
                 </tbody> 

@@ -164,7 +164,8 @@ class Meta extends MGModel
             inner join tblfilial f on (f.codfilial = mf.codfilial)
             left join tblmetafilialpessoa mfp on (mfp.codmetafilial = mf.codmetafilial and mfp.codcargo = 7) -- Subgerente -- TODO: Fazer modelagem
             left join tblpessoa p on (p.codpessoa = mfp.codpessoa)
-            where m.codmeta = {$this->codmeta} 
+            where m.codmeta = {$this->codmeta}
+            order by valorvendas desc
         ";
         
         $filiais    = DB::select($sql_filiais);
