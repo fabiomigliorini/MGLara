@@ -407,6 +407,8 @@ class EstoqueAjustaFiscalCommand extends Command
 
     public function transfereMesmoNcm()
     {
+        $auto = $this->option('auto');
+        
         $sql_negativos = "
             select p.codproduto, p.produto, pv.variacao, p.preco, el.sigla, em.saldoquantidade, em.saldovalor, em.customedio, em.codestoquemes, em.mes, elpv.codprodutovariacao, elpv.codestoquelocal, n.ncm, p.codncm, f.codempresa, es.saldoquantidade as saldoquantidade_atual
             from tblestoquemes em
@@ -530,7 +532,11 @@ class EstoqueAjustaFiscalCommand extends Command
                 'Médio',
             ], $data);
 
-            $codproduto = $this->choice('Transferir de qual alternativa?', $choices, false);
+            if (!$auto) {
+                $codproduto = $this->choice('Transferir de qual alternativa?', $choices, false);
+            } else {
+                $codproduto = $alt_prods[0]->codproduto;
+            }
 
             $produto = $alt_prods[$cods[$codproduto]];
 
@@ -554,7 +560,7 @@ class EstoqueAjustaFiscalCommand extends Command
                 left join tblestoquemes em_fisico on (em_fisico.codestoquemes = (select em.codestoquemes from tblestoquemes em where em.mes <= '{$negativo->mes}' and em.codestoquesaldo = es_fisico.codestoquesaldo order by mes desc limit 1))
                 where pv.codproduto = {$produto->codproduto}
                 and (coalesce(es_fiscal.saldoquantidade, 0) > 0 or coalesce(es_fisico.saldoquantidade, 0) > 0)
-                order by el.sigla, pv.variacao
+                order by es_fiscal.saldoquantidade - case when (es_fisico.saldoquantidade > 0) then es_fisico.saldoquantidade else 0 end desc
             ";
 
             $alt_meses = DB::select($sql);
@@ -585,8 +591,22 @@ class EstoqueAjustaFiscalCommand extends Command
                 'Fiscal',
             ], $data);
 
-            $codestoquemes = $this->choice('Transferir de qual alternativa?', $choices, false);
-
+            if (!$auto) {
+                $codestoquemes = $this->choice('Transferir de qual alternativa?', $choices, false);
+            } else {
+                $codestoquemes = null;
+                foreach ($alt_meses as $alt) {
+                    if ($alt->sobra_atual > 0 and $alt->sobra > 0) {
+                        $codestoquemes = $alt->codestoquemes;
+                        break;
+                    }
+                }
+            }
+            
+            if ($codestoquemes == null) {
+                continue;
+            }
+            
             $mes = $alt_meses[$cods[$codestoquemes]];
             
             $quatidade = ($negativo->saldoquantidade_atual < $negativo->saldoquantidade)?abs($negativo->saldoquantidade_atual):abs($negativo->saldoquantidade);
@@ -604,7 +624,9 @@ class EstoqueAjustaFiscalCommand extends Command
                 continue;
             }
 
-            $quantidade = $this->ask('Informe a quantidade:', $quantidade);
+            if (!$auto) {
+                $quantidade = $this->ask('Informe a quantidade:', $quantidade);
+            }
 
             if ($quantidade <= 0) {
                 continue;
