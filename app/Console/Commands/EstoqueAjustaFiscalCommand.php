@@ -499,8 +499,8 @@ class EstoqueAjustaFiscalCommand extends Command
                 AND p.codncm = {$negativo->codncm}
                 AND coalesce(fiscal.saldoquantidade_atual, 0) > coalesce(fisico.saldoquantidade_atual, 0)
                 AND coalesce(fiscal.saldoquantidade, 0) > coalesce(fisico.saldoquantidade, 0)
-                and coalesce(fiscal.saldoquantidade_atual, 0) > 0
-                and coalesce(fiscal.saldoquantidade, 0) > 0
+                and coalesce(fiscal.saldoquantidade_atual, 0) > 1
+                and coalesce(fiscal.saldoquantidade, 0) > 1
                 order by abs(p.preco - {$negativo->preco})
             ";
 
