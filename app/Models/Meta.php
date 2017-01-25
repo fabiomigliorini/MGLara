@@ -214,7 +214,7 @@ class Meta extends MGModel
         $retorno_filiais = [];
         foreach ($filiais as $filial){
             $falta = ($filial->valorvendas < $filial->valormetafilial ? $filial->valormetafilial - $filial->valorvendas : null);
-            $premio = ($filial->valorvendas >= $filial->valormetafilial ? ($filial->valormetafilial / 100 ) * $this->percentualcomissaosubgerentemeta : null);
+            $premio = ($filial->valorvendas >= $filial->valormetafilial ? ($filial->valorvendas / 100 ) * $this->percentualcomissaosubgerentemeta : null);
             $retorno_filiais[] = [
                 'codfilial'                 => $filial->codfilial,
                 'filial'                    => $filial->filial,
@@ -224,7 +224,7 @@ class Meta extends MGModel
                 'codpessoa'                 => $filial->codpessoa,
                 'pessoa'                    => $filial->pessoa,
                 'falta'                     => $falta,
-                'premio'                    => $premio,
+                'comissao'                    => $premio,
             ];
         }        
         
@@ -237,7 +237,7 @@ class Meta extends MGModel
                 "percentualcomissaoxerox"=> $xerox->percentualcomissaoxerox,
                 "codpessoa"             => $xerox->codpessoa,
                 "pessoa"                => $xerox->pessoa,
-                'premio'                => ($xerox->valorvendas / 100 ) * $xerox->percentualcomissaoxerox,
+                'comissao'                => ($xerox->valorvendas / 100 ) * $xerox->percentualcomissaoxerox,
             ];
         }        
         
