@@ -27,9 +27,12 @@
     if (sizeof($anteriores) < 8) {
         $proximos = $model->buscaProximos(16 - sizeof($anteriores));
     }
-    $filiais = collect($dados['filiais']);
+    $filiais    = collect($dados['filiais']);
     $vendedores = collect($dados['vendedores']);
+    $xeroxs     = collect($dados['xerox']);
     $metasfiliais = $model->MetaFilialS()->get();
+    $if = 1;
+    $iv = 1;
 ?>
 <ul class="nav nav-pills">
     @foreach($anteriores as $meta)
@@ -57,20 +60,32 @@
                     <thead>
                         <tr>
                             <th>Filial</th>
-                            <th class="text-right">Meta</th>
-                            <th class="text-right">Vendas</th>
-                            <th class="text-right">Meta Vendedor</th>
                             <th>Sub-Gerente</th>
+                            <th class="text-right">Meta</th>
+                            <th class="text-right">Meta Vendedor</th>
+                            <th class="text-right">Vendas</th>
+                            <th class="text-right">Falta</th>
+                            <th class="text-right">Prêmio</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($filiais as $filial)
                         <tr>
-                            <th scope="row">{{ $filial['filial'] }}</th>
-                            <td class="text-right">{{ formataNumero($filial['valormetafilial']) }}</td>
-                            <td class="text-right">{{ formataNumero($filial['valorvendas']) }}</td>
-                            <td class="text-right">{{ formataNumero($filial['valormetavendedor']) }}</td>
-                            <td><a href="{{ url('pessoa/'.$filial['codpessoa']) }}">{{ $filial['pessoa'] }}</a></td>
+                            <td scope="row">{{ $filial['filial'] }}</td>
+                            <td>
+                                <a href="{{ url('pessoa/'.$filial['codpessoa']) }}">{{ $filial['pessoa'] }}</a>
+                                <span class="label label-success pull-right">{{ $if++ }}º</span>
+                            </td>
+                            <td class="text-right"><span class="text-muted">{{ formataNumero($filial['valormetafilial']) }}</span></td>
+                            <td class="text-right"><span class="text-muted">{{ formataNumero($filial['valormetavendedor']) }}</span></td>
+                            <td class="text-right"><strong>{{ formataNumero($filial['valorvendas']) }}</strong></td>
+                            <td class="text-right">
+                                <span class="text-danger">{{ formataNumero($filial['falta']) }}</span>
+                                @if($filial['premio'])
+                                    <span class="label label-success">Atingida</span>
+                                @endif                                
+                            </td>
+                            <td class="text-right">{{ formataNumero($filial['premio']) }}</td>
                         </tr>
                         @endforeach
                     </tbody> 
@@ -86,41 +101,39 @@
                             <th class="text-right">Meta</th>
                             <th class="text-right">Vendas</th>
                             <th class="text-right">Falta</th>
-                            <th class="text-center">Status</th>
-                            <th class="text-right">Comissão</th>
-                            <th class="text-right">R$ Meta</th>
-                            <th class="text-right">1º Vendedor</th>
-                            <th class="text-right">R$ Total</th>
+                            <th class="text-right">Prêmio</th>
+                            <th class="text-right">Meta</th>
+                            <th class="text-right">Primeiro</th>
+                            <th class="text-right">Total</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $i = 1;?>
                         @foreach($vendedores as $vendedor)
                         <tr>
-                            <th scope="row">{{ $vendedor['filial'] }}</th>
+                            <td scope="row">{{ $vendedor['filial'] }}</td>
                             <td>
                                 <a href="{{ url('pessoa/'.$vendedor['codpessoa']) }}">{{ $vendedor['pessoa'] }}</a>
-                                <span class="label label-success pull-right">{{$i++}}º</span>
+                                <span class="label label-success pull-right">{{ $iv++ }}º</span>
                             </td>
-                            <td class="text-right">{{ formataNumero($vendedor['valormetavendedor']) }}</td>
-                            <td class="text-right">{{ formataNumero($vendedor['valorvendas']) }}</td>
-                            <td class="text-right">{{ formataNumero($vendedor['falta']) }}</td>
-                            <td class="text-center">
+                            <td class="text-right"><span class="text-muted">{{ formataNumero($vendedor['valormetavendedor']) }}</span></td>
+                            <td class="text-right"><strong>{{ formataNumero($vendedor['valorvendas']) }}</strong></td>
+                            <td class="text-right">
+                                <span class="text-danger">{{ formataNumero($vendedor['falta']) }}</span>
                                 @if($vendedor['metaatingida'])
                                     <span class="label label-success">Atingida</span>
-                                @endif
+                                @endif                                
                             </td>
                             <td class="text-right">{{ formataNumero($vendedor['valorcomissaovendedor']) }}</td>
                             <td class="text-right">{{ formataNumero($vendedor['valorcomissaometavendedor']) }}</td>
                             <td class="text-right">{{ formataNumero($vendedor['primeirovendedor']) }}</td>
-                            <td class="text-right">{{ formataNumero($vendedor['valortotalcomissao']) }}</td>
+                            <td class="text-right"><strong>{{ formataNumero($vendedor['valortotalcomissao']) }}</strong></td>
                         </tr>
                         @endforeach
                     </tbody> 
                 </table>
             </div>
             <br>
-            <div class="col-sm-3">
+            <div class="col-sm-6">
                 <div class="row">
                     <h3>Xerox</h3>
                     <div class="panel panel-default">
@@ -128,16 +141,18 @@
                             <thead>
                                 <tr>
                                     <th>Filial</th>
-                                    <th class="text-right">Vendas Xerox</th>
-                                    <th class="text-right">Comissão</th>
+                                    <th>Vendedor</th>
+                                    <th class="text-right">Vendas</th>
+                                    <th class="text-right">Prêmio</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($filiais as $filial)
+                                @foreach($xeroxs as $xerox)
                                 <tr>
-                                    <th scope="row">{{ $filial['filial'] }}</th>
-                                    <td class="text-right">{{ formataNumero($filial['valorvendasxerox']) }}</td>
-                                    <td class="text-right">{{ formataNumero($filial['valorcomissaovendasxerox']) }}</td>
+                                    <td>{{ $xerox['filial'] }}</td>
+                                    <td><a href="{{ url('pessoa/'.$xerox['codpessoa']) }}">{{ $xerox['pessoa'] }}</a></td>
+                                    <td class="text-right"><strong>{{ formataNumero($xerox['valorvendas']) }}</strong></td>
+                                    <td class="text-right"><strong>{{ formataNumero($xerox['premio']) }}</strong></td>
                                 </tr>
                                 @endforeach
                             </tbody> 
@@ -145,7 +160,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-9">
+            <div class="col-sm-6"></div>
+            <div class="col-sm-8">
                 <div id="piechartGeral"></div>
             </div>
             <script type="text/javascript">
@@ -178,8 +194,11 @@
         @foreach($metasfiliais as $filial)
         <div role="tabpanel" class="tab-pane" id="{{ $filial['codfilial'] }}">
             @include('meta.filial', [
-                'vendedores' => $vendedores->where('codfilial', $filial['codfilial']),
-                'filiais' => $filiais->where('codfilial', $filial['codfilial'])
+                'vendedores'    => $vendedores->where('codfilial', $filial['codfilial']),
+                'filiais'       => $filiais->where('codfilial', $filial['codfilial']),
+                'xeroxs'        => $xeroxs->where('codfilial', $filial['codfilial']),
+                'if'            => 1,
+                'iv'            => 1
             ])
         </div>
         @endforeach
