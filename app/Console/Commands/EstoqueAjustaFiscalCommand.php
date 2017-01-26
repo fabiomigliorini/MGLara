@@ -420,7 +420,7 @@ class EstoqueAjustaFiscalCommand extends Command
             inner join tblfilial f on (f.codfilial = el.codfilial)
             inner join tblncm n on (n.codncm = p.codncm)
             where em.saldoquantidade < 0
-            order by em.mes, n.ncm, p.produto, pv.variacao nulls first, elpv.codestoquelocal
+            order by em.mes, n.ncm, p.preco DESC, p.produto, pv.variacao nulls first, elpv.codestoquelocal
             limit 1
             ";
 
