@@ -426,6 +426,8 @@ class EstoqueAjustaFiscalCommand extends Command
 
         $i_alternativa_produto = 0;
         
+        $produtos_sem_saldo = [0];
+        
         while ($dados = DB::select($sql_negativos))
         {
             $negativo = $dados[0];
@@ -502,6 +504,7 @@ class EstoqueAjustaFiscalCommand extends Command
                 AND coalesce(fiscal.saldoquantidade, 0) > coalesce(fisico.saldoquantidade, 0)
                 and coalesce(fiscal.saldoquantidade_atual, 0) > 1
                 and coalesce(fiscal.saldoquantidade, 0) > 1
+                and p.codproduto not in (" . implode(', ', $produtos_sem_saldo) . ")
                 order by abs(p.preco - {$negativo->preco})
             ";
 
@@ -539,7 +542,8 @@ class EstoqueAjustaFiscalCommand extends Command
                 $codproduto = $this->choice('Transferir de qual alternativa?', $choices, false);
             } else {
                 $this->error($i_alternativa_produto);
-                $codproduto = $alt_prods[$i_alternativa_produto]->codproduto;
+                $codproduto = $alt_prods[0]->codproduto;
+                //$codproduto = $alt_prods[$i_alternativa_produto]->codproduto;
                 $this->error($codproduto);
             }
 
@@ -609,6 +613,7 @@ class EstoqueAjustaFiscalCommand extends Command
             }
             
             if ($codestoquemes == null) {
+                $produtos_sem_saldo[] = $produto->codproduto;
                 $i_alternativa_produto++;
                 continue;
             }
