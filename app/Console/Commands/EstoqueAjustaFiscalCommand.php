@@ -424,7 +424,8 @@ class EstoqueAjustaFiscalCommand extends Command
             limit 1
             ";
 
-
+        $i_alternativa_produto = 0;
+        
         while ($dados = DB::select($sql_negativos))
         {
             $negativo = $dados[0];
@@ -537,7 +538,9 @@ class EstoqueAjustaFiscalCommand extends Command
             if (!$auto) {
                 $codproduto = $this->choice('Transferir de qual alternativa?', $choices, false);
             } else {
-                $codproduto = $alt_prods[0]->codproduto;
+                $this->error($i_alternativa_produto);
+                $codproduto = $alt_prods[$i_alternativa_produto]->codproduto;
+                $this->error($codproduto);
             }
 
             $produto = $alt_prods[$cods[$codproduto]];
@@ -606,6 +609,7 @@ class EstoqueAjustaFiscalCommand extends Command
             }
             
             if ($codestoquemes == null) {
+                $i_alternativa_produto++;
                 continue;
             }
             
@@ -642,7 +646,9 @@ class EstoqueAjustaFiscalCommand extends Command
                 $negativo->codprodutovariacao,
                 $negativo->codestoquelocal
             );
-
+            
+            $i_alternativa_produto = 0;
+            
         }
 
 
