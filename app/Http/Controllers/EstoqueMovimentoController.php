@@ -136,7 +136,8 @@ class EstoqueMovimentoController extends Controller
         try {
             
             //Cria registro de Origem
-            if (!empty($model->EstoqueMovimentoTipo->codestoquemovimentotipoorigem))
+            $codestoquemovimentotipoorigem = $model->EstoqueMovimentoTipo->codestoquemovimentotipoorigem;
+            if (!empty($codestoquemovimentotipoorigem))
             {
                 if (!empty($model->codestoquemovimentoorigem)) {
                     $origem = $model->EstoqueMovimentoOrigem;

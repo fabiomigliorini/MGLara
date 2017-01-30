@@ -22,13 +22,13 @@ class ProdutoVariacaoController extends Controller
         $this->middleware('permissao:produto-variacao.inclusao', ['only' => ['create', 'store']]);
         $this->middleware('permissao:produto-variacao.alteracao', ['only' => ['edit', 'update']]);
         $this->middleware('permissao:produto-variacao.exclusao', ['only' => ['delete', 'destroy']]);
-    }    
+    }
     public function show($id)
     {
         $model = ProdutoVariacao::findOrFail($id);
         return redirect("produto/$model->codproduto");
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -50,14 +50,14 @@ class ProdutoVariacaoController extends Controller
     public function store(Request $request)
     {
         $model = new ProdutoVariacao($request->all());
-        
+
         $model->codproduto = $request->input('codproduto');
-        
+
         DB::beginTransaction();
-        
+
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
-        
+
         try {
             if (!$model->save())
                 throw new Exception ('Erro ao Criar Variação!');
@@ -68,7 +68,7 @@ class ProdutoVariacaoController extends Controller
 
             if (!$pb->save())
                 throw new Exception ('Erro ao Criar Barras!');
-            
+
             $i = 0;
             foreach ($model->Produto->ProdutoEmbalagemS as $pe)
             {
@@ -76,23 +76,23 @@ class ProdutoVariacaoController extends Controller
                 $pb->codproduto = $model->codproduto;
                 $pb->codprodutovariacao = $model->codprodutovariacao;
                 $pb->codprodutoembalagem = $pe->codprodutoembalagem;
-                
+
                 if (!$pb->save())
                     throw new Exception ("Erro ao Criar Barras da embalagem {$pe->descricao}!");
-                
+
                 $i++;
             }
-            
-            
+
+
             DB::commit();
             Session::flash('flash_success', "Variação '{$model->variacao}' criada!");
-            return redirect("produto/$model->codproduto");               
-            
+            return redirect("produto/$model->codproduto");
+
         } catch (Exception $ex) {
             DB::rollBack();
-            $this->throwValidationException($request, $model->_validator);              
+            $this->throwValidationException($request, $model->_validator);
         }
-        
+
         return redirect("produto/$model->codproduto");
     }
 
@@ -120,13 +120,13 @@ class ProdutoVariacaoController extends Controller
     {
         $model = ProdutoVariacao::findOrFail($id);
         $model->fill($request->all());
-        
+
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
-        
+
         $model->save();
         Session::flash('flash_success', "Variação '{$model->variacao}' alterada!");
-        return redirect("produto/$model->codproduto");     
+        return redirect("produto/$model->codproduto");
     }
 
     /**
@@ -147,28 +147,40 @@ class ProdutoVariacaoController extends Controller
         return json_encode($ret);
     }
 
-    public function listagemJson(Request $request) 
+    public function listagemJson(Request $request)
     {
-        
+
+        $ret = [];
+
         if (!empty($request->id)) {
-            
+
             $model = ProdutoVariacao::findOrFail($request->id);
             $ret['id'] = $model->codprodutovariacao;
-            $ret['variacao'] = empty($variacao)?'{ Sem Variacao}':$variacao;
-            
+            $ret['variacao'] = empty($variacao)?'{ Sem Variacao }':$variacao;
+
         } else {
-            
-            $regs = ProdutoVariacao::where('codproduto', '=', $request->codproduto)->lists('variacao', 'codprodutovariacao');
-            
+
+            $qry = ProdutoVariacao::where('codproduto', '=', $request->codproduto);
+
+            foreach (explode(' ', trim($request->get('q'))) as $palavra) {
+                if (!empty($palavra)) {
+                    $qry->where('variacao', 'ilike', "%$palavra%");
+                }
+            }
+
+            $qry->orderByRaw('variacao nulls first');
+
+            $regs = $qry->lists('variacao', 'codprodutovariacao');
+
             foreach ($regs as $id => $variacao) {
                 $ret[] = [
-                    'id' => $id, 
-                    'variacao' => empty($variacao)?'{ Sem Variacao}':$variacao
+                    'id' => $id,
+                    'variacao' => empty($variacao)?'{ Sem Variacao }':$variacao
                 ];
             }
         }
-        
-        return  response()->json($ret);
+
+        return $ret;
     }
-    
+
 }
