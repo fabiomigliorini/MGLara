@@ -8,17 +8,18 @@ use Illuminate\Support\Facades\Log;
  * Description of IntegracaoOpencartBase
  *
  * @author escmig98
+ * @property boolean $debug Modo debug - mostra log erros
  */
 class IntegracaoOpencartBase {
-    
+
     protected $debug = false;
     protected $url;
     protected $user;
     protected $password;
     protected $languagePTBR;
-    
+
     public $token;
-    
+
     protected $response;
     protected $responseObject;
     protected $status;
@@ -35,27 +36,27 @@ class IntegracaoOpencartBase {
         $this->password = (!empty($password))?$password:env('OPENCART_PASSWORD');
         $this->languagePTBR = (!empty($language_ptbr))?$language_ptbr:env('OPENCART_LANGUAGE_PTBR');
     }
-    
+
     public function get($url, $data = null, $http_header = null, $data_as_json = true)
     {
         return $this->curl('GET', $url, $data, $http_header, $data_as_json);
     }
-    
+
     public function post($url, $data = null, $http_header = null, $data_as_json = true)
     {
         return $this->curl('POST', $url, $data, $http_header, $data_as_json);
     }
-    
+
     public function put($url, $data = null, $http_header = null, $data_as_json = true)
     {
         return $this->curl('PUT', $url, $data, $http_header, $data_as_json);
     }
-    
+
     public function delete($url, $data = null, $http_header = null, $data_as_json = true)
     {
         return $this->curl('DELETE', $url, $data, $http_header, $data_as_json);
     }
-    
+
     public function curl($request, $url, $data = null, $http_header = null, $data_as_json = true)
     {
         // Padrao de autorizacao como Bearer $this->token
@@ -65,18 +66,18 @@ class IntegracaoOpencartBase {
                 'Authorization: Bearer ' . $this->token
             ];
         }
-        
+
         // codifica como json os dados
         $data_string = null;
         if (!empty($data)) {
             $data_string = ($data_as_json)?json_encode($data):$data;
         }
-        
+
         // Loga Execucao
         if ($this->debug) {
             Log::debug(class_basename($this) . " - $request - $url - " . ($data_as_json?"$data_string - ":'') . json_encode($http_header));
         }
-            
+
         // Monta Chamada CURL
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $request);
@@ -95,7 +96,7 @@ class IntegracaoOpencartBase {
         $this->response = curl_exec($ch);
         $this->status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-        
+
         // Loga Reotrno
         if ($this->debug) {
             Log::debug(class_basename($this) . " - $this->status - $this->response");
@@ -108,17 +109,17 @@ class IntegracaoOpencartBase {
         if ($this->status != 200) {
             return false;
         }
-        
+
         // decodifica Json
         if (!$this->responseObject = json_decode($this->response)) {
             return false;
         }
-        
+
         // retorna
         return true;
-        
+
     }
-    
+
     /**
      * Autentica no OpenCart e armazena em $this->token
      * @return token ou false em caso de erro
@@ -129,34 +130,34 @@ class IntegracaoOpencartBase {
         if (!empty($this->token)) {
             return $this->token;
         }
-        
+
         // Monta chave com Usuario:Senha
         $chave = base64_encode("{$this->user}:{$this->password}");
-        
+
         // monta URL
         $url = $this->url . 'index.php?route=rest/admin_security/gettoken&grant_type=client_credentials';
-        
+
         // monta Heather com autorizacao
         $http_header =  [
             'Content-Type: application/json',
             "Authorization: Basic $chave"
         ];
-        
+
         // executa POST
         $ret = $this->post($url, null, $http_header);
-        
+
         // se nao veio o token retorna false
         if (!isset($this->responseObject->access_token)) {
             return false;
         }
-        
+
         // seta token e retorna
         $this->token = $this->responseObject->access_token;
         return $this->token;
-        
+
     }
-    
-    public function parseManufacturers($manufacturers) 
+
+    public function parseManufacturers($manufacturers)
     {
         $return = [];
         foreach ($manufacturers as $key => $manufacturer) {
@@ -164,8 +165,8 @@ class IntegracaoOpencartBase {
         }
         return $return;
     }
-    
-    public function getManufacturer ($id = 'all', $limit = 9999999999) 
+
+    public function getManufacturer ($id = 'all', $limit = 9999999999)
     {
 
         // monta URL
@@ -174,28 +175,28 @@ class IntegracaoOpencartBase {
         } else {
             $url = $this->url . "index.php?route=rest/manufacturer_admin/manufacturer&id={$id}";
         }
-        
-        // aborta se falhou na chamada get 
+
+        // aborta se falhou na chamada get
         if (!$this->get($url)) {
             return false;
         }
-        
+
         // aborta se nao retornou sucesso
         if (!$this->responseObject->success) {
             return false;
         }
-        
+
         // aborta se nao veio array com dados
         if (!isset($this->responseObject->data)) {
             return false;
         }
-        
+
         // retorna array
         return $this->parseManufacturers($this->responseObject->data);
-        
+
     }
-    
-    public function updateManufacturer ($id, $name, $keyword, $sort_order, $image) 
+
+    public function updateManufacturer ($id, $name, $keyword, $sort_order, $image)
     {
         // monta Array com dados
         $data = [
@@ -212,18 +213,18 @@ class IntegracaoOpencartBase {
         if (!$this->put($url, $data)) {
             return false;
         }
-        
+
         // aborta se nao veio variavel de success
         if (!isset($this->responseObject->success)) {
             return false;
         }
-        
+
         // retorna o success
         return $this->responseObject->success;
-        
+
     }
-    
-    public function createManufacturer ($name, $keyword, $sort_order, $image) 
+
+    public function createManufacturer ($name, $keyword, $sort_order, $image)
     {
         // monta Array com dados
         $data = [
@@ -240,51 +241,51 @@ class IntegracaoOpencartBase {
         if (!$this->post($url, $data)) {
             return false;
         }
-        
+
         // aborta se nao veio variavel de success
         if (!isset($this->responseObject->success)) {
             return false;
         }
-        
+
         // aborta se nao retornou success
         if (!$this->responseObject->success) {
             return false;
         }
-        
+
         // retorna o id
         return $this->responseObject->data->id;
-        
+
     }
-    
+
     public function deleteManufacturer ($ids)
     {
-        
+
         // se passou somente um id, transforma em array
         if (!is_array($ids)) {
             $ids = [$ids];
         }
-        
+
         // monta Array com dados
         $data = ['manufacturers' => $ids];
 
         // monta URL
         $url = $this->url . 'index.php?route=rest/manufacturer_admin/manufacturer';
-            
+
         // aborta caso erro no delete
         if (!$this->delete($url, $data)) {
             return false;
         }
-        
+
         // aborta se nao veio variavel de success
         if (!isset($this->responseObject->success)) {
             return false;
         }
-        
+
         // retorna o success
         return $this->responseObject->success;
-        
+
     }
-    
+
     public function parseCategories($categories, $parent_id = null, &$return = [])
     {
         // percorre objeto das categorias recebido deixando como chave o id da categoria e o id da lingua
@@ -304,42 +305,42 @@ class IntegracaoOpencartBase {
             $return[$category_id] = (object) $category;
         }
         return $return;
-        
+
     }
-    
-    public function getCategory($id = 'all', $level = 9999999999) 
+
+    public function getCategory($id = 'all', $level = 9999999999)
     {
-        
+
         // monta URL
         if ($id == 'all') {
             $url = $this->url . "index.php?route=rest/category_admin/category&level={$level}";
         } else {
             $url = $this->url . "index.php?route=rest/category_admin/category&id={$id}";
         }
-        
-        // aborta se falhou na chamada get 
+
+        // aborta se falhou na chamada get
         if (!$this->get($url)) {
             return false;
         }
-        
+
         // aborta se nao retornou sucesso
         if (!$this->responseObject->success) {
             return false;
         }
-        
+
         // aborta se nao veio array com dados
         if (!isset($this->responseObject->data->categories)) {
             return false;
         }
-        
+
         // retorna array de categorias
         return $this->parseCategories($this->responseObject->data->categories);
-        
+
     }
-    
-    public function updateCategory ($id, $sort_order, $parent_id, $top, $column, $status, $name, $description, $meta_title, $meta_description, $meta_keyword) 
+
+    public function updateCategory ($id, $sort_order, $parent_id, $top, $column, $status, $name, $description, $meta_title, $meta_description, $meta_keyword)
     {
-        
+
         // monta Array com dados
         $data = [
             'sort_order' => $sort_order,
@@ -367,18 +368,18 @@ class IntegracaoOpencartBase {
         if (!$this->put($url, $data)) {
             return false;
         }
-        
+
         // aborta se nao veio variavel de success
         if (!isset($this->responseObject->success)) {
             return false;
         }
-        
+
         // retorna o success
         return $this->responseObject->success;
-        
+
     }
-    
-    public function createCategory ($sort_order, $parent_id, $top, $column, $status, $name, $description, $meta_title, $meta_description, $meta_keyword) 
+
+    public function createCategory ($sort_order, $parent_id, $top, $column, $status, $name, $description, $meta_title, $meta_description, $meta_keyword)
     {
         // monta Array com dados
         $data = [
@@ -399,7 +400,7 @@ class IntegracaoOpencartBase {
                 ]
             ]
         ];
-        
+
         // monta URL
         $url = $this->url . 'index.php?route=rest/category_admin/category';
 
@@ -407,20 +408,20 @@ class IntegracaoOpencartBase {
         if (!$this->post($url, $data)) {
             return false;
         }
-        
+
         // aborta se nao veio variavel de success
         if (!isset($this->responseObject->success)) {
             return false;
         }
-        
+
         // aborta se nao retornou success
         if (!$this->responseObject->success) {
             return false;
         }
-        
+
         // retorna o id
         return $this->responseObject->data->id;
-        
+
     }
 
     public function deleteCategory ($ids)
@@ -429,36 +430,36 @@ class IntegracaoOpencartBase {
         if (!is_array($ids)) {
             $ids = [$ids];
         }
-        
+
         // monta Array com dados
         $data = ['categories' => $ids];
 
         // monta URL
         $url = $this->url . 'index.php?route=rest/category_admin/category';
-            
+
         // aborta caso erro no delete
         if (!$this->delete($url, $data)) {
             return false;
         }
-        
+
         // aborta se nao veio variavel de success
         if (!isset($this->responseObject->success)) {
             return false;
         }
-        
+
         // retorna o success
         return $this->responseObject->success;
-        
+
     }
-    
+
     public function parseProductOptions($options)
     {
         $return = [];
-        
+
         if (isset($options->option_id)) {
             $options = [$options];
         }
-        
+
         // Transforma a resposta dos Produtos, deixando o ID como chave do array
         foreach ($options as $key => $option) {
             $values = [];
@@ -468,42 +469,42 @@ class IntegracaoOpencartBase {
             $option->option_values = $values;
             $return[$option->option_id] = $option;
         }
-        
+
         return $return;
-        
+
     }
-    
+
     public function getProductOption($id = 'all', $limit = 999999999, $page = 0)
     {
-     
+
         // monta URL
         if ($id == 'all') {
             $url = $this->url . "index.php?route=rest/option_admin/option&limit=$limit&page=$page";
         } else {
             $url = $this->url . "index.php?route=rest/option_admin/option&id=$id";
         }
-        
-        // aborta se falhou na chamada get 
+
+        // aborta se falhou na chamada get
         if (!$this->get($url)) {
             return false;
         }
-        
+
         // aborta se nao retornou sucesso
         if (!$this->responseObject->success) {
             return false;
         }
-        
+
         // aborta se nao veio array com dados
         if (!isset($this->responseObject->data)) {
             return false;
         }
-        
+
         // retorna array de categorias
         return $this->parseProductOptions($this->responseObject->data);
-        
+
     }
-    
-    public function createProductOption ($sort_order, $type, $name, Array $option_values) 
+
+    public function createProductOption ($sort_order, $type, $name, Array $option_values)
     {
         // monta Array com dados
         $data = [
@@ -515,7 +516,7 @@ class IntegracaoOpencartBase {
             ]],
             'option_value'=> $option_values
         ];
-        
+
         // monta URL
         $url = $this->url . 'index.php?route=rest/option_admin/option';
 
@@ -523,51 +524,51 @@ class IntegracaoOpencartBase {
         if (!$this->post($url, $data)) {
             return false;
         }
-        
+
         // aborta se nao veio variavel de success
         if (!isset($this->responseObject->success)) {
             return false;
         }
-        
+
         // aborta se nao retornou success
         if (!$this->responseObject->success) {
             return false;
         }
-        
+
         // retorna o id
         return $this->responseObject->data->option_id;
-        
+
     }
-    
+
     public function deleteProductOption ($ids)
     {
-        
+
         // se passou somente um id, transforma em array
         if (!is_array($ids)) {
             $ids = [$ids];
         }
-        
+
         // monta Array com dados
         $data = ['options' => $ids];
 
         // monta URL
         $url = $this->url . 'index.php?route=rest/option_admin/option';
-            
+
         // aborta caso erro no delete
         if (!$this->delete($url, $data)) {
             return false;
         }
-        
+
         // aborta se nao veio variavel de success
         if (!isset($this->responseObject->success)) {
             return false;
         }
-        
+
         // retorna o success
         return $this->responseObject->success;
-        
+
     }
-    
+
     public function updateProductOptionValue ($id, $sort_order, $name)
     {
         // monta Array com dados
@@ -587,16 +588,16 @@ class IntegracaoOpencartBase {
         if (!$this->put($url, $data)) {
             return false;
         }
-        
+
         // aborta se nao veio variavel de success
         if (!isset($this->responseObject->success)) {
             return false;
         }
-        
+
         // retorna o success
         return $this->responseObject->success;
     }
-    
+
     public function createProductOptionValue ($option_id, $sort_order, $name)
     {
         // monta Array com dados
@@ -608,7 +609,7 @@ class IntegracaoOpencartBase {
                 'name' => $name
             ]]
         ];
-        
+
         // monta URL
         $url = $this->url . "index.php?route=rest/option_value_admin/optionvalue&id={$option_id}";
 
@@ -616,54 +617,54 @@ class IntegracaoOpencartBase {
         if (!$this->post($url, $data)) {
             return false;
         }
-        
+
         // aborta se nao veio variavel de success
         if (!isset($this->responseObject->success)) {
             return false;
         }
-        
+
         // aborta se nao retornou success
         if (!$this->responseObject->success) {
             return false;
         }
-        
+
         // retorna o id
         return $this->responseObject->data->option_value_id;
-        
+
     }
-    
+
     public function deleteProductOptionValue ($ids)
     {
-        
+
         // se passou somente um id, transforma em array
         if (!is_array($ids)) {
             $ids = [$ids];
         }
-        
+
         // monta Array com dados
         $data = ['option_values' => $ids];
 
         // monta URL
         $url = $this->url . 'index.php?route=rest/option_value_admin/optionvalue';
-            
+
         // aborta caso erro no delete
         if (!$this->delete($url, $data)) {
             return false;
         }
-        
+
         // aborta se nao veio variavel de success
         if (!isset($this->responseObject->success)) {
             return false;
         }
-        
+
         // retorna o success
         return $this->responseObject->success;
-        
+
     }
-    
+
     public function getProduct($id = 'all', $sku = 'all', $limit = 9999999999)
     {
-        
+
         // monta URL
         if ($id != 'all') {
             $url = $this->url . "index.php?route=rest/product_admin/products&id=$id";
@@ -672,32 +673,32 @@ class IntegracaoOpencartBase {
         } else {
             $url = $this->url . "index.php?route=rest/product_admin/products&limit={$limit}";
         }
-        
-        // aborta se falhou na chamada get 
+
+        // aborta se falhou na chamada get
         if (!$this->get($url)) {
             return false;
         }
-        
+
         // aborta se nao retornou sucesso
         if (!$this->responseObject->success) {
             return false;
         }
-        
+
         // aborta se nao veio array com dados
         if (!isset($this->responseObject->data)) {
             return false;
         }
-        
+
         // retorna array de categorias
         return $this->parseProducts($this->responseObject->data);
-        
+
     }
-    
+
     public function parseProducts($data)
     {
-        
+
         $products = [];
-        
+
         if (isset($data->id)) {
             // Transforma a resposta dos Produtos, deixando o ID como chave do array
             $products[$data->id] = $data;
@@ -707,17 +708,17 @@ class IntegracaoOpencartBase {
                 $products[$product->id] = $product;
             }
         }
-        
+
         return $products;
-        
+
     }
-    
+
     public function createProduct(
-            $model, 
-            $sku, 
-            $quantity, 
-            $price, 
-            $keyword, 
+            $model,
+            $sku,
+            $quantity,
+            $price,
+            $keyword,
             $tax_class_id,
             $manufacturer_id,
             $sort_order,
@@ -738,7 +739,7 @@ class IntegracaoOpencartBase {
             $product_related
             )
     {
-        
+
         // monta Array com dados
         $data = [
             'model' => $model,
@@ -752,7 +753,7 @@ class IntegracaoOpencartBase {
             'status' => $status, // 1 - Ativo / 0 - Inativo
             'ean' => $ean,
             'stock_status_id' => $stock_status_id, // Pre Order
-            'image' => $image, 
+            'image' => $image,
             'other_images' => $other_images,
             'subtract' => $subtract,
             'product_store' => [
@@ -771,7 +772,7 @@ class IntegracaoOpencartBase {
             'product_option' => $product_option,
             'product_related' => $product_related,
         ];
-        
+
         // monta URL
         $url = $this->url . 'index.php?route=rest/product_admin/products';
 
@@ -779,28 +780,28 @@ class IntegracaoOpencartBase {
         if (!$this->post($url, $data)) {
             return false;
         }
-        
+
         // aborta se nao veio variavel de success
         if (!isset($this->responseObject->success)) {
             return false;
         }
-        
+
         // aborta se nao retornou success
         if (!$this->responseObject->success) {
             return false;
         }
-        
+
         // retorna o id
         return $this->responseObject->product_id;
     }
-    
+
     public function updateProduct (
-            $id, 
-            $model, 
-            $sku, 
-            $quantity, 
-            $price, 
-            $keyword, 
+            $id,
+            $model,
+            $sku,
+            $quantity,
+            $price,
+            $keyword,
             $tax_class_id,
             $manufacturer_id,
             $sort_order,
@@ -834,7 +835,7 @@ class IntegracaoOpencartBase {
             'status' => $status, // 1 - Ativo / 0 - Inativo
             'ean' => $ean,
             'stock_status_id' => $stock_status_id, // Pre Order
-            'image' => $image, 
+            'image' => $image,
             'other_images' => $other_images,
             'subtract' => $subtract,
             'product_store' => [
@@ -861,34 +862,34 @@ class IntegracaoOpencartBase {
         if (!$this->put($url, $data)) {
             return false;
         }
-        
+
         // aborta se nao veio variavel de success
         if (!isset($this->responseObject->success)) {
             return false;
         }
-        
+
         // retorna o success
         return $this->responseObject->success;
     }
-    
-    public function deleteProduct($id) 
+
+    public function deleteProduct($id)
     {
         // monta URL
         $url = $this->url . "index.php?route=rest/product_admin/products&id={$id}";
-            
+
         // aborta caso erro no delete
         if (!$this->delete($url)) {
             return false;
         }
-        
+
         // aborta se nao veio variavel de success
         if (!isset($this->responseObject->success)) {
             return false;
         }
-        
+
         // retorna o success
         return $this->responseObject->success;
-        
+
     }
-    
+
 }

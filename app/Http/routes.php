@@ -229,6 +229,10 @@ Route::group(['middleware' => 'auth'], function() {
 
     Route::resource('/caixa', 'CaixaController@index');
 
+    /* Cheques */
+    Route::resource('cheque', 'ChequeController');
+    Route::get('cheque/consulta/{cmc7}', 'ChequeController@consulta');
+    Route::get('cheque/consultaemitente/{cnpj}', 'ChequeController@consultaemitente');
     Route::resource('cheque-motivo-devolucao', 'ChequeMotivoDevolucaoController');
 });
 

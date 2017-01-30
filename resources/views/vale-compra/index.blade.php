@@ -8,19 +8,19 @@
             &nbsp;
             <a class="" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro"><span class='glyphicon glyphicon-search'></span></a>
         </small>
-    </li>   
+    </li>
 </ol>
 <div class="clearfix"></div>
 <div class='collapse' id='div-filtro'>
     <div class='well well-sm' style="padding:9px 0">
     {!! Form::model(
-        $parametros, 
+        $parametros,
         [
-            'route' => 'vale-compra.index', 
-            'method' => 'GET', 
-            'class' => 'form-horizontal', 
-            'id' => 'vale-compra-search', 
-            'role' => 'search', 
+            'route' => 'vale-compra.index',
+            'method' => 'GET',
+            'class' => 'form-horizontal',
+            'id' => 'vale-compra-search',
+            'role' => 'search',
             'autocomplete' => 'off']
         )
     !!}
@@ -37,12 +37,12 @@
             <div class="form-group">
                 {!! Form::label('codvalecompramodelo', 'Modelo', ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-md-9">{!! Form::select2ValeCompraModelo('codvalecompramodelo', null, ['class' => 'form-control']) !!}</div>
-            </div>    
+            </div>
             <div class="form-group">
                 {!! Form::label('ativo', 'Ativo', ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-md-9">{!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo']) !!}</div>
             </div>
-        </div>    
+        </div>
         <div class="col-md-4">
             <div class="form-group">
                 {!! Form::label('codpessoa', 'Pessoa', ['class' => 'col-sm-3 control-label']) !!}
@@ -51,11 +51,11 @@
             <div class="form-group">
                 {!! Form::label('aluno', 'Aluno', ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-md-9">{!! Form::text('aluno', null, ['class' => 'form-control', 'step' => 1, 'placeholder' => 'aluno']) !!}</div>
-            </div>    
+            </div>
             <div class="form-group">
                 {!! Form::label('turma', 'Turma', ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-md-9">{!! Form::text('turma', null, ['class' => 'form-control', 'step' => 1, 'placeholder' => 'Turma']) !!}</div>
-            </div>    
+            </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
@@ -73,8 +73,8 @@
             <div class="form-group">
               <div class="col-md-4 col-md-offset-3"><button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button></div>
             </div>
-        </div>    
-            
+        </div>
+
       </div>
     </div>
     {!! Form::close() !!}
@@ -91,12 +91,12 @@
               </small>
             </div>
             <div class="col-md-3">
-              {{ $row->aluno }} 
+              {{ $row->aluno }}
               <div class="pull-right"> {{ $row->turma }}</div>
               <div class="clearfix">
               {!! inativo($row->inativo) !!}
               </div>
-            </div>                            
+            </div>
             <div class="col-md-1 text-right">
               {{ formataNumero($row->total) }}
             </div>
@@ -108,13 +108,13 @@
                 <div class="pull-right">
                   <a href="{{ url('vale-compra-modelo', $row->codvalecompramodelo ) }}">{{ $row->ValeCompraModelo->modelo }}</a>
                 </div>
-            </div>                            
+            </div>
             <div class="col-md-2 small text-muted">
               {{ formataData($row->criacao, 'L') }}
               <div class="pull-right">
                   {{ $row->UsuarioCriacao->usuario }}
               </div>
-            </div>                            
+            </div>
           </div>
           <div class="row item">
             <div class="col-md-12">
@@ -123,12 +123,12 @@
               </small>
             </div>
           </div>
-        </div>    
+        </div>
       </a>
     @endforeach
     @if (count($model) === 0)
         <h3>Nenhum registro encontrado!</h3>
-    @endif    
+    @endif
   </div>
   <?php echo $model->appends(Request::session()->get('vale-compra.index'))->render();?>
 </div>
@@ -155,7 +155,7 @@ function atualizaFiltro()
         state: {
             currPage: 1,
             isDestroyed: false,
-            isDone: false             
+            isDone: false
         },
         path: ['?page=', '&'+frmValues]
     });
@@ -174,7 +174,7 @@ function scroll()
         navSelector : "#registros .pagination",
         nextSelector : "#registros .pagination li.active + li a",
         itemSelector : "#items div.list-group-item",
-    });    
+    });
 }
 
 $(document).ready(function() {

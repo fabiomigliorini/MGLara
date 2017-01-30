@@ -26,20 +26,20 @@
     !!}
       <div class="clearfix">
         <div class="col-md-12">
-            <div class="form-group">
-                {!! Form::label('codchequemotivodevolucao', 'Código', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-2">{!! Form::text('codchequemotivodevolucao', null, ['class' => 'form-control', 'placeholder' => '#Código']) !!}</div>
+            <div class="form-group col-md-3">
+                {!! Form::label('codchequemotivodevolucao', 'Código', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::text('codchequemotivodevolucao', null, ['class' => 'form-control', 'placeholder' => '#Código']) !!}</div>
             </div>
-            <div class="form-group">
-                {!! Form::label('numero', 'Número', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-2">{!! Form::text('numero', null, ['class' => 'form-control', 'placeholder' => 'Número']) !!}</div>
+            <div class="form-group col-md-3">
+                {!! Form::label('numero', 'Número', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::text('numero', null, ['class' => 'form-control', 'placeholder' => 'Número']) !!}</div>
             </div>
-            <div class="form-group">
-                {!! Form::label('chequemotivodevolucao', 'Descrição', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-md-2">{!! Form::text('chequemotivodevolucao', null, ['class' => 'form-control', 'placeholder' => 'Descrição']) !!}</div>
+            <div class="form-group col-md-4">
+                {!! Form::label('chequemotivodevolucao', 'Descrição', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-md-9">{!! Form::text('chequemotivodevolucao', null, ['class' => 'form-control', 'placeholder' => 'Descrição']) !!}</div>
             </div>
-            <div class="form-group">
-              <div class="col-md-12"><button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button></div>
+            <div class="form-group col-md-2">
+              <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
             </div>
         </div>
       </div>
@@ -52,7 +52,7 @@
     @foreach($model as $i => $row)
       <a href="{{ url('cheque-motivo-devolucao', $row->codchequemotivodevolucao) }}">
         <div class="list-group-item">
-          <!--
+
             <div class="row item">
                 <div class="col-md-1 small text-muted">
                   {{ formataCodigo($row->codchequemotivodevolucao) }}
@@ -61,11 +61,11 @@
                     {{ formataNumero($row->numero, 0)  }}
                   </div>
                 <div class="col-md-3 small text-muted">
-                  {!! $row->chequemotivodevolucao  !!}
+                    <a href="{{ url('cheque-motivo-devolucao', $row->codchequemotivodevolucao) }}">{!! $row->chequemotivodevolucao  !!}</a>
                 </div>
             </div>
-          -->
-          teste
+
+
         </div>
         </a>
     @endforeach

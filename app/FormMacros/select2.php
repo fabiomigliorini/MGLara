@@ -7,20 +7,20 @@ Form::macro('select2', function($name, $list = [], $selected = null, $options = 
 {
     if (empty($options['id']))
         $options['id'] = $name;
-    
+
     if (empty($options['placeholder']))
         $options['placeholder'] = 'Selecione...';
-    
+
     if (empty($options['allowClear']))
         $options['allowClear'] = true;
     $options['allowClear'] = ($options['allowClear'])?'true':'false';
-    
+
     if (empty($options['closeOnSelect']))
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
-    
+
     $script = <<< END
-  
+
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#{$options['id']}').select2({
@@ -28,39 +28,39 @@ Form::macro('select2', function($name, $list = [], $selected = null, $options = 
                     allowClear: {$options['allowClear']},
                     closeOnSelect: {$options['closeOnSelect']}
                 });
-            });            
+            });
         </script>
 END;
-    
+
     unset($options['placeholder']);
-                    
+
     $campo = Form::select($name, $list, $selected, $options);
-            
+
     return $campo . $script;
 });
 
 Form::macro('select2Marca', function($name, $value = null, $options = [])
 {
-    
+
     if (empty($options['id']))
         $options['id'] = $name;
-    
+
     if (empty($options['placeholder']))
         $options['placeholder'] = 'Marca...';
-    
+
     if (empty($options['allowClear']))
         $options['allowClear'] = true;
     $options['allowClear'] = ($options['allowClear'])?'true':'false';
-    
+
     if (empty($options['closeOnSelect']))
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
-    
+
     if (empty($options['ativo']))
         $options['ativo'] = 1;
-    
+
     $script = <<< END
-  
+
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#{$options['id']}').select2({
@@ -75,18 +75,18 @@ Form::macro('select2Marca', function($name, $value = null, $options = [])
                         markup    += "</div>";
                         return markup;
                     },
-                    formatSelection: function(item) { 
-                        return item.marca; 
+                    formatSelection: function(item) {
+                        return item.marca;
                     },
                     ajax:{
                         url: baseUrl + "/marca/listagem-json",
                         dataType: 'json',
                         quietMillis: 500,
-                        data: function(term,page) { 
+                        data: function(term,page) {
                         return {
-                            q: term, 
+                            q: term,
                             ativo: {$options['ativo']}
-                        }; 
+                        };
                     },
                     results: function(data,page) {
                         var more = (page * 20) < data.total;
@@ -102,13 +102,13 @@ Form::macro('select2Marca', function($name, $value = null, $options = [])
                           });
                     },
                     width: 'resolve'
-                }); 
-            });            
+                });
+            });
         </script>
 END;
 
     $campo = Form::text($name, $value, $options);
-    
+
     return $campo . $script;
 });
 
@@ -148,20 +148,20 @@ Form::macro('select2ProdutoVariacao', function($name, $value = null, $options = 
 {
     if (empty($options['id']))
         $options['id'] = $name;
-    
+
     if (empty($options['placeholder']))
         $options['placeholder'] = 'Variação...';
-    
+
     if (empty($options['allowClear']))
         $options['allowClear'] = true;
     $options['allowClear'] = ($options['allowClear'])?'true':'false';
-    
+
     if (empty($options['closeOnSelect']))
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
-    
+
     $script = <<< END
-  
+
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#{$options['id']}').select2({
@@ -176,18 +176,18 @@ Form::macro('select2ProdutoVariacao', function($name, $value = null, $options = 
                         markup    += "</div>";
                         return markup;
                     },
-                    formatSelection: function(item) { 
-                        return item.variacao; 
+                    formatSelection: function(item) {
+                        return item.variacao;
                     },
                     ajax:{
                         url: baseUrl + "/produto-variacao/listagem-json",
                         dataType: 'json',
                         quietMillis: 500,
-                        data: function(term,page) { 
+                        data: function(term,page) {
                         return {
-                            q: term, 
+                            q: term,
                             codproduto: $('#{$options['codproduto']}').val()
-                        }; 
+                        };
                     },
                     results: function(data,page) {
                         var more = (page * 20) < data.total;
@@ -203,16 +203,16 @@ Form::macro('select2ProdutoVariacao', function($name, $value = null, $options = 
                         });
                     },
                     width: 'resolve'
-                }); 
+                });
                 $('#{$options['codproduto']}').change(function () {
                     $('#{$options['id']}').select2('val', '');
                 });
-            });            
+            });
         </script>
 END;
 
     $campo = Form::text($name, $value, $options);
-    
+
     return $campo . $script;
 });
 
@@ -223,10 +223,10 @@ Form::macro('select2SecaoProduto', function($name, $selected = null, $options = 
 {
     if (empty($options['placeholder']))
         $options['placeholder'] = 'Seção...';
-    
+
     $secoes = [''=>''] + MGLara\Models\SecaoProduto::orderBy('secaoproduto')->lists('secaoproduto', 'codsecaoproduto')->all();
     $campo = Form::select2($name, $secoes, $selected, $options);
-    return $campo;    
+    return $campo;
 });
 
 
@@ -235,23 +235,23 @@ Form::macro('select2FamiliaProduto', function($name, $value = null, $options = [
 {
     if (empty($options['id']))
         $options['id'] = $name;
-    
+
     if (empty($options['placeholder']))
         $options['placeholder'] = 'Família...';
-    
+
     if (empty($options['allowClear']))
         $options['allowClear'] = true;
     $options['allowClear'] = ($options['allowClear'])?'true':'false';
-    
+
     if (empty($options['closeOnSelect']))
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
-    
+
     if (empty($options['ativo']))
         $options['ativo'] = 1;
-    
+
     $script = <<< END
-  
+
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#{$options['id']}').select2({
@@ -265,19 +265,19 @@ Form::macro('select2FamiliaProduto', function($name, $value = null, $options = [
                         markup    += "</div>";
                         return markup;
                     },
-                    formatSelection:function(item) { 
-                        return item.familiaproduto; 
+                    formatSelection:function(item) {
+                        return item.familiaproduto;
                     },
                     ajax:{
                         url:baseUrl+"/familia-produto/listagem-json",
                         dataType:'json',
                         quietMillis:500,
-                        data:function(term, codsecaoproduto, page) { 
+                        data:function(term, codsecaoproduto, page) {
                             return {
-                                q: term, 
+                                q: term,
                                 ativo: {$options['ativo']},
                                 codsecaoproduto: $('#codsecaoproduto').val()
-                            }; 
+                            };
                         },
                         results:function(data,page) {
                             var more = (page * 20) < data.total;
@@ -294,20 +294,20 @@ Form::macro('select2FamiliaProduto', function($name, $value = null, $options = [
                         });
                     },
                     width:'resolve'
-                });                        
+                });
             });
         </script>
 END;
     if(isset($options['codsecaoproduto'])) {
     $script .= <<< END
     <script type="text/javascript">
-        $(document).ready(function() {     
+        $(document).ready(function() {
             $('#{$options['codsecaoproduto']}').on('change', function (e) {
                 e.preventDefault();
                 $('#{$options['id']}').select2('val', null).trigger('change');
-            });    
+            });
         });
-    </script>            
+    </script>
 END;
     }
     $campo = Form::text($name, $value, $options);
@@ -320,23 +320,23 @@ Form::macro('select2GrupoProduto', function($name, $value = null, $options = [])
 {
     if (empty($options['id']))
         $options['id'] = $name;
-    
+
     if (empty($options['placeholder']))
         $options['placeholder'] = 'Grupo...';
-    
+
     if (empty($options['allowClear']))
         $options['allowClear'] = true;
     $options['allowClear'] = ($options['allowClear'])?'true':'false';
-    
+
     if (empty($options['closeOnSelect']))
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
-    
+
     if (empty($options['ativo']))
         $options['ativo'] = 1;
-    
+
     $script = <<< END
-  
+
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#{$options['id']}').select2({
@@ -350,19 +350,19 @@ Form::macro('select2GrupoProduto', function($name, $value = null, $options = [])
                         markup    += "</div>";
                         return markup;
                     },
-                    formatSelection:function(item) { 
-                        return item.grupoproduto; 
+                    formatSelection:function(item) {
+                        return item.grupoproduto;
                     },
                     ajax:{
                         url:baseUrl+"/grupo-produto/listagem-json",
                         dataType:'json',
                         quietMillis:500,
-                        data:function(term, codfamiliaproduto, page) { 
+                        data:function(term, codfamiliaproduto, page) {
                             return {
-                                q: term, 
+                                q: term,
                                 ativo: {$options['ativo']},
                                 codfamiliaproduto: $('#codfamiliaproduto').val()
-                            }; 
+                            };
                         },
                         results:function(data,page) {
                             var more = (page * 20) < data.total;
@@ -380,20 +380,20 @@ Form::macro('select2GrupoProduto', function($name, $value = null, $options = [])
                     },
                     width:'resolve'
                 });
-                        
+
             });
         </script>
 END;
     if(isset($options['codfamiliaproduto'])) {
     $script .= <<< END
     <script type="text/javascript">
-        $(document).ready(function() {     
+        $(document).ready(function() {
             $('#{$options['codfamiliaproduto']}').on('change', function (e) {
                 e.preventDefault();
                 $('#{$options['id']}').select2('val', null).trigger('change');
-            });    
+            });
         });
-    </script>            
+    </script>
 END;
     }
     $campo = Form::text($name, $value, $options);
@@ -404,24 +404,24 @@ END;
 /* SUBGRUPO DE PRODUTO */
 Form::macro('select2SubGrupoProduto', function($name, $value = null, $options = [])
 {
-    
+
     if (empty($options['id']))
         $options['id'] = $name;
-    
+
     if (empty($options['placeholder']))
         $options['placeholder'] = 'Sub Grupo...';
-    
+
     if (empty($options['allowClear']))
         $options['allowClear'] = true;
     $options['allowClear'] = ($options['allowClear'])?'true':'false';
-    
+
     if (empty($options['closeOnSelect']))
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
-    
+
     if (empty($options['ativo']))
         $options['ativo'] = 1;
-    
+
     $script = <<< END
         <script type="text/javascript">
             $(document).ready(function() {
@@ -436,19 +436,19 @@ Form::macro('select2SubGrupoProduto', function($name, $value = null, $options = 
                         markup    += "</div>";
                         return markup;
                     },
-                    formatSelection:function(item) { 
-                        return item.subgrupoproduto; 
+                    formatSelection:function(item) {
+                        return item.subgrupoproduto;
                     },
                     ajax:{
                         url:baseUrl+"/sub-grupo-produto/listagem-json",
                         dataType:'json',
                         quietMillis:500,
-                        data:function(term, codgrupoproduto, page) { 
+                        data:function(term, codgrupoproduto, page) {
                             return {
-                                q: term, 
+                                q: term,
                                 ativo: {$options['ativo']},
                                 codgrupoproduto: $('#codgrupoproduto').val()
-                            }; 
+                            };
                         },
                         results:function(data,page) {
                             var more = (page * 20) < data.total;
@@ -473,18 +473,18 @@ END;
     if(isset($options['codgrupoproduto'])) {
     $script .= <<< END
     <script type="text/javascript">
-        $(document).ready(function() {     
+        $(document).ready(function() {
             $('#{$options['codgrupoproduto']}').on('change', function (e) {
                 e.preventDefault();
                 $('#{$options['id']}').select2('val', null).trigger('change');
-            });  
+            });
         });
-    </script>            
+    </script>
 END;
     }
-                    
+
     $campo = Form::text($name, $value, $options);
-    
+
     return $campo . $script;
 });
 
@@ -494,21 +494,21 @@ Form::macro('select2Ncm', function($name, $value = null, $options = [])
 {
     if (empty($options['id']))
         $options['id'] = $name;
-    
+
     if (empty($options['placeholder']))
         $options['placeholder'] = 'Sub Grupo...';
-    
+
     if (empty($options['allowClear']))
         $options['allowClear'] = true;
     $options['allowClear'] = ($options['allowClear'])?'true':'false';
-    
+
     if (empty($options['closeOnSelect']))
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
-    
+
     if (empty($options['ativo']))
         $options['ativo'] = 1;
-    
+
     $script = <<< END
         <script type="text/javascript">
             $(document).ready(function() {
@@ -523,18 +523,18 @@ Form::macro('select2Ncm', function($name, $value = null, $options = [])
                         markup    += "<span>" + item.descricao + "</span>";
                         return markup;
                     },
-                    formatSelection:function(item) { 
-                        return item.ncm + "&nbsp;" + item.descricao; 
+                    formatSelection:function(item) {
+                        return item.ncm + "&nbsp;" + item.descricao;
                     },
                     ajax:{
                         url:baseUrl+"/ncm/listagem-json",
                         dataType:'json',
                         quietMillis:500,
-                        data:function(term, page) { 
+                        data:function(term, page) {
                             return {
-                                q: term, 
+                                q: term,
                                 ativo: {$options['ativo']}
-                            }; 
+                            };
                         },
                         results:function(data, page) {
                             var more = (page * 20) < data.total;
@@ -551,13 +551,13 @@ Form::macro('select2Ncm', function($name, $value = null, $options = [])
                         });
                     },
                     width:'resolve'
-                });                         
+                });
             });
         </script>
 END;
 
     $campo = Form::text($name, $value, $options);
-    
+
     return $campo . $script;
 });
 
@@ -588,6 +588,14 @@ Form::macro('select2Filial', function($name, $selected = null, $options = [])
 {
     if (empty($options['placeholder'])) $options['placeholder'] = 'Filial';
     $regs = [''=>''] + MGLara\Models\Filial::orderBy('codfilial')->lists('filial', 'codfilial')->all();
+    return Form::select2($name, $regs, $selected, $options);
+});
+
+/* BANCO */
+Form::macro('select2Banco', function($name, $selected = null, $options = [])
+{
+    if (empty($options['placeholder'])) $options['placeholder'] = 'Banco';
+    $regs = [''=>''] + MGLara\Models\Banco::orderBy('codbanco')->lists('banco', 'codbanco')->all();
     return Form::select2($name, $regs, $selected, $options);
 });
 
@@ -639,21 +647,21 @@ Form::macro('select2Cest', function($name, $value = null, $options = [])
 
     if (empty($options['codncm']))
         $options['codncm'] = '';
-    
+
     if (empty($options['placeholder']))
         $options['placeholder'] = 'CEST...';
-    
+
     if (empty($options['allowClear']))
         $options['allowClear'] = true;
     $options['allowClear'] = ($options['allowClear'])?'true':'false';
-    
+
     if (empty($options['closeOnSelect']))
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
-    
+
     if (empty($options['ativo']))
         $options['ativo'] = 1;
-    
+
     $script = <<< END
         <script type="text/javascript">
             $(document).ready(function() {
@@ -669,15 +677,15 @@ Form::macro('select2Cest', function($name, $value = null, $options = [])
                         markup    += "<span>" + item.descricao + "</span>";
                         return markup;
                     },
-                    formatSelection: function(item) { 
-                            return item.ncm + "/" + item.cest + "&nbsp;" + item.descricao; 
+                    formatSelection: function(item) {
+                            return item.ncm + "/" + item.cest + "&nbsp;" + item.descricao;
                     },
                     ajax:{
                         url:baseUrl+"/cest/listagem-json",
                         dataType:'json',
                         quietMillis:500,
-                        data:function(codncm, page) { 
-                            return {codncm: $('#codncm').val()}; 
+                        data:function(codncm, page) {
+                            return {codncm: $('#codncm').val()};
                         },
                         results:function(data, page) {
                             var more = (page * 20) < data.total;
@@ -695,7 +703,7 @@ Form::macro('select2Cest', function($name, $value = null, $options = [])
                     },
                     width:'resolve'
                 });
-                            
+
                 $('#{$options['codncm']}').change(function () {
                     $('#{$options['id']}').select2('val', '');
                 });
@@ -704,7 +712,7 @@ Form::macro('select2Cest', function($name, $value = null, $options = [])
 END;
 
     $campo = Form::text($name, $value, $options);
-    
+
     return $campo . $script;
 });
 
@@ -713,23 +721,23 @@ Form::macro('select2Pessoa', function($name, $value = null, $options = [])
 {
     if (empty($options['id']))
         $options['id'] = $name;
-    
+
     if (empty($options['placeholder']))
         $options['placeholder'] = 'Pessoa';
-    
+
     if (empty($options['allowClear']))
         $options['allowClear'] = true;
     $options['allowClear'] = ($options['allowClear'])?'true':'false';
-    
+
     if (empty($options['closeOnSelect']))
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
-    
+
     if (empty($options['ativo']))
         $options['ativo'] = 1;
-    
+
     $script = <<< END
-  
+
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#{$options['id']}').select2({
@@ -758,25 +766,25 @@ Form::macro('select2Pessoa', function($name, $value = null, $options = [])
                         markup    += "<small class='pull-right " + css_detalhes + "'>" + formataCnpjCpf(item.cnpj) + "</small>";
                         return markup;
                     },
-                    'formatSelection':function(item) { 
-                        return item.fantasia; 
+                    'formatSelection':function(item) {
+                        return item.fantasia;
                     },
                     'ajax':{
                         'url':baseUrl+'/pessoa/listagem-json',
                         'dataType':'json',
                         'quietMillis':500,
-                        'data':function(term, ativo, current_page) { 
+                        'data':function(term, ativo, current_page) {
                             return {
-                                q: term, 
+                                q: term,
                                 ativo: {$options['ativo']},
-                                per_page: 10, 
+                                per_page: 10,
                                 current_page: current_page
-                            }; 
+                            };
                         },
                         'results':function(data,page) {
                             //var more = (current_page * 20) < data.total;
                             return {
-                                results: data.data, 
+                                results: data.data,
                                 //more: data.mais
                             };
                         }
@@ -787,18 +795,18 @@ Form::macro('select2Pessoa', function($name, $value = null, $options = [])
                             url: baseUrl+'/pessoa/listagem-json',
                             data: "id="+$('#{$options['id']}').val(),
                             dataType: "json",
-                            success: function(result) { 
-                                callback(result); 
+                            success: function(result) {
+                                callback(result);
                             }
                         });
                     },'width':'resolve'
-                });      
-            });            
+                });
+            });
         </script>
 END;
 
     $campo = Form::text($name, $value, $options);
-    
+
     return $campo . $script;
 });
 
@@ -807,23 +815,23 @@ Form::macro('select2Cidade', function($name, $value = null, $options = [])
 {
     if (empty($options['id']))
         $options['id'] = $name;
-    
+
     if (empty($options['placeholder']))
         $options['placeholder'] = 'Cidade';
-    
+
     if (empty($options['allowClear']))
         $options['allowClear'] = true;
     $options['allowClear'] = ($options['allowClear'])?'true':'false';
-    
+
     if (empty($options['closeOnSelect']))
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
-    
+
     if (empty($options['ativo']))
         $options['ativo'] = 1;
-    
+
     $script = <<< END
-  
+
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#{$options['id']}').select2({
@@ -836,25 +844,25 @@ Form::macro('select2Cidade', function($name, $value = null, $options = [])
                         markup    += item.cidade + "<span class='pull-right'>" + item.uf + "</span>";
                         return markup;
                     },
-                    formatSelection: function(item) { 
-                        return item.cidade; 
+                    formatSelection: function(item) {
+                        return item.cidade;
                     },
                     ajax:{
                         url: baseUrl+'/cidade/listagem-json',
                         dataType: 'json',
                         quietMillis: 500,
-                        data: function(term, current_page) { 
+                        data: function(term, current_page) {
                             return {
-                                q: term, 
+                                q: term,
                                 ativo: {$options['ativo']},
-                                per_page: 10, 
+                                per_page: 10,
                                 current_page: current_page
-                            }; 
+                            };
                         },
                         results:function(data,page) {
                             //var more = (current_page * 20) < data.total;
                             return {
-                                results: data.data, 
+                                results: data.data,
                                 //more: data.mais
                             };
                         }
@@ -865,19 +873,19 @@ Form::macro('select2Cidade', function($name, $value = null, $options = [])
                             url: baseUrl+'/cidade/listagem-json',
                             data: "id="+$('#{$options['id']}').val(),
                             dataType: "json",
-                            success: function(result) { 
-                                callback(result); 
+                            success: function(result) {
+                                callback(result);
                             }
                         });
                     },
                     width:'resolve'
-                });      
-            });            
+                });
+            });
         </script>
 END;
 
     $campo = Form::text($name, $value, $options);
-    
+
     return $campo . $script;
 });
 
@@ -886,23 +894,23 @@ Form::macro('select2Produto', function($name, $value = null, $options = [])
 {
     if (empty($options['id']))
         $options['id'] = $name;
-    
+
     if (empty($options['placeholder']))
         $options['placeholder'] = 'Produto';
-    
+
     if (empty($options['allowClear']))
         $options['allowClear'] = true;
     $options['allowClear'] = ($options['allowClear'])?'true':'false';
-    
+
     if (empty($options['closeOnSelect']))
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
-    
+
     if (empty($options['ativo']))
         $options['ativo'] = 1;
-    
+
     $script = <<< END
-  
+
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#{$options['id']}').select2({
@@ -933,25 +941,25 @@ Form::macro('select2Produto', function($name, $value = null, $options = [])
                         markup    += "</small>";
                         return markup;
                     },
-                    'formatSelection':function(item) { 
-                        return item.produto; 
+                    'formatSelection':function(item) {
+                        return item.produto;
                     },
                     'ajax':{
                         'url':baseUrl+'/produto/listagem-json',
                         'dataType':'json',
                         'quietMillis':500,
-                        'data':function(term, ativo, current_page) { 
+                        'data':function(term, ativo, current_page) {
                             return {
-                                q: term, 
+                                q: term,
                                 ativo: {$options['ativo']},
-                                per_page: 10, 
+                                per_page: 10,
                                 current_page: current_page
-                            }; 
+                            };
                         },
                         'results':function(data,page) {
                             //var more = (current_page * 20) < data.total;
                             return {
-                                results: data, 
+                                results: data,
                                 //more: data.mais
                             };
                         }
@@ -962,18 +970,18 @@ Form::macro('select2Produto', function($name, $value = null, $options = [])
                             url: baseUrl+'/produto/listagem-json',
                             data: "id="+$('#{$options['id']}').val(),
                             dataType: "json",
-                            success: function(result) { 
-                                callback(result); 
+                            success: function(result) {
+                                callback(result);
                             }
                         });
                     },'width':'resolve'
-                });      
-            });            
+                });
+            });
         </script>
 END;
 
     $campo = Form::text($name, $value, $options);
-    
+
     return $campo . $script;
 });
 
@@ -982,23 +990,23 @@ Form::macro('select2ProdutoBarra', function($name, $value = null, $options = [])
 {
     if (empty($options['id']))
         $options['id'] = $name;
-    
+
     if (empty($options['placeholder']))
         $options['placeholder'] = 'Produto';
-    
+
     if (empty($options['allowClear']))
         $options['allowClear'] = true;
     $options['allowClear'] = ($options['allowClear'])?'true':'false';
-    
+
     if (empty($options['closeOnSelect']))
         $options['closeOnSelect'] = true;
     $options['closeOnSelect'] = ($options['closeOnSelect'])?'true':'false';
-    
+
     if (empty($options['ativo']))
         $options['ativo'] = 1;
-    
+
     $script = <<< END
-  
+
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#{$options['id']}').select2({
@@ -1016,18 +1024,18 @@ Form::macro('select2ProdutoBarra', function($name, $value = null, $options = [])
 
                         var markup = "";
                         markup    += "<div class='row "+ css_titulo +"'>";
-                    
+
                         markup    += "<strong class='col-md-9'>";
                         markup    += item.produto + "";
                         markup    += "</strong>";
-                    
+
                         markup    += "<div class='col-md-3'>";
                         markup    += "<small class='pull-left'>" + item.unidademedida + "</small>";
                         markup    += "<span class='pull-right'> " + item.preco + "</span>";
                         markup    += "</div>";
-                    
+
                         markup    += "</div>";
-                    
+
                         markup    += "<small class='" + css_detalhes + "'>";
                         markup    += "<strong>" + item.barras + "</strong>";
                         markup    += " » " + item.codproduto;
@@ -1042,25 +1050,25 @@ Form::macro('select2ProdutoBarra', function($name, $value = null, $options = [])
                         markup    += "</small>";
                         return markup;
                     },
-                    'formatSelection':function(item) { 
-                        return item.produto; 
+                    'formatSelection':function(item) {
+                        return item.produto;
                     },
                     'ajax':{
                         'url':baseUrl+'/produto-barra/listagem-json',
                         'dataType':'json',
                         'quietMillis':500,
-                        'data':function(term, ativo, current_page) { 
+                        'data':function(term, ativo, current_page) {
                             return {
-                                q: term, 
+                                q: term,
                                 ativo: {$options['ativo']},
-                                per_page: 10, 
+                                per_page: 10,
                                 current_page: current_page
-                            }; 
+                            };
                         },
                         'results':function(data,page) {
                             //var more = (current_page * 20) < data.total;
                             return {
-                                results: data, 
+                                results: data,
                                 //more: data.mais
                             };
                         }
@@ -1071,18 +1079,18 @@ Form::macro('select2ProdutoBarra', function($name, $value = null, $options = [])
                             url: baseUrl+'/produto-barra/listagem-json',
                             data: "id="+$('#{$options['id']}').val(),
                             dataType: "json",
-                            success: function(result) { 
-                                callback(result); 
+                            success: function(result) {
+                                callback(result);
                             }
                         });
                     },'width':'resolve'
-                });      
-            });            
+                });
+            });
         </script>
 END;
 
     $campo = Form::text($name, $value, $options);
-    
+
     return $campo . $script;
 });
 
@@ -1092,15 +1100,15 @@ Form::macro('select2EstoqueMovimentoTipo', function($name, $selected = null, $op
     if (!isset($options['manual'])) {
         $options['manual'] = false;
     }
-        
+
     if ($options['manual']) {
         $op = MGLara\Models\EstoqueMovimentoTipo::where('manual', '=', true)->orderBy('descricao')->lists('descricao', 'codestoquemovimentotipo')->all();
     } else {
         $op = MGLara\Models\EstoqueMovimentoTipo::orderBy('descricao')->lists('descricao', 'codestoquemovimentotipo')->all();
     }
-    
+
     $op = [''=>''] + $op;
-    
+
     return Form::select2($name, $op, $selected, $options);
 });
 
@@ -1109,7 +1117,7 @@ Form::macro('select2ValeCompraModelo', function($name, $selected = null, $option
 {
     $options['ativo'] = (isset($options['ativo']))?$options['ativo']:1;
     $options['placeholder'] = (isset($options['placeholder']))?$options['placeholder']:'Modelo de Vale Compras';
-    
+
     $qry = MGLara\Models\ValeCompraModelo::orderBy('modelo');
     switch ($options['ativo']) {
         case 1:
@@ -1129,7 +1137,7 @@ Form::macro('select2FormaPagamento', function($name, $selected = null, $options 
 {
     $options['ativo'] = (isset($options['ativo']))?$options['ativo']:1;
     $options['placeholder'] = (isset($options['placeholder']))?$options['placeholder']:'Forma de Pagamento';
-    
+
     $qry = MGLara\Models\FormaPagamento::orderBy('formapagamento');
     /*
     switch ($options['ativo']) {
@@ -1140,7 +1148,7 @@ Form::macro('select2FormaPagamento', function($name, $selected = null, $options 
             $qry->whereNotNull('inativo');
             break;
     }
-     * 
+     *
      */
     $valores = [''=>''] + $qry->lists('formapagamento', 'codformapagamento')->all();
     return Form::select2($name, $valores, $selected, $options);
