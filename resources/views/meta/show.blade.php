@@ -33,6 +33,7 @@
     $metasfiliais = $model->MetaFilialS()->get();
     $if = 1;
     $iv = 1;
+
 ?>
 <ul class="nav nav-pills">
     @foreach($anteriores as $meta)
@@ -109,7 +110,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($vendedores as $vendedor)
+                        @foreach($vendedores->sortByDesc('valorvendas') as $vendedor)
                         <tr>
                             <td scope="row">{{ $vendedor['filial'] }}</td>
                             <td>
@@ -164,13 +165,16 @@
             <div class="col-sm-8">
                 <h3>Gráfico</h3>
                 <div id="piechartGeral"></div>
+                <div id="lineChartGeral"></div>
             </div>
             <script type="text/javascript">
                 google.charts.load('current', {
-                    'packages':['corechart'],
+                    'packages':['corechart', 'line'],
                     'language': 'pt_BR'
                 });
                 google.charts.setOnLoadCallback(drawChart);
+                //google.charts.setOnLoadCallback(drawChartLine);
+                
                 var DataTable = [
                     ['Lojas', 'Vendas'],
                     @foreach($filiais as $filial)
@@ -187,9 +191,37 @@
                     var chartGeral = new google.visualization.PieChart(document.getElementById('piechartGeral'));
                     chartGeral.draw(data, options);
                 }
+
+/*
+                function drawChartLine() {
+                    var lineChartData = new google.visualization.DataTable();
+                    lineChartData.addColumn('date', 'Dia');
+                    @foreach($filiais as $filial)
+                    lineChartData.addColumn('number', "{{ $filial['filial'] }}");
+                    @endforeach
+
+                    lineChartData.addRows([
+                    // ...
+                    ]);
+
+                    optionsLine[{{ $filial['codfilial'] }}] = {
+                        title: 'Vendas por dia',
+                        'width': 900,
+                        'height': 500
+                    };
+
+                    var lineChart = new google.visualization.LineChart(document.getElementById('lineChartGeral'));
+                    lineChart.draw(lineChartData, optionsLine);          
+
+                }                 
+*/
+                
                 var piechartFilial = [];
                 var optionsFilial = [];
                 var DataTableFilial = [];
+                var DataTableVendas = [];
+                var optionsVendas = [];
+                var vendasPorDia = [];
             </script>            
         </div>
         @foreach($metasfiliais as $filial)
@@ -198,8 +230,7 @@
                 'vendedores'    => $vendedores->where('codfilial', $filial['codfilial']),
                 'filiais'       => $filiais->where('codfilial', $filial['codfilial']),
                 'xeroxs'        => $xeroxs->where('codfilial', $filial['codfilial']),
-                'if'            => 1,
-                'iv'            => 1
+                'i'            => 1
             ])
         </div>
         @endforeach

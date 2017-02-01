@@ -77,7 +77,7 @@ class Meta extends MGModel
         return $this->hasMany(MetaFilial::class, 'codmeta', 'codmeta');
     }
 
-    public function totalVendas($parametros = null)
+    public function totalVendas()
     {
         $sql_filiais = "
             select
@@ -108,34 +108,37 @@ class Meta extends MGModel
         ";
         
         $sql_vendedores = "
-            select 
+        select
               mf.codfilial
             , f.filial
             , mf.valormetavendedor
             , mfp.codpessoa
             , p.fantasia
-            , (
-                select 
-                        sum(coalesce(npb.valortotal, 0) * (case when n.codoperacao = 1 then -1 else 1 end) * (coalesce(n.valortotal, 0) / coalesce(n.valorprodutos, 0))) as valorvendas
-                from tblnegocio n
-                inner join tblnegocioprodutobarra npb on (npb.codnegocio = n.codnegocio)
-                inner join tblprodutobarra pb on (pb.codprodutobarra = npb.codprodutobarra)
-                inner join tblproduto p on (p.codproduto = pb.codproduto)
-                where n.codnegociostatus = 2 -- fechado
-                and n.codpessoa not in (select distinct f2.codpessoa from tblfilial f2)
-                and n.codnaturezaoperacao in (1, 2) -- Venda / Devolucao de Vendas -- TODO: Fazer modelagem para tirar o codigo fixo
-                and p.codsubgrupoproduto != 2951 -- Xerox -- TODO: Fazer modelagem para tirar o codigo fixo
-                and n.lancamento between m.periodoinicial and m.periodofinal
-                and n.codpessoavendedor = mfp.codpessoa
-            ) as valorvendas
+            , (SELECT to_json(array_agg(t)) FROM (
+            select
+                date_trunc('day', n.lancamento) as data,
+                sum(coalesce(npb.valortotal, 0) * (case when n.codoperacao = 1 then -1 else 1 end) * (coalesce(n.valortotal, 0) / coalesce(n.valorprodutos, 0))) as valorvendas
+            from tblnegocio n
+            inner join tblnegocioprodutobarra npb on (npb.codnegocio = n.codnegocio)
+            inner join tblprodutobarra pb on (pb.codprodutobarra = npb.codprodutobarra)
+            inner join tblproduto p on (p.codproduto = pb.codproduto)
+            where n.codnegociostatus = 2 -- fechado
+            and n.codpessoa not in (select distinct f2.codpessoa from tblfilial f2)
+            and n.codnaturezaoperacao in (1, 2) -- Venda / Devolucao de Vendas -- TODO: Fazer modelagem para tirar o codigo fixo
+            and p.codsubgrupoproduto != 2951 -- Somente Xerox
+            and n.lancamento between m.periodoinicial and m.periodofinal
+            and n.codpessoavendedor = mfp.codpessoa
+            group by date_trunc('day', n.lancamento)
+            order by date_trunc('day', n.lancamento)
+            ) t) as valorvendaspordata
             , m.percentualcomissaovendedor
         from tblmeta m
         inner join tblmetafilial mf on (mf.codmeta = m.codmeta)
         inner join tblfilial f on (mf.codfilial = f.codfilial)
         inner join tblmetafilialpessoa mfp on (mfp.codmetafilial = mf.codmetafilial and mfp.codcargo = 1) -- Vendedor -- TODO: Fazer modelagem
-        inner join tblpessoa p on (p.codpessoa = mfp.codpessoa)
+        inner join tblpessoa p on (p.codpessoa = mfp.codpessoa)        
         where m.codmeta = {$this->codmeta}
-        order by valorvendas desc
+        --order by valorvendas desc
         ";
         
         $sql_xerox = "
@@ -176,6 +179,7 @@ class Meta extends MGModel
         foreach ($filiais as $filial){
             $array_melhoresvendedores[$filial->codfilial]=[];
             foreach ($vendedores as $vendedor){
+                $vendedor->valorvendas = array_sum(array_column(json_decode($vendedor->valorvendaspordata), 'valorvendas'));
                 if($vendedor->codfilial == $filial->codfilial)
                 {
                     array_push($array_melhoresvendedores[$filial->codfilial], $vendedor->valorvendas);
@@ -186,10 +190,12 @@ class Meta extends MGModel
         $retorno_vendedores = [];
         foreach ($vendedores as $vendedor){
             
+            $vendedor->valorvendas = array_sum(array_column(json_decode($vendedor->valorvendaspordata), 'valorvendas'));
             $valorcomissaovendedor = ($vendedor->percentualcomissaovendedor / 100 ) * $vendedor->valorvendas;
             $valorcomissaometavendedor = ($vendedor->valorvendas >= $vendedor->valormetavendedor ? ($this->percentualcomissaovendedormeta / 100 ) * $vendedor->valorvendas : null);
             $falta = ($vendedor->valorvendas < $vendedor->valormetavendedor ? $vendedor->valormetavendedor - $vendedor->valorvendas : null);
             $melhorvendedor = null;
+            
             if($vendedor->valorvendas == max($array_melhoresvendedores[$vendedor->codfilial]) && $vendedor->valorvendas >= $vendedor->valormetavendedor){
                 $melhorvendedor = 200;
             }
@@ -208,6 +214,7 @@ class Meta extends MGModel
                 'metaatingida'              => ($vendedor->valorvendas >= $vendedor->valormetavendedor) ? true : false,
                 'primeirovendedor'          => $melhorvendedor,
                 'falta'                     => $falta,
+                'valorvendaspordata'        => json_decode($vendedor->valorvendaspordata),
             ];            
         }
         
@@ -224,7 +231,7 @@ class Meta extends MGModel
                 'codpessoa'                 => $filial->codpessoa,
                 'pessoa'                    => $filial->pessoa,
                 'falta'                     => $falta,
-                'comissao'                    => $premio,
+                'comissao'                  => $premio,
             ];
         }        
         
@@ -237,7 +244,7 @@ class Meta extends MGModel
                 "percentualcomissaoxerox"=> $xerox->percentualcomissaoxerox,
                 "codpessoa"             => $xerox->codpessoa,
                 "pessoa"                => $xerox->pessoa,
-                'comissao'                => ($xerox->valorvendas / 100 ) * $xerox->percentualcomissaoxerox,
+                'comissao'              => ($xerox->valorvendas / 100 ) * $xerox->percentualcomissaoxerox,
             ];
         }        
         
