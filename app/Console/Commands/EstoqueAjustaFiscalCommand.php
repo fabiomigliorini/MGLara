@@ -412,6 +412,7 @@ class EstoqueAjustaFiscalCommand extends Command
         $ncm_sem_alternativa = [0];
         
         $produtos_sem_saldo = [0];
+        $codestoquemes_ultimo = 0;
         
         while ($dados = DB::select("
                 select p.codproduto, p.produto, pv.variacao, coalesce(p.preco, 0) as preco, el.sigla, em.saldoquantidade, em.saldovalor, em.customedio, em.codestoquemes, em.mes, elpv.codprodutovariacao, elpv.codestoquelocal, n.ncm, p.codncm, f.codempresa, es.saldoquantidade as saldoquantidade_atual
@@ -424,12 +425,15 @@ class EstoqueAjustaFiscalCommand extends Command
                 inner join tblfilial f on (f.codfilial = el.codfilial)
                 inner join tblncm n on (n.codncm = p.codncm)
                 where em.saldoquantidade < 0
+                and em.mes = '2016-12-01'
                 and p.codncm not in (" . implode(', ', $ncm_sem_alternativa) . ")
+                and em.codestoquemes != $codestoquemes_ultimo
                 order by em.mes, n.ncm, p.preco DESC, p.produto, elpv.codestoquelocal, pv.variacao nulls first
                 limit 1
                 "))
         {
             $negativo = $dados[0];
+            $codestoquemes_ultimo = $negativo->codestoquemes;
             $this->line('');
             $this->line('');
             $this->line('');
@@ -749,9 +753,12 @@ class EstoqueAjustaFiscalCommand extends Command
                     continue;
                 }
 
+                break;
+                /*
                 if ($this->confirm('Transferir deste Saldo?', true) == true) {
                     break;
                 }
+                */
 
             } while (true);
 
