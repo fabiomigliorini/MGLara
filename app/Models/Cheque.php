@@ -139,22 +139,53 @@ class Cheque extends MGModel
     public static function search($parametros)
     {
         $query = Cheque::query();
-        /*
-        if (!empty($parametros['codchequemotivodevolucao'])) {
-            $query->where('codchequemotivodevolucao', $parametros['codchequemotivodevolucao']);
+
+        if (!empty($parametros['codcheque'])) {
+            $query->where('codcheque', $parametros['codcheque']);
         }
 
+        if (!empty($parametros['codbanco'])) {
+            $query->where('codbanco', $parametros['codbanco']);
+        }
+        if (!empty($parametros['agencia'])) {
+            $query->where('agencia', $parametros['agencia']);
+        }
         if (!empty($parametros['numero'])) {
-            $query->where('numero', $parametros['numero']);
+            $query->where('numero','ilike', $parametros['numero']);
         }
 
-        if (!empty($parametros['chequemotivodevolucao'])) {
-            $palavras = explode(' ', $parametros['chequemotivodevolucao']);
+        if (!empty($parametros['codpessoa'])) {
+            $query->where('codpessoa', $parametros['codpessoa']);
+        }
+
+        if (!empty($parametros['codpessoa'])) {
+            $query->where('codpessoa', $parametros['codpessoa']);
+        }
+
+        if (!empty($parametros['emitente'])) {
+            $palavras = explode(' ', $parametros['emitente']);
             foreach ($palavras as $palavra) {
-                $query->where('chequemotivodevolucao', 'ilike', "%{$palavra}%");
+                $query->where('emitente', 'ilike', "%{$palavra}%");
             }
         }
-        */
+
+        if (!empty($parametros['valor_de'])) {
+            $query->where('valor','>=', $parametros['valor_de']);
+        }
+        if (!empty($parametros['valor_ate'])) {
+            $query->where('valor','<=', $parametros['valor_ate']);
+        }
+        if (!empty($parametros['indstatus'])) {
+            $query->where('indstatus',$parametros['indstatus']);
+        }
+
+        if (!empty($parametros['vencimento_de'])){
+            $query->where('vencimento','>=', $parametros['vencimento_de']);
+        }
+        if (!empty($parametros['vencimento_ate'])){
+            $query->where('vencimento','<=', $parametros['vencimento_ate']);
+        }
+
         return $query;
     }
 

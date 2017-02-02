@@ -169,6 +169,14 @@ class ChequeController extends Controller {
 
     public function consulta($cmc7) {
 
+        if($consultacmc7 = Cheque::where('cmc7','=',$cmc7)->first()){
+           return [
+            'valido' => false,
+            'error' => 'Já existe um cadastro com esse CMC7. #'.$consultacmc7->codcheque
+            ];
+           exit;
+        }
+
         $cmc7n = new Cmc7($cmc7);
 
         //dd($cmc7n->banco());
@@ -200,14 +208,22 @@ class ChequeController extends Controller {
             $banco_nome = $cmc7n->banco();
         }
         //------ Consultar pelo emitente
+        if($cmc7n->valido()==false){
+            $error = 'CMC7 Inválido';
+        }else{
+            $error = null;
+        }
         return [
             'valido' => $cmc7n->valido(),
+            'error' => $error,
             'banco' => $banco_nome,
             'agencia' => $cmc7n->agencia(),
             'contacorrente' => $cmc7n->contacorrente(),
             'numero' => $cmc7n->numero(),
             'ultimo' => $ultimo,
         ];
+
+
     }
 
     public function consultaemitente($cnpj) {

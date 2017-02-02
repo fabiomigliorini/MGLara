@@ -1,10 +1,10 @@
 @extends('layouts.default')
 @section('content')
 <ol class="breadcrumb header">
-    {!! titulo(null, 'Cheque', null) !!}
+    {!! titulo(null, 'Cheque Repasse', null) !!}
     <li class='active'>
         <small>
-            <a title="Novo" href="{{ url("cheque/create") }}"><i class="glyphicon glyphicon-plus"></i></a>
+            <a title="Novo" href="{{ url("cheque-repasse/create") }}"><i class="glyphicon glyphicon-plus"></i></a>
             &nbsp;
             <a class="" data-toggle="collapse" href="#div-filtro" aria-expanded="false" aria-controls="div-filtro"><span class='glyphicon glyphicon-search'></span></a>
         </small>
@@ -16,10 +16,10 @@
     {!! Form::model(
         Request::session()->get('cheque.index'),
         [
-            'route' => 'cheque.index',
+            'route' => 'cheque-repasse.index',
             'method' => 'GET',
             'class' => 'form-horizontal',
-            'id' => 'cheque-search',
+            'id' => 'cheque-repasse-search',
             'role' => 'search',
             'autocomplete' => 'off']
         )
@@ -62,10 +62,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="form-group">
-                {!! Form::label('indstatus', 'Status', ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-md-9">{!! Form::select2('indstatus', $indstatus_descricao, null, ['class'=> 'form-control', 'id' => 'indstatus']) !!}</div>
-            </div>
+
             <div class="form-group">
                 {!! Form::label('vencimento_de', 'De', ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-md-9">{!! Form::date('vencimento_de', null, ['class'=> 'form-control', 'id' => 'vencimento_de']) !!}</div>
@@ -83,55 +80,22 @@
     </div>
     {!! Form::close() !!}
 </div>
-
+-------------- Não formatado
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
     @foreach($model as $i => $row)
         <div class="list-group-item">
             <div class="row item">
                 <div class="col-md-1 small text-muted">
-                    <a href="{{ url('cheque', $row->codcheque) }}">{{ formataCodigo($row->codcheque) }}</a>
+                    <a href="{{ url('cheque-repasse', $row->codchequerepasse) }}">{{ formataCodigo($row->codchequerepasse) }}</a>
                 </div>
-                <div class="col-md-1 text-muted">
-                      {{ $row->Banco->banco  }} <br>
-                      {{ $row->agencia  }}
-                </div>
-                <div class="col-md-1 text-right text-muted">
-                    {{ $row->contacorrente  }} <br>
-                      {{ formataNumero($row->numero, 0)  }}
-                </div>
-                <div class="col-md-5">
-                      <b>
-                  @if (!empty($row->codpessoa) )
-                    <a href='{{ url('pessoa', $row->codpessoa) }}'>
-                    {!!  $row->Pessoa->pessoa   !!}
-                    </a><br>
-                  @endif
-                  </b>
-                  <span class='text-muted'>
-                  @foreach ($row->ChequeEmitenteS as $emit)
-                    {{ $emit->emitente }} </br>
-                  @endforeach
-                  </span>
-                </div>
-                <div class="col-md-1 text-right">
-                    <strong>
-                    {{ formataNumero($row->valor)  }}
-                    </strong>
-                </div>
-                <div class="col-md-1 text-muted text-center">
-                    {{ formataData($row->emissao)  }}
-                </div>
+                
                 <div class="col-md-1 text-center">
                     <strong>
-                    {{ formataData($row->vencimento)  }}
+                    {{ formataData($row->criacao)  }}
                     </strong>
                 </div>
-                <div class="col-md-1">
-                    <span class='label {{ $indstatus_class[$row->indstatus] }}'>
-                     {{ $indstatus_descricao[$row->indstatus] }}
-                     </span>
-                </div>
+
             </div>
         </div>
     @endforeach
@@ -139,7 +103,7 @@
         <h3>Nenhum registro encontrado!</h3>
     @endif
   </div>
-  <?php echo $model->appends(Request::session()->get('cheque.index'))->render();?>
+  <?php echo $model->appends(Request::session()->get('cheque-repasse.index'))->render();?>
 </div>
 
 @section('inscript')
@@ -147,10 +111,10 @@
 function atualizaFiltro()
 {
     scroll();
-    var frmValues = $('#cheque-motivo-devolucao-search').serialize();
+    var frmValues = $('#cheque-repasse-search').serialize();
     $.ajax({
         type: 'GET',
-        url: baseUrl + '/cheque-motivo-devolucao',
+        url: baseUrl + '/cheque-repasse',
         data: frmValues,
         dataType: 'html'
     })
@@ -189,7 +153,7 @@ function scroll()
 
 $(document).ready(function() {
     scroll();
-    $("#cheque-motivo-devolucao-search").on("change", function (event) {
+    $("#cheque-repasse-search").on("change", function (event) {
         $('#items').infinitescroll('destroy');
         atualizaFiltro();
     }).on('submit', function (event){

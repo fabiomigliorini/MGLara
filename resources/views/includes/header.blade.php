@@ -89,6 +89,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Financeiro <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url('cheque') }}">Cheques</a></li>
+                        <li><a href="{{ url('cheque-repasse') }}">Cheque Repasse</a></li>
                         <li><a href="{{ url('cheque-motivo-devolucao') }}">Motivos de Devolução de Cheques</a></li>
                     </ul>
                 </li>

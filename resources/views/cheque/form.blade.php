@@ -114,10 +114,10 @@ $(document).ready(function() {
                         }
 
                     } else {
-                        bootbox.alert('<span class="text-danger">CMC7 Inválido</span>');
+                        bootbox.alert('<span class="text-danger">'+retorno.error+'</span>');
                         $('#cmc7').val('');
                         $('#cmc7').focus();
-                        $("#warning_cmc7").html("<span class='label label-danger'><i class='glyphicon glyphicon-remove'></i> CMC7 Inválido</span>");
+                        $("#warning_cmc7").html("<span class='label label-danger'><i class='glyphicon glyphicon-remove'></i> "+retorno.error+"</span>");
                     }
                 },
                 error: function (XHR, textStatus) {
