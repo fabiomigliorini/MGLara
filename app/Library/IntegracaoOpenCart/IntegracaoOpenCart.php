@@ -173,9 +173,8 @@ class IntegracaoOpenCart extends IntegracaoOpenCartBase {
                     
                     // tenta procurar se ja existe mas codigo nao estava gravado no sistema
                     if (isset($this->responseObject->error->keyword) && $this->responseObject->error->keyword == 'SEO keyword already in use!') {
-                        $codigos = array_keys($this->manufacturers);
-                        $i = array_search($marca->marca, array_column($this->manufacturers, 'name'));
-                        DB::table('tblmarca')->where('codmarca', $marca->codmarca)->update(['codopencart' => $codigos[$i]]);
+                        $manufacturer_id = collect($this->manufacturers)->where('name', $marca->marca)->first()->manufacturer_id;
+                        DB::table('tblmarca')->where('codmarca', $marca->codmarca)->update(['codopencart' => $manufacturer_id]);
 
                         $marca = $marca->fresh();
                     // senao loga o erro
