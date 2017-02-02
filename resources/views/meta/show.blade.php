@@ -34,6 +34,28 @@
     $if = 1;
     $iv = 1;
 
+    $periodoinicial = $model->periodoinicial->subDay();
+    $periodofinal = ($model->periodofinal <= Carbon\Carbon::today() ? $model->periodofinal : Carbon\Carbon::today());
+    $periodofinal->startOfDay();
+    
+    $dias = [];
+    while ($periodoinicial->lte($periodofinal)) {
+        $dia = substr($periodoinicial->addDay()->copy()->toW3cString(), 0, -6);
+        $dias[$dia] = [$dia];
+    }
+    //dd($dias);
+    foreach($filiais as $filial) {
+        foreach($filial['valorvendaspordata'] as $vendas) {
+            array_push($dias[$vendas->data], $vendas->valorvendas);
+        }
+
+        $valorvendaspordata = collect($filial['valorvendaspordata']);
+        foreach ($dias as $dia) {
+           if(!$valorvendaspordata->contains('data', $dia[0])){
+               array_push($dias[$dia[0]], 0);
+           }
+        }
+    }
 ?>
 <ul class="nav nav-pills">
     @foreach($anteriores as $meta)
@@ -173,7 +195,7 @@
                     'language': 'pt_BR'
                 });
                 google.charts.setOnLoadCallback(drawChart);
-                //google.charts.setOnLoadCallback(drawChartLine);
+                google.charts.setOnLoadCallback(drawChartLine);
                 
                 var DataTable = [
                     ['Lojas', 'Vendas'],
@@ -192,19 +214,22 @@
                     chartGeral.draw(data, options);
                 }
 
-/*
                 function drawChartLine() {
                     var lineChartData = new google.visualization.DataTable();
                     lineChartData.addColumn('date', 'Dia');
                     @foreach($filiais as $filial)
                     lineChartData.addColumn('number', "{{ $filial['filial'] }}");
                     @endforeach
-
                     lineChartData.addRows([
-                    // ...
+                    @foreach(array_values($dias) as $dia)
+                    <?php $data = $dia[0]; array_shift($dia);?>
+                    @if(array_sum($dia) > 0)
+            [new Date("{{ $data }}"), {{ implode(',', $dia) }}],
+                    @endif
+                    @endforeach
                     ]);
 
-                    optionsLine[{{ $filial['codfilial'] }}] = {
+                    var optionsLine = {
                         title: 'Vendas por dia',
                         'width': 900,
                         'height': 500
@@ -214,7 +239,6 @@
                     lineChart.draw(lineChartData, optionsLine);          
 
                 }                 
-*/
                 
                 var piechartFilial = [];
                 var optionsFilial = [];

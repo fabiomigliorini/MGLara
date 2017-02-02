@@ -109,15 +109,17 @@
     <div id="piechart{{ $filial['codfilial'] }}"></div>
     
 </div>
-<div class="col-sm-6"><div id="vendas{{ $filial['codfilial'] }}"></div></div>
+<div class="col-sm-12"><div id="vendas{{ $filial['codfilial'] }}"></div></div>
 <?php
     $periodoinicial = $model->periodoinicial->subDay();
-    $periodofinal = ($model->periodofinal <= Carbon\Carbon::today() ? $model->periodofinal->subDay() : Carbon\Carbon::today());
+    $periodofinal = ($model->periodofinal <= Carbon\Carbon::today() ? $model->periodofinal : Carbon\Carbon::today());
+    $periodofinal->startOfDay();
+    
     $dias = [];
     while ($periodoinicial->lte($periodofinal)) {
         $dia = substr($periodoinicial->addDay()->copy()->toW3cString(), 0, -6);
         $dias[$dia] = [$dia];
-    }
+    }  
     
     foreach($vendedores as $vendedor) {
         foreach($vendedor['valorvendaspordata'] as $vendas) {
@@ -170,20 +172,17 @@
         @endforeach
 
         DataTableVendas[{{ $filial['codfilial'] }}].addRows([
-            @foreach(array_values($dias) as $dia)
-            <?php
-                $data = $dia[0];
-                array_shift($dia);
-            ?>
-            @if(array_sum($dia) > 0)
-                [new Date("{{ $data }}"), {{ implode(',', $dia) }}],
-            @endif
-          @endforeach      
+        @foreach(array_values($dias) as $dia)
+        <?php $data = $dia[0]; array_shift($dia);?>
+        @if(array_sum($dia) > 0)
+        [new Date("{{ $data }}"), {{ implode(',', $dia) }}],
+        @endif
+        @endforeach
         ]);
 
         optionsVendas[{{ $filial['codfilial'] }}] = {
             title: 'Vendas por dia',
-            'width': 900,
+            'width': 1000,
             'height': 500
         };
 

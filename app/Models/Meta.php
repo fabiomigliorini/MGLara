@@ -85,16 +85,19 @@ class Meta extends MGModel
                 , f.filial
                 , mf.valormetafilial
                 , mf.valormetavendedor
-                , (
+                , (SELECT to_json(array_agg(t)) FROM (
                     select 
-                            sum((case when n.codoperacao = 1 then -1 else 1 end) * coalesce(n.valortotal, 0)) as valorvendas
+                        date_trunc('day', n.lancamento) as data,
+                        sum((case when n.codoperacao = 1 then -1 else 1 end) * coalesce(n.valortotal, 0)) as valorvendas
                     from tblnegocio n
                     where n.codnegociostatus = 2 -- fechado
                     and n.codpessoa not in (select distinct f2.codpessoa from tblfilial f2)
                     and n.codnaturezaoperacao in (1, 2) -- Venda / Devolucao de Vendas -- TODO: Fazer modelagem para tirar o codigo fixo
                     and n.lancamento between m.periodoinicial and m.periodofinal
                     and n.codfilial = mf.codfilial
-                ) as valorvendas
+                    group by date_trunc('day', n.lancamento)
+                    order by date_trunc('day', n.lancamento)
+                    ) t) as valorvendaspordata
                 , mfp.codpessoa
                 , mfp.codcargo
                 , p.pessoa
@@ -104,7 +107,7 @@ class Meta extends MGModel
             left join tblmetafilialpessoa mfp on (mfp.codmetafilial = mf.codmetafilial and mfp.codcargo = 2) -- Subgerente -- TODO: Fazer modelagem
             left join tblpessoa p on (p.codpessoa = mfp.codpessoa)
             where m.codmeta = {$this->codmeta}
-            order by valorvendas desc
+            --order by valorvendas desc
         ";
         
         $sql_vendedores = "
@@ -189,7 +192,6 @@ class Meta extends MGModel
 
         $retorno_vendedores = [];
         foreach ($vendedores as $vendedor){
-            
             $vendedor->valorvendas = array_sum(array_column(json_decode($vendedor->valorvendaspordata), 'valorvendas'));
             $valorcomissaovendedor = ($vendedor->percentualcomissaovendedor / 100 ) * $vendedor->valorvendas;
             $valorcomissaometavendedor = ($vendedor->valorvendas >= $vendedor->valormetavendedor ? ($this->percentualcomissaovendedormeta / 100 ) * $vendedor->valorvendas : null);
@@ -220,6 +222,7 @@ class Meta extends MGModel
         
         $retorno_filiais = [];
         foreach ($filiais as $filial){
+            $filial->valorvendas = array_sum(array_column(json_decode($filial->valorvendaspordata), 'valorvendas'));
             $falta = ($filial->valorvendas < $filial->valormetafilial ? $filial->valormetafilial - $filial->valorvendas : null);
             $premio = ($filial->valorvendas >= $filial->valormetafilial ? ($filial->valorvendas / 100 ) * $this->percentualcomissaosubgerentemeta : null);
             $retorno_filiais[] = [
@@ -232,6 +235,7 @@ class Meta extends MGModel
                 'pessoa'                    => $filial->pessoa,
                 'falta'                     => $falta,
                 'comissao'                  => $premio,
+                'valorvendaspordata'        => json_decode($filial->valorvendaspordata),
             ];
         }        
         
