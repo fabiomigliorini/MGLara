@@ -77,18 +77,18 @@ class Feriado extends MGModel
     }
     
     /**
-     * Retorna número de dias úteis entre a $data_inicial e a $data_final
+     * Retorna array com os dias úteis entre a $data_inicial e a $data_final
      * @param Carbon $data_inicial Data Incial
      * @param Carbon $data_final Data Final
      * @param bool $sabado_dia_util Considera sabado como dia util ou nao
-     * @return int
+     * @return Carbon[]
      */
     public static function diasUteis (Carbon $data_inicial, Carbon $data_final, bool $sabado_dia_util = false) {
         if ($data_final->lt($data_inicial)) {
             return false;
         }
-        $data = $data_inicial;
-        $dias_uteis = 0;
+        $data = clone $data_inicial;
+        $dias_uteis = [];
         
         $feriados = Feriado::where('data', '>=', $data_inicial)->where('data', '<=', $data_final)->get();
         
@@ -105,13 +105,25 @@ class Feriado extends MGModel
                 $data->addDay();
                 continue;
             }
-            $dias_uteis++;
+            $dias_uteis[] = clone $data;
             $data->addDay();
         }
         return $dias_uteis;
     }
     
     /**
+     * Retorna número de dias úteis entre a $data_inicial e a $data_final
+     * @param Carbon $data_inicial Data Incial
+     * @param Carbon $data_final Data Final
+     * @param bool $sabado_dia_util Considera sabado como dia util ou nao
+     * @return int
+     */
+    public static function numeroDiasUteis (Carbon $data_inicial, Carbon $data_final, bool $sabado_dia_util = false) {
+        $ret = self::diasUteis($data_inicial, $data_final, $sabado_dia_util);
+        return sizeof($ret);
+    }
+
+        /**
      * Retorna Proximo Dia Util
      * @param Carbon $data Data de inicio
      * @param bool $sabado_dia_util Considera sabado como dia util ou nao
