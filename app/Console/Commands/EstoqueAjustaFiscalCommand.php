@@ -408,29 +408,32 @@ class EstoqueAjustaFiscalCommand extends Command
     public function transfereMesmoNcm()
     {
         $auto = $this->option('auto');
-        
-        $sql_negativos = "
-            select p.codproduto, p.produto, pv.variacao, coalesce(p.preco, 0) as preco, el.sigla, em.saldoquantidade, em.saldovalor, em.customedio, em.codestoquemes, em.mes, elpv.codprodutovariacao, elpv.codestoquelocal, n.ncm, p.codncm, f.codempresa, es.saldoquantidade as saldoquantidade_atual
-            from tblestoquemes em
-            inner join tblestoquesaldo es on (es.codestoquesaldo = em.codestoquesaldo and es.fiscal = true)
-            inner join tblestoquelocalprodutovariacao elpv on (elpv.codestoquelocalprodutovariacao = es.codestoquelocalprodutovariacao)
-            inner join tblprodutovariacao pv on (pv.codprodutovariacao = elpv.codprodutovariacao)
-            inner join tblproduto p on (p.codproduto = pv.codproduto)
-            inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
-            inner join tblfilial f on (f.codfilial = el.codfilial)
-            inner join tblncm n on (n.codncm = p.codncm)
-            where em.saldoquantidade < 0
-            order by em.mes, n.ncm, p.preco DESC, p.produto, elpv.codestoquelocal, pv.variacao nulls first
-            limit 1
-            ";
 
-        $i_alternativa_produto = 0;
+        $ncm_sem_alternativa = [0];
         
         $produtos_sem_saldo = [0];
+        $codestoquemes_ultimo = 0;
         
-        while ($dados = DB::select($sql_negativos))
+        while ($dados = DB::select("
+                select p.codproduto, p.produto, pv.variacao, coalesce(p.preco, 0) as preco, el.sigla, em.saldoquantidade, em.saldovalor, em.customedio, em.codestoquemes, em.mes, elpv.codprodutovariacao, elpv.codestoquelocal, n.ncm, p.codncm, f.codempresa, es.saldoquantidade as saldoquantidade_atual
+                from tblestoquemes em
+                inner join tblestoquesaldo es on (es.codestoquesaldo = em.codestoquesaldo and es.fiscal = true)
+                inner join tblestoquelocalprodutovariacao elpv on (elpv.codestoquelocalprodutovariacao = es.codestoquelocalprodutovariacao)
+                inner join tblprodutovariacao pv on (pv.codprodutovariacao = elpv.codprodutovariacao)
+                inner join tblproduto p on (p.codproduto = pv.codproduto)
+                inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
+                inner join tblfilial f on (f.codfilial = el.codfilial)
+                inner join tblncm n on (n.codncm = p.codncm)
+                where em.saldoquantidade < 0
+                and em.mes = '2016-12-01'
+                and p.codncm not in (" . implode(', ', $ncm_sem_alternativa) . ")
+                and em.codestoquemes != $codestoquemes_ultimo
+                order by em.mes, n.ncm, p.preco DESC, p.produto, elpv.codestoquelocal, pv.variacao nulls first
+                limit 1
+                "))
         {
             $negativo = $dados[0];
+            $codestoquemes_ultimo = $negativo->codestoquemes;
             $this->line('');
             $this->line('');
             $this->line('');
@@ -502,13 +505,18 @@ class EstoqueAjustaFiscalCommand extends Command
                 AND p.codncm = {$negativo->codncm}
                 AND coalesce(fiscal.saldoquantidade_atual, 0) > coalesce(fisico.saldoquantidade_atual, 0)
                 AND coalesce(fiscal.saldoquantidade, 0) > coalesce(fisico.saldoquantidade, 0)
-                and coalesce(fiscal.saldoquantidade_atual, 0) > 1
-                and coalesce(fiscal.saldoquantidade, 0) > 1
+                and coalesce(fiscal.saldoquantidade_atual, 0) > 0
+                and coalesce(fiscal.saldoquantidade, 0) > 0
                 and p.codproduto not in (" . implode(', ', $produtos_sem_saldo) . ")
                 order by abs(p.preco - {$negativo->preco})
             ";
 
             $alt_prods = DB::select($sql);
+
+            if (sizeof($alt_prods) == 0) {
+                $ncm_sem_alternativa[] = $negativo->codncm;
+                continue;
+            }
 
             $data=[];
             $choices=[];
@@ -541,9 +549,7 @@ class EstoqueAjustaFiscalCommand extends Command
             if (!$auto) {
                 $codproduto = $this->choice('Transferir de qual alternativa?', $choices, false);
             } else {
-                $this->error($i_alternativa_produto);
                 $codproduto = $alt_prods[0]->codproduto;
-                //$codproduto = $alt_prods[$i_alternativa_produto]->codproduto;
                 $this->error($codproduto);
             }
 
@@ -614,7 +620,6 @@ class EstoqueAjustaFiscalCommand extends Command
             
             if ($codestoquemes == null) {
                 $produtos_sem_saldo[] = $produto->codproduto;
-                $i_alternativa_produto++;
                 continue;
             }
             
@@ -651,8 +656,6 @@ class EstoqueAjustaFiscalCommand extends Command
                 $negativo->codprodutovariacao,
                 $negativo->codestoquelocal
             );
-            
-            $i_alternativa_produto = 0;
             
         }
 
@@ -750,9 +753,12 @@ class EstoqueAjustaFiscalCommand extends Command
                     continue;
                 }
 
+                break;
+                /*
                 if ($this->confirm('Transferir deste Saldo?', true) == true) {
                     break;
                 }
+                */
 
             } while (true);
 
