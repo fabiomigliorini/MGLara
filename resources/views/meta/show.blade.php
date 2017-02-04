@@ -44,6 +44,7 @@
         $dias[$dia] = [$dia];
     }
     //dd($dias);
+    
     foreach($filiais as $filial) {
         foreach($filial['valorvendaspordata'] as $vendas) {
             array_push($dias[$vendas->data], $vendas->valorvendas);
@@ -232,7 +233,10 @@
                     var optionsLine = {
                         title: 'Vendas por dia',
                         'width': 900,
-                        'height': 500
+                        'height': 500,
+                        hAxis: {
+                            format: 'd',
+                        },            
                     };
 
                     var lineChart = new google.visualization.LineChart(document.getElementById('lineChartGeral'));

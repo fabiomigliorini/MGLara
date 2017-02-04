@@ -178,12 +178,16 @@
         [new Date("{{ $data }}"), {{ implode(',', $dia) }}],
         @endif
         @endforeach
+        ////[new Date(), 1,2,3,4,5,6,7,8,9]
         ]);
 
         optionsVendas[{{ $filial['codfilial'] }}] = {
             title: 'Vendas por dia',
             'width': 1000,
-            'height': 500
+            'height': 500,
+            hAxis: {
+                format: 'd',
+            },            
         };
 
         vendasPorDia[{{ $filial['codfilial'] }}] = new google.visualization.LineChart(document.getElementById('vendas'+{{ $filial['codfilial'] }}));
