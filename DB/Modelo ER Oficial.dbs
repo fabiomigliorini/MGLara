@@ -317,7 +317,7 @@
 			<column name="codbanco" type="bigint" length="19" decimal="0" jt="-5" mandatory="y" />
 			<column name="agencia" type="varchar" length="10" decimal="0" jt="12" mandatory="y" />
 			<column name="contacorrente" type="varchar" length="15" decimal="0" jt="12" mandatory="y" />
-			<column name="emitente" type="varchar" length="100" decimal="0" jt="12" mandatory="y" />
+			<column name="emitente" type="varchar" length="100" decimal="0" jt="12" />
 			<column name="numero" type="varchar" length="15" decimal="0" jt="12" mandatory="y" />
 			<column name="emissao" type="date" length="13" decimal="0" jt="91" mandatory="y" />
 			<column name="vencimento" type="date" length="13" decimal="0" jt="91" mandatory="y" />
@@ -326,15 +326,16 @@
 			<column name="devolucao" type="date" length="13" decimal="0" jt="91" />
 			<column name="motivodevolucao" type="varchar" length="50" decimal="0" jt="12" />
 			<column name="observacao" type="varchar" length="200" decimal="0" jt="12" />
-			<column name="lancamento" type="timestamp" length="29" decimal="6" jt="93" mandatory="y" />
+			<column name="lancamento" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="cancelamento" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="valor" type="numeric" length="14" decimal="2" jt="2" mandatory="y" />
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
-			<column name="codpessoa" type="bigint" jt="-5" />
-			<column name="indstatus" type="smallint" jt="5" >
+			<column name="codpessoa" type="bigint" length="19" decimal="0" jt="-5" mandatory="y" />
+			<column name="indstatus" type="smallint" length="5" decimal="0" jt="5" mandatory="y" >
+				<defo>1</defo>
 				<comment><![CDATA[1 - À Repassar
 2 - Repassado
 3 - Devolvido
@@ -381,9 +382,7 @@
 			<column name="codchequerepassecheque" type="bigint" jt="-5" mandatory="y" />
 			<column name="codchequemotivodevolucao" type="bigint" jt="-5" mandatory="y" />
 			<column name="data" type="date" jt="91" mandatory="y" />
-			<column name="observacoes" type="varchar" jt="12" >
-				<defo>200</defo>
-			</column>
+			<column name="observacoes" type="varchar" length="200" decimal="0" jt="12" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
@@ -448,7 +447,7 @@
 		<table name="tblchequemotivodevolucao" >
 			<column name="codchequemotivodevolucao" type="bigserial" jt="-5" mandatory="y" />
 			<column name="numero" type="smallint" jt="5" mandatory="y" />
-			<column name="chequemotivodevolucao" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="chequemotivodevolucao" type="varchar" length="200" jt="12" mandatory="y" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
@@ -461,6 +460,9 @@
 			</index>
 			<index name="idx_tblchequemotivodevolucao_0" unique="NORMAL" >
 				<column name="codusuarioalteracao" />
+			</index>
+			<index name="idx_tblchequemotivodevolucao_1" unique="UNIQUE" >
+				<column name="numero" />
 			</index>
 			<fk name="fk_tblchequemotivodevolucao" to_schema="mgsis" to_table="tblusuario" >
 				<fk_column name="codusuariocriacao" pk="codusuario" />
@@ -1387,6 +1389,30 @@
 				<fk_column name="codusuarioalteracao" pk="codusuario" />
 			</fk>
 		</table>
+		<table name="tblferiado" >
+			<column name="codferiado" type="bigserial" jt="-5" mandatory="y" />
+			<column name="data" type="date" jt="91" mandatory="y" />
+			<column name="feriado" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
+			<index name="pk_tblferiado" unique="PRIMARY_KEY" >
+				<column name="codferiado" />
+			</index>
+			<index name="idx_tblferiado" unique="NORMAL" >
+				<column name="codusuariocriacao" />
+			</index>
+			<index name="idx_tblferiado_0" unique="NORMAL" >
+				<column name="codusuarioalteracao" />
+			</index>
+			<fk name="fk_tblferiado" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuariocriacao" pk="codusuario" />
+			</fk>
+			<fk name="fk_tblferiado_0" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuarioalteracao" pk="codusuario" />
+			</fk>
+		</table>
 		<table name="tblfilial" >
 			<column name="codfilial" type="bigserial" length="19" decimal="0" jt="-5" mandatory="y" />
 			<column name="codempresa" type="bigint" length="19" decimal="0" jt="-5" />
@@ -1852,6 +1878,7 @@
 			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="percentualcomissaoxerox" type="numeric" length="4" decimal="2" jt="2" />
 			<index name="pk_tblmeta" unique="PRIMARY_KEY" >
 				<column name="codmeta" />
 			</index>
@@ -5061,7 +5088,11 @@
 		<sequence name="tblcest_codcest_seq" start="1" />
 		<sequence name="tblcfop_codcfop_seq" start="1" />
 		<sequence name="tblcheque_codcheque_seq" start="1" />
+		<sequence name="tblchequedevolucao_codchequedevolucao_seq" start="1" />
 		<sequence name="tblchequeemitente_codchequeemitente_seq" start="1" />
+		<sequence name="tblchequemotivodevolucao_codchequemotivodevolucao_seq" start="1" />
+		<sequence name="tblchequerepasse_codchequerepasse_seq" start="1" />
+		<sequence name="tblchequerepassecheque_codchequerepassecheque_seq" start="1" />
 		<sequence name="tblcidade_codcidade_seq" start="1" />
 		<sequence name="tblcobranca_codcobranca_seq" start="1" />
 		<sequence name="tblcobrancahistorico_codcobrancahistorico_seq" start="1" />
@@ -5082,6 +5113,7 @@
 		<sequence name="tblestoquesaldo_codestoquesaldo_seq" start="1" />
 		<sequence name="tblestoquesaldoconferencia_codestoquesaldoconferencia_seq" start="1" />
 		<sequence name="tblfamiliaproduto_codfamiliaproduto_seq" start="1" />
+		<sequence name="tblferiado_codferiado_seq" start="1" />
 		<sequence name="tblfilial_codfilial_seq" start="1" />
 		<sequence name="tblformapagamento_codformapagamento_seq" start="1" />
 		<sequence name="tblgrupocliente_codgrupocliente_seq" start="1" />
@@ -6128,7 +6160,7 @@ $function$
 		</function>
 	</schema>
 	<connector name="MGsis_Desenv" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-9.4.1208.jar" driver_desc="Standard" host="localhost" port="5432" instance="mgsis" user="mgsis" passwd="bWdzaXM=" />
-	<connector name="MGsis_Prod" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-9.4.1208.jar" driver_desc="Standard" host="192.168.1.204" port="5432" instance="mgsis" user="mgsis" passwd="bWdzaXM=" />
+	<connector name="MGsis_Prod" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-9.4.1213.jar" driver_desc="Standard" host="192.168.1.205" port="5432" instance="mgsis" user="mgsis" passwd="bWdzaXM=" />
 	<layout name="Layout_Autorizacao" id="Layout_93c6439" confirmed="y" show_column_type="y" show_relation="columns" >
 		<entity schema="mgsis" name="tblgrupousuariousuario" color="b7c8e3" x="380" y="60" />
 		<entity schema="mgsis" name="tblfilial" color="b7c8e3" x="680" y="60" />
@@ -6154,7 +6186,6 @@ $function$
 		</entity>
 		<entity schema="mgsis" name="tblchequeemitente" color="c1d8ee" x="680" y="60" />
 		<entity schema="mgsis" name="tblchequedevolucao" color="c1d8ee" x="600" y="580" />
-		<entity schema="mgsis" name="tblchequemotivodevolucao" color="c1d8ee" x="920" y="620" />
 		<entity schema="mgsis" name="tblbanco" color="c1d8ee" x="60" y="120" />
 		<entity schema="mgsis" name="tblchequerepasse" color="c1d8ee" x="940" y="320" />
 		<entity schema="mgsis" name="tblportador" color="c1d8ee" x="1200" y="300" >
@@ -6179,6 +6210,7 @@ $function$
 			<column name="codvalecompraformapagamento" />
 		</entity>
 		<entity schema="mgsis" name="tblcheque" color="c1d8ee" x="320" y="60" />
+		<entity schema="mgsis" name="tblchequemotivodevolucao" color="c1d8ee" x="920" y="620" />
 	</layout>
 	<layout name="Layout_Devolucao" id="Layout7285461" confirmed="y" show_relation="columns" >
 		<entity schema="mgsis" name="tblnotafiscal" color="b2cdf7" x="1240" y="60" />
@@ -6227,6 +6259,10 @@ $function$
 			<column name="codusuarioalteracao" />
 			<column name="codusuariocriacao" />
 		</entity>
+	</layout>
+	<layout name="Layout_Feriados" id="Layout_1d848eea" show_relation="columns" >
+		<entity schema="mgsis" name="tblusuario" color="c1d8ee" x="60" y="60" />
+		<entity schema="mgsis" name="tblferiado" color="c1d8ee" x="460" y="120" />
 	</layout>
 	<layout name="Layout_Fiscal" id="Layout4922365" confirmed="y" show_relation="columns" >
 		<entity schema="mgsis" name="tbltributacao" color="b2cdf7" x="580" y="340" />

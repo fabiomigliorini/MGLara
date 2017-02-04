@@ -2,29 +2,27 @@
 
 if(!function_exists('formataData')) {
     function formataData($data, $formato = 'C') {
-        
+
         if (empty($data)) {
             return null;
         }
-        
+
         if(!$data instanceof Carbon\Carbon) {
             $data = new Carbon\Carbon($data);
         }
-        
-        $formato = strtoupper($formato);
-        
-        switch ($formato)
+
+        switch (strtoupper($formato))
         {
             case 'C':
             case 'CURTO':
                 return $data->format('d/m/y');
                 break;
-            
+
             case 'M':
             case 'MEDIO':
                 return $data->format('d/m/Y');
                 break;
-            
+
             case 'E':
             case 'EXTENSO':
                 // ('%A %d %B %Y');  // Mittwoch 21 Mai 1975
@@ -40,7 +38,7 @@ if(!function_exists('formataData')) {
             case 'LONGO':
                 return $data->format('d/m/Y H:i');
                 break;
-            
+
             default:
                 return $data->format($formato);
                 break;
@@ -54,6 +52,45 @@ if(!function_exists('formataCodigo')) {
     }
 }
 
+if(!function_exists('mask')) {
+    function mask($val, $mask){
+        $maskared = '';
+        $k = 0;
+        for($i = 0; $i<=strlen($mask)-1; $i++){
+            if($mask[$i] == '#')
+            {
+               if(isset($val[$k]))
+               $maskared .= $val[$k++];
+            }
+            else
+            {
+               if(isset($mask[$i]))
+                   $maskared .= $mask[$i];
+            }
+        }
+        return $maskared;
+    }
+}
+if(!function_exists('formataCnpj')) {
+    function formataCnpj ($value){
+        return mask($value,'##.###.###/####-##');
+    }
+}
+if(!function_exists('formataCpf')) {
+    function formataCpf ($value){
+        return mask($value,'###.###.###-##');
+    }
+}
+if(!function_exists('formataCpfCnpj')) {
+    function formataCpfCnpj ($value){
+        $value = preg_replace("/[^0-9]/", "", $value);
+        if(strlen($value)>11){
+            return formataCnpj($value);
+        }else{
+            return formataCpf($value);
+        }
+    }
+}
 if(!function_exists('formataNumero')) {
     function formataNumero ($value, $digitos = 2){
         if ($value === null)
@@ -200,7 +237,7 @@ if(!function_exists('formataInscricaoEstadual')) {
             'SC' => '###.###.###',
             'SP' => '###.###.###.###',
             'SE' => '#########-#',
-            'TO' => '###########',			
+            'TO' => '###########',
         );
 
         if (!array_key_exists($siglaestado, $mascara))
@@ -210,7 +247,7 @@ if(!function_exists('formataInscricaoEstadual')) {
     }
 }
 
-if(!function_exists('formataEndereco')) {    
+if(!function_exists('formataEndereco')) {
     function formataEndereco($endereco = null, $numero = null, $complemento = null, $bairro = null, $cidade = null, $estado = null, $cep = null, $multilinha = false)
     {
         $retorno = $endereco;
@@ -243,7 +280,7 @@ if(!function_exists('formataEndereco')) {
 
         if ($multilinha)
             $retorno = str_replace (" - ", "<br>", $retorno);
-        
+
         return "<a href='http://maps.google.com/maps?q=$q' target='_blank'>". $retorno."</a>";
     }
 }
@@ -277,7 +314,7 @@ if(!function_exists('formataNumeroNota')) {
     }
 }
 
-if(!function_exists('formataChaveNfe')) {	
+if(!function_exists('formataChaveNfe')) {
     function formataChaveNfe ($chave)
     {
         return formataPorMascara($chave, "#### #### #### #### #### #### #### #### #### #### ####");
@@ -285,7 +322,7 @@ if(!function_exists('formataChaveNfe')) {
 }
 
 if(!function_exists('removeAcentos')) {
-    function removeAcentos($string) 
+    function removeAcentos($string)
     {
         $map = [
             'á' => 'a',
@@ -320,22 +357,22 @@ if(!function_exists('removeAcentos')) {
 }
 
 if(!function_exists('titulo')) {
-    function titulo ($codigo, $descricao, $inativo, $digitos_codigo = 8) 
+    function titulo ($codigo, $descricao, $inativo, $digitos_codigo = 8)
     {
         if (is_string($descricao)) {
             $descricao = [$descricao];
         }
-        
+
         $html = '';
-        
+
         $i = 0;
-        
+
         foreach ($descricao as $url => $titulo) {
-            
+
             if (is_numeric($url)) {
                 $url = null;
             }
-            
+
             $html .= ' <li class="' . (empty($url)?'active':'') . '">';
             $html .= (empty($url))?'':"<a href='$url'>";
             $html .= (empty($inativo))?'':'<del>';
@@ -346,21 +383,21 @@ if(!function_exists('titulo')) {
             $html .= (empty($inativo))?'':'</del>';;
             $html .= (empty($url))?'':"</a>";
             $html .= '</li>';
-            
+
             $i++;
-            
+
         }
-        
+
         if(!empty($inativo)) {
             $html .= ' <li class="text-danger">Inativo desde ' . formataData($inativo, 'L') . '</li>';
         }
-        
+
         return $html;
     }
 }
 
 if(!function_exists('inativo')) {
-    function inativo ($inativo) 
+    function inativo ($inativo)
     {
         if(!empty($inativo))
             return "<span class='label label-danger'>Inativo desde ". formataData($inativo, 'L'). "</span>";
@@ -368,11 +405,11 @@ if(!function_exists('inativo')) {
 }
 
 if(!function_exists('listagemTitulo')) {
-    function listagemTitulo ($titulo, $inativo) 
+    function listagemTitulo ($titulo, $inativo)
     {
         if(!empty($inativo))
             return "<del>$titulo</del>";
-        else 
+        else
             return $titulo;
     }
 }
@@ -386,17 +423,17 @@ if(!function_exists('formataEstoqueMinimoMaximo')) {
             $class = ($saldo !== 'Vazio' && $saldo < $minimo)?'text-danger':'';
             $html .= " <span class='$class'>" . formataNumero($minimo, 0) . " <span class='glyphicon glyphicon-arrow-down'></span></span> ";
         }
-        
+
         if (!empty($maximo)) {
             $class = ($saldo !== 'Vazio' && $saldo > $maximo)?'text-danger':'';
             $html .= " <span class='$class'>" . formataNumero($maximo, 0) . " <span class='glyphicon glyphicon-arrow-up'></span></span> ";
         }
-        
+
         if (empty($html)) {
             $html = '&nbsp;';
         }
-            
-        
+
+
         return $html;
     }
 }

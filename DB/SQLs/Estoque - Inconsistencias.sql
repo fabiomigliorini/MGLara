@@ -8,7 +8,7 @@ inner join tblproduto p on (p.codproduto = pb.codproduto)
 inner join tbltipoproduto tp on (tp.codtipoproduto = p.codtipoproduto)
 left join tblestoquemovimento em on (em.codnegocioprodutobarra = npb.codnegocioprodutobarra)
 where n.codnegociostatus = 2
-and n.lancamento >= '2016-11-01 00:00:00'
+and n.lancamento >= '2016-04-01 00:00:00'
 and tp.estoque = true
 and no.estoque = true
 and em.codestoquemovimento is null
@@ -29,7 +29,6 @@ and tp.estoque = true
 and no.estoque = true
 and em.codestoquemovimento is not null
 order by n.codfilial, n.codnegocio, p.produto
-limit 100
 
 --Quantidade Negocio Diferente do Estoque
 select n.codfilial, n.codnegocio, pb.codproduto, npb.codnegocioprodutobarra, em.codestoquemovimento, p.codproduto, p.produto, round((coalesce(em.entradaquantidade, 0) + coalesce(em.saidaquantidade, 0)), 1), round((npb.quantidade * coalesce(pe.quantidade, 1)), 1)
@@ -47,7 +46,7 @@ and tp.estoque = true
 and no.estoque = true
 and round((coalesce(em.entradaquantidade, 0) + coalesce(em.saidaquantidade, 0)), 1) != round((npb.quantidade * coalesce(pe.quantidade, 1)), 1)
 order by p.codproduto, n.codfilial, n.codnegocio, p.produto
-limit 100
+
 
 --Notas Sem Movimentacao de estoque
 select n.codfilial, n.codnotafiscal, n.saida, n.alteracao, npb.codnotafiscalprodutobarra, em.codestoquemovimento, p.codproduto, p.produto
@@ -65,7 +64,6 @@ and tp.estoque = true
 and no.estoque = true
 and em.codestoquemovimento is null
 order by n.saida, n.codfilial, n.codnotafiscal, p.produto
-limit 50
 
 --Notas Canceladas/Inutilizadas/Nao Autorizadas Com Movimentacao de estoque
 select n.codfilial, n.codnotafiscal, npb.codnotafiscalprodutobarra, em.codestoquemovimento, p.codproduto, p.produto
@@ -83,7 +81,6 @@ and tp.estoque = true
 and no.estoque = true
 and em.codestoquemovimento is not null
 order by n.codfilial, n.codnotafiscal, p.produto
-limit 100
 
 --Quantidade Nota Diferente do Estoque
 select n.codfilial, n.codnotafiscal, pb.codproduto, npb.codnotafiscalprodutobarra, em.codestoquemovimento, p.codproduto, p.produto, round((coalesce(em.entradaquantidade, 0) + coalesce(em.saidaquantidade, 0)), 1), round((npb.quantidade * coalesce(pe.quantidade, 1)), 1)
@@ -100,7 +97,7 @@ and tp.estoque = true
 and no.estoque = true
 and round((coalesce(em.entradaquantidade, 0) + coalesce(em.saidaquantidade, 0)), 1) != round((npb.quantidade * coalesce(pe.quantidade, 1)), 1)
 order by p.codproduto, n.codfilial, n.codnotafiscal, p.produto
-limit 100
+
 
 -- Transferencia/Devolucao sem registro de origem
 select em.codestoquemes, em.data, emt.descricao, EMT.CODESTOQUEMOVIMENTOTIPO, em.entradaquantidade, em.saidaquantidade, nfpb.codnotafiscal, npb.codnegocio
@@ -139,3 +136,13 @@ and es.fiscal = false
 and es.ultimaconferencia is null
 and elpv.codestoquelocal in (101001)
 order by p.produto, pv.variacao nulls first
+
+
+-- Movimento da Variacao para quando quiser excluir
+select mov.codnegocioprodutobarra, mov.codnotafiscalprodutobarra, mov.codestoquemes, mov.manual
+from tblestoquelocalprodutovariacao elpv
+inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao)
+inner join tblestoquemes em on (em.codestoquesaldo = es.codestoquesaldo)
+inner join tblestoquemovimento mov on (mov.codestoquemes = em.codestoquemes)
+where elpv.codprodutovariacao = 3419
+order by 1, 2

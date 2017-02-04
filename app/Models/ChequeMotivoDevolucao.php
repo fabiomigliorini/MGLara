@@ -6,7 +6,7 @@ namespace MGLara\Models;
  * Campos
  * @property  bigint                         $codchequemotivodevolucao           NOT NULL DEFAULT nextval('tblchequemotivodevolucao_codchequemotivodevolucao_seq'::regclass)
  * @property  smallint                       $numero                             NOT NULL
- * @property  varchar(100)                   $chequemotivodevolucao              NOT NULL
+ * @property  varchar(200)                   $chequemotivodevolucao              NOT NULL
  * @property  timestamp                      $criacao
  * @property  bigint                         $codusuariocriacao
  * @property  timestamp                      $alteracao

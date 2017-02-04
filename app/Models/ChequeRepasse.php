@@ -8,16 +8,16 @@ namespace MGLara\Models;
  * @property  bigint                         $codportador                        NOT NULL
  * @property  date                           $data                               NOT NULL
  * @property  varchar()                      $observacoes                        DEFAULT 200
- * @property  timestamp                      $criacao                            
- * @property  bigint                         $codusuariocriacao                  
- * @property  timestamp                      $alteracao                          
- * @property  bigint                         $codusuarioalteracao                
- * @property  timestamp                      $inativo                            
+ * @property  timestamp                      $criacao
+ * @property  bigint                         $codusuariocriacao
+ * @property  timestamp                      $alteracao
+ * @property  bigint                         $codusuarioalteracao
+ * @property  timestamp                      $inativo
  *
  * Chaves Estrangeiras
  * @property  Usuario                        $UsuarioCriacao
  * @property  Usuario                        $UsuarioAlteracao
- * @property  Portador                       $Portador                      
+ * @property  Portador                       $Portador
  *
  * Tabelas Filhas
  * @property  ChequeRepasseCheque[]          $ChequeRepasseChequeS
@@ -65,4 +65,25 @@ class ChequeRepasse extends MGModel
     }
 
 
+    public static function search($parametros)
+    {
+        $query = ChequeRepasse::query();
+
+        if (!empty($parametros['codchequemotivodevolucao'])) {
+            $query->where('codchequemotivodevolucao', $parametros['codchequemotivodevolucao']);
+        }
+
+        if (!empty($parametros['numero'])) {
+            $query->where('numero', $parametros['numero']);
+        }
+
+        if (!empty($parametros['chequemotivodevolucao'])) {
+            $palavras = explode(' ', $parametros['chequemotivodevolucao']);
+            foreach ($palavras as $palavra) {
+                $query->where('chequemotivodevolucao', 'ilike', "%{$palavra}%");
+            }
+        }
+
+        return $query;
+    }
 }

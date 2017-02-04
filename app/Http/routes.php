@@ -216,7 +216,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('gerador-codigo/model/{tabela}', 'GeradorCodigoController@model');
     //Route::resource('gerador-codigo','GeradorCodigoController');
 
-
     /* Auxiliares */
     Route::resource('printers', 'UsuarioController@printers');
 
@@ -229,7 +228,16 @@ Route::group(['middleware' => 'auth'], function() {
 
     Route::resource('/caixa', 'CaixaController@index');
 
+    /* Cheques */
+    Route::resource('cheque', 'ChequeController');
+    Route::get('cheque/consulta/{cmc7}', 'ChequeController@consulta');
+    Route::get('cheque/consultaemitente/{cnpj}', 'ChequeController@consultaemitente');
+
     Route::resource('cheque-motivo-devolucao', 'ChequeMotivoDevolucaoController');
+
+    Route::resource('cheque-repasse', 'ChequeRepasseController');
+    Route::post('cheque-repasse/consulta', 'ChequeRepasseController@consulta');
+
 });
 
 /*

@@ -162,11 +162,13 @@ function calculaTotal(campo)
     }
         
     var un = $('#' + campo + 'unitario').val();
+
+    var total = Math.round(qtd * un * 100) / 100;
     
     if (un == '') {
         $('#' + campo + 'valor').val(null);
     } else {
-        $('#' + campo + 'valor').val(qtd * un);
+        $('#' + campo + 'valor').val(total);
     }
     
 }    
