@@ -190,7 +190,7 @@
                         <h3 class="panel-title">Divisão</h3>
                       </div>
                       <div class="panel-body">    
-                          <div id="piechartGeral" style="height: 400px; width: 100%"></div>
+                          <div id="pieChart" style="height: 400px; width: 100%"></div>
                       </div>
                     </div>      
                 </div>
@@ -206,68 +206,45 @@
                 </div>    
             </div>
             <script type="text/javascript">
-                google.charts.load('current', {
-                    'packages':['corechart'],
-                    'language': 'pt_BR'
-                });
-                google.charts.setOnLoadCallback(drawChart);
-                
-                var DataTable = [
-                    ['Lojas', 'Vendas'],
-                    @foreach($filiais as $filial)
-                    ["{{ $filial['filial'] }}", {{ $filial['valorvendas'] }}],
-                    @endforeach
-                ];
-                function drawChart() {
-                    var data = google.visualization.arrayToDataTable(DataTable);
-                    var options = {
-                        height:380,
-                        width:'100%',
-                        chartArea:{
-                            left:30,
-                            top:25,
-                            height:350,
-                        }
-                    };
-                    var chartGeral = new google.visualization.PieChart(document.getElementById('piechartGeral'));
-                    chartGeral.draw(data, options);
-                }
-
-                   
-        var lineChart = c3.generate({
-            bindto: "#lineChart",
-            data: {
-                x : 'date',
-                columns: [
-                    ['date' 
-                        @foreach($datas as $data)
-                        <?php $data = Carbon\Carbon::parse($data);?>
-                        ,"{{ $data->toDateString() }}"
+                var chart = c3.generate({
+                    bindto: "#pieChart",
+                    data: {
+                        columns: [
+                        @foreach($filiais as $filial)
+                        ["{{ $filial['filial'] }}", {{ $filial['valorvendas'] }}],
                         @endforeach
-                    ]
-                    @foreach(array_values($colunas) as $coluna)
-                    <?php $v = $coluna[0]; array_shift($coluna)?>
-                    ,["{{$v}}", {{ implode(',', $coluna) }}]
-                    @endforeach
-                ]
-            },
-            axis : {
-                x : {
-                    type : 'timeseries',
-                    tick : {
-                        format: '%d',
-                        culling: false
+                        ],
+                        type : 'pie',
                     }
-                }
-            }
-        });
-        
-        var piechartFilial = [];
-        var optionsFilial = [];
-        var DataTableFilial = [];
-        var DataTableVendas = [];
-        var optionsVendas = [];
-        var vendasPorDia = [];    
+                });                   
+                var lineChart = c3.generate({
+                    bindto: "#lineChart",
+                    data: {
+                        x : 'date',
+                        columns: [
+                            ['date' 
+                                @foreach($datas as $data)
+                                <?php $data = Carbon\Carbon::parse($data);?>
+                                ,"{{ $data->toDateString() }}"
+                                @endforeach
+                            ]
+                            @foreach(array_values($colunas) as $coluna)
+                            <?php $v = $coluna[0]; array_shift($coluna)?>
+                            ,["{{$v}}", {{ implode(',', $coluna) }}]
+                            @endforeach
+                        ]
+                    },
+                    axis : {
+                        x : {
+                            type : 'timeseries',
+                            tick : {
+                                format: '%d',
+                                culling: false
+                            }
+                        }
+                    }
+                });
+                var pie = [];
             </script>            
         </div>
         @foreach($metasfiliais as $filial)
@@ -286,12 +263,8 @@
 @endif
 </div>
 @section('inscript')
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
 <link href="{{ URL::asset('public/vendor/c3/c3.css') }}" rel="stylesheet" type="text/css">
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="{{ URL::asset('public/vendor/c3/c3.min.js') }}"></script>
-
-
 @endsection
 @stop

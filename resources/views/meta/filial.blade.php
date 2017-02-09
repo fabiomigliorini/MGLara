@@ -122,7 +122,7 @@
             <h3 class="panel-title">Vendas por dia</h3>
           </div>
           <div class="panel-body">
-            <div id="{{ $filial['filial'] }}"></div>
+              <div id="{{ $filial['filial'] }}" style="width: 90%"></div>
           </div>
         </div>                
     </div>    
@@ -177,38 +177,30 @@
     //dd($coluna_xerox[0]);
 ?>
 <script type="text/javascript">
-    google.charts.load('current', {
-        'packages':['corechart'],
-        'language': 'pt_BR',
-    });
-    google.charts.setOnLoadCallback(drawChart);
-    
-    function drawChart() {
-        DataTableFilial[{{ $filial['codfilial'] }}] = [
-            ['Vendedores', 'Vendas'],
+   
+    pie[{{ $filial['codfilial'] }}] = c3.generate({
+        bindto: "#piechart{{ $filial['codfilial'] }}",
+        data: {
+            columns: [
             @foreach($vendedores as $vendedor)
             ["{{ $vendedor['pessoa'] }}", {{ $vendedor['valorvendas'] }}],
             @endforeach
             ['Xerox', {{ $xerox['valorvendas'] }}],
             ['Sem Vendedor', {{ $filial['valorvendas'] - array_sum(array_column($vendedores->toArray(), 'valorvendas')) -  $xerox['valorvendas'] }}]
-        ];
-
-        var data = google.visualization.arrayToDataTable(DataTableFilial[{{ $filial['codfilial'] }}]);
-        optionsFilial[{{ $filial['codfilial'] }}] = {
-            chartArea: {
-                left: 0,
-                width: "100%"
-            },
-            width:600,
-            height:500,
-        };
-
-        piechartFilial[{{ $filial['codfilial'] }}] = new google.visualization.PieChart(document.getElementById('piechart'+{{ $filial['codfilial'] }}));
-        piechartFilial[{{ $filial['codfilial'] }}].draw(data, optionsFilial[{{ $filial['codfilial'] }}]);
-    }
+            ],
+            type : 'pie',
+        },
+        legend: {
+            position: 'inset',
+        }        
+    });  
+                
    
     var {{ $filial['filial'] }} = c3.generate({
         bindto: "#{{ $filial['filial'] }}",
+        padding: {
+          left: 20
+        },        
         data: {
             x : 'date',
             columns: [
