@@ -148,9 +148,10 @@ class Meta extends MGModel
             select
               f.codfilial
             , f.filial
-            , (
-                select
-                    sum(coalesce(npb.valortotal, 0) * (case when n.codoperacao = 1 then -1 else 1 end) * (coalesce(n.valortotal, 0) / coalesce(n.valorprodutos, 0))) as valorvendas
+            , (SELECT to_json(array_agg(t)) FROM (
+                select 
+                    date_trunc('day', n.lancamento) as data,
+                    sum((case when n.codoperacao = 1 then -1 else 1 end) * coalesce(n.valortotal, 0)) as valorvendas
                 from tblnegocio n
                 inner join tblnegocioprodutobarra npb on (npb.codnegocio = n.codnegocio)
                 inner join tblprodutobarra pb on (pb.codprodutobarra = npb.codprodutobarra)
@@ -161,7 +162,9 @@ class Meta extends MGModel
                 and p.codsubgrupoproduto = 2951 -- Xerox -- TODO: Fazer modelagem para tirar o codigo fixo
                 and n.lancamento between m.periodoinicial and m.periodofinal
                 and n.codfilial = mf.codfilial
-            ) as valorvendas 
+                group by date_trunc('day', n.lancamento)
+                order by date_trunc('day', n.lancamento)
+                ) t) as valorvendaspordata
             , m.percentualcomissaoxerox
             , mfp.codpessoa
             , p.pessoa
@@ -171,7 +174,7 @@ class Meta extends MGModel
             left join tblmetafilialpessoa mfp on (mfp.codmetafilial = mf.codmetafilial and mfp.codcargo = 7) -- Subgerente -- TODO: Fazer modelagem
             left join tblpessoa p on (p.codpessoa = mfp.codpessoa)
             where m.codmeta = {$this->codmeta}
-            order by valorvendas desc
+            --order by valorvendas desc
         ";
         
         $filiais    = DB::select($sql_filiais);
@@ -216,7 +219,7 @@ class Meta extends MGModel
                 'metaatingida'              => ($vendedor->valorvendas >= $vendedor->valormetavendedor) ? true : false,
                 'primeirovendedor'          => $melhorvendedor,
                 'falta'                     => $falta,
-                'valorvendaspordata'        => json_decode($vendedor->valorvendaspordata),
+                'valorvendaspordata'        => json_decode($vendedor->valorvendaspordata, true),
             ];            
         }
         
@@ -235,12 +238,13 @@ class Meta extends MGModel
                 'pessoa'                    => $filial->pessoa,
                 'falta'                     => $falta,
                 'comissao'                  => $premio,
-                'valorvendaspordata'        => json_decode($filial->valorvendaspordata),
+                'valorvendaspordata'        => json_decode($filial->valorvendaspordata, true),
             ];
         }        
         
         $retorno_xerox = [];
         foreach ($xeroxs as $xerox){
+            $xerox->valorvendas = array_sum(array_column(json_decode($xerox->valorvendaspordata), 'valorvendas'));
             $retorno_xerox[] = [
                 "codfilial"             => $xerox->codfilial,
                 "filial"                => $xerox->filial,
@@ -249,13 +253,14 @@ class Meta extends MGModel
                 "codpessoa"             => $xerox->codpessoa,
                 "pessoa"                => $xerox->pessoa,
                 'comissao'              => ($xerox->valorvendas / 100 ) * $xerox->percentualcomissaoxerox,
+                'valorvendaspordata'        => json_decode($xerox->valorvendaspordata, true),
             ];
         }        
         
         $retorno = [
-            'filiais' => $retorno_filiais,
-            'vendedores' => $retorno_vendedores,
-            'xerox' => $retorno_xerox
+            'filiais'       => $retorno_filiais,
+            'vendedores'    => $retorno_vendedores,
+            'xerox'         => $retorno_xerox
         ];
         
         return $retorno;

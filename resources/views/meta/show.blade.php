@@ -34,29 +34,26 @@
     $if = 1;
     $iv = 1;
 
-    $periodoinicial = $model->periodoinicial->subDay();
-    $periodofinal = ($model->periodofinal <= Carbon\Carbon::today() ? $model->periodofinal : Carbon\Carbon::today());
-    $periodofinal->startOfDay();
+    use MGLara\Models\Feriado;
     
-    $dias = [];
-    while ($periodoinicial->lte($periodofinal)) {
-        $dia = substr($periodoinicial->addDay()->copy()->toW3cString(), 0, -6);
-        $dias[$dia] = [$dia];
+    $dias_uteis = Feriado::diasUteis($model->periodoinicial, ($model->periodofinal <= Carbon\Carbon::today() ? $model->periodofinal : Carbon\Carbon::today()), true);
+    $datas = [];
+    
+    foreach ($dias_uteis as $dia){
+        $datas[] = $dia->toW3cString();        
     }
-    //dd($dias);
     
+    $colunas = [];
     foreach($filiais as $filial) {
+        $colunas[$filial['filial']] = [$filial['filial']];
+        
         foreach($filial['valorvendaspordata'] as $vendas) {
-            array_push($dias[$vendas->data], $vendas->valorvendas);
-        }
-
-        $valorvendaspordata = collect($filial['valorvendaspordata']);
-        foreach ($dias as $dia) {
-           if(!$valorvendaspordata->contains('data', $dia[0])){
-               array_push($dias[$dia[0]], 0);
-           }
+            
+            array_push($colunas[$filial['filial']], $vendas['valorvendas']);
         }
     }
+    
+    //dd($colunas);
 ?>
 <ul class="nav nav-pills">
     @foreach($anteriores as $meta)
@@ -185,18 +182,35 @@
                 </div>
             </div>
             <div class="col-sm-6"></div>
-            <div class="col-sm-8">
-                <h3>Gráfico</h3>
-                <div id="piechartGeral"></div>
-                <div id="lineChartGeral"></div>
+            <div class="row">
+                <div class="col-sm-8">
+                    <h3>Gráficos</h3>
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">Divisão</h3>
+                      </div>
+                      <div class="panel-body">    
+                          <div id="piechartGeral" style="height: 400px; width: 100%"></div>
+                      </div>
+                    </div>      
+                </div>
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">Vendas por dia</h3>
+                      </div>
+                      <div class="panel-body">
+                        <div id="lineChart"></div>
+                      </div>
+                    </div>                
+                </div>    
             </div>
             <script type="text/javascript">
                 google.charts.load('current', {
-                    'packages':['corechart', 'line'],
+                    'packages':['corechart'],
                     'language': 'pt_BR'
                 });
                 google.charts.setOnLoadCallback(drawChart);
-                google.charts.setOnLoadCallback(drawChartLine);
                 
                 var DataTable = [
                     ['Lojas', 'Vendas'],
@@ -207,49 +221,53 @@
                 function drawChart() {
                     var data = google.visualization.arrayToDataTable(DataTable);
                     var options = {
-                        title: 'Divisão',
-                        //'width':100%,
-                        'height':500,
+                        height:380,
+                        width:'100%',
+                        chartArea:{
+                            left:30,
+                            top:25,
+                            height:350,
+                        }
                     };
                     var chartGeral = new google.visualization.PieChart(document.getElementById('piechartGeral'));
                     chartGeral.draw(data, options);
                 }
 
-                function drawChartLine() {
-                    var lineChartData = new google.visualization.DataTable();
-                    lineChartData.addColumn('date', 'Dia');
-                    @foreach($filiais as $filial)
-                    lineChartData.addColumn('number', "{{ $filial['filial'] }}");
+                   
+        var lineChart = c3.generate({
+            bindto: "#lineChart",
+            data: {
+                x : 'date',
+                columns: [
+                    ['date' 
+                        @foreach($datas as $data)
+                        <?php $data = Carbon\Carbon::parse($data);?>
+                        ,"{{ $data->toDateString() }}"
+                        @endforeach
+                    ]
+                    @foreach(array_values($colunas) as $coluna)
+                    <?php $v = $coluna[0]; array_shift($coluna)?>
+                    ,["{{$v}}", {{ implode(',', $coluna) }}]
                     @endforeach
-                    lineChartData.addRows([
-                    @foreach(array_values($dias) as $dia)
-                    <?php $data = $dia[0]; array_shift($dia);?>
-                    @if(array_sum($dia) > 0)
-            [new Date("{{ $data }}"), {{ implode(',', $dia) }}],
-                    @endif
-                    @endforeach
-                    ]);
-
-                    var optionsLine = {
-                        title: 'Vendas por dia',
-                        'width': 900,
-                        'height': 500,
-                        hAxis: {
-                            format: 'd',
-                        },            
-                    };
-
-                    var lineChart = new google.visualization.LineChart(document.getElementById('lineChartGeral'));
-                    lineChart.draw(lineChartData, optionsLine);          
-
-                }                 
-                
-                var piechartFilial = [];
-                var optionsFilial = [];
-                var DataTableFilial = [];
-                var DataTableVendas = [];
-                var optionsVendas = [];
-                var vendasPorDia = [];
+                ]
+            },
+            axis : {
+                x : {
+                    type : 'timeseries',
+                    tick : {
+                        format: '%d',
+                        culling: false
+                    }
+                }
+            }
+        });
+        
+        var piechartFilial = [];
+        var optionsFilial = [];
+        var DataTableFilial = [];
+        var DataTableVendas = [];
+        var optionsVendas = [];
+        var vendasPorDia = [];    
             </script>            
         </div>
         @foreach($metasfiliais as $filial)
@@ -269,5 +287,11 @@
 </div>
 @section('inscript')
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<link href="{{ URL::asset('public/vendor/c3/c3.css') }}" rel="stylesheet" type="text/css">
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="{{ URL::asset('public/vendor/c3/c3.min.js') }}"></script>
+
+
 @endsection
 @stop

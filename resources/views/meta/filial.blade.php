@@ -104,44 +104,84 @@
     </div>
 </div>
 <div class="col-sm-6"></div>
-<div class="col-sm-8">
-    <h3>Gráfico</h3>
-    <div id="piechart{{ $filial['codfilial'] }}"></div>
-    
+<div class="row">
+    <div class="col-sm-8">
+        <h3>Gráficos</h3>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Divisão</h3>
+          </div>
+          <div class="panel-body">    
+            <div id="piechart{{ $filial['codfilial'] }}"></div>
+          </div>
+        </div>      
+    </div>  
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Vendas por dia</h3>
+          </div>
+          <div class="panel-body">
+            <div id="{{ $filial['filial'] }}"></div>
+          </div>
+        </div>                
+    </div>    
 </div>
-<div class="col-sm-12"><div id="vendas{{ $filial['codfilial'] }}"></div></div>
 <?php
-    $periodoinicial = $model->periodoinicial->subDay();
-    $periodofinal = ($model->periodofinal <= Carbon\Carbon::today() ? $model->periodofinal : Carbon\Carbon::today());
-    $periodofinal->startOfDay();
+    use MGLara\Models\Feriado;
     
+    $dias_uteis = Feriado::diasUteis($model->periodoinicial, ($model->periodofinal <= Carbon\Carbon::today() ? $model->periodofinal : Carbon\Carbon::today()), true);
+    $numeroDiasUteis = Feriado::numeroDiasUteis($model->periodoinicial, $model->periodofinal, true);
+    $meta_dia = $filial['valormetavendedor'] / $numeroDiasUteis;
+    $datas = [];
     $dias = [];
-    while ($periodoinicial->lte($periodofinal)) {
-        $dia = substr($periodoinicial->addDay()->copy()->toW3cString(), 0, -6);
+    
+    foreach ($dias_uteis as $dia){
+        $datas[] = $dia->toW3cString(); 
+        $dia = substr($dia->toW3cString(), 0, -6);
         $dias[$dia] = [$dia];
-    }  
+    }
+    
+    $colunas = [];
+    $coluna_xerox = [];
     
     foreach($vendedores as $vendedor) {
-        foreach($vendedor['valorvendaspordata'] as $vendas) {
-            array_push($dias[$vendas->data], $vendas->valorvendas);
-        }
+        $colunas[$vendedor['pessoa']] = [$vendedor['pessoa']];
+        $coluna_xerox[0] = [$xerox['pessoa']];
+        
+        $vendedor_collect = collect($vendedor['valorvendaspordata']);
+        $xerox_collect = collect($xerox['valorvendaspordata']);
+        
+        foreach ($dias as $dia) {
+            if(!$vendedor_collect->contains('data', $dia[0])){
+                array_push($vendedor['valorvendaspordata'], ['data' => $dia[0], 'valorvendas' => 0]);
+            }
+
+            if(!$xerox_collect->contains('data', $dia[0])){
+                array_push($xerox['valorvendaspordata'], ['data' => $dia[0], 'valorvendas' => 0]);
+            }
+        }        
 
         $valorvendaspordata = collect($vendedor['valorvendaspordata']);
-        foreach ($dias as $dia) {
-           if(!$valorvendaspordata->contains('data', $dia[0])){
-               array_push($dias[$dia[0]], 0);
-           }
+        $valorvendaspordataxerox = collect($xerox['valorvendaspordata']);
+        
+        foreach ($valorvendaspordata->sortBy('data') as $venda) {
+            array_push($colunas[$vendedor['pessoa']], $venda['valorvendas']);
         }
+        
+        foreach ($valorvendaspordataxerox->sortBy('data') as $venda) {
+            array_push($coluna_xerox[0], $venda['valorvendas']);
+        }
+
     }
+    //dd($coluna_xerox[0]);
 ?>
 <script type="text/javascript">
     google.charts.load('current', {
-        'packages':['corechart', 'line'],
+        'packages':['corechart'],
         'language': 'pt_BR',
     });
-
     google.charts.setOnLoadCallback(drawChart);
-    google.charts.setOnLoadCallback(drawChartLine);
     
     function drawChart() {
         DataTableFilial[{{ $filial['codfilial'] }}] = [
@@ -155,44 +195,54 @@
 
         var data = google.visualization.arrayToDataTable(DataTableFilial[{{ $filial['codfilial'] }}]);
         optionsFilial[{{ $filial['codfilial'] }}] = {
-            title: 'Divisão',
-            'width':900,
-            'height':500,
+            chartArea: {
+                left: 0,
+                width: "100%"
+            },
+            width:600,
+            height:500,
         };
 
         piechartFilial[{{ $filial['codfilial'] }}] = new google.visualization.PieChart(document.getElementById('piechart'+{{ $filial['codfilial'] }}));
         piechartFilial[{{ $filial['codfilial'] }}].draw(data, optionsFilial[{{ $filial['codfilial'] }}]);
     }
-
-    function drawChartLine() {
-        DataTableVendas[{{ $filial['codfilial'] }}] = new google.visualization.DataTable();
-        DataTableVendas[{{ $filial['codfilial'] }}].addColumn('date', 'Dia');
-        @foreach($vendedores as $vendedor)
-        DataTableVendas[{{ $filial['codfilial'] }}].addColumn('number', "{{ $vendedor['pessoa'] }}");
-        @endforeach
-
-        DataTableVendas[{{ $filial['codfilial'] }}].addRows([
-        @foreach(array_values($dias) as $dia)
-        <?php $data = $dia[0]; array_shift($dia);?>
-        @if(array_sum($dia) > 0)
-        [new Date("{{ $data }}"), {{ implode(',', $dia) }}],
-        @endif
-        @endforeach
-        ////[new Date(), 1,2,3,4,5,6,7,8,9]
-        ]);
-
-        optionsVendas[{{ $filial['codfilial'] }}] = {
-            title: 'Vendas por dia',
-            'width': 1000,
-            'height': 500,
-            hAxis: {
-                format: 'd',
-            },            
-        };
-
-        vendasPorDia[{{ $filial['codfilial'] }}] = new google.visualization.LineChart(document.getElementById('vendas'+{{ $filial['codfilial'] }}));
-        vendasPorDia[{{ $filial['codfilial'] }}].draw(DataTableVendas[{{ $filial['codfilial'] }}], optionsVendas[{{ $filial['codfilial'] }}]);          
-
-    }  
    
+    var {{ $filial['filial'] }} = c3.generate({
+        bindto: "#{{ $filial['filial'] }}",
+        data: {
+            x : 'date',
+            columns: [
+                ['date' 
+                    @foreach($datas as $data)
+                    <?php $data = Carbon\Carbon::parse($data);?>
+                    ,"{{ $data->toDateString() }}"
+                    @endforeach
+                ]
+                @foreach(array_values($colunas) as $coluna)
+                <?php $v = $coluna[0]; array_shift($coluna)?>
+                ,["{{$v}}", {{ implode(',', $coluna) }}]
+                @endforeach
+                <?php array_shift($coluna_xerox[0])?>
+                ,["Xerox", {{ implode(',', $coluna_xerox[0]) }}]
+            ]
+        },
+        axis : {
+            x : {
+                type : 'timeseries',
+                tick : {
+                    format: '%d',
+                    culling: false,
+                }
+            }
+        },
+        grid: {
+            y: {
+                lines: [{ value: {{ $meta_dia }}, text:'Meta dia' }]
+            }
+        },
+        legend: {
+            position: 'right'
+        }
+    });  
+    
 </script>
