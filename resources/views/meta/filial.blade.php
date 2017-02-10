@@ -166,11 +166,13 @@
         $valorvendaspordataxerox = collect($xerox['valorvendaspordata']);
         
         foreach ($valorvendaspordata->sortBy('data') as $venda) {
-            array_push($colunas[$vendedor['pessoa']], $venda['valorvendas']);
+            $valorvendas = explode('.', $venda['valorvendas']);
+            array_push($colunas[$vendedor['pessoa']], $valorvendas[0]);
         }
         
         foreach ($valorvendaspordataxerox->sortBy('data') as $venda) {
-            array_push($coluna_xerox[0], $venda['valorvendas']);
+            $valorvendas = explode('.', $venda['valorvendas']);
+            array_push($coluna_xerox[0], $valorvendas[0]);
         }
 
     }
@@ -191,7 +193,7 @@
             type : 'pie',
         },
         legend: {
-            position: 'inset',
+            position: 'inset',           
         }        
     });  
                 
