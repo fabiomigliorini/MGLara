@@ -264,7 +264,7 @@
 </div>
 @section('inscript')
 <link href="{{ URL::asset('public/vendor/c3/c3.css') }}" rel="stylesheet" type="text/css">
-<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="{{ URL::asset('public/vendor/c3/d3/d3.v3.min.js') }}" charset="utf-8"></script>
 <script src="{{ URL::asset('public/vendor/c3/c3.min.js') }}"></script>
 @endsection
 @stop
