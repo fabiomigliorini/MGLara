@@ -33,6 +33,27 @@
     $metasfiliais = $model->MetaFilialS()->get();
     $if = 1;
     $iv = 1;
+
+    use MGLara\Models\Feriado;
+    
+    $dias_uteis = Feriado::diasUteis($model->periodoinicial, ($model->periodofinal <= Carbon\Carbon::today() ? $model->periodofinal : Carbon\Carbon::today()), true);
+    $datas = [];
+    
+    foreach ($dias_uteis as $dia){
+        $datas[] = $dia->toW3cString();        
+    }
+    
+    $colunas = [];
+    foreach($filiais as $filial) {
+        $colunas[$filial['filial']] = [$filial['filial']];
+        
+        foreach($filial['valorvendaspordata'] as $vendas) {
+            
+            array_push($colunas[$filial['filial']], $vendas['valorvendas']);
+        }
+    }
+    
+    //dd($colunas);
 ?>
 <ul class="nav nav-pills">
     @foreach($anteriores as $meta)
@@ -109,7 +130,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($vendedores as $vendedor)
+                        @foreach($vendedores->sortByDesc('valorvendas') as $vendedor)
                         <tr>
                             <td scope="row">{{ $vendedor['filial'] }}</td>
                             <td>
@@ -161,35 +182,69 @@
                 </div>
             </div>
             <div class="col-sm-6"></div>
-            <div class="col-sm-8">
-                <h3>Gráfico</h3>
-                <div id="piechartGeral"></div>
+            <div class="row">
+                <div class="col-sm-8">
+                    <h3>Gráficos</h3>
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">Divisão</h3>
+                      </div>
+                      <div class="panel-body">    
+                          <div id="pieChart" style="height: 400px; width: 100%"></div>
+                      </div>
+                    </div>      
+                </div>
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">Vendas por dia</h3>
+                      </div>
+                      <div class="panel-body">
+                        <div id="lineChart"></div>
+                      </div>
+                    </div>                
+                </div>    
             </div>
             <script type="text/javascript">
-                google.charts.load('current', {
-                    'packages':['corechart'],
-                    'language': 'pt_BR'
+                var chart = c3.generate({
+                    bindto: "#pieChart",
+                    data: {
+                        columns: [
+                        @foreach($filiais as $filial)
+                        ["{{ $filial['filial'] }}", {{ $filial['valorvendas'] }}],
+                        @endforeach
+                        ],
+                        type : 'pie',
+                    }
+                });                   
+                var lineChart = c3.generate({
+                    bindto: "#lineChart",
+                    data: {
+                        x : 'date',
+                        columns: [
+                            ['date' 
+                                @foreach($datas as $data)
+                                <?php $data = Carbon\Carbon::parse($data);?>
+                                ,"{{ $data->toDateString() }}"
+                                @endforeach
+                            ]
+                            @foreach(array_values($colunas) as $coluna)
+                            <?php $v = $coluna[0]; array_shift($coluna)?>
+                            ,["{{$v}}", {{ implode(',', $coluna) }}]
+                            @endforeach
+                        ]
+                    },
+                    axis : {
+                        x : {
+                            type : 'timeseries',
+                            tick : {
+                                format: '%d',
+                                culling: false
+                            }
+                        }
+                    }
                 });
-                google.charts.setOnLoadCallback(drawChart);
-                var DataTable = [
-                    ['Lojas', 'Vendas'],
-                    @foreach($filiais as $filial)
-                    ["{{ $filial['filial'] }}", {{ $filial['valorvendas'] }}],
-                    @endforeach
-                ];
-                function drawChart() {
-                    var data = google.visualization.arrayToDataTable(DataTable);
-                    var options = {
-                        title: 'Divisão',
-                        //'width':100%,
-                        'height':500,
-                    };
-                    var chartGeral = new google.visualization.PieChart(document.getElementById('piechartGeral'));
-                    chartGeral.draw(data, options);
-                }
-                var piechartFilial = [];
-                var optionsFilial = [];
-                var DataTableFilial = [];
+                var pie = [];
             </script>            
         </div>
         @foreach($metasfiliais as $filial)
@@ -198,8 +253,7 @@
                 'vendedores'    => $vendedores->where('codfilial', $filial['codfilial']),
                 'filiais'       => $filiais->where('codfilial', $filial['codfilial']),
                 'xeroxs'        => $xeroxs->where('codfilial', $filial['codfilial']),
-                'if'            => 1,
-                'iv'            => 1
+                'i'            => 1
             ])
         </div>
         @endforeach
@@ -209,6 +263,8 @@
 @endif
 </div>
 @section('inscript')
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<link href="{{ URL::asset('public/vendor/c3/c3.css') }}" rel="stylesheet" type="text/css">
+<script src="{{ URL::asset('public/vendor/c3/d3/d3.v3.min.js') }}" charset="utf-8"></script>
+<script src="{{ URL::asset('public/vendor/c3/c3.min.js') }}"></script>
 @endsection
 @stop
