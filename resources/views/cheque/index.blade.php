@@ -89,7 +89,7 @@
     @foreach($model as $i => $row)
         <div class="list-group-item">
             <div class="row item">
-                <div class="col-md-1 small text-muted">
+                <div class="col-md-1 text-muted">
                     <a href="{{ url('cheque', $row->codcheque) }}">{{ formataCodigo($row->codcheque) }}</a>
                 </div>
                 <div class="col-md-1 text-muted">
@@ -147,10 +147,10 @@
 function atualizaFiltro()
 {
     scroll();
-    var frmValues = $('#cheque-motivo-devolucao-search').serialize();
+    var frmValues = $('#cheque-search').serialize();
     $.ajax({
         type: 'GET',
-        url: baseUrl + '/cheque-motivo-devolucao',
+        url: baseUrl + '/cheque',
         data: frmValues,
         dataType: 'html'
     })
@@ -188,16 +188,110 @@ function scroll()
 }
 
 $(document).ready(function() {
+
+    //
     scroll();
-    $("#cheque-motivo-devolucao-search").on("change", function (event) {
-        $('#items').infinitescroll('destroy');
+
+    $('#cheque-search input').blur(function(e) {
+        var controlgroup = $(e.target.parentNode);
+        if (!e.target.checkValidity()) {
+            controlgroup.addClass('has-error');
+            e.target.reportValidity();
+        } else {
+            controlgroup.removeClass('has-error');
+        }
+    });
+
+    $("#cheque-search").on("change", function (event) {
+
+       if($('#cheque-search')[0].checkValidity()){
+            $("#cheque-search").submit();
+        }
+        return false;
         atualizaFiltro();
+
     }).on('submit', function (event){
         event.preventDefault();
         $('#items').infinitescroll('destroy');
         atualizaFiltro();
     });
+
+    //----- Valor
+    var valor_de = $('#valor_de').val();
+    if(valor_de.length > 0 ){
+        $('#valor_ate').attr('min', preco_de);
+    }
+
+    var valor_ate = $('#valor_ate').val();
+    if(valor_de.length > 0 ){
+        $('#valor_de').attr('min', valor_ate);
+    }
+
+    $('#valor_de').on('change', function(e) {
+        e.preventDefault();
+        setValorMin();
+    }).blur(function () {
+        setPrecoMin();
+    });
+
+    $('#valor_ate').on('change', function(e) {
+        e.preventDefault();
+        setValorMax();
+    }).blur(function () {
+        setValorMax();
+    });
+
+    //----- Data
+
+    var vencimento_de = $('#vencimento_de').val();
+    if(vencimento_de.length > 0 ){
+        $('#vencimento_ate').attr('min', vencimento_de);
+    }
+    $('#vencimento_de').on('change', function(e) {
+        e.preventDefault();
+        var valor = $(this).val();
+        if(valor.length === 0 ) {
+            $('#vencimento_ate').empty();
+            $('#vencimento_ate').attr('min', '');
+        } else {
+            $('#vencimento_ate').attr('min', valor);
+        }
+
+    });
+
+    var vencimento_ate = $('#vencimento_ate').val();
+    if(vencimento_ate.length > 0){
+        $('#vencimento_de').attr('max', vencimento_ate);
+    }
+    $('#vencimento_ate').on('change', function(e) {
+        e.preventDefault();
+        var valor = $(this).val();
+        if(valor.length === 0 ) {
+            $('#vencimento_de').empty();
+            $('#vencimento_de').attr('max', '');
+        } else {
+            $('#vencimento_de').attr('max', valor);
+        }
+    });
 });
+
+function setValorMin() {
+    var valor = $('#valor_de').val();
+    if(valor.length === 0 ) {
+        $('#valor_ate').empty();
+        $('#valor_ate').attr('min', '');
+    } else {
+        $('#valor_ate').attr('min', valor);
+    }
+};
+
+function setValorMax() {
+    var valor_de = $('#valor_de').val();
+    var preco_ate = $('#valor_ate').val();
+    if(valor_de.length === 0 ) {
+        $('#valor_de').attr('max', preco_ate);
+    }
+};
 </script>
 @endsection
 

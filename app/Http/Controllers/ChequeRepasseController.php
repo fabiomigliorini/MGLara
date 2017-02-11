@@ -122,6 +122,8 @@ class ChequeRepasseController extends Controller {
     public function consulta(Request $request) {
 
         $parametros = $request->all();
+        $indstatus_descricao = ['' => ''] + Cheque::$indstatus_descricao;
+        $indstatus_class = Cheque::$indstatus_class;
 
         $query = Cheque::query();
         $pass=0;
@@ -135,11 +137,37 @@ class ChequeRepasseController extends Controller {
         }
 
         if($pass==1){
-            $cheques = $query->orderBy('criacao', 'desc')->get();
+            $cheques = $query->orderBy('vencimento', 'asc')->get();
+
+            $ret = [];
+            foreach($cheques as $cheque){
+
+                $status = "<span class='label ".$indstatus_class[$cheque->indstatus]."'>".$indstatus_descricao[$cheque->indstatus]."</span>";
+                $emitentes = null;
+                foreach($cheque->ChequeEmitenteS as $emit){
+                    $emitentes .= $emit->emitente.'<br>';
+                }
+
+                $ret[] = [
+                   'linkcheque' => url('cheque', $cheque->codcheque),
+                   'codcheque' => $cheque->codcheque,
+                   'agencia' => $cheque->agencia,
+                   'contacorrente' => $cheque->contacorrente,
+                   'numero' => formataNumero($cheque->numero, 0),
+                   'banco' => $cheque->Banco->banco,
+                   'pessoa' => $cheque->Pessoa->pessoa,
+                   'linkpessoa' => url('pessoa', $cheque->codpessoa),
+                   'emitentes' => $emitentes,
+                   'valor' => formataNumero($cheque->valor),
+                   'emissao' => formataData($cheque->emissao),
+                   'vencimento' => formataData($cheque->vencimento),
+                   'status' => $status,
+                ];
+            }
 
             return [
                 'status' => true,
-                'cheques' => $cheques
+                'cheques' => $ret
             ];
 
         }else{
