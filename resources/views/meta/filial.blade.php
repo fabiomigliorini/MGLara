@@ -52,7 +52,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($vendedores as $vendedor)
+            @foreach($vendedores->sortByDesc('valorvendas') as $vendedor)
             <tr>
                 <td scope="row">{{ $vendedor['filial'] }}</td>
                 <td>
