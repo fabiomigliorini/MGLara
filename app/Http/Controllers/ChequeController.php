@@ -92,7 +92,11 @@ class ChequeController extends Controller {
     public function show($id) {
 
         $model = Cheque::findOrFail($id);
-        return view('cheque.show', compact('model'));
+
+        $indstatus_descricao = ['' => ''] + Cheque::$indstatus_descricao;
+        $indstatus_class = Cheque::$indstatus_class;
+
+        return view('cheque.show', compact('model', 'indstatus_descricao', 'indstatus_class'));
 
     }
 

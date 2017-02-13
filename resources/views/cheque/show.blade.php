@@ -14,12 +14,12 @@
     <li class='active'>
         <small>
             <a title="Novo" href="{{ url('cheque/create') }}"><span class="glyphicon glyphicon-plus"></span></a>
+            @if (!empty($model->indstatus<>2 and $model->indstatus<>5))
             &nbsp;
             <a title="Alterar" href="{{ url("cheque/$model->codcheque/edit") }}"><span class="glyphicon glyphicon-pencil"></span></a>
-
             &nbsp;
             <a title='Excluir' href="{{ url("cheque/$model->codcheque") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o cheque '{{ $model->modelo }}'?" data-after-delete="location.replace(baseUrl + '/cheque');"><i class="glyphicon glyphicon-trash"></i></a>
-
+            @endif
         </small>
     </li>
 </ol>
@@ -141,6 +141,32 @@
                     </div>
                     <div class='col-md-8'>
                       {{ $model->numero }}
+                    </div>
+                </div>
+              </li>
+              <li class='list-group-item'>
+                <div class='row'>
+                    <div class='col-md-3'>
+                        Status
+                    </div>
+                    <div class='col-md-8'>
+                        <span class='label {{ $indstatus_class[$model->indstatus] }}'>
+                         {{ $indstatus_descricao[$model->indstatus] }}
+                         </span>
+                    </div>
+                </div>
+              </li>
+              <li class='list-group-item'>
+                <div class='row'>
+                    <div class='col-md-3'>
+                        Observação
+                    </div>
+                    <div class='col-md-8'>
+                    @if (!empty($model->observacao))
+                        {{ $model->observacao }}
+                    @else
+                        Não há observações cadastradas.
+                    @endif
                     </div>
                 </div>
               </li>

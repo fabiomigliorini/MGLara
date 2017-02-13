@@ -103,7 +103,6 @@ $(document).ready(function() {
                         if(retorno.ultimo.codpessoa != null){
                             $('#codpessoa').val(retorno.ultimo.codpessoa).change();
                         }
-                        console.log(retorno.ultimo.emitentes);
                         var n  = null;
                         $.each(retorno.ultimo.emitentes, function( i, val ) {
                             CarregaCampos('',val.cnpj,val.emitente);

@@ -1,20 +1,25 @@
 <div class="panel panel-default">
     <div class='panel-body'>
+
         <div class='row'>
             <div class="form-group col-md-2">
                 {!! Form::label('vencimento_de', 'De', ['control-label']) !!}
-                {!! Form::date('vencimento_de', null, ['class'=> 'form-control text-right', 'id'=>'vencimento_de']) !!}
+                {!! Form::date('vencimento_de', '2017-01-01', ['class'=> 'form-control text-right', 'id'=>'vencimento_de']) !!}
             </div>
             <div class="form-group col-md-2">
                 {!! Form::label('vencimento_ate', 'Até', ['control-label']) !!}
-                {!! Form::date('vencimento_ate', null, ['class'=> 'form-control text-right', 'id'=>'vencimento_ate']) !!}
+                {!! Form::date('vencimento_ate', '2017-01-31', ['class'=> 'form-control text-right', 'id'=>'vencimento_ate']) !!}
             </div>
             <div class="form-group col-md-2">
                 <label class="col-md-12">&nbsp;</label>
                 <button type="button" id="pesquisar" class="btn btn-primary"><i class="glyphicon glyphicon-filter"></i> Filtrar</button>
             </div>
         </div>
+
     </div>
+</div>
+<div class="list-group list-group-striped list-group-hover" id="items">
+
 </div>
 @section('inscript')
 <script type="text/javascript">
@@ -24,7 +29,6 @@ $(document).ready(function() {
     $('#chequemotivodevolucao').Setcase();
 
 
-    //------- BTN
     $("#pesquisar").click(function() {
         var vencimento_de = $("#vencimento_de").val();
         var vencimento_ate = $("#vencimento_ate").val();
@@ -43,8 +47,27 @@ $(document).ready(function() {
             data: {'vencimento_de':vencimento_de,'vencimento_ate':vencimento_ate},
             success: function(retorno) {
 
-                if(retorno.valido){
+                if(retorno.status){
+                    var html = '';
+                    //---- Exibe informação
+                    $.each(retorno.cheques, function( i, val ) {
 
+                        html = html + '<div class="list-group-item">';
+                            html = html + '<div class="row item">';
+                                html = html + '<div class="col-md-1 text-muted"><input type="checkbox"></div>';
+                                html = html + '<div class="col-md-1 text-right"><b>'+val.valor+'</b></div>';
+                                html = html + '<div class="col-md-1 text-center"><b>'+val.vencimento+'</b></div>';
+                                html = html + '<div class="col-md-5"><a href="'+val.linkpessoa+'"><b>'+val.pessoa+'</b><br></a><span class="text-muted">'+val.emitentes+'</span></div>';
+
+                                html = html + '<div class="col-md-1 text-muted">'+val.banco+'<br>'+val.agencia+'</div>';
+                                html = html + '<div class="col-md-1 text-right text-muted">'+val.contacorrente+'<br>'+val.numero+'</div>';
+                                html = html + '<div class="col-md-1 text-muted text-center">'+val.emissao+'</div>';
+                                html = html + '<div class="col-md-1 text-muted"><a href="'+val.linkcheque+'">'+val.codcheque+'</a></div>';
+                            html = html + '</div>';
+                        html = html + '</div>';
+
+                    });
+                    $("#items").html(html);
                 }
             },
             error: function (XHR, textStatus) {
@@ -67,5 +90,6 @@ $(document).ready(function() {
     });
 
 });
+
 </script>
 @endsection
