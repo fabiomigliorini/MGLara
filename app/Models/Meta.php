@@ -178,8 +178,6 @@ class Meta extends MGModel
             --order by valorvendas desc
         ";
         
-        dd($sql_xerox);
-        
         $filiais    = DB::select($sql_filiais);
         $vendedores = DB::select($sql_vendedores);
         $xeroxs     = DB::select($sql_xerox);
