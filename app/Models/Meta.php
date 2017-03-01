@@ -151,7 +151,8 @@ class Meta extends MGModel
             , (SELECT to_json(array_agg(t)) FROM (
                 select 
                     date_trunc('day', n.lancamento) as data,
-                    sum((case when n.codoperacao = 1 then -1 else 1 end) * coalesce(n.valortotal, 0)) as valorvendas
+                    --sum((case when n.codoperacao = 1 then -1 else 1 end) * coalesce(n.valortotal, 0)) as valorvendas
+                    sum(coalesce(npb.valortotal, 0) * (case when n.codoperacao = 1 then -1 else 1 end) * (coalesce(n.valortotal, 0) / coalesce(n.valorprodutos, 0))) as valorvendas
                 from tblnegocio n
                 inner join tblnegocioprodutobarra npb on (npb.codnegocio = n.codnegocio)
                 inner join tblprodutobarra pb on (pb.codprodutobarra = npb.codprodutobarra)
@@ -176,6 +177,8 @@ class Meta extends MGModel
             where m.codmeta = {$this->codmeta}
             --order by valorvendas desc
         ";
+        
+        dd($sql_xerox);
         
         $filiais    = DB::select($sql_filiais);
         $vendedores = DB::select($sql_vendedores);
