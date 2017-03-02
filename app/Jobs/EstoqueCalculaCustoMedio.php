@@ -57,8 +57,8 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         // recalcula valor movimentacao com base no registro de origem
         $sql = "
             update tblestoquemovimento
-            set entradavalor = orig.saidavalor
-                , saidavalor = orig.entradavalor
+            set entradavalor = orig.saidavalor / orig.saidaquantidade * tblestoquemovimento.entradaquantidade
+                , saidavalor = orig.entradavalor / orig.entradaquantidade * tblestoquemovimento.saidaquantidade
             from tblestoquemovimento orig
             where tblestoquemovimento.codestoquemovimentoorigem = orig.codestoquemovimento
             and tblestoquemovimento.codestoquemes = {$mes->codestoquemes}

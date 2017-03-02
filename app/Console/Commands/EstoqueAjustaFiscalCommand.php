@@ -131,7 +131,7 @@ class EstoqueAjustaFiscalCommand extends Command
         $this->dispatch((new EstoqueCalculaCustoMedio($mes_destino->codestoquemes))->onQueue('urgent'));
 
         // aguarda dois segundos para rodar recalculo dos custos medios
-        sleep(2);
+        sleep(3);
     }
 
     public function geraNotasFiscaisTransferencia()
@@ -159,7 +159,7 @@ class EstoqueAjustaFiscalCommand extends Command
             inner join tblfilial f on (f.codfilial = el.codfilial)
             inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = true)
             where elpv.codestoquelocal = $codestoquelocal
-            and coalesce(es.saldoquantidade, 0) < 0
+            and coalesce(es.saldoquantidade, 0) <= -1
             order by p.codproduto, saldoquantidade
         ";
 
@@ -184,7 +184,7 @@ class EstoqueAjustaFiscalCommand extends Command
                 inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = true)
                 where pv.codprodutovariacao = {$negativo->codprodutovariacao}
                 and es.codestoquelocalprodutovariacao != {$negativo->codestoquelocalprodutovariacao}
-                and es.saldoquantidade > 0
+                and es.saldoquantidade >= 1
                 order by elpv.codestoquelocal, es.saldoquantidade DESC, pv.variacao ASC NULLS FIRST
             ";
 
@@ -212,7 +212,7 @@ class EstoqueAjustaFiscalCommand extends Command
                     inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = true)
                     where pv.codproduto = {$negativo->codproduto}
                     and es.codestoquelocalprodutovariacao != {$negativo->codestoquelocalprodutovariacao}
-                    and es.saldoquantidade > 0
+                    and es.saldoquantidade >= 1
                     order by elpv.codestoquelocal, es.saldoquantidade DESC, pv.variacao ASC NULLS FIRST
                 ";
 
@@ -222,7 +222,7 @@ class EstoqueAjustaFiscalCommand extends Command
 
             // Percorre alternativas
             $i=0;
-            while ($saldo > 0 && ($i <= (sizeof($alternativas) -1))) {
+            while ($saldo >= 1 && ($i <= (sizeof($alternativas) -1))) {
 
                 // faz um cache do saldo, controlando quanto ja foi utilizado
                 if (!isset($cache_saldos[$alternativas[$i]->codestoquesaldo])) {
@@ -233,7 +233,7 @@ class EstoqueAjustaFiscalCommand extends Command
                 $quantidade = min([$saldo, $cache_saldos[$alternativas[$i]->codestoquesaldo]]);
 
                 // se tinha algo disponivel
-                if ($quantidade > 0) {
+                if ($quantidade >= 1) {
 
                     // se a nota ja tiver mais de 500 itens, não deixa utilizar mais ela
                     if (isset($nfs[$alternativas[$i]->codestoquelocal])) {
@@ -263,6 +263,7 @@ class EstoqueAjustaFiscalCommand extends Command
                     // pega o produto barra
                     if (!$pb = ProdutoBarra::where('codprodutovariacao', '=', $alternativas[$i]->codprodutovariacao)->whereNull('codprodutoembalagem')->first()) {
                         if (!$pb = ProdutoBarra::where('codprodutovariacao', '=', $alternativas[$i]->codprodutovariacao)->first()) {
+                            die('Sem Produto Barra');
                             continue;
                         }
                     }
