@@ -107,8 +107,7 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         
         if (empty($customedio) && isset($anterior[0])) {
             $customedio = $anterior[0]->customedio;
-        }
-            Log::info('Custo Medio', ['codestoquemes' => $this->codestoquemes, 'Custo' => $customedio]);
+	}
 
         if ($customedio > 100000) {
             return;
