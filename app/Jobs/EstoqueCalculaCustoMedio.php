@@ -70,8 +70,10 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         //busca totais de registros nao baseados no custo medio
         $sql = "
             select 
-                sum(entradaquantidade) entradaquantidade
-                , sum(entradavalor) entradavalor
+                sum(entradaquantidade) as entradaquantidade
+                , sum(entradavalor) as entradavalor
+                , sum(saidaquantidade) as saidaquantidade
+                , sum(saidavalor) as saidavalor
             from tblestoquemovimento mov
             left join tblestoquemovimentotipo tipo on (tipo.codestoquemovimentotipo = mov.codestoquemovimentotipo)
             where mov.codestoquemes = {$mes->codestoquemes}
@@ -91,8 +93,8 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         }
 
         //calcula custo medio
-        $valor = $mov->entradavalor;
-        $quantidade = $mov->entradaquantidade;
+        $valor = $mov->entradavalor - $mov->saidavalor;
+        $quantidade = $mov->entradaquantidade - $mov->saidaquantidade;
         if ($inicialquantidade > 0 && $inicialvalor > 0)
         {
             $valor += $inicialvalor;
