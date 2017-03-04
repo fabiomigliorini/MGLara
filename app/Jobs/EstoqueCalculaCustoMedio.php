@@ -105,7 +105,7 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
             $customedio = abs($valor/$quantidade);
         }
         
-        if (empty($customedio)) {
+        if (empty($customedio) && isset($anterior[0])) {
             $customedio = $anterior[0]->customedio;
         }
 
