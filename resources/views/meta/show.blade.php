@@ -40,17 +40,41 @@
     $datas = [];
     
     foreach ($dias_uteis as $dia){
-        $datas[] = $dia->toW3cString();        
+        $datas[] = substr($dia->toW3cString(), 0, -6);
     }
+
+    $data = clone $model->periodoinicial;
+    $dias = collect();
     
+    while ($data->lte( ($model->periodofinal <= Carbon\Carbon::today() ? $model->periodofinal : Carbon\Carbon::today()) )) {
+        $dias->push(substr($data->toW3cString(), 0, -6));
+        $data->addDay();
+    }
+
+    //dd($datas);
+    //dd($dias->contains('2017-02-28T00:00:00'));
+
     $colunas = [];
     foreach($filiais as $filial) {
         $colunas[$filial['filial']] = [$filial['filial']];
-        
+        $valorvendaspordata = collect($filial['valorvendaspordata']);
+        foreach ($datas as $dia) {
+            if(!$valorvendaspordata->contains('data', $dia)){
+                //$valorvenda = 0;
+                //dd('Não contem');
+                array_push($colunas[$filial['filial']], 0);
+            } else {
+                $i = array_search($dia, array_column($valorvendaspordata->toArray(), 'data'));
+                array_push($colunas[$filial['filial']], $valorvendaspordata[$i]['valorvendas']);
+            }
+
+            //array_push($colunas[$filial['filial']], $valorvendas);
+        }
+/*
         foreach($filial['valorvendaspordata'] as $vendas) {
-            
             array_push($colunas[$filial['filial']], $vendas['valorvendas']);
         }
+*/        
     }
     
     //dd($colunas);
