@@ -45,8 +45,11 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
      */
     public function handle()
     {
+	if ($this->attempts() > 1) {
+            $this->release(rand(30,240));
+        }
         
-        if ($this->ciclo >= 8) {
+        if ($this->ciclo >= 50) {
             return;
         }
 
