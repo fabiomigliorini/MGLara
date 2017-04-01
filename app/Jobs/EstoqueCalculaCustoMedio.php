@@ -45,17 +45,19 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
      */
     public function handle()
     {
-	if ($this->attempts() > 1) {
+	if ($this->attempts() > 10) {
             $this->release(rand(30,240));
         }
         
-        if ($this->ciclo >= 50) {
+        if ($this->ciclo >= 100) {
             return;
         }
 
         Log::info('EstoqueCalculaCustoMedio', ['codestoquemes' => $this->codestoquemes, 'ciclo' => $this->ciclo]);
         
-        $mes = EstoqueMes::findOrFail($this->codestoquemes);
+        if (!$mes = EstoqueMes::find($this->codestoquemes)) {
+            return;
+        }
 
         // recalcula valor movimentacao com base no registro de origem
         $sql = "
@@ -68,7 +70,6 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
             ";
             
         $ret = DB::update($sql);
-        
         
         //busca totais de registros nao baseados no custo medio
         $sql = "
@@ -170,6 +171,7 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
                 where orig.codestoquemes = {$mes->codestoquemes}
                 ";
             $ret = DB::select($sql);
+
             foreach ($ret as $row)
                 $mesesRecalcular[] = $row->codestoquemes;
         }
