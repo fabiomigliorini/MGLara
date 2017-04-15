@@ -58,8 +58,8 @@ inner join tblproduto p on (p.codproduto = pb.codproduto)
 inner join tbltipoproduto tp on (tp.codtipoproduto = p.codtipoproduto)
 left join tblestoquemovimento em on (em.codnotafiscalprodutobarra = npb.codnotafiscalprodutobarra)
 where ((n.emitida = true and n.nfeautorizacao is not null and n.nfeinutilizacao is null and n.nfecancelamento is null) or n.emitida = false)
-and n.saida >= '2017-01-01 00:00:00' 
---and n.saida <= '2016-12-31 23:59:59' 
+--and n.saida >= '2017-02-01 00:00:00' 
+and n.saida >= '2016-01-01 00:00:00' 
 and tp.estoque = true
 and no.estoque = true
 and em.codestoquemovimento is null
