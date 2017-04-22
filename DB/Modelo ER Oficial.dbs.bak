@@ -113,6 +113,7 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="tblbanco_pkey" unique="PRIMARY_KEY" >
 				<column name="codbanco" />
 			</index>
@@ -903,6 +904,7 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="tblestadocivil_pkey" unique="PRIMARY_KEY" >
 				<column name="codestadocivil" />
 			</index>
@@ -1200,6 +1202,9 @@
 			<column name="atualizaultimaentrada" type="bool" jt="-7" mandatory="y" >
 				<defo>false</defo>
 			</column>
+			<column name="transferencia" type="bool" length="1" decimal="0" jt="-7" >
+				<defo>false</defo>
+			</column>
 			<index name="tblestoquemovimentotipo_pkey" unique="PRIMARY_KEY" >
 				<column name="codestoquemovimentotipo" />
 			</index>
@@ -1328,6 +1333,7 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="pk_tblestoquesaldoconferencia" unique="PRIMARY_KEY" >
 				<column name="codestoquesaldoconferencia" />
 			</index>
@@ -1397,6 +1403,7 @@
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="pk_tblferiado" unique="PRIMARY_KEY" >
 				<column name="codferiado" />
 			</index>
@@ -1444,6 +1451,7 @@
 			<column name="senhacertificado" type="varchar" length="50" decimal="0" jt="12" />
 			<column name="ultimonsu" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="tokenibpt" type="varchar" length="200" decimal="0" jt="12" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="tblfilial_pkey" unique="PRIMARY_KEY" >
 				<column name="codfilial" />
 			</index>
@@ -1569,6 +1577,7 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="pk_tblgrupousuario" unique="PRIMARY_KEY" >
 				<column name="codgrupousuario" />
 			</index>
@@ -2132,6 +2141,7 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="tblncm_pkey" unique="PRIMARY_KEY" >
 				<column name="codncm" />
 			</index>
@@ -2798,6 +2808,7 @@
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="codigooficial" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="tblpais_pkey" unique="PRIMARY_KEY" >
 				<column name="codpais" />
 			</index>
@@ -2827,7 +2838,7 @@
 			</fk>
 		</table>
 		<table name="tblpermissao" >
-			<column name="codpermissao" type="bigint" jt="-5" mandatory="y" />
+			<column name="codpermissao" type="bigserial" length="19" decimal="0" jt="-5" mandatory="y" />
 			<column name="permissao" type="varchar" length="100" jt="12" mandatory="y" />
 			<column name="observacoes" type="varchar" length="600" jt="12" />
 			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
@@ -3019,6 +3030,7 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="observacoes" type="varchar" length="200" jt="12" />
+			<column name="inativo" type="timestamp" jt="93" />
 			<index name="pk_tblprancheta" unique="PRIMARY_KEY" >
 				<column name="codprancheta" />
 			</index>
@@ -3037,21 +3049,16 @@
 		</table>
 		<table name="tblpranchetaprodutobarra" >
 			<column name="codpranchetaprodutobarra" type="bigserial" jt="-5" mandatory="y" />
-			<column name="observacoes" type="varchar" length="200" jt="12" />
 			<column name="codprancheta" type="bigint" jt="-5" mandatory="y" />
 			<column name="codprodutobarra" type="bigint" jt="-5" mandatory="y" />
+			<column name="observacoes" type="varchar" length="200" jt="12" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" jt="93" />
 			<index name="pk_tblpranchetaprodutobarra" unique="PRIMARY_KEY" >
 				<column name="codpranchetaprodutobarra" />
-			</index>
-			<index name="pk_tblpranchetaprodutobarra_0" unique="UNIQUE" >
-				<column name="codprancheta" />
-			</index>
-			<index name="pk_tblpranchetaprodutobarra_1" unique="UNIQUE" >
-				<column name="codprodutobarra" />
 			</index>
 			<index name="idx_tblpranchetaprodutobarra" unique="NORMAL" >
 				<column name="codusuariocriacao" />
@@ -3059,17 +3066,23 @@
 			<index name="idx_tblpranchetaprodutobarra_0" unique="NORMAL" >
 				<column name="codusuarioalteracao" />
 			</index>
-			<fk name="fk_tblpranchetaprodutobarra" to_schema="mgsis" to_table="tblprancheta" >
-				<fk_column name="codprancheta" pk="codprancheta" />
-			</fk>
-			<fk name="fk_tblpranchetaprodutobarra_0" to_schema="mgsis" to_table="tblprodutobarra" >
-				<fk_column name="codprodutobarra" pk="codprodutobarra" />
-			</fk>
+			<index name="idx_tblpranchetaprodutobarra_1" unique="NORMAL" >
+				<column name="codprancheta" />
+			</index>
+			<index name="idx_tblpranchetaprodutobarra_2" unique="NORMAL" >
+				<column name="codprodutobarra" />
+			</index>
 			<fk name="fk_tblpranchetaprodutobarra_1" to_schema="mgsis" to_table="tblusuario" >
 				<fk_column name="codusuariocriacao" pk="codusuario" />
 			</fk>
 			<fk name="fk_tblpranchetaprodutobarra_2" to_schema="mgsis" to_table="tblusuario" >
 				<fk_column name="codusuarioalteracao" pk="codusuario" />
+			</fk>
+			<fk name="fk_tblpranchetaprodutobarra" to_schema="mgsis" to_table="tblprancheta" >
+				<fk_column name="codprancheta" pk="codprancheta" />
+			</fk>
+			<fk name="fk_tblpranchetaprodutobarra_0" to_schema="mgsis" to_table="tblprodutobarra" >
+				<fk_column name="codprodutobarra" pk="codprodutobarra" />
 			</fk>
 		</table>
 		<table name="tblproduto" >
@@ -3302,6 +3315,7 @@
 			<column name="dataultimacompra" type="date" jt="91" />
 			<column name="custoultimacompra" type="numeric" length="14" decimal="6" jt="2" />
 			<column name="quantidadeultimacompra" type="numeric" length="14" decimal="3" jt="2" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="pk_tblprodutovariacao" unique="PRIMARY_KEY" >
 				<column name="codprodutovariacao" />
 			</index>
@@ -3808,6 +3822,7 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="tblunidademedida_pkey" unique="PRIMARY_KEY" >
 				<column name="codunidademedida" />
 			</index>
@@ -5225,8 +5240,11 @@
 		<sequence name="tbloperacao_codoperacao_seq" start="1" />
 		<sequence name="tblpais_codpais_seq" start="1" />
 		<sequence name="tblparametrosgerais_codparametrosgerais_seq" start="1" />
+		<sequence name="tblpermissao_codpermissao_seq" start="1" />
 		<sequence name="tblpessoa_codpessoa_seq" start="1" />
 		<sequence name="tblportador_codportador_seq" start="1" />
+		<sequence name="tblprancheta_codprancheta_seq" start="1" />
+		<sequence name="tblpranchetaprodutobarra_codpranchetaprodutobarra_seq" start="1" />
 		<sequence name="tblproduto_codproduto_seq" start="1" />
 		<sequence name="tblprodutobarra_codprodutobarra_seq" start="1" />
 		<sequence name="tblprodutoembalagem_codprodutoembalagem_seq" start="1" />
@@ -6829,6 +6847,7 @@ FROM
 			<column name="acbrnfemonitorcodusuario" />
 			<column name="codusuarioalteracao" />
 			<column name="codusuariocriacao" />
+			<column name="inativo" />
 		</entity>
 	</layout>
 </project>

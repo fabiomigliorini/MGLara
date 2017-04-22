@@ -3047,42 +3047,46 @@
 				<fk_column name="codusuariocriacao" pk="codusuario" />
 			</fk>
 		</table>
-		<table name="tblpranchetaprodutobarra" >
-			<column name="codpranchetaprodutobarra" type="bigserial" jt="-5" mandatory="y" />
+		<table name="tblpranchetaproduto" >
+			<column name="codpranchetaproduto" type="bigserial" jt="-5" mandatory="y" />
 			<column name="codprancheta" type="bigint" jt="-5" mandatory="y" />
-			<column name="codprodutobarra" type="bigint" jt="-5" mandatory="y" />
-			<column name="observacoes" type="varchar" length="200" jt="12" />
+			<column name="codproduto" type="bigint" jt="-5" mandatory="y" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="inativo" type="timestamp" jt="93" />
-			<index name="pk_tblpranchetaprodutobarra" unique="PRIMARY_KEY" >
-				<column name="codpranchetaprodutobarra" />
+			<column name="observacoes" type="varchar" length="200" jt="12" />
+			<index name="pk_tblpranchetaproduto" unique="PRIMARY_KEY" >
+				<column name="codpranchetaproduto" />
 			</index>
-			<index name="idx_tblpranchetaprodutobarra" unique="NORMAL" >
+			<index name="idx_tblpranchetaproduto" unique="NORMAL" >
 				<column name="codusuariocriacao" />
 			</index>
-			<index name="idx_tblpranchetaprodutobarra_0" unique="NORMAL" >
+			<index name="idx_tblpranchetaproduto_0" unique="NORMAL" >
 				<column name="codusuarioalteracao" />
 			</index>
-			<index name="idx_tblpranchetaprodutobarra_1" unique="NORMAL" >
+			<index name="idx_tblpranchetaproduto_1" unique="NORMAL" >
 				<column name="codprancheta" />
 			</index>
-			<index name="idx_tblpranchetaprodutobarra_2" unique="NORMAL" >
-				<column name="codprodutobarra" />
+			<index name="idx_tblpranchetaproduto_2" unique="NORMAL" >
+				<column name="codproduto" />
 			</index>
-			<fk name="fk_tblpranchetaprodutobarra_1" to_schema="mgsis" to_table="tblusuario" >
+			<index name="idx_tblpranchetaproduto_3" unique="UNIQUE" >
+				<column name="codprancheta" />
+				<column name="codproduto" />
+			</index>
+			<fk name="fk_tblpranchetaproduto" to_schema="mgsis" to_table="tblusuario" >
 				<fk_column name="codusuariocriacao" pk="codusuario" />
 			</fk>
-			<fk name="fk_tblpranchetaprodutobarra_2" to_schema="mgsis" to_table="tblusuario" >
+			<fk name="fk_tblpranchetaproduto_0" to_schema="mgsis" to_table="tblusuario" >
 				<fk_column name="codusuarioalteracao" pk="codusuario" />
 			</fk>
-			<fk name="fk_tblpranchetaprodutobarra" to_schema="mgsis" to_table="tblprancheta" >
+			<fk name="fk_tblpranchetaproduto_1" to_schema="mgsis" to_table="tblprancheta" >
 				<fk_column name="codprancheta" pk="codprancheta" />
 			</fk>
-			<fk name="fk_tblpranchetaprodutobarra_0" to_schema="mgsis" to_table="tblprodutobarra" >
-				<fk_column name="codprodutobarra" pk="codprodutobarra" />
+			<fk name="fk_tblpranchetaproduto_2" to_schema="mgsis" to_table="tblproduto" >
+				<fk_column name="codproduto" pk="codproduto" />
 			</fk>
 		</table>
 		<table name="tblproduto" >
@@ -6767,11 +6771,11 @@ FROM
 		<entity schema="mgsis" name="tblnaturezaoperacao" color="b2cdf7" x="280" y="60" />
 	</layout>
 	<layout name="Layout_Prancheta" id="Layout_2e976812" show_relation="columns" >
-		<entity schema="mgsis" name="tblproduto" color="c1d8ee" x="720" y="140" />
-		<entity schema="mgsis" name="tblprodutobarra" color="c1d8ee" x="400" y="440" />
-		<entity schema="mgsis" name="tblprodutovariacao" color="c1d8ee" x="420" y="60" />
-		<entity schema="mgsis" name="tblpranchetaprodutobarra" color="c1d8ee" x="60" y="340" />
-		<entity schema="mgsis" name="tblprancheta" color="c1d8ee" x="100" y="60" />
+		<entity schema="mgsis" name="tblproduto" color="c1d8ee" x="340" y="120" />
+		<entity schema="mgsis" name="tblprodutovariacao" color="c1d8ee" x="660" y="60" />
+		<entity schema="mgsis" name="tblprodutobarra" color="c1d8ee" x="680" y="440" />
+		<entity schema="mgsis" name="tblprancheta" color="c1d8ee" x="60" y="60" />
+		<entity schema="mgsis" name="tblpranchetaproduto" color="c1d8ee" x="60" y="340" />
 	</layout>
 	<layout name="Layout_ProdutoBarra" id="Layout_26dd18a" confirmed="y" show_column_type="y" show_relation="columns" >
 		<entity schema="mgsis" name="tblcupomfiscalprodutobarra" color="b3cef5" x="660" y="60" />
