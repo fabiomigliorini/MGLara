@@ -26,7 +26,7 @@ class EstoqueAjustaFiscalCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'estoque:ajusta-fiscal {metodo?} {--codestoquelocal=} {--auto}';
+    protected $signature = 'estoque:ajusta-fiscal {metodo?} {--codestoquelocal=} {--auto} {--data=}';
 
     /**
      * The console command description.
@@ -131,7 +131,7 @@ class EstoqueAjustaFiscalCommand extends Command
         $this->dispatch((new EstoqueCalculaCustoMedio($mes_destino->codestoquemes))->onQueue('urgent'));
 
         // aguarda dois segundos para rodar recalculo dos custos medios
-        sleep(3);
+        sleep(2);
     }
 
     public function geraNotasFiscaisTransferencia()
@@ -311,6 +311,13 @@ class EstoqueAjustaFiscalCommand extends Command
     {
         $codestoquelocal = $this->option('codestoquelocal');
         $auto = $this->option('auto');
+        $data = $this->option('data');
+
+        if (empty($data)) {
+            $date = Carbon::now();
+        } else {
+            $date = Carbon::createFromFormat('Y-m-d H:i:s', $data);
+        }
 
         if (empty($codestoquelocal)) {
             $this->line('');
@@ -387,7 +394,7 @@ class EstoqueAjustaFiscalCommand extends Command
             $origem = $alternativas[$escolhido];
 
             $quantidade = min([abs($negativo->saldoquantidade), abs($origem->saldoquantidade)]);
-            $data = Carbon::now();
+            //$data = Carbon::now();
             $codprodutovariacaoorigem = $origem->codprodutovariacao;
             $codestoquelocalorigem = $origem->codestoquelocal;
             $codprodutovariacaodestino = $negativo->codprodutovariacao;
@@ -395,7 +402,7 @@ class EstoqueAjustaFiscalCommand extends Command
 
             $this->transfereSaldo(
                 $quantidade,
-                $data,
+                $date,
                 $codprodutovariacaoorigem,
                 $codestoquelocalorigem,
                 $codprodutovariacaodestino,
