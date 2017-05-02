@@ -113,6 +113,7 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="tblbanco_pkey" unique="PRIMARY_KEY" >
 				<column name="codbanco" />
 			</index>
@@ -903,6 +904,7 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="tblestadocivil_pkey" unique="PRIMARY_KEY" >
 				<column name="codestadocivil" />
 			</index>
@@ -1200,6 +1202,9 @@
 			<column name="atualizaultimaentrada" type="bool" jt="-7" mandatory="y" >
 				<defo>false</defo>
 			</column>
+			<column name="transferencia" type="bool" length="1" decimal="0" jt="-7" >
+				<defo>false</defo>
+			</column>
 			<index name="tblestoquemovimentotipo_pkey" unique="PRIMARY_KEY" >
 				<column name="codestoquemovimentotipo" />
 			</index>
@@ -1328,6 +1333,7 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="pk_tblestoquesaldoconferencia" unique="PRIMARY_KEY" >
 				<column name="codestoquesaldoconferencia" />
 			</index>
@@ -1397,6 +1403,7 @@
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="pk_tblferiado" unique="PRIMARY_KEY" >
 				<column name="codferiado" />
 			</index>
@@ -1444,6 +1451,7 @@
 			<column name="senhacertificado" type="varchar" length="50" decimal="0" jt="12" />
 			<column name="ultimonsu" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="tokenibpt" type="varchar" length="200" decimal="0" jt="12" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="tblfilial_pkey" unique="PRIMARY_KEY" >
 				<column name="codfilial" />
 			</index>
@@ -1569,6 +1577,7 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="pk_tblgrupousuario" unique="PRIMARY_KEY" >
 				<column name="codgrupousuario" />
 			</index>
@@ -2132,6 +2141,7 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="tblncm_pkey" unique="PRIMARY_KEY" >
 				<column name="codncm" />
 			</index>
@@ -2798,6 +2808,7 @@
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="codigooficial" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="tblpais_pkey" unique="PRIMARY_KEY" >
 				<column name="codpais" />
 			</index>
@@ -2827,7 +2838,7 @@
 			</fk>
 		</table>
 		<table name="tblpermissao" >
-			<column name="codpermissao" type="bigint" jt="-5" mandatory="y" />
+			<column name="codpermissao" type="bigserial" length="19" decimal="0" jt="-5" mandatory="y" />
 			<column name="permissao" type="varchar" length="100" jt="12" mandatory="y" />
 			<column name="observacoes" type="varchar" length="600" jt="12" />
 			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
@@ -3009,6 +3020,73 @@
 			</fk>
 			<fk name="tblportador_codusuariocriacao_fkey" to_schema="mgsis" to_table="tblusuario" >
 				<fk_column name="codusuariocriacao" pk="codusuario" />
+			</fk>
+		</table>
+		<table name="tblprancheta" >
+			<column name="codprancheta" type="bigserial" jt="-5" mandatory="y" />
+			<column name="prancheta" type="varchar" length="50" jt="12" mandatory="y" />
+			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="observacoes" type="varchar" length="200" jt="12" />
+			<column name="inativo" type="timestamp" jt="93" />
+			<index name="pk_tblprancheta" unique="PRIMARY_KEY" >
+				<column name="codprancheta" />
+			</index>
+			<index name="idx_tblprancheta" unique="NORMAL" >
+				<column name="codusuarioalteracao" />
+			</index>
+			<index name="idx_tblprancheta_0" unique="NORMAL" >
+				<column name="codusuariocriacao" />
+			</index>
+			<fk name="fk_tblprancheta" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuarioalteracao" pk="codusuario" />
+			</fk>
+			<fk name="fk_tblprancheta_0" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuariocriacao" pk="codusuario" />
+			</fk>
+		</table>
+		<table name="tblpranchetaproduto" >
+			<column name="codpranchetaproduto" type="bigserial" jt="-5" mandatory="y" />
+			<column name="codprancheta" type="bigint" jt="-5" mandatory="y" />
+			<column name="codproduto" type="bigint" jt="-5" mandatory="y" />
+			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" jt="93" />
+			<column name="observacoes" type="varchar" length="200" jt="12" />
+			<index name="pk_tblpranchetaproduto" unique="PRIMARY_KEY" >
+				<column name="codpranchetaproduto" />
+			</index>
+			<index name="idx_tblpranchetaproduto" unique="NORMAL" >
+				<column name="codusuariocriacao" />
+			</index>
+			<index name="idx_tblpranchetaproduto_0" unique="NORMAL" >
+				<column name="codusuarioalteracao" />
+			</index>
+			<index name="idx_tblpranchetaproduto_1" unique="NORMAL" >
+				<column name="codprancheta" />
+			</index>
+			<index name="idx_tblpranchetaproduto_2" unique="NORMAL" >
+				<column name="codproduto" />
+			</index>
+			<index name="idx_tblpranchetaproduto_3" unique="UNIQUE" >
+				<column name="codprancheta" />
+				<column name="codproduto" />
+			</index>
+			<fk name="fk_tblpranchetaproduto" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuariocriacao" pk="codusuario" />
+			</fk>
+			<fk name="fk_tblpranchetaproduto_0" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuarioalteracao" pk="codusuario" />
+			</fk>
+			<fk name="fk_tblpranchetaproduto_1" to_schema="mgsis" to_table="tblprancheta" >
+				<fk_column name="codprancheta" pk="codprancheta" />
+			</fk>
+			<fk name="fk_tblpranchetaproduto_2" to_schema="mgsis" to_table="tblproduto" >
+				<fk_column name="codproduto" pk="codproduto" />
 			</fk>
 		</table>
 		<table name="tblproduto" >
@@ -3241,6 +3319,7 @@
 			<column name="dataultimacompra" type="date" jt="91" />
 			<column name="custoultimacompra" type="numeric" length="14" decimal="6" jt="2" />
 			<column name="quantidadeultimacompra" type="numeric" length="14" decimal="3" jt="2" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="pk_tblprodutovariacao" unique="PRIMARY_KEY" >
 				<column name="codprodutovariacao" />
 			</index>
@@ -3747,6 +3826,7 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
 			<index name="tblunidademedida_pkey" unique="PRIMARY_KEY" >
 				<column name="codunidademedida" />
 			</index>
@@ -5164,8 +5244,11 @@
 		<sequence name="tbloperacao_codoperacao_seq" start="1" />
 		<sequence name="tblpais_codpais_seq" start="1" />
 		<sequence name="tblparametrosgerais_codparametrosgerais_seq" start="1" />
+		<sequence name="tblpermissao_codpermissao_seq" start="1" />
 		<sequence name="tblpessoa_codpessoa_seq" start="1" />
 		<sequence name="tblportador_codportador_seq" start="1" />
+		<sequence name="tblprancheta_codprancheta_seq" start="1" />
+		<sequence name="tblpranchetaprodutobarra_codpranchetaprodutobarra_seq" start="1" />
 		<sequence name="tblproduto_codproduto_seq" start="1" />
 		<sequence name="tblprodutobarra_codprodutobarra_seq" start="1" />
 		<sequence name="tblprodutoembalagem_codprodutoembalagem_seq" start="1" />
@@ -6162,12 +6245,12 @@ $function$
 	<connector name="MGsis_Desenv" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-9.4.1208.jar" driver_desc="Standard" host="localhost" port="5432" instance="mgsis" user="mgsis" passwd="bWdzaXM=" />
 	<connector name="MGsis_Prod" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-9.4.1213.jar" driver_desc="Standard" host="192.168.1.205" port="5432" instance="mgsis" user="mgsis" passwd="bWdzaXM=" />
 	<layout name="Layout_Autorizacao" id="Layout_93c6439" confirmed="y" show_column_type="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblgrupousuariousuario" color="b7c8e3" x="380" y="60" />
-		<entity schema="mgsis" name="tblfilial" color="b7c8e3" x="680" y="60" />
-		<entity schema="mgsis" name="tblgrupousuario" color="b7c8e3" x="400" y="260" />
-		<entity schema="mgsis" name="tblpermissao" color="b7c8e3" x="80" y="440" />
-		<entity schema="mgsis" name="tblusuario" color="b7c8e3" x="60" y="60" />
-		<entity schema="mgsis" name="tblgrupousuariopermissao" color="b7c8e3" x="360" y="440" />
+		<entity schema="mgsis" name="tblusuario" color="b7c8e3" x="60" y="80" />
+		<entity schema="mgsis" name="tblfilial" color="b7c8e3" x="800" y="80" />
+		<entity schema="mgsis" name="tblpermissao" color="b7c8e3" x="80" y="600" />
+		<entity schema="mgsis" name="tblgrupousuariousuario" color="b7c8e3" x="460" y="60" />
+		<entity schema="mgsis" name="tblgrupousuario" color="b7c8e3" x="480" y="380" />
+		<entity schema="mgsis" name="tblgrupousuariopermissao" color="b7c8e3" x="420" y="640" />
 		<browser id="Browse_260dba35" name="tblgrupousuario" confirm_updates="y" confirmed="y" >
 			<browse_table schema="mgsis" entity="tblgrupousuario" x="10" y="10" width="453" height="349" />
 		</browser>
@@ -6687,6 +6770,13 @@ FROM
 		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="b2cdf7" x="780" y="860" />
 		<entity schema="mgsis" name="tblnaturezaoperacao" color="b2cdf7" x="280" y="60" />
 	</layout>
+	<layout name="Layout_Prancheta" id="Layout_2e976812" show_relation="columns" >
+		<entity schema="mgsis" name="tblproduto" color="c1d8ee" x="340" y="120" />
+		<entity schema="mgsis" name="tblprodutovariacao" color="c1d8ee" x="660" y="60" />
+		<entity schema="mgsis" name="tblprodutobarra" color="c1d8ee" x="680" y="440" />
+		<entity schema="mgsis" name="tblprancheta" color="c1d8ee" x="60" y="60" />
+		<entity schema="mgsis" name="tblpranchetaproduto" color="c1d8ee" x="60" y="340" />
+	</layout>
 	<layout name="Layout_ProdutoBarra" id="Layout_26dd18a" confirmed="y" show_column_type="y" show_relation="columns" >
 		<entity schema="mgsis" name="tblcupomfiscalprodutobarra" color="b3cef5" x="660" y="60" />
 		<entity schema="mgsis" name="tblnegocioprodutobarra" color="b3cef5" x="660" y="340" />
@@ -6761,6 +6851,7 @@ FROM
 			<column name="acbrnfemonitorcodusuario" />
 			<column name="codusuarioalteracao" />
 			<column name="codusuariocriacao" />
+			<column name="inativo" />
 		</entity>
 	</layout>
 </project>

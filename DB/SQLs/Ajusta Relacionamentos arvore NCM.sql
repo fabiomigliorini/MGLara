@@ -2,6 +2,8 @@
 select substring(ncm from 1 for 7), ncm
 from tblncm
 where char_length(ncm) = 8
+
+select * from tblncm where codncmpai is null
 */
 
 update tblncm set codncmpai = null;
