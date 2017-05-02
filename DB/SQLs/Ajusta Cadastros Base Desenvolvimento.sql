@@ -14,4 +14,4 @@ set acbrnfemonitorcaminho = 'C:\ACBrNFeMonitor'
 update tblpessoa set email = 'nfe@mgpapelaria.com.br', emailnfe = null, emailcobranca = null;
 
 --altera impressora matricial
-update tblusuario set impressoramatricial = 'deposito-faturamento-epson-matricial'
+update tblusuario set impressoramatricial = 'deposito-faturamento-epson-matricial';
