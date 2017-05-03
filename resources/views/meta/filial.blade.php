@@ -154,6 +154,9 @@
         
         foreach ($dias as $dia) {
             if(!$vendedor_collect->contains('data', $dia[0])){
+                if(is_null($vendedor['valorvendaspordata'])){
+                    $vendedor['valorvendaspordata'] = [];
+                }
                 array_push($vendedor['valorvendaspordata'], ['data' => $dia[0], 'valorvendas' => 0]);
             }
 
