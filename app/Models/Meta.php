@@ -238,13 +238,8 @@ class Meta extends MGModel
         
         $retorno_filiais = [];
         foreach ($filiais as $filial){
-            if(is_null($filial->valorvendaspordata)){
-                $filial->valorvendas = 0;
-            } else {
-                $filial->valorvendas = array_sum(array_column(json_decode($vendedor->valorvendaspordata), 'valorvendas'));
-            }
+            $filial->valorvendas = array_sum(array_column(json_decode($filial->valorvendaspordata), 'valorvendas'));
                             
-            //$filial->valorvendas = array_sum(array_column(json_decode($filial->valorvendaspordata) ?? [], 'valorvendas'));
             $falta = ($filial->valorvendas < $filial->valormetafilial ? $filial->valormetafilial - $filial->valorvendas : null);
             $premio = ($filial->valorvendas >= $filial->valormetafilial ? ($filial->valorvendas / 100 ) * $this->percentualcomissaosubgerentemeta : null);
             $retorno_filiais[] = [
@@ -271,7 +266,7 @@ class Meta extends MGModel
                 $xerox->valorvendas = array_sum(array_column(json_decode($vendedor->valorvendaspordata), 'valorvendas'));
             }
                             
-            //$xerox->valorvendas = array_sum(array_column(json_decode($xerox->valorvendaspordata) ?? [], 'valorvendas'));
+            $xerox->valorvendas = array_sum(array_column(json_decode($xerox->valorvendaspordata) ?? [], 'valorvendas'));
             $retorno_xerox[] = [
                 "codfilial"             => $xerox->codfilial,
                 "filial"                => $xerox->filial,
