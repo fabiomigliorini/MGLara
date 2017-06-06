@@ -1750,6 +1750,18 @@
 			<index name="pk_tblimagem" unique="PRIMARY_KEY" >
 				<column name="codimagem" />
 			</index>
+			<index name="idx_tblimagem" unique="NORMAL" >
+				<column name="codusuariocriacao" />
+			</index>
+			<index name="idx_tblimagem_0" unique="NORMAL" >
+				<column name="codusuarioalteracao" />
+			</index>
+			<fk name="fk_tblimagem" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuariocriacao" pk="codusuario" />
+			</fk>
+			<fk name="fk_tblimagem_0" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuarioalteracao" pk="codusuario" />
+			</fk>
 		</table>
 		<table name="tbljobs" >
 			<column name="id" type="bigserial" length="19" decimal="0" jt="-5" mandatory="y" />
@@ -3128,6 +3140,7 @@
 			</column>
 			<column name="metakeywordsite" type="varchar" length="200" jt="12" />
 			<column name="metadescriptionsite" type="text" jt="12" />
+			<column name="codprodutoimagem" type="bigint" jt="-5" />
 			<index name="tblproduto_pkey" unique="PRIMARY_KEY" >
 				<column name="codproduto" />
 			</index>
@@ -3154,6 +3167,9 @@
 			</index>
 			<index name="idx_tblproduto" unique="NORMAL" >
 				<column name="codusuarioalteracao" />
+			</index>
+			<index name="idx_tblproduto_0" unique="NORMAL" >
+				<column name="codprodutoimagem" />
 			</index>
 			<fk name="tblproduto_codmarca_fkey" to_schema="mgsis" to_table="tblmarca" >
 				<fk_column name="codmarca" pk="codmarca" />
@@ -3182,8 +3198,8 @@
 			<fk name="fk_tblproduto" to_schema="mgsis" to_table="tblcest" >
 				<fk_column name="codcest" pk="codcest" />
 			</fk>
-			<fk name="tblproduto_codusuarioalteracao_fkey" to_schema="mgsis" to_table="tblusuario" >
-				<fk_column name="codusuarioalteracao" pk="codusuario" />
+			<fk name="fk_tblproduto_produto_imagem" to_schema="mgsis" to_table="tblprodutoimagem" delete_action="setNull" >
+				<fk_column name="codprodutoimagem" pk="codprodutoimagem" />
 			</fk>
 		</table>
 		<table name="tblprodutobarra" >
@@ -3252,6 +3268,7 @@
 			</column>
 			<column name="descricaosite" type="text" length="1024" jt="12" />
 			<column name="codopencart" type="bigint" jt="-5" />
+			<column name="codprodutoimagem" type="bigint" jt="-5" />
 			<index name="tblprodutoembalagem_pkey" unique="PRIMARY_KEY" >
 				<column name="codprodutoembalagem" />
 			</index>
@@ -3260,6 +3277,9 @@
 			</index>
 			<index name="tblprodutoembalagem_codunidademedida_idx" unique="NORMAL" >
 				<column name="codunidademedida" />
+			</index>
+			<index name="idx_tblprodutoembalagem" unique="NORMAL" >
+				<column name="codprodutoimagem" />
 			</index>
 			<fk name="tblprodutoembalagem_codproduto_fkey" to_schema="mgsis" to_table="tblproduto" >
 				<fk_column name="codproduto" pk="codproduto" />
@@ -3272,6 +3292,9 @@
 			</fk>
 			<fk name="tblprodutoembalagem_codusuariocriacao_fkey" to_schema="mgsis" to_table="tblusuario" >
 				<fk_column name="codusuariocriacao" pk="codusuario" />
+			</fk>
+			<fk name="fk_tblprodutoembalagem" to_schema="mgsis" to_table="tblprodutoimagem" delete_action="setNull" >
+				<fk_column name="codprodutoimagem" pk="codprodutoimagem" />
 			</fk>
 		</table>
 		<table name="tblprodutohistoricopreco" >
@@ -3320,11 +3343,23 @@
 			<index name="idx_tblprodutoimagem_0" unique="NORMAL" >
 				<column name="codimagem" />
 			</index>
+			<index name="idx_tblprodutoimagem_1" unique="NORMAL" >
+				<column name="codusuariocriacao" />
+			</index>
+			<index name="idx_tblprodutoimagem_2" unique="NORMAL" >
+				<column name="codusuarioalteracao" />
+			</index>
 			<fk name="fk_tblprodutoimagem" to_schema="mgsis" to_table="tblproduto" >
 				<fk_column name="codproduto" pk="codproduto" />
 			</fk>
 			<fk name="fk_tblprodutoimagem_0" to_schema="mgsis" to_table="tblimagem" >
 				<fk_column name="codimagem" pk="codimagem" />
+			</fk>
+			<fk name="fk_tblprodutoimagem_1" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuariocriacao" pk="codusuario" />
+			</fk>
+			<fk name="fk_tblprodutoimagem_2" to_schema="mgsis" to_table="tblusuario" >
+				<fk_column name="codusuarioalteracao" pk="codusuario" />
 			</fk>
 		</table>
 		<table name="tblprodutovariacao" >
@@ -3342,6 +3377,7 @@
 			<column name="custoultimacompra" type="numeric" length="14" decimal="6" jt="2" />
 			<column name="quantidadeultimacompra" type="numeric" length="14" decimal="3" jt="2" />
 			<column name="inativo" type="timestamp" length="29" decimal="6" jt="93" />
+			<column name="codprodutoimagem" type="bigint" jt="-5" />
 			<index name="pk_tblprodutovariacao" unique="PRIMARY_KEY" >
 				<column name="codprodutovariacao" />
 			</index>
@@ -3362,6 +3398,9 @@
 				<column name="variacao" />
 				<column name="codmarca" />
 			</index>
+			<index name="idx_tblprodutovariacao_4" unique="NORMAL" >
+				<column name="codprodutoimagem" />
+			</index>
 			<fk name="fk_tblprodutovariacao" to_schema="mgsis" to_table="tblmarca" >
 				<fk_column name="codmarca" pk="codmarca" />
 			</fk>
@@ -3373,6 +3412,9 @@
 			</fk>
 			<fk name="fk_tblprodutovariacao_2" to_schema="mgsis" to_table="tblproduto" >
 				<fk_column name="codproduto" pk="codproduto" />
+			</fk>
+			<fk name="fk_tblprodutovariacao_3" to_schema="mgsis" to_table="tblprodutoimagem" delete_action="setNull" >
+				<fk_column name="codprodutoimagem" pk="codprodutoimagem" />
 			</fk>
 		</table>
 		<table name="tblregistrospc" >
@@ -6698,14 +6740,14 @@ $function$
 		</group>
 	</layout>
 	<layout name="Layout_Imagens" id="Layout5020259" confirmed="y" show_column_type="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblproduto" color="b2cdf7" x="288" y="528" />
-		<entity schema="mgsis" name="tblmarca" color="b2cdf7" x="48" y="112" />
-		<entity schema="mgsis" name="tblsubgrupoproduto" color="b2cdf7" x="528" y="560" />
-		<entity schema="mgsis" name="tblgrupoproduto" color="b2cdf7" x="800" y="496" />
-		<entity schema="mgsis" name="tblfamiliaproduto" color="94c3ea" x="768" y="272" />
-		<entity schema="mgsis" name="tblimagem" color="b2cdf7" x="496" y="208" />
-		<entity schema="mgsis" name="tblsecaoproduto" color="94c3ea" x="768" y="48" />
-		<entity schema="mgsis" name="tblprodutoimagem" color="b2cdf7" x="288" y="304" />
+		<entity schema="mgsis" name="tblsubgrupoproduto" color="b2cdf7" x="560" y="560" />
+		<entity schema="mgsis" name="tblfamiliaproduto" color="94c3ea" x="800" y="272" />
+		<entity schema="mgsis" name="tblsecaoproduto" color="94c3ea" x="800" y="48" />
+		<entity schema="mgsis" name="tblproduto" color="b2cdf7" x="48" y="528" />
+		<entity schema="mgsis" name="tblgrupoproduto" color="b2cdf7" x="864" y="560" />
+		<entity schema="mgsis" name="tblmarca" color="b2cdf7" x="80" y="112" />
+		<entity schema="mgsis" name="tblimagem" color="b2cdf7" x="544" y="128" />
+		<entity schema="mgsis" name="tblprodutoimagem" color="b2cdf7" x="320" y="352" />
 	</layout>
 	<layout name="Layout_Integracao_OpenCart" id="Layout_13ca872c" confirmed="y" show_relation="columns" >
 		<entity schema="mgsis" name="tblmarca" color="c1d8ee" x="48" y="80" />
@@ -6714,11 +6756,11 @@ $function$
 		<entity schema="mgsis" name="tblsecaoproduto" color="c1d8ee" x="80" y="688" />
 		<entity schema="mgsis" name="tblgrupoproduto" color="c1d8ee" x="544" y="704" />
 		<entity schema="mgsis" name="tblsubgrupoproduto" color="c1d8ee" x="768" y="704" />
-		<entity schema="mgsis" name="tblprodutovariacao" color="c1d8ee" x="768" y="224" />
 		<entity schema="mgsis" name="tblprodutobarra" color="c1d8ee" x="1024" y="48" />
+		<entity schema="mgsis" name="tblprodutovariacao" color="c1d8ee" x="784" y="192" />
 		<entity schema="mgsis" name="tblprodutoembalagem" color="c1d8ee" x="1008" y="512" />
-		<entity schema="mgsis" name="tblproduto" color="c1d8ee" x="528" y="160" />
-		<entity schema="mgsis" name="tblprodutoimagem" color="c1d8ee" x="320" y="320" />
+		<entity schema="mgsis" name="tblprodutoimagem" color="c1d8ee" x="304" y="320" />
+		<entity schema="mgsis" name="tblproduto" color="c1d8ee" x="544" y="96" />
 		<script name="tblmarca" id="Query_20cc611c" language="SQL" >
 			<string><![CDATA[
 SELECT * 

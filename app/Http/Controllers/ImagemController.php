@@ -80,6 +80,7 @@ class ImagemController extends Controller
         // Grava nome do arquivo nas observacoes
         $arquivo = "{$imagem->codimagem}.jpg";
         $imagem->observacoes = $arquivo;
+        $imagem->arquivo = $arquivo;
         $imagem->save();
         
         // Anexa imagem ao produto

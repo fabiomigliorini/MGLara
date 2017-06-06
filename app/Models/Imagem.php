@@ -30,6 +30,7 @@ class Imagem extends MGModel
     protected $primaryKey = 'codimagem';
     protected $fillable = [
         'observacoes',
+        'arquivo',
         'inativo',
     ];
     protected $dates = [
