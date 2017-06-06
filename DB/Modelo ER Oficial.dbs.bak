@@ -1746,6 +1746,7 @@
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="arquivo" type="varchar" length="150" decimal="0" jt="12" />
 			<index name="pk_tblimagem" unique="PRIMARY_KEY" >
 				<column name="codimagem" />
 			</index>
@@ -3047,42 +3048,46 @@
 				<fk_column name="codusuariocriacao" pk="codusuario" />
 			</fk>
 		</table>
-		<table name="tblpranchetaprodutobarra" >
-			<column name="codpranchetaprodutobarra" type="bigserial" jt="-5" mandatory="y" />
+		<table name="tblpranchetaproduto" >
+			<column name="codpranchetaproduto" type="bigserial" jt="-5" mandatory="y" />
 			<column name="codprancheta" type="bigint" jt="-5" mandatory="y" />
-			<column name="codprodutobarra" type="bigint" jt="-5" mandatory="y" />
-			<column name="observacoes" type="varchar" length="200" jt="12" />
+			<column name="codproduto" type="bigint" jt="-5" mandatory="y" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="inativo" type="timestamp" jt="93" />
-			<index name="pk_tblpranchetaprodutobarra" unique="PRIMARY_KEY" >
-				<column name="codpranchetaprodutobarra" />
+			<column name="observacoes" type="varchar" length="200" jt="12" />
+			<index name="pk_tblpranchetaproduto" unique="PRIMARY_KEY" >
+				<column name="codpranchetaproduto" />
 			</index>
-			<index name="idx_tblpranchetaprodutobarra" unique="NORMAL" >
+			<index name="idx_tblpranchetaproduto" unique="NORMAL" >
 				<column name="codusuariocriacao" />
 			</index>
-			<index name="idx_tblpranchetaprodutobarra_0" unique="NORMAL" >
+			<index name="idx_tblpranchetaproduto_0" unique="NORMAL" >
 				<column name="codusuarioalteracao" />
 			</index>
-			<index name="idx_tblpranchetaprodutobarra_1" unique="NORMAL" >
+			<index name="idx_tblpranchetaproduto_1" unique="NORMAL" >
 				<column name="codprancheta" />
 			</index>
-			<index name="idx_tblpranchetaprodutobarra_2" unique="NORMAL" >
-				<column name="codprodutobarra" />
+			<index name="idx_tblpranchetaproduto_2" unique="NORMAL" >
+				<column name="codproduto" />
 			</index>
-			<fk name="fk_tblpranchetaprodutobarra_1" to_schema="mgsis" to_table="tblusuario" >
+			<index name="idx_tblpranchetaproduto_3" unique="UNIQUE" >
+				<column name="codprancheta" />
+				<column name="codproduto" />
+			</index>
+			<fk name="fk_tblpranchetaproduto" to_schema="mgsis" to_table="tblusuario" >
 				<fk_column name="codusuariocriacao" pk="codusuario" />
 			</fk>
-			<fk name="fk_tblpranchetaprodutobarra_2" to_schema="mgsis" to_table="tblusuario" >
+			<fk name="fk_tblpranchetaproduto_0" to_schema="mgsis" to_table="tblusuario" >
 				<fk_column name="codusuarioalteracao" pk="codusuario" />
 			</fk>
-			<fk name="fk_tblpranchetaprodutobarra" to_schema="mgsis" to_table="tblprancheta" >
+			<fk name="fk_tblpranchetaproduto_1" to_schema="mgsis" to_table="tblprancheta" >
 				<fk_column name="codprancheta" pk="codprancheta" />
 			</fk>
-			<fk name="fk_tblpranchetaprodutobarra_0" to_schema="mgsis" to_table="tblprodutobarra" >
-				<fk_column name="codprodutobarra" pk="codprodutobarra" />
+			<fk name="fk_tblpranchetaproduto_2" to_schema="mgsis" to_table="tblproduto" >
+				<fk_column name="codproduto" pk="codproduto" />
 			</fk>
 		</table>
 		<table name="tblproduto" >
@@ -3106,7 +3111,7 @@
 			<column name="site" type="bool" length="1" decimal="0" jt="-7" mandatory="y" >
 				<defo>false</defo>
 			</column>
-			<column name="descricaosite" type="varchar" length="1024" decimal="0" jt="12" />
+			<column name="descricaosite" type="text" length="1024" jt="12" />
 			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
@@ -3114,6 +3119,15 @@
 			<column name="observacoes" type="varchar" length="255" decimal="0" jt="12" />
 			<column name="codopencart" type="bigint" jt="-5" />
 			<column name="codopencartvariacao" type="bigint" jt="-5" />
+			<column name="peso" type="numeric" length="7" decimal="4" jt="2" />
+			<column name="altura" type="numeric" length="8" decimal="2" jt="2" />
+			<column name="largura" type="numeric" length="8" decimal="2" jt="2" />
+			<column name="profundidade" type="numeric" length="8" decimal="2" jt="2" />
+			<column name="vendesite" type="bool" jt="-7" mandatory="y" >
+				<defo>false</defo>
+			</column>
+			<column name="metakeywordsite" type="varchar" length="200" jt="12" />
+			<column name="metadescriptionsite" type="text" jt="12" />
 			<index name="tblproduto_pkey" unique="PRIMARY_KEY" >
 				<column name="codproduto" />
 			</index>
@@ -3229,6 +3243,15 @@
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="criacao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="peso" type="numeric" length="7" decimal="4" jt="2" />
+			<column name="altura" type="numeric" length="8" decimal="2" jt="2" />
+			<column name="largura" type="numeric" length="8" decimal="2" jt="2" />
+			<column name="profundidade" type="numeric" length="8" decimal="2" jt="2" />
+			<column name="vendesite" type="bool" jt="-7" mandatory="y" >
+				<defo>false</defo>
+			</column>
+			<column name="descricaosite" type="text" length="1024" jt="12" />
+			<column name="codopencart" type="bigint" jt="-5" />
 			<index name="tblprodutoembalagem_pkey" unique="PRIMARY_KEY" >
 				<column name="codprodutoembalagem" />
 			</index>
@@ -3285,6 +3308,9 @@
 			<column name="codusuariocriacao" type="bigint" length="19" decimal="0" jt="-5" />
 			<column name="alteracao" type="timestamp" length="29" decimal="6" jt="93" />
 			<column name="codusuarioalteracao" type="bigint" length="19" decimal="0" jt="-5" />
+			<column name="ordem" type="integer" jt="4" mandatory="y" >
+				<defo>1</defo>
+			</column>
 			<index name="pk_tblprodutoimagem" unique="PRIMARY_KEY" >
 				<column name="codprodutoimagem" />
 			</index>
@@ -5244,7 +5270,7 @@
 		<sequence name="tblpessoa_codpessoa_seq" start="1" />
 		<sequence name="tblportador_codportador_seq" start="1" />
 		<sequence name="tblprancheta_codprancheta_seq" start="1" />
-		<sequence name="tblpranchetaprodutobarra_codpranchetaprodutobarra_seq" start="1" />
+		<sequence name="tblpranchetaproduto_codpranchetaproduto_seq" start="1" />
 		<sequence name="tblproduto_codproduto_seq" start="1" />
 		<sequence name="tblprodutobarra_codprodutobarra_seq" start="1" />
 		<sequence name="tblprodutoembalagem_codprodutoembalagem_seq" start="1" />
@@ -6241,18 +6267,18 @@ $function$
 	<connector name="MGsis_Desenv" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-9.4.1208.jar" driver_desc="Standard" host="localhost" port="5432" instance="mgsis" user="mgsis" passwd="bWdzaXM=" />
 	<connector name="MGsis_Prod" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-9.4.1213.jar" driver_desc="Standard" host="192.168.1.205" port="5432" instance="mgsis" user="mgsis" passwd="bWdzaXM=" />
 	<layout name="Layout_Autorizacao" id="Layout_93c6439" confirmed="y" show_column_type="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblusuario" color="b7c8e3" x="60" y="80" />
-		<entity schema="mgsis" name="tblfilial" color="b7c8e3" x="800" y="80" />
-		<entity schema="mgsis" name="tblpermissao" color="b7c8e3" x="80" y="600" />
-		<entity schema="mgsis" name="tblgrupousuariousuario" color="b7c8e3" x="460" y="60" />
-		<entity schema="mgsis" name="tblgrupousuario" color="b7c8e3" x="480" y="380" />
-		<entity schema="mgsis" name="tblgrupousuariopermissao" color="b7c8e3" x="420" y="640" />
+		<entity schema="mgsis" name="tblusuario" color="b7c8e3" x="48" y="64" />
+		<entity schema="mgsis" name="tblfilial" color="b7c8e3" x="784" y="64" />
+		<entity schema="mgsis" name="tblpermissao" color="b7c8e3" x="64" y="592" />
+		<entity schema="mgsis" name="tblgrupousuariousuario" color="b7c8e3" x="448" y="48" />
+		<entity schema="mgsis" name="tblgrupousuario" color="b7c8e3" x="464" y="368" />
+		<entity schema="mgsis" name="tblgrupousuariopermissao" color="b7c8e3" x="400" y="624" />
 		<browser id="Browse_260dba35" name="tblgrupousuario" confirm_updates="y" confirmed="y" >
 			<browse_table schema="mgsis" entity="tblgrupousuario" x="10" y="10" width="453" height="349" />
 		</browser>
 	</layout>
 	<layout name="Layout_Cheques" id="Layout_3a399d00" show_relation="columns" >
-		<entity schema="mgsis" name="tblpessoa" color="c1d8ee" x="940" y="60" >
+		<entity schema="mgsis" name="tblpessoa" color="c1d8ee" x="928" y="48" >
 			<column name="codpessoa" />
 			<column name="codsexo" />
 			<column name="codestadocivil" />
@@ -6263,19 +6289,19 @@ $function$
 			<column name="codusuariocriacao" />
 			<column name="codgrupocliente" />
 		</entity>
-		<entity schema="mgsis" name="tblchequeemitente" color="c1d8ee" x="680" y="60" />
-		<entity schema="mgsis" name="tblchequedevolucao" color="c1d8ee" x="600" y="580" />
-		<entity schema="mgsis" name="tblbanco" color="c1d8ee" x="60" y="120" />
-		<entity schema="mgsis" name="tblchequerepasse" color="c1d8ee" x="940" y="320" />
-		<entity schema="mgsis" name="tblportador" color="c1d8ee" x="1200" y="300" >
+		<entity schema="mgsis" name="tblchequeemitente" color="c1d8ee" x="656" y="48" />
+		<entity schema="mgsis" name="tblchequedevolucao" color="c1d8ee" x="592" y="560" />
+		<entity schema="mgsis" name="tblbanco" color="c1d8ee" x="48" y="112" />
+		<entity schema="mgsis" name="tblchequerepasse" color="c1d8ee" x="928" y="304" />
+		<entity schema="mgsis" name="tblportador" color="c1d8ee" x="1184" y="288" >
 			<column name="codportador" />
 			<column name="codbanco" />
 			<column name="codfilial" />
 			<column name="codusuarioalteracao" />
 			<column name="codusuariocriacao" />
 		</entity>
-		<entity schema="mgsis" name="tblchequerepassecheque" color="c1d8ee" x="540" y="300" />
-		<entity schema="mgsis" name="tbltitulo" color="c1d8ee" x="180" y="660" >
+		<entity schema="mgsis" name="tblchequerepassecheque" color="c1d8ee" x="528" y="288" />
+		<entity schema="mgsis" name="tbltitulo" color="c1d8ee" x="160" y="640" >
 			<column name="codtitulo" />
 			<column name="codtipotitulo" />
 			<column name="codfilial" />
@@ -6288,36 +6314,36 @@ $function$
 			<column name="codusuariocriacao" />
 			<column name="codvalecompraformapagamento" />
 		</entity>
-		<entity schema="mgsis" name="tblcheque" color="c1d8ee" x="320" y="60" />
-		<entity schema="mgsis" name="tblchequemotivodevolucao" color="c1d8ee" x="920" y="620" />
+		<entity schema="mgsis" name="tblcheque" color="c1d8ee" x="304" y="48" />
+		<entity schema="mgsis" name="tblchequemotivodevolucao" color="c1d8ee" x="912" y="608" />
 	</layout>
 	<layout name="Layout_Devolucao" id="Layout7285461" confirmed="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblnotafiscal" color="b2cdf7" x="1240" y="60" />
-		<entity schema="mgsis" name="tblpessoa" color="b2cdf7" x="60" y="180" />
-		<entity schema="mgsis" name="tblnegocioformapagamento" color="b2cdf7" x="540" y="720" />
-		<entity schema="mgsis" name="tblnegocio" color="b2cdf7" x="320" y="540" />
-		<entity schema="mgsis" name="tblnegocioprodutobarra" color="b2cdf7" x="540" y="460" />
-		<entity schema="mgsis" name="tbltitulo" color="b2cdf7" x="820" y="460" />
-		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="b2cdf7" x="1040" y="200" />
-		<entity schema="mgsis" name="tbltipotitulo" color="b2cdf7" x="580" y="160" />
-		<entity schema="mgsis" name="tblcontacontabil" color="b2cdf7" x="840" y="200" />
-		<entity schema="mgsis" name="tblnaturezaoperacao" color="b2cdf7" x="280" y="220" />
+		<entity schema="mgsis" name="tblnotafiscal" color="b2cdf7" x="1232" y="48" />
+		<entity schema="mgsis" name="tblpessoa" color="b2cdf7" x="48" y="160" />
+		<entity schema="mgsis" name="tblnegocioformapagamento" color="b2cdf7" x="528" y="704" />
+		<entity schema="mgsis" name="tblnegocio" color="b2cdf7" x="304" y="528" />
+		<entity schema="mgsis" name="tblnegocioprodutobarra" color="b2cdf7" x="528" y="448" />
+		<entity schema="mgsis" name="tbltitulo" color="b2cdf7" x="800" y="448" />
+		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="b2cdf7" x="1024" y="176" />
+		<entity schema="mgsis" name="tbltipotitulo" color="b2cdf7" x="560" y="144" />
+		<entity schema="mgsis" name="tblcontacontabil" color="b2cdf7" x="816" y="176" />
+		<entity schema="mgsis" name="tblnaturezaoperacao" color="b2cdf7" x="272" y="208" />
 	</layout>
 	<layout name="Layout_Empresa" id="Layout7239500" confirmed="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblempresa" color="b2cdf7" x="440" y="100" />
-		<entity schema="mgsis" name="tblpessoa" color="b2cdf7" x="740" y="60" />
-		<entity schema="mgsis" name="tblfilial" color="b2cdf7" x="60" y="100" />
+		<entity schema="mgsis" name="tblempresa" color="b2cdf7" x="432" y="80" />
+		<entity schema="mgsis" name="tblpessoa" color="b2cdf7" x="720" y="48" />
+		<entity schema="mgsis" name="tblfilial" color="b2cdf7" x="48" y="80" />
 	</layout>
 	<layout name="Layout_Estoque" id="Layout_1cc2625c" confirmed="y" show_column_type="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblestoquemes" color="b3cef5" x="100" y="560" />
-		<entity schema="mgsis" name="tblproduto" color="b3cef5" x="500" y="560" />
-		<entity schema="mgsis" name="tblestoquelocal" color="b3cef5" x="500" y="1180" />
-		<entity schema="mgsis" name="tblestoquesaldo" color="b3cef5" x="60" y="1180" />
-		<entity schema="mgsis" name="tblestoquelocalprodutovariacao" color="b3cef5" x="860" y="900" />
-		<entity schema="mgsis" name="tblestoquemovimentotipo" color="b3cef5" x="1280" y="940" />
-		<entity schema="mgsis" name="tblestoquemovimento" color="b3cef5" x="540" y="60" />
-		<entity schema="mgsis" name="tblestoquesaldoconferencia" color="b3cef5" x="100" y="80" />
-		<entity schema="mgsis" name="tblnegocioprodutobarra" color="b3cef5" x="1140" y="160" >
+		<entity schema="mgsis" name="tblestoquemes" color="b3cef5" x="80" y="544" />
+		<entity schema="mgsis" name="tblproduto" color="b3cef5" x="480" y="544" />
+		<entity schema="mgsis" name="tblestoquelocal" color="b3cef5" x="480" y="1168" />
+		<entity schema="mgsis" name="tblestoquesaldo" color="b3cef5" x="48" y="1168" />
+		<entity schema="mgsis" name="tblestoquelocalprodutovariacao" color="b3cef5" x="848" y="880" />
+		<entity schema="mgsis" name="tblestoquemovimentotipo" color="b3cef5" x="1264" y="928" />
+		<entity schema="mgsis" name="tblestoquemovimento" color="b3cef5" x="528" y="48" />
+		<entity schema="mgsis" name="tblestoquesaldoconferencia" color="b3cef5" x="80" y="64" />
+		<entity schema="mgsis" name="tblnegocioprodutobarra" color="b3cef5" x="1120" y="144" >
 			<column name="codnegocioprodutobarra" />
 			<column name="codnegocio" />
 			<column name="codprodutobarra" />
@@ -6325,10 +6351,10 @@ $function$
 			<column name="codusuariocriacao" />
 			<column name="codnegocioprodutobarradevolucao" />
 		</entity>
-		<entity schema="mgsis" name="tblprodutovariacao" color="b3cef5" x="860" y="500" />
-		<entity schema="mgsis" name="tblnotafiscal" color="c1d8ee" x="1720" y="180" />
-		<entity schema="mgsis" name="tblnaturezaoperacao" color="c1d8ee" x="2080" y="360" />
-		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="b3cef5" x="1240" y="560" >
+		<entity schema="mgsis" name="tblprodutovariacao" color="b3cef5" x="848" y="480" />
+		<entity schema="mgsis" name="tblnotafiscal" color="c1d8ee" x="1712" y="160" />
+		<entity schema="mgsis" name="tblnaturezaoperacao" color="c1d8ee" x="2064" y="336" />
+		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="b3cef5" x="1232" y="544" >
 			<column name="codnotafiscalprodutobarra" />
 			<column name="codnotafiscal" />
 			<column name="codnotafiscalprodutobarraorigem" />
@@ -6340,119 +6366,119 @@ $function$
 		</entity>
 	</layout>
 	<layout name="Layout_Feriados" id="Layout_1d848eea" show_relation="columns" >
-		<entity schema="mgsis" name="tblusuario" color="c1d8ee" x="60" y="60" />
-		<entity schema="mgsis" name="tblferiado" color="c1d8ee" x="460" y="120" />
+		<entity schema="mgsis" name="tblusuario" color="c1d8ee" x="48" y="48" />
+		<entity schema="mgsis" name="tblferiado" color="c1d8ee" x="448" y="112" />
 	</layout>
 	<layout name="Layout_Fiscal" id="Layout4922365" confirmed="y" show_relation="columns" >
-		<entity schema="mgsis" name="tbltributacao" color="b2cdf7" x="580" y="340" />
-		<entity schema="mgsis" name="tblestado" color="b2cdf7" x="1200" y="560" />
-		<entity schema="mgsis" name="tbltipoproduto" color="b2cdf7" x="1200" y="360" />
-		<entity schema="mgsis" name="tblncmtributacao" color="b2cdf7" x="540" y="580" />
-		<entity schema="mgsis" name="tblcfop" color="b2cdf7" x="580" y="120" />
-		<entity schema="mgsis" name="tbltributacaonaturezaoperacao" color="b2cdf7" x="900" y="140" />
-		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="b2cdf7" x="300" y="100" />
-		<entity schema="mgsis" name="tblnaturezaoperacao" color="b2cdf7" x="1160" y="100" />
-		<entity schema="mgsis" name="tblnotafiscal" color="b2cdf7" x="60" y="60" />
-		<entity schema="mgsis" name="tblnotafiscalreferenciada" color="b2cdf7" x="100" y="780" />
-		<entity schema="mgsis" name="tblncm" color="b2cdf7" x="720" y="580" />
+		<entity schema="mgsis" name="tbltributacao" color="b2cdf7" x="560" y="320" />
+		<entity schema="mgsis" name="tblestado" color="b2cdf7" x="1184" y="544" />
+		<entity schema="mgsis" name="tbltipoproduto" color="b2cdf7" x="1184" y="336" />
+		<entity schema="mgsis" name="tblncmtributacao" color="b2cdf7" x="528" y="560" />
+		<entity schema="mgsis" name="tblcfop" color="b2cdf7" x="560" y="112" />
+		<entity schema="mgsis" name="tbltributacaonaturezaoperacao" color="b2cdf7" x="880" y="128" />
+		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="b2cdf7" x="288" y="80" />
+		<entity schema="mgsis" name="tblnaturezaoperacao" color="b2cdf7" x="1136" y="80" />
+		<entity schema="mgsis" name="tblnotafiscal" color="b2cdf7" x="48" y="48" />
+		<entity schema="mgsis" name="tblnotafiscalreferenciada" color="b2cdf7" x="80" y="768" />
+		<entity schema="mgsis" name="tblncm" color="b2cdf7" x="704" y="560" />
 	</layout>
 	<layout name="Layout_Geral" id="Layout4866226" confirmed="y" show_relation="columns" >
-		<entity schema="mgsis" name="tbl_migration" color="b3ccf5" x="3460" y="1960" />
-		<entity schema="mgsis" name="tblauditoria" color="b3ccf5" x="2740" y="1940" />
-		<entity schema="mgsis" name="tblauditoriaexcecao" color="b3ccf5" x="3200" y="1940" />
-		<entity schema="mgsis" name="tblauditoriatransmissao" color="b3ccf5" x="2740" y="2380" />
-		<entity schema="mgsis" name="tblauthassignment" color="f5d8b3" x="1780" y="2260" />
-		<entity schema="mgsis" name="tblauthitem" color="f5d8b3" x="2120" y="2260" />
-		<entity schema="mgsis" name="tblauthitemchild" color="f5d8b3" x="1960" y="2260" />
-		<entity schema="mgsis" name="tblbanco" color="b3ccf5" x="2320" y="2200" />
-		<entity schema="mgsis" name="tblbaseremota" color="b3ccf5" x="2520" y="1980" />
-		<entity schema="mgsis" name="tblboletomotivoocorrencia" color="bef5b3" x="1020" y="2660" />
-		<entity schema="mgsis" name="tblboletoretorno" color="f5d8b3" x="2580" y="2980" />
-		<entity schema="mgsis" name="tblboletotipoocorrencia" color="bef5b3" x="800" y="2660" />
-		<entity schema="mgsis" name="tblcfop" color="b3ccf5" x="2520" y="2200" />
-		<entity schema="mgsis" name="tblcheque" color="f5d8b3" x="1560" y="2260" />
-		<entity schema="mgsis" name="tblchequeemitente" color="f5d8b3" x="1740" y="2040" />
-		<entity schema="mgsis" name="tblcidade" color="b3b3f5" x="1820" y="1620" />
-		<entity schema="mgsis" name="tblcobranca" color="f5d8b3" x="1960" y="1940" />
-		<entity schema="mgsis" name="tblcobrancahistorico" color="cab3f5" x="2580" y="1440" />
-		<entity schema="mgsis" name="tblcobrancahistoricotitulo" color="cab3f5" x="2340" y="1440" />
-		<entity schema="mgsis" name="tblcodigo" color="b3b3f5" x="540" y="2000" />
-		<entity schema="mgsis" name="tblcontacontabil" color="f5d8b3" x="2620" y="2760" />
-		<entity schema="mgsis" name="tblcupomfiscal" color="b3b3f5" x="1560" y="540" />
-		<entity schema="mgsis" name="tblcupomfiscalprodutobarra" color="b3ccf5" x="2000" y="3440" />
-		<entity schema="mgsis" name="tblecf" color="f5d8b3" x="1040" y="3080" />
-		<entity schema="mgsis" name="tblecfreducaoz" color="f5d8b3" x="1280" y="3400" />
-		<entity schema="mgsis" name="tblempresa" color="b3b3f5" x="1820" y="1420" />
-		<entity schema="mgsis" name="tblestado" color="f5d8b3" x="2820" y="2980" />
-		<entity schema="mgsis" name="tblestadocivil" color="bef5b3" x="340" y="3240" />
-		<entity schema="mgsis" name="tblestoquemovimento" color="b3ccf5" x="1780" y="2740" />
-		<entity schema="mgsis" name="tblestoquesaldo" color="b3b3f5" x="2020" y="1620" />
-		<entity schema="mgsis" name="tblestoquesaldo_2014_2015" color="cab3f5" x="2580" y="100" />
-		<entity schema="mgsis" name="tblfilial" color="b3b3f5" x="1560" y="1260" />
-		<entity schema="mgsis" name="tblformapagamento" color="cab3f5" x="2360" y="1140" />
-		<entity schema="mgsis" name="tblgrupocliente" color="bef5b3" x="540" y="3440" />
-		<entity schema="mgsis" name="tblgrupoproduto" color="bef5b3" x="1100" y="1540" />
-		<entity schema="mgsis" name="tblibptax" color="b3b3f5" x="320" y="1940" />
-		<entity schema="mgsis" name="tblliquidacaotitulo" color="bef5b3" x="1100" y="1200" />
-		<entity schema="mgsis" name="tblmarca" color="b3b3f5" x="1620" y="1620" />
-		<entity schema="mgsis" name="tblmenu" color="b3b3f5" x="540" y="2200" />
-		<entity schema="mgsis" name="tblmovimentotitulo" color="bef5b3" x="880" y="1160" />
-		<entity schema="mgsis" name="tblnaturezaoperacao" color="bef5b3" x="1280" y="2660" />
-		<entity schema="mgsis" name="tblncm" color="b3b3f5" x="100" y="2200" />
-		<entity schema="mgsis" name="tblnegocio" color="f5d8b3" x="800" y="2960" />
-		<entity schema="mgsis" name="tblnegocioformapagamento" color="cab3f5" x="2320" y="1660" />
-		<entity schema="mgsis" name="tblnegocioprodutobarra" color="b3ccf5" x="2000" y="3700" />
-		<entity schema="mgsis" name="tblnegociostatus" color="f5d8b3" x="1280" y="3200" />
-		<entity schema="mgsis" name="tblnfeterceiro" color="b3ccf5" x="1560" y="3100" />
-		<entity schema="mgsis" name="tblnfeterceiroduplicata" color="f5d8b3" x="2820" y="2740" />
-		<entity schema="mgsis" name="tblnfeterceiroitem" color="b3ccf5" x="1780" y="3100" />
-		<entity schema="mgsis" name="tblnotafiscal" color="bef5b3" x="800" y="1940" />
-		<entity schema="mgsis" name="tblnotafiscalcartacorrecao" color="bef5b3" x="1280" y="2380" />
-		<entity schema="mgsis" name="tblnotafiscalduplicatas" color="bef5b3" x="1020" y="2420" />
-		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="bef5b3" x="2840" y="4780" />
-		<entity schema="mgsis" name="tbloperacao" color="b3ccf5" x="3460" y="2340" />
-		<entity schema="mgsis" name="tblpais" color="bef5b3" x="120" y="3440" />
-		<entity schema="mgsis" name="tblparametrosgerais" color="b3b3f5" x="320" y="2200" />
-		<entity schema="mgsis" name="tblpessoa" color="bef5b3" x="540" y="3700" />
-		<entity schema="mgsis" name="tblportador" color="bef5b3" x="1300" y="1540" />
-		<entity schema="mgsis" name="tblproduto" color="cab3f5" x="560" y="1520" />
-		<entity schema="mgsis" name="tblprodutobarra" color="cab3f5" x="340" y="1260" />
-		<entity schema="mgsis" name="tblprodutohistoricopreco" color="f5d8b3" x="1040" y="3400" />
-		<entity schema="mgsis" name="tblregistrospc" color="bef5b3" x="340" y="3440" />
-		<entity schema="mgsis" name="tblsexo" color="b3ccf5" x="2740" y="2200" />
-		<entity schema="mgsis" name="tblsubgrupoproduto" color="bef5b3" x="900" y="1540" />
-		<entity schema="mgsis" name="tbltipomovimentotitulo" color="bef5b3" x="1300" y="1220" />
-		<entity schema="mgsis" name="tbltipoproduto" color="cab3f5" x="560" y="1060" />
-		<entity schema="mgsis" name="tbltipotitulo" color="f5d8b3" x="3040" y="2980" />
-		<entity schema="mgsis" name="tbltituloagrupamento" color="cab3f5" x="2580" y="1180" />
-		<entity schema="mgsis" name="tbltributacao" color="cab3f5" x="340" y="1040" />
-		<entity schema="mgsis" name="tbltributacaonaturezaoperacao" color="cab3f5" x="60" y="1260" />
-		<entity schema="mgsis" name="tblunidademedida" color="cab3f5" x="560" y="1260" />
-		<entity schema="mgsis" name="tblusuario" color="b3b3f5" x="540" y="2400" />
-		<entity schema="mgsis" name="vwboleto" color="b3ccf5" x="2980" y="2100" />
-		<entity schema="mgsis" name="vwboletoretorno" color="b3ccf5" x="3200" y="2100" />
-		<entity schema="mgsis" name="vwcupomfiscal" color="b3b3f5" x="1960" y="940" />
-		<entity schema="mgsis" name="vwcupomfiscalprodutobarra" color="b3b3f5" x="1780" y="580" />
-		<entity schema="mgsis" name="vwcupomfiscalprodutobarratotais" color="b3b3f5" x="1960" y="800" />
-		<entity schema="mgsis" name="vwiscolunas" color="cab3f5" x="2800" y="300" />
-		<entity schema="mgsis" name="vwliquidacaotitulo" color="cab3f5" x="2380" y="300" />
-		<entity schema="mgsis" name="vwnegocio" color="cab3f5" x="2580" y="300" />
-		<entity schema="mgsis" name="vwnegocio_listagem" color="f5d8b3" x="3540" y="2740" />
-		<entity schema="mgsis" name="vwnegocioformapagamento" color="f5d8b3" x="3780" y="2860" />
-		<entity schema="mgsis" name="vwnegocioformapagamentototais" color="f5d8b3" x="3920" y="3160" />
-		<entity schema="mgsis" name="vwnegocioprodutobarra" color="f5d8b3" x="3300" y="3160" />
-		<entity schema="mgsis" name="vwnegocioprodutobarratotais" color="f5d8b3" x="3540" y="3160" />
-		<entity schema="mgsis" name="vwnotafiscal" color="f5d8b3" x="3780" y="3160" />
-		<entity schema="mgsis" name="vwnotafiscalprodutobarra" color="bef5b3" x="2840" y="3660" />
-		<entity schema="mgsis" name="vwnotafiscalprodutobarratotais" color="bef5b3" x="2580" y="3900" />
-		<entity schema="mgsis" name="vwpessoa" color="bef5b3" x="540" y="2960" />
-		<entity schema="mgsis" name="vwprodutobarra" color="bef5b3" x="2840" y="4140" />
-		<entity schema="mgsis" name="vwprodutotributacao" color="bef5b3" x="2320" y="4140" />
-		<entity schema="mgsis" name="vwtitulo" color="bef5b3" x="2580" y="4140" />
-		<entity schema="mgsis" name="vwtituloagrupamento_baixados" color="cab3f5" x="2780" y="1440" />
-		<entity schema="mgsis" name="tbltitulo" color="f5d8b3" x="2320" y="2980" />
-		<entity schema="mgsis" name="tblestoquemovimentotipo" color="b3ccf5" x="2000" y="3100" />
-		<entity schema="mgsis" name="tblprodutoembalagem" color="f5d8b3" x="820" y="3400" />
+		<entity schema="mgsis" name="tbl_migration" color="b3ccf5" x="3440" y="1936" />
+		<entity schema="mgsis" name="tblauditoria" color="b3ccf5" x="2720" y="1920" />
+		<entity schema="mgsis" name="tblauditoriaexcecao" color="b3ccf5" x="3184" y="1920" />
+		<entity schema="mgsis" name="tblauditoriatransmissao" color="b3ccf5" x="2720" y="2368" />
+		<entity schema="mgsis" name="tblauthassignment" color="f5d8b3" x="1760" y="2240" />
+		<entity schema="mgsis" name="tblauthitem" color="f5d8b3" x="2096" y="2240" />
+		<entity schema="mgsis" name="tblauthitemchild" color="f5d8b3" x="1936" y="2240" />
+		<entity schema="mgsis" name="tblbanco" color="b3ccf5" x="2304" y="2192" />
+		<entity schema="mgsis" name="tblbaseremota" color="b3ccf5" x="2512" y="1968" />
+		<entity schema="mgsis" name="tblboletomotivoocorrencia" color="bef5b3" x="1008" y="2640" />
+		<entity schema="mgsis" name="tblboletoretorno" color="f5d8b3" x="2560" y="2960" />
+		<entity schema="mgsis" name="tblboletotipoocorrencia" color="bef5b3" x="784" y="2640" />
+		<entity schema="mgsis" name="tblcfop" color="b3ccf5" x="2512" y="2192" />
+		<entity schema="mgsis" name="tblcheque" color="f5d8b3" x="1552" y="2240" />
+		<entity schema="mgsis" name="tblchequeemitente" color="f5d8b3" x="1728" y="2032" />
+		<entity schema="mgsis" name="tblcidade" color="b3b3f5" x="1808" y="1600" />
+		<entity schema="mgsis" name="tblcobranca" color="f5d8b3" x="1936" y="1920" />
+		<entity schema="mgsis" name="tblcobrancahistorico" color="cab3f5" x="2560" y="1424" />
+		<entity schema="mgsis" name="tblcobrancahistoricotitulo" color="cab3f5" x="2320" y="1424" />
+		<entity schema="mgsis" name="tblcodigo" color="b3b3f5" x="528" y="1984" />
+		<entity schema="mgsis" name="tblcontacontabil" color="f5d8b3" x="2608" y="2736" />
+		<entity schema="mgsis" name="tblcupomfiscal" color="b3b3f5" x="1552" y="528" />
+		<entity schema="mgsis" name="tblcupomfiscalprodutobarra" color="b3ccf5" x="1984" y="3424" />
+		<entity schema="mgsis" name="tblecf" color="f5d8b3" x="1024" y="3056" />
+		<entity schema="mgsis" name="tblecfreducaoz" color="f5d8b3" x="1264" y="3376" />
+		<entity schema="mgsis" name="tblempresa" color="b3b3f5" x="1808" y="1408" />
+		<entity schema="mgsis" name="tblestado" color="f5d8b3" x="2800" y="2960" />
+		<entity schema="mgsis" name="tblestadocivil" color="bef5b3" x="320" y="3216" />
+		<entity schema="mgsis" name="tblestoquemovimento" color="b3ccf5" x="1760" y="2720" />
+		<entity schema="mgsis" name="tblestoquesaldo" color="b3b3f5" x="2000" y="1600" />
+		<entity schema="mgsis" name="tblestoquesaldo_2014_2015" color="cab3f5" x="2560" y="80" />
+		<entity schema="mgsis" name="tblfilial" color="b3b3f5" x="1552" y="1248" />
+		<entity schema="mgsis" name="tblformapagamento" color="cab3f5" x="2352" y="1120" />
+		<entity schema="mgsis" name="tblgrupocliente" color="bef5b3" x="528" y="3424" />
+		<entity schema="mgsis" name="tblgrupoproduto" color="bef5b3" x="1088" y="1520" />
+		<entity schema="mgsis" name="tblibptax" color="b3b3f5" x="304" y="1920" />
+		<entity schema="mgsis" name="tblliquidacaotitulo" color="bef5b3" x="1088" y="1184" />
+		<entity schema="mgsis" name="tblmarca" color="b3b3f5" x="1600" y="1600" />
+		<entity schema="mgsis" name="tblmenu" color="b3b3f5" x="528" y="2192" />
+		<entity schema="mgsis" name="tblmovimentotitulo" color="bef5b3" x="864" y="1136" />
+		<entity schema="mgsis" name="tblnaturezaoperacao" color="bef5b3" x="1264" y="2640" />
+		<entity schema="mgsis" name="tblncm" color="b3b3f5" x="80" y="2192" />
+		<entity schema="mgsis" name="tblnegocio" color="f5d8b3" x="784" y="2944" />
+		<entity schema="mgsis" name="tblnegocioformapagamento" color="cab3f5" x="2304" y="1648" />
+		<entity schema="mgsis" name="tblnegocioprodutobarra" color="b3ccf5" x="1984" y="3680" />
+		<entity schema="mgsis" name="tblnegociostatus" color="f5d8b3" x="1264" y="3184" />
+		<entity schema="mgsis" name="tblnfeterceiro" color="b3ccf5" x="1552" y="3088" />
+		<entity schema="mgsis" name="tblnfeterceiroduplicata" color="f5d8b3" x="2800" y="2720" />
+		<entity schema="mgsis" name="tblnfeterceiroitem" color="b3ccf5" x="1760" y="3088" />
+		<entity schema="mgsis" name="tblnotafiscal" color="bef5b3" x="784" y="1920" />
+		<entity schema="mgsis" name="tblnotafiscalcartacorrecao" color="bef5b3" x="1264" y="2368" />
+		<entity schema="mgsis" name="tblnotafiscalduplicatas" color="bef5b3" x="1008" y="2400" />
+		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="bef5b3" x="2832" y="4768" />
+		<entity schema="mgsis" name="tbloperacao" color="b3ccf5" x="3440" y="2320" />
+		<entity schema="mgsis" name="tblpais" color="bef5b3" x="112" y="3424" />
+		<entity schema="mgsis" name="tblparametrosgerais" color="b3b3f5" x="304" y="2192" />
+		<entity schema="mgsis" name="tblpessoa" color="bef5b3" x="528" y="3680" />
+		<entity schema="mgsis" name="tblportador" color="bef5b3" x="1280" y="1520" />
+		<entity schema="mgsis" name="tblproduto" color="cab3f5" x="544" y="1504" />
+		<entity schema="mgsis" name="tblprodutobarra" color="cab3f5" x="320" y="1248" />
+		<entity schema="mgsis" name="tblprodutohistoricopreco" color="f5d8b3" x="1024" y="3376" />
+		<entity schema="mgsis" name="tblregistrospc" color="bef5b3" x="320" y="3424" />
+		<entity schema="mgsis" name="tblsexo" color="b3ccf5" x="2720" y="2192" />
+		<entity schema="mgsis" name="tblsubgrupoproduto" color="bef5b3" x="880" y="1520" />
+		<entity schema="mgsis" name="tbltipomovimentotitulo" color="bef5b3" x="1280" y="1200" />
+		<entity schema="mgsis" name="tbltipoproduto" color="cab3f5" x="544" y="1040" />
+		<entity schema="mgsis" name="tbltipotitulo" color="f5d8b3" x="3024" y="2960" />
+		<entity schema="mgsis" name="tbltituloagrupamento" color="cab3f5" x="2560" y="1168" />
+		<entity schema="mgsis" name="tbltributacao" color="cab3f5" x="320" y="1024" />
+		<entity schema="mgsis" name="tbltributacaonaturezaoperacao" color="cab3f5" x="48" y="1248" />
+		<entity schema="mgsis" name="tblunidademedida" color="cab3f5" x="544" y="1248" />
+		<entity schema="mgsis" name="tblusuario" color="b3b3f5" x="528" y="2384" />
+		<entity schema="mgsis" name="vwboleto" color="b3ccf5" x="2960" y="2080" />
+		<entity schema="mgsis" name="vwboletoretorno" color="b3ccf5" x="3184" y="2080" />
+		<entity schema="mgsis" name="vwcupomfiscal" color="b3b3f5" x="1936" y="928" />
+		<entity schema="mgsis" name="vwcupomfiscalprodutobarra" color="b3b3f5" x="1760" y="560" />
+		<entity schema="mgsis" name="vwcupomfiscalprodutobarratotais" color="b3b3f5" x="1936" y="784" />
+		<entity schema="mgsis" name="vwiscolunas" color="cab3f5" x="2784" y="288" />
+		<entity schema="mgsis" name="vwliquidacaotitulo" color="cab3f5" x="2368" y="288" />
+		<entity schema="mgsis" name="vwnegocio" color="cab3f5" x="2560" y="288" />
+		<entity schema="mgsis" name="vwnegocio_listagem" color="f5d8b3" x="3520" y="2720" />
+		<entity schema="mgsis" name="vwnegocioformapagamento" color="f5d8b3" x="3760" y="2848" />
+		<entity schema="mgsis" name="vwnegocioformapagamentototais" color="f5d8b3" x="3904" y="3152" />
+		<entity schema="mgsis" name="vwnegocioprodutobarra" color="f5d8b3" x="3280" y="3152" />
+		<entity schema="mgsis" name="vwnegocioprodutobarratotais" color="f5d8b3" x="3520" y="3152" />
+		<entity schema="mgsis" name="vwnotafiscal" color="f5d8b3" x="3760" y="3152" />
+		<entity schema="mgsis" name="vwnotafiscalprodutobarra" color="bef5b3" x="2832" y="3648" />
+		<entity schema="mgsis" name="vwnotafiscalprodutobarratotais" color="bef5b3" x="2560" y="3888" />
+		<entity schema="mgsis" name="vwpessoa" color="bef5b3" x="528" y="2944" />
+		<entity schema="mgsis" name="vwprodutobarra" color="bef5b3" x="2832" y="4128" />
+		<entity schema="mgsis" name="vwprodutotributacao" color="bef5b3" x="2304" y="4128" />
+		<entity schema="mgsis" name="vwtitulo" color="bef5b3" x="2560" y="4128" />
+		<entity schema="mgsis" name="vwtituloagrupamento_baixados" color="cab3f5" x="2768" y="1424" />
+		<entity schema="mgsis" name="tbltitulo" color="f5d8b3" x="2304" y="2960" />
+		<entity schema="mgsis" name="tblestoquemovimentotipo" color="b3ccf5" x="1984" y="3088" />
+		<entity schema="mgsis" name="tblprodutoembalagem" color="f5d8b3" x="800" y="3376" />
 		<group name="tblauthitemchild" color="f7f1ea" >
 			<comment><![CDATA[Used by : 
    tblgrupoproduto]]></comment>
@@ -6462,7 +6488,7 @@ $function$
 			<entity schema="mgsis" name="tblcobranca" />
 			<entity schema="mgsis" name="tblchequeemitente" />
 			<entity schema="mgsis" name="tblcheque" />
-			<callout x="1580" y="1880" pointer="SV" />
+			<callout x="1568" y="1872" pointer="SV" />
 		</group>
 		<group name="tblboletomotivoocorrencia" color="ecf7ea" >
 			<comment><![CDATA[Used by : 
@@ -6476,7 +6502,7 @@ $function$
 			<entity schema="mgsis" name="tblnotafiscalduplicatas" />
 			<entity schema="mgsis" name="tblnotafiscalcartacorrecao" />
 			<entity schema="mgsis" name="tblnotafiscal" />
-			<callout x="820" y="1880" pointer="SV" />
+			<callout x="800" y="1872" pointer="SV" />
 		</group>
 		<group name="tblcfop" color="eaeff7" >
 			<comment><![CDATA[Used by : 
@@ -6491,7 +6517,7 @@ $function$
 			<entity schema="mgsis" name="tblbaseremota" />
 			<entity schema="mgsis" name="tblauditoria" />
 			<entity schema="mgsis" name="tblauditoriatransmissao" />
-			<callout x="2340" y="1880" pointer="SV" />
+			<callout x="2320" y="1872" pointer="SV" />
 		</group>
 		<group name="tblcidade" color="eaeaf7" >
 			<comment><![CDATA[Used by : 
@@ -6506,7 +6532,7 @@ $function$
 			<entity schema="mgsis" name="tblestoquesaldo" />
 			<entity schema="mgsis" name="tblempresa" />
 			<entity schema="mgsis" name="tblfilial" />
-			<callout x="1580" y="1180" pointer="SV" />
+			<callout x="1568" y="1168" pointer="SV" />
 		</group>
 		<group name="tblcobrancahistorico" color="efeaf7" >
 			<comment><![CDATA[Used by : 
@@ -6519,7 +6545,7 @@ $function$
 			<entity schema="mgsis" name="tbltituloagrupamento" />
 			<entity schema="mgsis" name="tblformapagamento" />
 			<entity schema="mgsis" name="tblnegocioformapagamento" />
-			<callout x="2340" y="1060" pointer="SV" />
+			<callout x="2320" y="1040" pointer="SV" />
 		</group>
 		<group name="tblestado" color="f7f1ea" >
 			<comment><![CDATA[Used by : 
@@ -6534,7 +6560,7 @@ $function$
 			<entity schema="mgsis" name="tblnfeterceiroduplicata" />
 			<entity schema="mgsis" name="tblcontacontabil" />
 			<entity schema="mgsis" name="tbltitulo" />
-			<callout x="2340" y="2680" pointer="SV" />
+			<callout x="2320" y="2672" pointer="SV" />
 		</group>
 		<group name="tblgrupoproduto" color="ecf7ea" >
 			<comment><![CDATA[Used by : 
@@ -6548,7 +6574,7 @@ $function$
 			<entity schema="mgsis" name="tblliquidacaotitulo" />
 			<entity schema="mgsis" name="tbltipomovimentotitulo" />
 			<entity schema="mgsis" name="tblmovimentotitulo" />
-			<callout x="900" y="1100" pointer="SV" />
+			<callout x="880" y="1088" pointer="SV" />
 		</group>
 		<group name="tblnfeterceiroitem" color="eaeff7" >
 			<comment><![CDATA[Used by : 
@@ -6560,7 +6586,7 @@ $function$
 			<entity schema="mgsis" name="tblestoquemovimento" />
 			<entity schema="mgsis" name="tblcupomfiscalprodutobarra" />
 			<entity schema="mgsis" name="tblnegocioprodutobarra" />
-			<callout x="1580" y="2680" pointer="SV" />
+			<callout x="1568" y="2672" pointer="SV" />
 		</group>
 		<group name="tblparametrosgerais" color="eaeaf7" >
 			<comment><![CDATA[Used by : 
@@ -6576,7 +6602,7 @@ $function$
 			<entity schema="mgsis" name="tblibptax" />
 			<entity schema="mgsis" name="tblcodigo" />
 			<entity schema="mgsis" name="tblusuario" />
-			<callout x="120" y="1880" pointer="SV" />
+			<callout x="112" y="1872" pointer="SV" />
 		</group>
 		<group name="tblprodutobarra" color="efeaf7" >
 			<comment><![CDATA[Used by : 
@@ -6590,7 +6616,7 @@ $function$
 			<entity schema="mgsis" name="tbltributacao" />
 			<entity schema="mgsis" name="tbltipoproduto" />
 			<entity schema="mgsis" name="tblproduto" />
-			<callout x="80" y="980" pointer="SV" />
+			<callout x="64" y="960" pointer="SV" />
 		</group>
 		<group name="tblprodutohistoricopreco" color="f7f1ea" >
 			<comment><![CDATA[Used by : 
@@ -6605,7 +6631,7 @@ $function$
 			<entity schema="mgsis" name="tblecf" />
 			<entity schema="mgsis" name="tblnegociostatus" />
 			<entity schema="mgsis" name="tblnegocio" />
-			<callout x="820" y="2900" pointer="SV" />
+			<callout x="800" y="2880" pointer="SV" />
 		</group>
 		<group name="tblregistrospc" color="ecf7ea" >
 			<comment><![CDATA[Used by : 
@@ -6621,7 +6647,7 @@ $function$
 			<entity schema="mgsis" name="tblestadocivil" />
 			<entity schema="mgsis" name="vwpessoa" />
 			<entity schema="mgsis" name="tblpessoa" />
-			<callout x="140" y="2900" pointer="SV" />
+			<callout x="128" y="2880" pointer="SV" />
 		</group>
 		<group name="vwboletoretorno" color="eaeff7" >
 			<comment><![CDATA[Used by : 
@@ -6634,7 +6660,7 @@ $function$
 			<entity schema="mgsis" name="tblauditoriaexcecao" />
 			<entity schema="mgsis" name="tbl_migration" />
 			<entity schema="mgsis" name="tbloperacao" />
-			<callout x="2980" y="1880" pointer="SV" />
+			<callout x="2960" y="1872" pointer="SV" />
 		</group>
 		<group name="vwibptaxnotafiscal" color="eaeaf7" >
 			<comment><![CDATA[Used by : 
@@ -6643,7 +6669,7 @@ $function$
 			<entity schema="mgsis" name="vwcupomfiscalprodutobarra" />
 			<entity schema="mgsis" name="vwcupomfiscal" />
 			<entity schema="mgsis" name="tblcupomfiscal" />
-			<callout x="1580" y="460" pointer="SV" />
+			<callout x="1568" y="448" pointer="SV" />
 		</group>
 		<group name="vwnegocio" color="efeaf7" >
 			<entity schema="mgsis" name="vwnegocio" />
@@ -6668,31 +6694,31 @@ $function$
 			<entity schema="mgsis" name="vwnotafiscalprodutobarratotais" />
 			<entity schema="mgsis" name="vwnotafiscalprodutobarra" />
 			<entity schema="mgsis" name="tblnotafiscalprodutobarra" />
-			<callout x="2340" y="3580" pointer="SV" />
+			<callout x="2320" y="3568" pointer="SV" />
 		</group>
 	</layout>
 	<layout name="Layout_Imagens" id="Layout5020259" confirmed="y" show_column_type="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblproduto" color="b2cdf7" x="300" y="540" />
-		<entity schema="mgsis" name="tblmarca" color="b2cdf7" x="60" y="120" />
-		<entity schema="mgsis" name="tblsubgrupoproduto" color="b2cdf7" x="540" y="580" />
-		<entity schema="mgsis" name="tblgrupoproduto" color="b2cdf7" x="820" y="520" />
-		<entity schema="mgsis" name="tblfamiliaproduto" color="94c3ea" x="780" y="280" />
-		<entity schema="mgsis" name="tblimagem" color="b2cdf7" x="520" y="220" />
-		<entity schema="mgsis" name="tblsecaoproduto" color="94c3ea" x="780" y="60" />
-		<entity schema="mgsis" name="tblprodutoimagem" color="b2cdf7" x="300" y="320" />
+		<entity schema="mgsis" name="tblproduto" color="b2cdf7" x="288" y="528" />
+		<entity schema="mgsis" name="tblmarca" color="b2cdf7" x="48" y="112" />
+		<entity schema="mgsis" name="tblsubgrupoproduto" color="b2cdf7" x="528" y="560" />
+		<entity schema="mgsis" name="tblgrupoproduto" color="b2cdf7" x="800" y="496" />
+		<entity schema="mgsis" name="tblfamiliaproduto" color="94c3ea" x="768" y="272" />
+		<entity schema="mgsis" name="tblimagem" color="b2cdf7" x="496" y="208" />
+		<entity schema="mgsis" name="tblsecaoproduto" color="94c3ea" x="768" y="48" />
+		<entity schema="mgsis" name="tblprodutoimagem" color="b2cdf7" x="288" y="304" />
 	</layout>
 	<layout name="Layout_Integracao_OpenCart" id="Layout_13ca872c" confirmed="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblfamiliaproduto" color="c1d8ee" x="220" y="580" />
-		<entity schema="mgsis" name="tblgrupoproduto" color="c1d8ee" x="420" y="580" />
-		<entity schema="mgsis" name="tblsubgrupoproduto" color="c1d8ee" x="620" y="580" />
-		<entity schema="mgsis" name="tblprodutoimagem" color="c1d8ee" x="460" y="320" />
-		<entity schema="mgsis" name="tblmarca" color="c1d8ee" x="300" y="100" />
-		<entity schema="mgsis" name="tblprodutobarra" color="c1d8ee" x="1020" y="60" />
-		<entity schema="mgsis" name="tblprodutovariacao" color="c1d8ee" x="860" y="300" />
-		<entity schema="mgsis" name="tblimagem" color="c1d8ee" x="260" y="380" />
-		<entity schema="mgsis" name="tblsecaoproduto" color="c1d8ee" x="60" y="580" />
-		<entity schema="mgsis" name="tblproduto" color="c1d8ee" x="660" y="180" />
-		<entity schema="mgsis" name="tblprodutoembalagem" color="c1d8ee" x="980" y="540" />
+		<entity schema="mgsis" name="tblmarca" color="c1d8ee" x="48" y="80" />
+		<entity schema="mgsis" name="tblimagem" color="c1d8ee" x="80" y="336" />
+		<entity schema="mgsis" name="tblfamiliaproduto" color="c1d8ee" x="304" y="688" />
+		<entity schema="mgsis" name="tblsecaoproduto" color="c1d8ee" x="80" y="688" />
+		<entity schema="mgsis" name="tblgrupoproduto" color="c1d8ee" x="544" y="704" />
+		<entity schema="mgsis" name="tblsubgrupoproduto" color="c1d8ee" x="768" y="704" />
+		<entity schema="mgsis" name="tblprodutovariacao" color="c1d8ee" x="768" y="224" />
+		<entity schema="mgsis" name="tblprodutobarra" color="c1d8ee" x="1024" y="48" />
+		<entity schema="mgsis" name="tblprodutoembalagem" color="c1d8ee" x="1008" y="512" />
+		<entity schema="mgsis" name="tblproduto" color="c1d8ee" x="528" y="160" />
+		<entity schema="mgsis" name="tblprodutoimagem" color="c1d8ee" x="320" y="320" />
 		<script name="tblmarca" id="Query_20cc611c" language="SQL" >
 			<string><![CDATA[
 SELECT * 
@@ -6703,17 +6729,17 @@ FROM
 		</script>
 	</layout>
 	<layout name="Layout_Laravel_Queue" id="Layout7041969" confirmed="y" show_relation="columns" >
-		<entity schema="mgsis" name="tbljobs" color="b2cdf7" x="300" y="80" />
-		<entity schema="mgsis" name="migrations" color="b2cdf7" x="60" y="60" />
-		<entity schema="mgsis" name="tbljobsfailed" color="94c3ea" x="60" y="200" />
+		<entity schema="mgsis" name="tbljobs" color="b2cdf7" x="288" y="64" />
+		<entity schema="mgsis" name="migrations" color="b2cdf7" x="48" y="48" />
+		<entity schema="mgsis" name="tbljobsfailed" color="94c3ea" x="48" y="176" />
 	</layout>
 	<layout name="Layout_Meta" id="Layout_dd20140" confirmed="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblcargo" color="c1d8ee" x="360" y="440" />
-		<entity schema="mgsis" name="tblfilial" color="c1d8ee" x="960" y="60" />
-		<entity schema="mgsis" name="tblmetafilial" color="c1d8ee" x="700" y="120" />
-		<entity schema="mgsis" name="tblmetafilialpessoa" color="c1d8ee" x="680" y="480" />
-		<entity schema="mgsis" name="tblmeta" color="c1d8ee" x="320" y="120" />
-		<entity schema="mgsis" name="tblpessoa" color="c1d8ee" x="60" y="60" >
+		<entity schema="mgsis" name="tblcargo" color="c1d8ee" x="336" y="432" />
+		<entity schema="mgsis" name="tblfilial" color="c1d8ee" x="944" y="48" />
+		<entity schema="mgsis" name="tblmetafilial" color="c1d8ee" x="688" y="112" />
+		<entity schema="mgsis" name="tblmetafilialpessoa" color="c1d8ee" x="656" y="464" />
+		<entity schema="mgsis" name="tblmeta" color="c1d8ee" x="304" y="112" />
+		<entity schema="mgsis" name="tblpessoa" color="c1d8ee" x="48" y="48" >
 			<column name="codpessoa" />
 			<column name="codsexo" />
 			<column name="codestadocivil" />
@@ -6726,79 +6752,79 @@ FROM
 		</entity>
 	</layout>
 	<layout name="Layout_NCM" id="Layout9248750" confirmed="y" show_column_type="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblregulamentoicmsstmt" color="b2cdf7" x="60" y="60" />
-		<entity schema="mgsis" name="tblncm" color="b2cdf7" x="400" y="60" />
-		<entity schema="mgsis" name="tblcest" color="b2cdf7" x="660" y="60" />
-		<entity schema="mgsis" name="tblibptax" color="b2cdf7" x="240" y="340" />
-		<entity schema="mgsis" name="tblproduto" color="b2cdf7" x="560" y="340" />
+		<entity schema="mgsis" name="tblregulamentoicmsstmt" color="b2cdf7" x="48" y="48" />
+		<entity schema="mgsis" name="tblncm" color="b2cdf7" x="384" y="48" />
+		<entity schema="mgsis" name="tblcest" color="b2cdf7" x="640" y="48" />
+		<entity schema="mgsis" name="tblibptax" color="b2cdf7" x="224" y="320" />
+		<entity schema="mgsis" name="tblproduto" color="b2cdf7" x="544" y="320" />
 	</layout>
 	<layout name="Layout_Negocio" id="Layout2983189" confirmed="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblpessoa" color="b2cdf7" x="480" y="1040" />
-		<entity schema="mgsis" name="tblnegocioformapagamento" color="b2cdf7" x="100" y="2160" />
-		<entity schema="mgsis" name="tblnegocioprodutobarra" color="b2cdf7" x="60" y="640" />
-		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="b2cdf7" x="480" y="60" />
-		<entity schema="mgsis" name="tblproduto" color="b2cdf7" x="1180" y="420" />
-		<entity schema="mgsis" name="tblmarca" color="b2cdf7" x="1180" y="1680" />
-		<entity schema="mgsis" name="tblsubgrupoproduto" color="b2cdf7" x="820" y="1680" />
-		<entity schema="mgsis" name="tblgrupoproduto" color="b2cdf7" x="1200" y="2160" />
-		<entity schema="mgsis" name="tblnegocio" color="b2cdf7" x="820" y="1040" />
-		<entity schema="mgsis" name="tbloperacao" color="b2cdf7" x="1200" y="2820" />
-		<entity schema="mgsis" name="tblestoquelocal" color="b2cdf7" x="480" y="2160" />
-		<entity schema="mgsis" name="tblnegociostatus" color="b2cdf7" x="820" y="2820" />
-		<entity schema="mgsis" name="tblfilial" color="b2cdf7" x="820" y="2160" />
-		<entity schema="mgsis" name="tblformapagamento" color="b2cdf7" x="160" y="1040" />
-		<entity schema="mgsis" name="tblprodutobarra" color="b2cdf7" x="1180" y="1040" />
+		<entity schema="mgsis" name="tblpessoa" color="b2cdf7" x="464" y="1024" />
+		<entity schema="mgsis" name="tblnegocioformapagamento" color="b2cdf7" x="80" y="2144" />
+		<entity schema="mgsis" name="tblnegocioprodutobarra" color="b2cdf7" x="48" y="624" />
+		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="b2cdf7" x="464" y="48" />
+		<entity schema="mgsis" name="tblproduto" color="b2cdf7" x="1168" y="400" />
+		<entity schema="mgsis" name="tblmarca" color="b2cdf7" x="1168" y="1664" />
+		<entity schema="mgsis" name="tblsubgrupoproduto" color="b2cdf7" x="800" y="1664" />
+		<entity schema="mgsis" name="tblgrupoproduto" color="b2cdf7" x="1184" y="2144" />
+		<entity schema="mgsis" name="tblnegocio" color="b2cdf7" x="800" y="1024" />
+		<entity schema="mgsis" name="tbloperacao" color="b2cdf7" x="1184" y="2800" />
+		<entity schema="mgsis" name="tblestoquelocal" color="b2cdf7" x="464" y="2144" />
+		<entity schema="mgsis" name="tblnegociostatus" color="b2cdf7" x="800" y="2800" />
+		<entity schema="mgsis" name="tblfilial" color="b2cdf7" x="800" y="2144" />
+		<entity schema="mgsis" name="tblformapagamento" color="b2cdf7" x="144" y="1024" />
+		<entity schema="mgsis" name="tblprodutobarra" color="b2cdf7" x="1168" y="1024" />
 	</layout>
 	<layout name="Layout_Nfe_Terceiro" id="Layout462291" confirmed="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblnfeterceiroitem" color="b2cdf7" x="80" y="700" />
-		<entity schema="mgsis" name="tblnotafiscalreferenciada" color="b2cdf7" x="1000" y="100" />
-		<entity schema="mgsis" name="tblnotafiscalduplicatas" color="b2cdf7" x="1020" y="280" />
-		<entity schema="mgsis" name="tblnotafiscalcartacorrecao" color="b2cdf7" x="1000" y="480" />
-		<entity schema="mgsis" name="tblnegocio" color="b2cdf7" x="540" y="160" />
-		<entity schema="mgsis" name="tblprodutobarra" color="b2cdf7" x="340" y="1140" />
-		<entity schema="mgsis" name="tblnegocioformapagamento" color="b2cdf7" x="540" y="860" />
-		<entity schema="mgsis" name="tblnegociostatus" color="b2cdf7" x="600" y="660" />
-		<entity schema="mgsis" name="tblnotafiscal" color="b2cdf7" x="780" y="100" />
-		<entity schema="mgsis" name="tbltitulo" color="b2cdf7" x="560" y="1180" />
-		<entity schema="mgsis" name="tblnfeterceiroduplicata" color="b2cdf7" x="260" y="380" />
-		<entity schema="mgsis" name="tblnfeterceiro" color="b2cdf7" x="60" y="60" />
-		<entity schema="mgsis" name="tblnegocioprodutobarra" color="b2cdf7" x="340" y="580" />
-		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="b2cdf7" x="780" y="860" />
-		<entity schema="mgsis" name="tblnaturezaoperacao" color="b2cdf7" x="280" y="60" />
+		<entity schema="mgsis" name="tblnfeterceiroitem" color="b2cdf7" x="64" y="688" />
+		<entity schema="mgsis" name="tblnotafiscalreferenciada" color="b2cdf7" x="976" y="80" />
+		<entity schema="mgsis" name="tblnotafiscalduplicatas" color="b2cdf7" x="1008" y="272" />
+		<entity schema="mgsis" name="tblnotafiscalcartacorrecao" color="b2cdf7" x="976" y="464" />
+		<entity schema="mgsis" name="tblnegocio" color="b2cdf7" x="528" y="144" />
+		<entity schema="mgsis" name="tblprodutobarra" color="b2cdf7" x="320" y="1120" />
+		<entity schema="mgsis" name="tblnegocioformapagamento" color="b2cdf7" x="528" y="848" />
+		<entity schema="mgsis" name="tblnegociostatus" color="b2cdf7" x="592" y="640" />
+		<entity schema="mgsis" name="tblnotafiscal" color="b2cdf7" x="768" y="80" />
+		<entity schema="mgsis" name="tbltitulo" color="b2cdf7" x="544" y="1168" />
+		<entity schema="mgsis" name="tblnfeterceiroduplicata" color="b2cdf7" x="240" y="368" />
+		<entity schema="mgsis" name="tblnfeterceiro" color="b2cdf7" x="48" y="48" />
+		<entity schema="mgsis" name="tblnegocioprodutobarra" color="b2cdf7" x="320" y="560" />
+		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="b2cdf7" x="768" y="848" />
+		<entity schema="mgsis" name="tblnaturezaoperacao" color="b2cdf7" x="272" y="48" />
 	</layout>
 	<layout name="Layout_Prancheta" id="Layout_2e976812" show_relation="columns" >
-		<entity schema="mgsis" name="tblproduto" color="c1d8ee" x="720" y="140" />
-		<entity schema="mgsis" name="tblprodutobarra" color="c1d8ee" x="400" y="440" />
-		<entity schema="mgsis" name="tblprodutovariacao" color="c1d8ee" x="420" y="60" />
-		<entity schema="mgsis" name="tblpranchetaprodutobarra" color="c1d8ee" x="60" y="340" />
-		<entity schema="mgsis" name="tblprancheta" color="c1d8ee" x="100" y="60" />
+		<entity schema="mgsis" name="tblproduto" color="c1d8ee" x="320" y="112" />
+		<entity schema="mgsis" name="tblprodutovariacao" color="c1d8ee" x="640" y="48" />
+		<entity schema="mgsis" name="tblprodutobarra" color="c1d8ee" x="656" y="432" />
+		<entity schema="mgsis" name="tblprancheta" color="c1d8ee" x="48" y="48" />
+		<entity schema="mgsis" name="tblpranchetaproduto" color="c1d8ee" x="48" y="320" />
 	</layout>
 	<layout name="Layout_ProdutoBarra" id="Layout_26dd18a" confirmed="y" show_column_type="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblcupomfiscalprodutobarra" color="b3cef5" x="660" y="60" />
-		<entity schema="mgsis" name="tblnegocioprodutobarra" color="b3cef5" x="660" y="340" />
-		<entity schema="mgsis" name="tblnfeterceiroitem" color="b3cef5" x="400" y="340" />
-		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="b3cef5" x="60" y="340" />
-		<entity schema="mgsis" name="tblprodutobarra" color="b3cef5" x="400" y="60" />
+		<entity schema="mgsis" name="tblcupomfiscalprodutobarra" color="b3cef5" x="640" y="48" />
+		<entity schema="mgsis" name="tblnegocioprodutobarra" color="b3cef5" x="640" y="320" />
+		<entity schema="mgsis" name="tblnfeterceiroitem" color="b3cef5" x="384" y="320" />
+		<entity schema="mgsis" name="tblnotafiscalprodutobarra" color="b3cef5" x="48" y="320" />
+		<entity schema="mgsis" name="tblprodutobarra" color="b3cef5" x="384" y="48" />
 	</layout>
 	<layout name="Layout_Produtos" id="Layout_1a34eed8" confirmed="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblgrupoproduto" color="94c3ea" x="520" y="60" />
-		<entity schema="mgsis" name="tblncm" color="94c3ea" x="300" y="700" />
-		<entity schema="mgsis" name="tblncmtributacao" color="94c3ea" x="740" y="700" />
-		<entity schema="mgsis" name="tblprodutoembalagem" color="94c3ea" x="80" y="700" />
-		<entity schema="mgsis" name="tblprodutohistoricopreco" color="94c3ea" x="60" y="300" />
-		<entity schema="mgsis" name="tblprodutoimagem" color="94c3ea" x="100" y="100" />
-		<entity schema="mgsis" name="tblsubgrupoproduto" color="94c3ea" x="300" y="60" />
-		<entity schema="mgsis" name="tblproduto" color="94c3ea" x="300" y="300" />
-		<entity schema="mgsis" name="tblfamiliaproduto" color="94c3ea" x="700" y="60" />
-		<entity schema="mgsis" name="tblsecaoproduto" color="94c3ea" x="900" y="60" />
-		<entity schema="mgsis" name="tblmarca" color="94c3ea" x="740" y="320" />
-		<entity schema="mgsis" name="tblprodutovariacao" color="94c3ea" x="540" y="380" />
-		<entity schema="mgsis" name="tblprodutobarra" color="94c3ea" x="540" y="720" />
+		<entity schema="mgsis" name="tblgrupoproduto" color="94c3ea" x="496" y="48" />
+		<entity schema="mgsis" name="tblncm" color="94c3ea" x="288" y="688" />
+		<entity schema="mgsis" name="tblncmtributacao" color="94c3ea" x="720" y="688" />
+		<entity schema="mgsis" name="tblprodutoembalagem" color="94c3ea" x="64" y="688" />
+		<entity schema="mgsis" name="tblprodutohistoricopreco" color="94c3ea" x="48" y="288" />
+		<entity schema="mgsis" name="tblprodutoimagem" color="94c3ea" x="80" y="80" />
+		<entity schema="mgsis" name="tblsubgrupoproduto" color="94c3ea" x="288" y="48" />
+		<entity schema="mgsis" name="tblproduto" color="94c3ea" x="288" y="288" />
+		<entity schema="mgsis" name="tblfamiliaproduto" color="94c3ea" x="688" y="48" />
+		<entity schema="mgsis" name="tblsecaoproduto" color="94c3ea" x="880" y="48" />
+		<entity schema="mgsis" name="tblmarca" color="94c3ea" x="720" y="304" />
+		<entity schema="mgsis" name="tblprodutovariacao" color="94c3ea" x="528" y="368" />
+		<entity schema="mgsis" name="tblprodutobarra" color="94c3ea" x="528" y="704" />
 	</layout>
 	<layout name="Layout_Vales_Escolares" id="Layout_f43af46" joined_routing="y" show_relation="columns" >
-		<entity schema="mgsis" name="tblvalecompraprodutobarra" color="c1d8ee" x="760" y="420" />
-		<entity schema="mgsis" name="tblvalecompraformapagamento" color="c1d8ee" x="400" y="880" />
-		<entity schema="mgsis" name="tblprodutobarra" color="c1d8ee" x="840" y="760" >
+		<entity schema="mgsis" name="tblvalecompraprodutobarra" color="c1d8ee" x="752" y="400" />
+		<entity schema="mgsis" name="tblvalecompraformapagamento" color="c1d8ee" x="384" y="864" />
+		<entity schema="mgsis" name="tblprodutobarra" color="c1d8ee" x="816" y="752" >
 			<column name="codprodutobarra" />
 			<column name="codprodutovariacao" />
 			<column name="codproduto" />
@@ -6807,7 +6833,7 @@ FROM
 			<column name="codusuarioalteracao" />
 			<column name="codusuariocriacao" />
 		</entity>
-		<entity schema="mgsis" name="tbltitulo" color="c1d8ee" x="60" y="460" >
+		<entity schema="mgsis" name="tbltitulo" color="c1d8ee" x="48" y="448" >
 			<column name="codtitulo" />
 			<column name="codtipotitulo" />
 			<column name="codfilial" />
@@ -6820,7 +6846,7 @@ FROM
 			<column name="codusuariocriacao" />
 			<column name="codvalecompraformapagamento" />
 		</entity>
-		<entity schema="mgsis" name="tblpessoa" color="c1d8ee" x="60" y="80" >
+		<entity schema="mgsis" name="tblpessoa" color="c1d8ee" x="48" y="64" >
 			<column name="codpessoa" />
 			<column name="codsexo" />
 			<column name="codestadocivil" />
@@ -6831,16 +6857,16 @@ FROM
 			<column name="codusuariocriacao" />
 			<column name="codgrupocliente" />
 		</entity>
-		<entity schema="mgsis" name="tblformapagamento" color="c1d8ee" x="60" y="920" >
+		<entity schema="mgsis" name="tblformapagamento" color="c1d8ee" x="48" y="912" >
 			<column name="codformapagamento" />
 			<column name="valecompra" />
 			<column name="codusuarioalteracao" />
 			<column name="codusuariocriacao" />
 		</entity>
-		<entity schema="mgsis" name="tblvalecompramodeloprodutobarra" color="c1d8ee" x="760" y="80" />
-		<entity schema="mgsis" name="tblvalecompramodelo" color="c1d8ee" x="440" y="60" />
-		<entity schema="mgsis" name="tblvalecompra" color="c1d8ee" x="440" y="440" />
-		<entity schema="mgsis" name="tblfilial" color="c1d8ee" x="800" y="1060" >
+		<entity schema="mgsis" name="tblvalecompramodeloprodutobarra" color="c1d8ee" x="752" y="64" />
+		<entity schema="mgsis" name="tblvalecompramodelo" color="c1d8ee" x="432" y="48" />
+		<entity schema="mgsis" name="tblvalecompra" color="c1d8ee" x="432" y="432" />
+		<entity schema="mgsis" name="tblfilial" color="c1d8ee" x="784" y="1040" >
 			<column name="codfilial" />
 			<column name="codempresa" />
 			<column name="codpessoa" />

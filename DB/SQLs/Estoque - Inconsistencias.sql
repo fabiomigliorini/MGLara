@@ -83,7 +83,7 @@ and em.codestoquemovimento is not null
 order by n.codfilial, n.codnotafiscal, p.produto
 
 --Quantidade Nota Diferente do Estoque
-select n.codfilial, n.codnotafiscal, pb.codproduto, npb.codnotafiscalprodutobarra, em.codestoquemovimento, p.codproduto, p.produto, round((coalesce(em.entradaquantidade, 0) + coalesce(em.saidaquantidade, 0)), 1), round((npb.quantidade * coalesce(pe.quantidade, 1)), 1)
+select n.codfilial, n.codnotafiscal, pb.codproduto, npb.codnotafiscalprodutobarra, em.codestoquemovimento, p.codproduto, p.produto, round((coalesce(em.entradaquantidade, 0) + coalesce(em.saidaquantidade, 0)), 1), round((npb.quantidade * coalesce(pe.quantidade, 1)), 1), 'http://192.168.1.205/MGLara/estoque/gera-movimento-nota-fiscal-produto-barra/' || cast(npb.codnotafiscalprodutobarra as varchar)
 from tblnotafiscal n
 inner join tblnaturezaoperacao no on (no.codnaturezaoperacao = n.codnaturezaoperacao)
 inner join tblnotafiscalprodutobarra npb on (npb.codnotafiscal = n.codnotafiscal)
@@ -96,7 +96,7 @@ where n.saida >= '2016-01-01 00:00:00'
 and tp.estoque = true
 and no.estoque = true
 and round((coalesce(em.entradaquantidade, 0) + coalesce(em.saidaquantidade, 0)), 1) != round((npb.quantidade * coalesce(pe.quantidade, 1)), 1)
-order by p.codproduto, n.codfilial, n.codnotafiscal, p.produto
+order by p.codproduto, pb.codprodutobarra, n.codfilial, n.codnotafiscal, p.produto
 
 
 -- Transferencia/Devolucao sem registro de origem
