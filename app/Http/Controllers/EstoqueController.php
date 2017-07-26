@@ -148,11 +148,11 @@ class EstoqueController extends Controller
                 $model->quantidadesistema = $es->saldoquantidade;
                 //$model->quantidadeinformada = $es->saldoquantidade + $reg->quantidadeinformada;
                 $model->quantidadeinformada = $reg->quantidadeinformada;
-		if ($model->quantidadesistema > 0) {
-                    $model->quantidadeinformada += $es->saldoquantidade;
-		} else {
-                    //dd($model);
-                }
+		// if ($model->quantidadesistema > 0) {
+                //     $model->quantidadeinformada += $es->saldoquantidade;
+		// } else {
+                //     //dd($model);
+                // }
                 $model->customediosistema = $es->customedio;
 
                 $model->customedioinformado = $es->customedio;
