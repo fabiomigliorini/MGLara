@@ -1153,3 +1153,11 @@ Form::macro('select2FormaPagamento', function($name, $selected = null, $options 
     $valores = [''=>''] + $qry->lists('formapagamento', 'codformapagamento')->all();
     return Form::select2($name, $valores, $selected, $options);
 });
+
+/* ATIVO */
+Form::macro('select2MarcaControlada', function($name, $selected = null, $options = [])
+{
+    $opcoes = ['' => '', 1 => 'Controladas', 2 => 'Não Controladas'];
+    $options['placeholder'] = 'Marcas Controladas';
+    return Form::select2($name, $opcoes, $selected, $options);
+});

@@ -564,7 +564,19 @@ class EstoqueSaldo extends MGModel
         if (!empty($filtro['codmarca'])) {
             $qry->where('m.codmarca', $filtro['codmarca']);
         }
-
+        
+        switch (isset($filtro['marcacontrolada']) ? $filtro['marcacontrolada'] : '9')
+        {
+            case 1:
+                $qry->where('m.controlada', true);
+                break;
+            case 2:
+                $qry->where('m.controlada', false);
+                break;
+            case 9;
+            default:
+        }
+        
         if (!empty($filtro['codsubgrupoproduto'])) {
             $qry->where('p.codsubgrupoproduto', $filtro['codsubgrupoproduto']);
         }
@@ -638,6 +650,8 @@ class EstoqueSaldo extends MGModel
         }
 
         //$campo_codigo = 'codmarca';
+        $qry->orderBy('m.marca', 'ASC');
+        $qry->orderBy('m.codmarca', 'ASC');
         $qry->orderBy('sp.secaoproduto', 'ASC');
         $qry->orderBy('sp.codsecaoproduto', 'ASC');
         $qry->orderBy('fp.familiaproduto', 'ASC');
@@ -646,8 +660,6 @@ class EstoqueSaldo extends MGModel
         $qry->orderBy('gp.codgrupoproduto', 'ASC');
         $qry->orderBy('sgp.subgrupoproduto', 'ASC');
         $qry->orderBy('sgp.codsubgrupoproduto', 'ASC');
-        $qry->orderBy('m.marca', 'ASC');
-        $qry->orderBy('m.codmarca', 'ASC');
         $qry->orderBy('p.produto', 'ASC');
         $qry->orderBy('p.codproduto', 'ASC');
         $qry->orderByRaw('pv.variacao ASC NULLS FIRST');
@@ -673,6 +685,7 @@ class EstoqueSaldo extends MGModel
                 $filtro_detalhes = $filtro;
                 unset($filtro_detalhes['codproduto']);
                 unset($filtro_detalhes['codmarca']);
+                unset($filtro_detalhes['marcacontrolada']); // <-- Marcas Controladas
                 unset($filtro_detalhes['codgrupoproduto']);
                 unset($filtro_detalhes['codsubgrupoproduto']);
                 unset($filtro_detalhes['codfamiliaproduto']);
@@ -1147,7 +1160,7 @@ class EstoqueSaldo extends MGModel
                 inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
                 inner join tblfilial f on (f.codfilial = el.codfilial)
                 inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = false)
-                inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '{$filtro['ano']}-{$filtro['mes']}-11' order by mes desc limit 1))
+                inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '{$filtro['ano']}-{$filtro['mes']}-31' order by mes desc limit 1))
                 where f.codempresa = {$filtro['codempresa']}";
                 
         if (!empty($filtro['codestoquelocal'])) {
@@ -1164,7 +1177,7 @@ class EstoqueSaldo extends MGModel
                 inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
                 inner join tblfilial f on (f.codfilial = el.codfilial)
                 inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = true)
-                inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '{$filtro['ano']}-{$filtro['mes']}-11' order by mes desc limit 1))
+                inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '{$filtro['ano']}-{$filtro['mes']}-31' order by mes desc limit 1))
                 where f.codempresa = {$filtro['codempresa']}";
                 
         if (!empty($filtro['codestoquelocal'])) {

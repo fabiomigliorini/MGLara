@@ -17,10 +17,13 @@
                 {!! Form::label('codestoquelocal', 'Local', ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-sm-4">{!! Form::select2EstoqueLocal('codestoquelocal', null, ['class' => 'form-control']) !!}</div>
             </div>
-            
             <div class="form-group">
                 {!! Form::label('codmarca', 'Marca', ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-sm-5">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control']) !!}</div>
+            </div>
+            <div class="form-group">
+                {!! Form::label('marcacontrolada', 'Marcas Controladas', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-sm-5">{!! Form::select2MarcaControlada('marcacontrolada', null, ['class' => 'form-control']) !!}</div>
             </div>
             
             <div class="form-group">
