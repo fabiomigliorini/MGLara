@@ -1059,6 +1059,20 @@ class EstoqueSaldo extends MGModel
             $s_and = 'AND';
         }
 
+        switch (isset($filtro['marcacontrolada']) ? $filtro['marcacontrolada'] : '9')
+        {
+            case 1:
+                $sql .= " AND m.controlada = true";
+                // $qry->where('m.controlada', true);
+                break;
+            case 2:
+                $sql .= " AND m.controlada = false";
+                // $qry->where('m.controlada', false);
+                break;
+            case 9;
+            default:
+        }
+
         switch ($filtro['saldo_deposito']) {
             case 1:
                 $sql .= " $s_and es_deposito.saldoquantidade > 0";
@@ -1193,6 +1207,20 @@ class EstoqueSaldo extends MGModel
 
         if (!empty($filtro['codmarca'])) {
             $sql .= " AND m.codmarca = {$filtro['codmarca']}";
+        }
+
+        switch (isset($filtro['marcacontrolada']) ? $filtro['marcacontrolada'] : '9')
+        {
+            case 1:
+                $sql .= " AND m.controlada = true";
+                // $qry->where('m.controlada', true);
+                break;
+            case 2:
+                $sql .= " AND m.controlada = false";
+                // $qry->where('m.controlada', false);
+                break;
+            case 9;
+            default:
         }
 
         if (!empty($filtro['codncm'])) {

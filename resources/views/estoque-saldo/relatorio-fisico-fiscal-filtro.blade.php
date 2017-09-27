@@ -97,6 +97,10 @@
                 <div class="col-md-7">{!! Form::select2('saldo_fisico_fiscal', ['' => '', -1=>'Faltando Fiscal', 1=>'Sobrando Fiscal'], null, ['class' => 'form-control', 'placeholder' => 'Fisico x Fiscal...']) !!}</div>
             </div>
             <div class="form-group">
+                {!! Form::label('marcacontrolada', 'Marcas Controladas', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-sm-7">{!! Form::select2MarcaControlada('marcacontrolada', null, ['class' => 'form-control']) !!}</div>
+            </div>            
+            <div class="form-group">
                 <div class="col-md-9 col-md-offset-4">
                     <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
                 </div>

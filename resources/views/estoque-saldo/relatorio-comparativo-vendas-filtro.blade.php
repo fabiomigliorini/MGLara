@@ -23,8 +23,12 @@
             </div>
             <div class="form-group">
                 {!! Form::label('codmarca', 'Marca', ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-sm-6">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control']) !!}</div>
+                <div class="col-sm-9">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control']) !!}</div>
             </div>
+            <div class="form-group">
+                {!! Form::label('marcacontrolada', 'Marcas Controladas', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-sm-9">{!! Form::select2MarcaControlada('marcacontrolada', null, ['class' => 'form-control']) !!}</div>
+            </div>            
         </div>
         
         <div class='col-md-5'>
