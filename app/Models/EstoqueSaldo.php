@@ -1140,6 +1140,8 @@ class EstoqueSaldo extends MGModel
 
     public static function relatorioFisicoFiscal ($filtro)
     {
+        $ultimodiadomes = Carbon::createFromDate($filtro['ano'], $filtro['mes'], 01)->daysInMonth;
+
         $sql = "
             select
                 p.codproduto
@@ -1174,7 +1176,7 @@ class EstoqueSaldo extends MGModel
                 inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
                 inner join tblfilial f on (f.codfilial = el.codfilial)
                 inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = false)
-                inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '{$filtro['ano']}-{$filtro['mes']}-31' order by mes desc limit 1))
+                inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '{$filtro['ano']}-{$filtro['mes']}-{$ultimodiadomes}' order by mes desc limit 1))
                 where f.codempresa = {$filtro['codempresa']}";
                 
         if (!empty($filtro['codestoquelocal'])) {
@@ -1191,7 +1193,7 @@ class EstoqueSaldo extends MGModel
                 inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
                 inner join tblfilial f on (f.codfilial = el.codfilial)
                 inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = true)
-                inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '{$filtro['ano']}-{$filtro['mes']}-31' order by mes desc limit 1))
+                inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '{$filtro['ano']}-{$filtro['mes']}-{$ultimodiadomes}' order by mes desc limit 1))
                 where f.codempresa = {$filtro['codempresa']}";
                 
         if (!empty($filtro['codestoquelocal'])) {
