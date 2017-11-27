@@ -143,7 +143,7 @@ class NotaFiscalController extends Controller
             and tblnotafiscal.nfeautorizacao is not null
             and tblnotafiscal.nfeinutilizacao is null
             and tblnotafiscal.nfecancelamento is null
-            and tblnotafiscal.emissao >= '2016-08-01 00:00:00.0'
+            and tblnotafiscal.emissao >= '2017-10-01 00:00:00.0'
             and tblnegocio.codfilial <> destino.codfilial
             and origem.codempresa = destino.codempresa
             and emitida.codnotafiscal is null
@@ -187,7 +187,7 @@ class NotaFiscalController extends Controller
 
                     )
             where tblnegocio.codnegociostatus = 2
-            and tblnegocio.lancamento >= '2016-08-01 00:00:00'
+            and tblnegocio.lancamento >= '2017-10-01 00:00:00'
             and emitida.codnotafiscal is null
             and tblnegocio.codfilial <> destino.codfilial
             and tblnegocio.codnaturezaoperacao not in (19) --Uso e Consumo
