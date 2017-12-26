@@ -206,6 +206,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('negocio', 'NegocioController');
 
     /* Metas */
+    Route::get('meta/{id}/relatorio', 'MetaController@relatorio');
     Route::resource('meta', 'MetaController');
 
     /* Estoque Movimento */

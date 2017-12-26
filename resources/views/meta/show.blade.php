@@ -18,6 +18,9 @@
             <a title="Editar" href="{{ url("meta/$model->codmeta/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
             &nbsp;
             <a title="Excluir" href="{{ url("meta/$model->codmeta") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a meta '{{ $model->observacoes }}'?" data-after-delete="location.replace(baseUrl + '/meta');"><i class="glyphicon glyphicon-trash"></i></a>
+            &nbsp;
+            <a title="Relatório" href="{{ url("meta/$model->codmeta/relatorio") }}"><i class="glyphicon glyphicon-print"></i></a>
+
         </small>
     </li>   
 </ol>

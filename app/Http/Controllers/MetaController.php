@@ -58,6 +58,19 @@ class MetaController extends Controller
 
         return view('meta.show', compact('model', 'dados'));
     }
+
+    public function relatorio($id, Request $request)
+    {
+        $parametros = $request->all();
+        $model = Meta::findOrFail($id);
+        $dados = $model->totalVendas();
+        
+        if ($request->get('debug') == true) {
+            return $dados;
+        }
+
+        return view('meta.relatorio', compact('model', 'dados'));
+    }
     
     /**
      * Show the form for creating a new resource.
