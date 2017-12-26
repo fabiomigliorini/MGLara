@@ -44,7 +44,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($xeroxs as $xerox)
+            @foreach($xeroxs->sortBy('pessoa') as $xerox)
             <tr>
                 <td>{{ $xerox['filial'] }}</td>
                 <td>{{ $xerox['pessoa'] }}</td>
