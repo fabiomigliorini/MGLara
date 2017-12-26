@@ -12,26 +12,47 @@
     -->
 <?php
     $vendedores = collect($dados['vendedores']);
-    //dd($vendedores);
+    $xeroxs     = collect($dados['xerox']);
+
 ?>
-      <table class="relatorio">
-          <thead>
-              <tr>
-                  <th style="text-align: left;">Filial</th>
-                  <th style="text-align: left;">Vendedor</th>
-                  <th class="text-right">Comissão</th>
-              </tr>
-          </thead>
-          <tbody>
-              @foreach($vendedores->sortBy('pessoa') as $vendedor)
-              <tr>
-                  <td scope="row">{{ $vendedor['filial'] }}</td>
-                  <td>{{ $vendedor['pessoa'] }}</td>
-                  <td class="text-right">{{ formataNumero($vendedor['valorcomissaovendedor']) }}</td>
-              </tr>
-              @endforeach
-          </tbody> 
-      </table>
+    <h1>Vendedores</h1>
+    <table class="relatorio">
+      <thead>
+          <tr>
+              <th class="filial">Filial</th>
+              <th class="vendedor">Vendedor</th>
+              <th class="comissao">Comissão</th>
+          </tr>
+      </thead>
+      <tbody>
+          @foreach($vendedores->sortBy('pessoa') as $vendedor)
+          <tr>
+              <td scope="row">{{ $vendedor['filial'] }}</td>
+              <td>{{ $vendedor['pessoa'] }}</td>
+              <td class="text-right"><strong>{{ formataNumero($vendedor['valorcomissaovendedor']) }}</strong></td>
+          </tr>
+          @endforeach
+      </tbody> 
+    </table>
+    <h1>Xerox</h1>
+    <table class="relatorio">
+        <thead>
+            <tr>
+                <th class="filial">Filial</th>
+                <th class="vendedor">Vendedor</th>
+                <th class="comissao">Comissão</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($xeroxs as $xerox)
+            <tr>
+                <td>{{ $xerox['filial'] }}</td>
+                <td>{{ $xerox['pessoa'] }}</td>
+                <td class="text-right"><strong>{{ formataNumero($xerox['comissao']) }}</strong></td>
+            </tr>
+            @endforeach
+        </tbody> 
+    </table>     
 
     
 </div>
@@ -39,9 +60,24 @@
 </div>
 @section('inscript')
 <style>
+table {
+    text-align: left
+}
 td, th {
-    padding: 0.05cm;
-}  
+    padding: 0.04cm;
+    text-align: left
+}
+th.filial {
+    width: 20%
+}
+th.vendedor {
+    width: 60%
+}
+th.comissao {
+    width: 20%
+}
+
+
 /*  .codigo {
       width: 1.1cm;
   }
