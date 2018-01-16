@@ -3,13 +3,13 @@
 <?php
     use MGLara\Models\Filial;
     use MGLara\Models\NaturezaOperacao;
-    
+
     $filiais    = [''=>''] + Filial::lists('filial', 'codfilial')->all();
     $naturezaop = [''=>''] + NaturezaOperacao::lists('naturezaoperacao', 'codnaturezaoperacao')->all();
     //dd($model->ProdutoVariacaoS);
 ?>
 <ol class="breadcrumb header">
-    {!! 
+    {!!
     titulo(
         $model->codproduto,
         [
@@ -18,7 +18,7 @@
         ],
         $model->inativo,
         6
-    ) 
+    )
     !!}
     <li class='active'>
         <small>
@@ -35,6 +35,8 @@
             <a href="{{ url("produto/$model->codproduto") }}" data-excluir data-pergunta="Tem certeza que deseja excluir o produto '{{ $model->produto }}'?" data-after-delete="location.replace(baseUrl + '/produto');"><i class="glyphicon glyphicon-trash"></i></a>
             &nbsp;
             <a href="" id="btnVaiPara"><span class="glyphicon glyphicon-new-window"></span></a>
+            &nbsp;
+            <a target="_blank" href="http://mgspa.mgpapelaria.com.br/#/estoque-estatistica/{{ $model->codproduto }}"><span class="glyphicon glyphicon-signal"></span></a>
         </small>
     </li>
 </ol>
@@ -43,7 +45,7 @@
 <div class="col-md-6">
     @include('produto.show-imagens')
 </div>
-    
+
 <div class="col-md-6">
     <div>
         <ul class="nav nav-tabs" role="tablist" id='tab-produto'>
@@ -61,9 +63,9 @@
                 <div class='clearfix'>
                     <div class='col-md-7'>
                         <ol class="breadcrumb">
-                            {!! 
+                            {!!
                                 titulo(
-                                    NULL, 
+                                    NULL,
                                     [
                                         url("secao-produto/{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto}") => $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->secaoproduto,
                                         url("familia-produto/{$model->SubGrupoProduto->GrupoProduto->codfamiliaproduto}") => $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->familiaproduto,
@@ -71,13 +73,13 @@
                                         url("sub-grupo-produto/{$model->codsubgrupoproduto}") => $model->SubGrupoProduto->subgrupoproduto,
                                         url("marca/{$model->codmarca}") => $model->Marca->marca,
                                         $model->referencia,
-                                    ], 
-                                    NULL) 
+                                    ],
+                                    NULL)
                             !!}
                         </ol>
                         <ol class="breadcrumb">
-                            <?php 
-                            $arr = [            
+                            <?php
+                            $arr = [
                                 url("tipo-produto/{$model->codtipoproduto}") => $model->TipoProduto->tipoproduto,
                                 url("ncm/{$model->codncm}") => formataNcm($model->Ncm->ncm),
                                 url("tributacao/{$model->codtributacao}") => $model->Tributacao->tributacao,
@@ -89,8 +91,8 @@
                             $arr[] = ($model->importado)?'Importado':'Nacional';
 
                             ?>
-                            {!! 
-                                titulo(NULL, $arr, NULL) 
+                            {!!
+                                titulo(NULL, $arr, NULL)
                             !!}
                         </ol>
                     </div>
@@ -117,11 +119,11 @@
             </div>
             <div role="tabpanel" class="tab-pane fade" id="tab-site">
                 <p>
-                    <botton class="btn btn-default" id="integracao-open-cart"><i class="glyphicon glyphicon-shopping-cart"></i> 
+                    <botton class="btn btn-default" id="integracao-open-cart"><i class="glyphicon glyphicon-shopping-cart"></i>
                         Sincronizar &nbsp;&nbsp;
                         <img width="20px" id="sincronizar" src="{{ URL::asset('public/img/carregando.gif') }}">
                     </botton>
-                    
+
                 </p>
                 <br>
                 <strong>Divulgado no Site: {{ ($model->site)?'Sim':'Não' }}</strong>
@@ -174,7 +176,7 @@
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">{!! Form::label('negocio_codproduto', 'Pessoa') !!}</div>
                                 <div class="col-sm-7">{!! Form::select2Pessoa('negocio_codpessoa', null, ['class' => 'form-control', 'id'=>'negocio_codpessoa', 'style'=>'width:100%', 'placeholder' => 'Pessoa', 'ativo' => 9]) !!}</div>
-                            </div>                            
+                            </div>
                             {!! Form::hidden('negocio_codproduto', $model->codproduto, ['id'=>'negocio_codproduto']) !!}
 
                         {!! Form::hidden('_div', 'div-negocios', ['id'=>'negocio_page']) !!}
@@ -248,9 +250,9 @@
             </div>
         </div>
     </div>
-    <br>    
+    <br>
     @include('includes.autor')
-</div>    
+</div>
 
 @section('inscript')
 <script type="text/javascript">
@@ -260,7 +262,7 @@ function mostraListagemNegocios()
 
     //Serializa FORM
     var frmValues = $("#produto-negocio-search").serialize();
-    
+
     // Busca Listagem
     $.ajax({
         type: 'GET',
@@ -268,10 +270,10 @@ function mostraListagemNegocios()
         data: frmValues
     })
     .done(function (data) {
-        
+
         //Substitui #div-negocios
-        $('#div-negocios').html($(data).html()); 
-        
+        $('#div-negocios').html($(data).html());
+
         //Ativa InfiniteScroll
         $('#div-negocios-listagem').infinitescroll({
             loading : {
@@ -283,7 +285,7 @@ function mostraListagemNegocios()
             nextSelector : "#div-negocios .pagination li.active + li a",
             itemSelector : "#div-negocios-listagem div.list-group-item"
         });
-        
+
     })
     .fail(function (e) {
         console.log('Erro no filtro');
@@ -294,10 +296,10 @@ function mostraListagemNegocios()
 function mostraListagemNotasFiscais()
 {
     console.log('mostraListagemNotasFiscais');
-    
+
     //Serializa FORM
     var frmValues = $("#produto-notasfiscais-search").serialize();
-    
+
     // Busca Listagem
     $.ajax({
         type: 'GET',
@@ -305,9 +307,9 @@ function mostraListagemNotasFiscais()
         data: frmValues
     })
     .done(function (data) {
-        
-        $('#div-notasfiscais').html($(data).html()); 
-        
+
+        $('#div-notasfiscais').html($(data).html());
+
         $('#div-notasfiscais-listagem').infinitescroll({
             loading : {
                 finishedMsg: "<div class='end-msg'>Fim dos registros</div>",
@@ -318,7 +320,7 @@ function mostraListagemNotasFiscais()
             nextSelector : "#div-notasfiscais .pagination li.active + li a",
             itemSelector : "#div-notasfiscais-listagem div.list-group-item"
         });
-        
+
     })
     .fail(function (e) {
         console.log('Erro no filtro');
@@ -337,14 +339,14 @@ $(document).ready(function() {
             mostraListagemNegocios();
         listagemNegocioAberta = true;
     });
-    
+
     // Listagem de Negocios -- Alteração Formulário
     $("#produto-negocio-search").on("change", function (event) {
         mostraListagemNegocios();
-        event.preventDefault(); 
+        event.preventDefault();
     });
     /////////////////////////////////////////
-    
+
 
     ////////// LISTAGEM DE NOTAS FISCAIS /////////
     //
@@ -355,11 +357,11 @@ $(document).ready(function() {
             mostraListagemNotasFiscais();
         listagemNotasFiscaisAberta = true;
     });
-    
+
     // Listagem de Negocios -- Alteração Formulário
     $("#produto-notasfiscais-search").on("change", function (event) {
         mostraListagemNotasFiscais();
-        event.preventDefault(); 
+        event.preventDefault();
     });
     /////////////////////////////////////////
 
@@ -368,12 +370,12 @@ $(document).ready(function() {
         recarregaDiv('div-estoque');
         listagemEstoqueAberta = true;
     });
-    
-    
+
+
     $('#codproduto').change(function (){
         window.location.href = '{{ url("produto/") }}' + $('#codproduto').val();
     });
-    
+
     $('#sincronizar').hide();
     $('#integracao-open-cart').click(function (e) {
         e.preventDefault();
@@ -403,18 +405,18 @@ $(document).ready(function() {
                         var mensagem = '<strong class="text-danger">'+data.mensagem+'</strong>';
                         mensagem += '<hr><pre>';
                         mensagem += JSON.stringify(data.exception, undefined, 2);
-                        mensagem += '</pre>';                        
+                        mensagem += '</pre>';
                         bootbox.alert(mensagem);
                         console.log(data.resultado);
                     }
                 })
                 .fail(function (data) {
                     console.log('erro no POST');
-                });                 
+                });
             }
-        }); 
+        });
     });
-    
+
     $('#btnVaiPara').click(function (e) {
         e.preventDefault();
         bootbox.prompt({
@@ -427,8 +429,8 @@ $(document).ready(function() {
             }
         });
     });
-    
-    
+
+
 });
 </script>
 @endsection
