@@ -1204,7 +1204,7 @@ class EstoqueSaldo extends MGModel
                 group by pv.codproduto
                 ) fiscal on (fiscal.codproduto = p.codproduto)
             where p.codtipoproduto = 0
-            and p.inativo is null
+            --and p.inativo is null
             ";
 
         if (!empty($filtro['codmarca'])) {

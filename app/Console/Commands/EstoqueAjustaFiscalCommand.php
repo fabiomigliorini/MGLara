@@ -26,7 +26,7 @@ class EstoqueAjustaFiscalCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'estoque:ajusta-fiscal {metodo?} {--codestoquelocal=} {--auto} {--data=}';
+    protected $signature = 'estoque:ajusta-fiscal {metodo?} {--codestoquelocal=} {--auto} {--data=} {--ordem-inversa}';
 
     /**
      * The console command description.
@@ -131,7 +131,7 @@ class EstoqueAjustaFiscalCommand extends Command
         $this->dispatch((new EstoqueCalculaCustoMedio($mes_destino->codestoquemes))->onQueue('urgent'));
 
         // aguarda dois segundos para rodar recalculo dos custos medios
-        sleep(2);
+        //sleep(1);
     }
 
     public function geraNotasFiscaisTransferencia()
@@ -673,6 +673,7 @@ class EstoqueAjustaFiscalCommand extends Command
     public function transfereManual()
     {
 
+	/*
         $sql = "
             select p.codproduto, p.produto, pv.variacao, p.preco, el.sigla, em.saldoquantidade, em.saldovalor, em.customedio, em.codestoquemes, em.mes, elpv.codprodutovariacao, elpv.codestoquelocal, n.ncm
             from tblestoquemes em
@@ -686,41 +687,151 @@ class EstoqueAjustaFiscalCommand extends Command
             order by em.mes, n.ncm, p.preco DESC, p.produto, elpv.codestoquelocal, pv.variacao nulls first
             limit 1
             ";
+	*/
+	/*
+	$sql = "
+		with sld_2017 as (
+			select 
+				es.codestoquesaldo, 
+				(
+					select em_u.codestoquemes 
+					from tblestoquemes em_u 
+					where em_u.codestoquesaldo = es.codestoquesaldo 
+					and em_u.mes <= '2017-12-31'::date 
+					order by em_u.mes desc
+					limit 1
+				) as codestoquemes
+			from tblestoquesaldo es 
+			where es.fiscal = true
+		)
+		select 
+			p.codproduto, p.produto, pv.variacao, p.preco, el.sigla, em.saldoquantidade, em.saldovalor, em.customedio, em.codestoquemes, em.mes, elpv.codprodutovariacao, elpv.codestoquelocal, n.ncm
+		from sld_2017
+		inner join tblestoquemes em on (em.codestoquemes = sld_2017.codestoquemes)
+		inner join tblestoquesaldo es on (es.codestoquesaldo = em.codestoquesaldo and es.fiscal = true)
+		inner join tblestoquelocalprodutovariacao elpv on (elpv.codestoquelocalprodutovariacao = es.codestoquelocalprodutovariacao)
+		inner join tblprodutovariacao pv on (pv.codprodutovariacao = elpv.codprodutovariacao)
+		inner join tblproduto p on (p.codproduto = pv.codproduto)
+		inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
+		inner join tblfilial f on (f.codfilial = el.codfilial)
+		inner join tblncm n on (n.codncm = p.codncm)
+		where em.saldoquantidade < 0
+		and f.codempresa = 1
+		order by n.ncm, p.preco DESC, p.produto, p.codproduto, elpv.codestoquelocal, pv.variacao nulls first, em.mes
+		limit 1
+		";
+	*/
+	$sql = "
+		with fisico as (
+			select elpv.codestoquelocal, elpv.codprodutovariacao, em.saldoquantidade, em.saldovalor, em.customedio, es.saldoquantidade as saldoquantidade_atual, es.saldovalor as saldovalor_atual
+			from tblestoquelocalprodutovariacao elpv
+			inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
+			inner join tblfilial f on (f.codfilial = el.codfilial)
+			inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = false)
+			inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '2017-12-31' order by mes desc limit 1))
+			where f.codempresa = 1
+		), fiscal as (
+			select 
+				elpv.codestoquelocal, 
+				elpv.codprodutovariacao, 
+				em.saldoquantidade, 
+				em.saldovalor, 
+				em.customedio, 
+				es.saldoquantidade as saldoquantidade_atual, 
+				es.saldovalor as saldovalor_atual,
+				em.codestoquemes,
+				em.mes
+			from tblestoquelocalprodutovariacao elpv
+			inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
+			inner join tblfilial f on (f.codfilial = el.codfilial)
+			inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = true)
+			inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '2017-12-31' order by mes desc limit 1))
+			where f.codempresa = 1
+		)
+		select 
+			n.ncm
+			, p.codproduto
+			, p.produto
+			, p.preco
+			, p.inativo
+			, pv.codprodutovariacao
+			, pv.variacao
+			, coalesce(fiscal.codestoquelocal, fisico.codestoquelocal) as codestoquelocal
+			, fiscal.saldoquantidade as fiscal
+			, fisico.saldoquantidade as fisico
+			, fiscal.saldoquantidade_atual as fiscal_atual
+			, fisico.saldoquantidade_atual as fisico_atual
+			, fiscal.codestoquemes
+			, fiscal.mes
+		from tblproduto p
+		inner join tblprodutovariacao pv on (pv.codproduto = p.codproduto)
+		inner join tblncm n on (n.codncm = p.codncm)
+		left join fiscal on (fiscal.codprodutovariacao = pv.codprodutovariacao)
+		full join fisico on (fisico.codprodutovariacao = pv.codprodutovariacao and fisico.codestoquelocal = fiscal.codestoquelocal)
+		where fiscal.saldoquantidade < 0
+		--or (fisico.saldoquantidade_atual > 0 and fiscal.saldoquantidade_atual < fisico.saldoquantidade_atual)
+		--and fisico.saldoquantidade_atual != fisico.saldoquantidade
+	";
+        $ordem_inversa = $this->option('ordem-inversa');
+	if ($ordem_inversa) {
+		$sql .= "
+                        order by n.ncm DESC, p.preco DESC, p.produto DESC, fiscal.codestoquelocal, pv.variacao
 
+		";
+	} else {
+                $sql .= "
+                        order by n.ncm ASC, p.preco ASC, p.produto ASC, fiscal.codestoquelocal, pv.variacao
+                ";
+	}
+	$sql .= "
+		limit 100
+	";
 
-        while ($dados = DB::select($sql))
+	$dados = DB::select($sql);
+	$i = 0;
+        $data = Carbon::createFromFormat('Y-m-d', '2017-01-01')->startOfMonth();
+
+        while ($i < sizeof($dados))
         {
-            $negativo = $dados[0];
+            $negativo = $dados[$i];
+            $i++;
             $this->line('');
             $this->line('');
             $this->line('');
             $this->line('');
-            $this->info("http://192.168.1.205/MGLara/estoque-mes/$negativo->codestoquemes");
+            $this->info("http://sistema.mgpapelaria.com.br/MGLara/estoque-mes/$negativo->codestoquemes");
 
-            $data = Carbon::createFromFormat('Y-m-d', $negativo->mes)->endOfMonth();
+            $meta = ($negativo->fisico > 0 && empty($negativo->inativo))?$negativo->fisico:0;
+            $falta = $meta - $negativo->fiscal;
+
+            $meta_atual = ($negativo->fisico_atual > 0 && empty($negativo->inativo))?$negativo->fisico_atual:0;
+            $falta_atual = $meta_atual - $negativo->fiscal_atual;
+            $falta = ($falta_atual > $falta)?$falta_atual:$falta;
 
             $this->table(
                 [
-                    'Mês',
                     '#',
                     'Produto',
                     'Variação',
                     'Venda',
                     'Loc',
-                    'Qtd',
-                    'Val',
-                    'Médio',
+                    'Falta',
+                    'Fiscal',
+                    'Fisico',
+                    'Fiscal A',
+                    'Fisico A',
                     'NCM',
                 ], [[
-                    $negativo->mes,
                     $negativo->codproduto,
                     $negativo->produto,
                     $negativo->variacao,
                     $negativo->preco,
-                    $negativo->sigla,
-                    $negativo->saldoquantidade,
-                    $negativo->saldovalor,
-                    $negativo->customedio,
+                    $negativo->codestoquelocal,
+                    $falta,
+                    $negativo->fiscal,
+                    $negativo->fisico,
+                    $negativo->fiscal_atual,
+                    $negativo->fisico_atual,
                     $negativo->ncm,
                 ]]);
 
@@ -770,7 +881,7 @@ class EstoqueAjustaFiscalCommand extends Command
 
             } while (true);
 
-            $quantidade = min([abs($negativo->saldoquantidade), abs($mes_origem->saldoquantidade)]);
+            $quantidade = min([abs($falta), abs($mes_origem->saldoquantidade)]);
             $quantidade = $this->ask('Informe a quantidade:', $quantidade);
 
             if ($quantidade <= 0) {
