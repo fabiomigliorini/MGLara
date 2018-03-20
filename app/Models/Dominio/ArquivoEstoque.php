@@ -5,8 +5,10 @@ namespace MGLara\Models\Dominio;
 use MGLara\Models\Dominio\Arquivo;
 use MGLara\Models\Filial;
 use Carbon\Carbon;
+use MGLara\Models\EstoqueLocalProdutoVariacao;
 use MGLara\Models\EstoqueSaldo;
 use MGLara\Models\EstoqueMes;
+use DB;
 
 /**
  * 
@@ -37,52 +39,85 @@ class ArquivoEstoque extends Arquivo
     
     function processa()
     {
+
         $dataSaldo = $this->_mes->modify('last day of this month');
+
+        $sql = "
+            select
+	        p.codproduto
+	        , p.produto
+	        , p.inativo
+                , p.codtipoproduto
+	        , p.preco
+                , um.sigla
+                , n.ncm
+	        , fiscal.saldoquantidade
+	        , fiscal.customedio
+	        , fiscal.saldovalor
+	        , p.preco / case when fiscal.customedio != 0 then fiscal.customedio else null end as markup
+            from tblproduto p
+            left join tblunidademedida um on (um.codunidademedida = p.codunidademedida)
+            left join (
+	        select 
+		        pv.codproduto
+		        , sum(em.saldoquantidade) as saldoquantidade
+		        , sum(em.saldovalor) as saldovalor
+		        , sum(em.saldovalor) / case when sum(em.saldoquantidade) !=0 then sum(em.saldoquantidade) else null end as customedio
+	        from tblestoquelocalprodutovariacao elpv
+	        inner join tblprodutovariacao pv on (pv.codprodutovariacao = elpv.codprodutovariacao)
+	        inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
+	        inner join tblfilial f on (f.codfilial = el.codfilial)
+	        inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = true)
+	        inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= :mes order by mes desc limit 1))
+	        where f.codfilial = :codfilial
+              group by pv.codproduto
+	        ) fiscal on (fiscal.codproduto = p.codproduto)
+            left join tblncm n on (n.codncm = p.codncm)
+            where p.codtipoproduto = 0
+            AND fiscal.saldoquantidade != 0
+            order by 7 desc, p.produto, p.codproduto
+        ";
+
+	$params = [
+            'mes' => $dataSaldo,
+            'codfilial' => $this->_Filial->codfilial
+        ];
+
+	$saldos = DB::select($sql, $params);
+
+	foreach ($saldos as $saldo) {
         
-        foreach ($this->_Filial->EstoqueLocalS as $local)
-        {
-            //foreach (EstoqueSaldo::Local($local)->Fiscal(true)->limit(3000)->get() as $saldo)
-            foreach (EstoqueSaldo::Local($local)->Fiscal(true)->get() as $saldo)
+            $reg = new RegistroProduto4();          
+            $reg->codigoProduto = str_pad($saldo->codproduto, 6, '0', STR_PAD_LEFT);
+            $reg->codigoEmpresa = $this->_Filial->empresadominio;
+    
+            switch ($saldo->codtipoproduto)
             {
-                $mes = EstoqueMes::Saldo($saldo)->Ultimo($this->_mes)->first();
-                if ($mes === null)
-                    continue;
-                if ($mes->saldoquantidade == 0)
-                    continue;
-
-                
-                $reg = new RegistroProduto4();          
-                $reg->codigoProduto = str_pad($saldo->codproduto, 6, '0', STR_PAD_LEFT);
-                $reg->codigoEmpresa = $this->_Filial->empresadominio;
-
-                switch ($saldo->Produto->codtipoproduto)
-                {
-                    case 8: // Imobilizado
-                        $reg->codigoGrupo = 3;
-                        break;
-                    
-                    case 7: // Uso e Consumo
-                        $reg->codigoGrupo = 2;
-                        break;
-                    
-                    default: // Imobilizado
-                        $reg->codigoGrupo = 1;
-                        break;
-                }
-                
-                $reg->codigoNbm = null;
-                $reg->descricaoProduto = $saldo->Produto->produto;
-                $reg->tipoItem = $saldo->Produto->codtipoproduto;
-                $reg->unidadeMedida = $saldo->Produto->UnidadeMedida->sigla;
-                $reg->valorUnitario = $saldo->Produto->preco;
-                $reg->codigoNcm = $saldo->Produto->Ncm->ncm;
-                $reg->dataSaldoFinal = $dataSaldo;
-                $reg->valorFinalEstoque = $mes->saldovalor;
-                $reg->quantidadeFinalEstoque = $mes->saldoquantidade;
-                
-                $this->_registros[] = $reg;
-                
+                case 8: // Imobilizado
+                    $reg->codigoGrupo = 3;
+                    break;
+                        
+                case 7: // Uso e Consumo
+                    $reg->codigoGrupo = 2;
+                    break;
+                        
+                default: // Imobilizado
+                    $reg->codigoGrupo = 1;
+                    break;
             }
+                    
+            $reg->codigoNbm = null;
+            $reg->descricaoProduto = $saldo->produto;
+            $reg->tipoItem = $saldo->codtipoproduto;
+            $reg->unidadeMedida = $saldo->sigla;
+            $reg->valorUnitario = $saldo->preco;
+            $reg->codigoNcm = $saldo->ncm;
+            $reg->dataSaldoFinal = $dataSaldo;
+            $reg->valorFinalEstoque = $saldo->saldovalor;
+            $reg->quantidadeFinalEstoque = $saldo->saldoquantidade;
+            
+            $this->_registros[] = $reg;
+                    
         }
         
         return parent::processa();

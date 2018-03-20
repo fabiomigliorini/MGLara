@@ -784,6 +784,7 @@ class EstoqueAjustaFiscalCommand extends Command
                 ";
 	}
 	$sql .= "
+		--offset 20
 		limit 100
 	";
 

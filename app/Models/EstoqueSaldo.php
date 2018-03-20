@@ -1304,4 +1304,12 @@ class EstoqueSaldo extends MGModel
 
         return $ret;
     }
+
+    public function scopeFiscal($query, $fiscal)
+    {
+        if ($fiscal)
+            $query->where('fiscal', true);
+        else
+            $query->where('fiscal', false);
+    } 
 }
