@@ -131,7 +131,7 @@ class EstoqueAjustaFiscalCommand extends Command
         $this->dispatch((new EstoqueCalculaCustoMedio($mes_destino->codestoquemes))->onQueue('urgent'));
 
         // aguarda dois segundos para rodar recalculo dos custos medios
-        //sleep(1);
+        sleep(3.5);
     }
 
     public function geraNotasFiscaisTransferencia()

@@ -126,8 +126,8 @@ class EstoqueSaldo extends MGModel
                     DB::raw(
                         ' saldoquantidade
                         , ' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ' as saldovalor
-                        , estoqueminimo
-                        , estoquemaximo
+                        , tblestoquelocalprodutovariacao.estoqueminimo
+                        , tblestoquelocalprodutovariacao.estoquemaximo
                         , fiscal
                         , tblprodutovariacao.codprodutovariacao as coditem
                         , tblproduto.produto || \' » \' || coalesce(tblprodutovariacao.variacao, \'{ Sem Variação }\') as item
@@ -146,8 +146,8 @@ class EstoqueSaldo extends MGModel
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
                         , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
-                        , sum(estoqueminimo) as estoqueminimo
-                        , sum(estoquemaximo) as estoquemaximo
+                        , sum(tblestoquelocalprodutovariacao.estoqueminimo) as estoqueminimo
+                        , sum(tblestoquelocalprodutovariacao.estoquemaximo) as estoquemaximo
                         , fiscal
                         , tblproduto.codproduto as coditem
                         , tblproduto.produto as item
@@ -166,8 +166,8 @@ class EstoqueSaldo extends MGModel
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
                         , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
-                        , sum(estoqueminimo) as estoqueminimo
-                        , sum(estoquemaximo) as estoquemaximo
+                        , sum(tblestoquelocalprodutovariacao.estoqueminimo) as estoqueminimo
+                        , sum(tblestoquelocalprodutovariacao.estoquemaximo) as estoquemaximo
                         , fiscal
                         , tblmarca.codmarca as coditem
                         , tblmarca.marca as item
@@ -187,8 +187,8 @@ class EstoqueSaldo extends MGModel
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
                         , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
-                        , sum(estoqueminimo) as estoqueminimo
-                        , sum(estoquemaximo) as estoquemaximo
+                        , sum(tblestoquelocalprodutovariacao.estoqueminimo) as estoqueminimo
+                        , sum(tblestoquelocalprodutovariacao.estoquemaximo) as estoquemaximo
                         , fiscal
                         , tblsubgrupoproduto.codsubgrupoproduto as coditem
                         , tblsubgrupoproduto.subgrupoproduto as item
@@ -207,8 +207,8 @@ class EstoqueSaldo extends MGModel
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
                         , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
-                        , sum(estoqueminimo) as estoqueminimo
-                        , sum(estoquemaximo) as estoquemaximo
+                        , sum(tblestoquelocalprodutovariacao.estoqueminimo) as estoqueminimo
+                        , sum(tblestoquelocalprodutovariacao.estoquemaximo) as estoquemaximo
                         , fiscal
                         , tblgrupoproduto.codgrupoproduto as coditem
                         , tblgrupoproduto.grupoproduto as item
@@ -227,8 +227,8 @@ class EstoqueSaldo extends MGModel
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
                         , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
-                        , sum(estoqueminimo) as estoqueminimo
-                        , sum(estoquemaximo) as estoquemaximo
+                        , sum(tblestoquelocalprodutovariacao.estoqueminimo) as estoqueminimo
+                        , sum(tblestoquelocalprodutovariacao.estoquemaximo) as estoquemaximo
                         , fiscal
                         , tblfamiliaproduto.codfamiliaproduto as coditem
                         , tblfamiliaproduto.familiaproduto as item
@@ -248,8 +248,8 @@ class EstoqueSaldo extends MGModel
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
                         , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
-                        , sum(estoqueminimo) as estoqueminimo
-                        , sum(estoquemaximo) as estoquemaximo
+                        , sum(tblestoquelocalprodutovariacao.estoqueminimo) as estoqueminimo
+                        , sum(tblestoquelocalprodutovariacao.estoquemaximo) as estoquemaximo
                         , fiscal
                         , tblsecaoproduto.codsecaoproduto as coditem
                         , tblsecaoproduto.secaoproduto as item
@@ -329,18 +329,18 @@ class EstoqueSaldo extends MGModel
 
                 if (!empty($filtro['minimo'])) {
                     if ($filtro['minimo'] == -1) {
-                        $q2->whereRaw('saldoquantidade < estoqueminimo');
+                        $q2->whereRaw('saldoquantidade < tblestoquelocalprodutovariacao.estoqueminimo');
                     } else if ($filtro['minimo'] == 1) {
-                        $q2->whereRaw('saldoquantidade >= estoqueminimo');
+                        $q2->whereRaw('saldoquantidade >= tblestoquelocalprodutovariacao.estoqueminimo');
 
                     }
                 }
 
                 if (!empty($filtro['maximo'])) {
                     if ($filtro['maximo'] == -1) {
-                        $q2->whereRaw('saldoquantidade <= estoquemaximo');
+                        $q2->whereRaw('saldoquantidade <= tblestoquelocalprodutovariacao.estoquemaximo');
                     } else if ($filtro['maximo'] == 1) {
-                        $q2->whereRaw('saldoquantidade > estoquemaximo');
+                        $q2->whereRaw('saldoquantidade > tblestoquelocalprodutovariacao.estoquemaximo');
                     }
                 }
 
