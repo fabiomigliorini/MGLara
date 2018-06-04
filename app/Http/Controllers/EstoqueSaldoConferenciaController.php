@@ -31,6 +31,8 @@ class EstoqueSaldoConferenciaController extends Controller
      */
     public function index(Request $request)
     {
+	return redirect()->away("http://mgspa.mgpapelaria.com.br/estoque-saldo-conferencia");
+
         $parametros = self::filtroEstatico(
             $request, 
             'estoque-saldo-conferencia.index', 
@@ -48,6 +50,8 @@ class EstoqueSaldoConferenciaController extends Controller
      */
     public function create(Request $request)
     {
+        return redirect()->away("http://mgspa.mgpapelaria.com.br/estoque-saldo-conferencia");
+
         $codestoquelocal = null;
         $fiscal = null;
         $data = null;
@@ -189,6 +193,8 @@ class EstoqueSaldoConferenciaController extends Controller
     public function store(Request $request)
     {
 
+        return redirect()->away("http://mgspa.mgpapelaria.com.br/estoque-saldo-conferencia");
+
         $es = EstoqueSaldo::buscaOuCria($request->codprodutovariacao, $request->codestoquelocal, (boolean) $request->fiscal);
         
         $es->EstoqueLocalProdutoVariacao->estoquemaximo = $request->estoquemaximo;
@@ -235,7 +241,7 @@ class EstoqueSaldoConferenciaController extends Controller
      */
     public function show($id)
     {
-        //
+        return redirect()->away("http://mgspa.mgpapelaria.com.br/estoque-saldo-conferencia");
     }
 
     /**
@@ -246,7 +252,7 @@ class EstoqueSaldoConferenciaController extends Controller
      */
     public function edit($id)
     {
-        //
+        return redirect()->away("http://mgspa.mgpapelaria.com.br/estoque-saldo-conferencia");
     }
 
     /**
@@ -258,7 +264,7 @@ class EstoqueSaldoConferenciaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return redirect()->away("http://mgspa.mgpapelaria.com.br/estoque-saldo-conferencia");
     }
 
     /**
@@ -269,6 +275,8 @@ class EstoqueSaldoConferenciaController extends Controller
      */
     public function destroy($id)
     {
+        return redirect()->away("http://mgspa.mgpapelaria.com.br/estoque-saldo-conferencia");
+
         try{
             
             DB::beginTransaction();
