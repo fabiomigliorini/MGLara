@@ -3,6 +3,8 @@ use MGLara\Models\Pessoa;
 use MGLara\Models\Filial;
 use MGLara\Models\Cargo;
 use Collective\Html\FormBuilder;
+use Illuminate\Support\Facades\DB;
+
 
 $cargos = [''=>''] + Cargo::orderBy('cargo')->lists('cargo', 'codcargo')->all();        
 $filiais = Filial::orderBy('codfilial')->get();
@@ -12,6 +14,24 @@ $pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
         ->orderBy('fantasia')
         ->lists('fantasia', 'codpessoa')
         ->all();
+
+if (!empty($model->codmeta)) {
+	$pessoas_usadas = DB::select("
+	
+		select p.codpessoa, p.fantasia
+		from tblmetafilial mf
+		inner join tblmetafilialpessoa mfp on (mfp.codmetafilial = mf.codmetafilial)
+		inner join tblpessoa p on (p.codpessoa = mfp.codpessoa)
+		where mf.codmeta = {$model->codmeta}
+		order by p.fantasia
+	
+	");
+	
+	foreach ($pessoas_usadas as $p) {
+		$pessoas[$p->codpessoa] = $p->fantasia;
+	}
+}
+
 ?>
 <div class="form-group">
     {!! Form::label('meta[periodoinicial]', 'Período:', ['class'=>'col-sm-2 control-label']) !!}
