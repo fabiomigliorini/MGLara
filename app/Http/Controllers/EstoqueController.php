@@ -43,6 +43,12 @@ class EstoqueController extends Controller
         $this->dispatch((new EstoqueCalculaCustoMedio($id))->onQueue('urgent'));
         return response()->json(['response' => 'Agendado']);
     }
+
+    public function geraMovimentoConferencia(Request $request, $id)
+    {
+        $this->dispatch((new EstoqueGeraMovimentoConferencia($id))->onQueue('high'));
+        return response()->json(['response' => 'Agendado']);
+    }
     
     public function geraMovimentoNegocioProdutoBarra(Request $request, $id)
     {
