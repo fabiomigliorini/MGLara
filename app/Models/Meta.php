@@ -263,7 +263,9 @@ class Meta extends MGModel
             if(is_null($xerox->valorvendaspordata)){
                 $xerox->valorvendas = 0;
             } else {
-                $xerox->valorvendas = array_sum(array_column(json_decode($vendedor->valorvendaspordata), 'valorvendas'));
+                if (!empty($vendedor->valorvendaspordata)) {
+	                $xerox->valorvendas = array_sum(array_column(json_decode($vendedor->valorvendaspordata), 'valorvendas'));
+		}
             }
                             
             $xerox->valorvendas = array_sum(array_column(json_decode($xerox->valorvendaspordata) ?? [], 'valorvendas'));
