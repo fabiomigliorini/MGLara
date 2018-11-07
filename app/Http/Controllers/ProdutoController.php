@@ -125,6 +125,10 @@ class ProdutoController extends Controller
     public function show(Request $request, $id)
     {
         $model = Produto::findOrFail($id);
+        $nfpbs = null;
+        $npbs = null;
+        $parametros = null;
+        $estoque = null;
         switch ($request->get('_div'))
         {
             case 'div-imagens':
