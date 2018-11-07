@@ -110,7 +110,6 @@ class Meta extends MGModel
             where m.codmeta = {$this->codmeta}
             --order by valorvendas desc
         ";
-	dd('aqui');
         
         $sql_vendedores = "
         select
