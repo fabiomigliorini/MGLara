@@ -34,12 +34,12 @@
     <div class="col-sm-2">{!! Form::text('variacao', null, ['class'=> 'form-control', 'id'=>'variacao']) !!}
     </div>
 </div>
+
 <div class="form-group">
     <label for="referencia" class="col-sm-2 control-label">{!! Form::label('Referência:') !!}</label>
     <div class="col-sm-2">{!! Form::text('referencia', null, ['class'=> 'form-control', 'id'=>'referencia']) !!}
     </div>
 </div>
-
 <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
         {!! Form::submit($submitTextButton, array('class' => 'btn btn-primary')) !!}

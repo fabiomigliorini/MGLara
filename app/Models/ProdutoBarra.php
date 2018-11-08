@@ -235,17 +235,6 @@ class ProdutoBarra extends MGModel
         return $this->Produto->UnidadeMedida();
     }
     
-    public function referencia()
-    {
-        if (!empty($this->referencia)) {
-            return $this->referencia;
-        }
-        if (!empty($this->ProdutoVariacao->referencia)) {
-            return $this->ProdutoVariacao->referencia;
-        } 
-        return $this->Produto->referencia;
-    }
-
     public function Marca()
     {
         if (!empty($this->ProdutoVariacao->codmarca)) {

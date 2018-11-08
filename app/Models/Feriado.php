@@ -84,6 +84,7 @@ class Feriado extends MGModel
      * @return Carbon[]
      */
     public static function diasUteis (Carbon $data_inicial, Carbon $data_final, bool $sabado_dia_util = false) {
+	$data_final = clone $data_final->endOfDay();
         if ($data_final->lt($data_inicial)) {
             return false;
         }
@@ -105,7 +106,7 @@ class Feriado extends MGModel
                 $data->addDay();
                 continue;
             }
-            $dias_uteis[] = clone $data;
+            $dias_uteis[] = clone $data->startOfDay();
             $data->addDay();
         }
         return $dias_uteis;

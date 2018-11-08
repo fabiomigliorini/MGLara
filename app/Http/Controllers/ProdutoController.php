@@ -574,7 +574,7 @@ class ProdutoController extends Controller
                     'codprodutoembalagem' => $pb->codprodutoembalagem,
                     'barras' => $pb->barras,
                     'detalhes' => $pb->variacao,
-                    'referencia' => $pb->referencia,
+                    'referencia' => ($pb->referencia??$pb->ProdutoVariacao->referencia)??$pb->ProdutoVariacao->Produto->referencia,
                     'unidademedida' => $pb->UnidadeMedida->sigla,
                     'quantidade' => (!empty($pb->codprodutoembalagem)?(float)$pb->ProdutoEmbalagem->quantidade:null),
                 ];
@@ -599,7 +599,7 @@ class ProdutoController extends Controller
             }
             $variacoes[] = [
                 'codprodutovariacao' => $pv->codprodutovariacao,
-                'referencia' => $pv->referencia,
+                'referencia' => $pv->referencia??$pv->Produto->referencia,
                 'marca' => (!empty($pv->codmarca)?$pv->Marca->marca:null),
                 'variacao' => $pv->variacao,
                 'barras' => $produtobarras,
@@ -638,7 +638,7 @@ class ProdutoController extends Controller
             'inativo' => $barras->Produto->inativo,
             'unidademedida' => $barras->UnidadeMedida->unidademedida,
             'slglaunidademedida' => $barras->UnidadeMedida->sigla,
-            'referencia' => $barras->referencia(),
+            'referencia' => ($barras->referencia??$barras->ProdutoVariacao->referencia)??$barras->ProdutoVariacao->Produto->referencia,
             'marca' => [
                 'codmarca' => $barras->Marca->codmarca,
                 'marca' => $barras->Marca->marca,

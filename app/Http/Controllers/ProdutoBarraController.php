@@ -212,7 +212,7 @@ class ProdutoBarraController extends Controller
                 'codprodutobarra' => $model->codprodutobarra,
                 'produto' => $model->descricao(),
                 'barras' => $model->barras,
-                'referencia' => $model->referencia(),
+                'referencia' => ($model->referencia??$model->ProdutoVariacao->referencia)??$model->ProdutoVariacao->Produto->referencia,
                 'preco' => $model->preco(),
             ];
             
