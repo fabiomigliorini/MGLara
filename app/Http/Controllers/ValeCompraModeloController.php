@@ -81,7 +81,7 @@ class ValeCompraModeloController extends Controller
         
         $model = new ValeCompraModelo($dados);
         $model->totalprodutos = array_sum($dados['item_total']);
-        $model->total = $model->totalprodutos - $model->desconto;
+        $model->total = ((float)$model->totalprodutos) - ((float)$model->desconto);
         
         if (!$model->validate()) {
             $this->throwValidationException($request, $model->_validator);
