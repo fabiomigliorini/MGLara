@@ -148,6 +148,8 @@ class NotaFiscalController extends Controller
             and origem.codempresa = destino.codempresa
             and emitida.codnotafiscal is null
             and origem.codfilial = {$codfilial}
+            and origem.codfilial != 199 -- Defeito
+            and destino.codfilial != 199 -- Defeito
             --limit 50
 
             union all
@@ -193,6 +195,8 @@ class NotaFiscalController extends Controller
             and tblnegocio.codnaturezaoperacao not in (19) --Uso e Consumo
             and origem.codempresa = destino.codempresa
             and origem.codfilial = {$codfilial}
+            and origem.codfilial != 199 -- Defeito
+            and destino.codfilial != 199 -- Defeito
             --limit 50
 
             limit 600
