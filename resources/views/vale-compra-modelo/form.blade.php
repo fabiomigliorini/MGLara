@@ -2,7 +2,7 @@
   <div class='col-md-6'>
     <div class="form-group">
         {!! Form::label('modelo', 'Modelo:', ['class'=>'col-sm-2 control-label']) !!}
-        <div class="col-sm-10">{!! Form::text('modelo', null, ['class'=> 'form-control', 'id'=>'modelo', 'required'=>'required']) !!}</div>
+        <div class="col-sm-10">{!! Form::text('modelo', null, ['class'=> 'form-control', 'id'=>'modelo', 'required'=>'required', 'maxlength'=>50]) !!}</div>
     </div>
     <div class="form-group">
         <?php
@@ -16,7 +16,7 @@
     </div>
     <div class="form-group">
         {!! Form::label('turma', 'Turma:', ['class'=>'col-sm-2 control-label']) !!}
-        <div class="col-sm-4">{!! Form::text('turma', null, ['class'=> 'form-control', 'id'=>'turma', 'required'=>'required']) !!}</div>
+        <div class="col-sm-4">{!! Form::text('turma', null, ['class'=> 'form-control', 'id'=>'turma', 'required'=>'required', 'maxlength'=>40]) !!}</div>
     </div>
     <div class="form-group">
         {!! Form::label('codpessoafavorecido', 'Favorecido:', ['class'=>'col-sm-2 control-label']) !!}
