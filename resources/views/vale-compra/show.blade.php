@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <ol class="breadcrumb header">
-    {!! 
+    {!!
         titulo(
             $model->codvalecompra,
             [
@@ -10,8 +10,8 @@
                 $model->turma,
             ],
             $model->inativo
-        ) 
-    !!}    
+        )
+    !!}
     <li class='active'>
         <small>
             <a title="Novo" href="{{ url('vale-compra/create') }}"><span class="glyphicon glyphicon-plus"></span></a>
@@ -21,9 +21,9 @@
               &nbsp;
               <a title='Impressão' href="#" data-toggle="modal" data-target="#modalRelatorio" id="linkImpressao"><span class="glyphicon glyphicon-print"></span></a>
             @endif
-            
+
         </small>
-    </li>   
+    </li>
 </ol>
 <div class="row">
   <div class='col-md-8'>
@@ -46,7 +46,7 @@
                 {{ $vcmpb->ProdutoBarra->descricao() }}
               </a>
             @endif
-            
+
           </div>
           <div class='col-md-2 text-right'>
             {{ formataNumero($vcmpb->quantidade, 3) }}
@@ -96,7 +96,7 @@
     </ul>
     @include('includes.autor')
   </div>
-  
+
   <div class='col-md-4'>
     <ul class="list-group list-group-condensed list-group-hover list-group-striped" id='divListagemProdutos'>
       <li class='list-group-item'>
@@ -157,7 +157,7 @@
               </div>
             @endforeach
         </div>
-      </li>      
+      </li>
       <li class='list-group-item'>
         <div class='row'>
             <div class='col-md-4'>
@@ -177,7 +177,7 @@
                   {{ $model->ValeCompraModelo->modelo }}
                 </a>
               </small>
-              
+
             </div>
         </div>
       </li>
@@ -216,13 +216,25 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <iframe id="frameImpressao" src="" style="border: 0px; width: 100%; height: 300px">
+        <iframe id="frameImpressao" name="frameImpressao" src="" style="border: 0px; width: 100%; height: 300px">
         </iframe>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" title="Imprimir" id="btnImprimir">
+        <div class="btn-group">
+          <button class="btn dropdown-toggle btn-primary" data-toggle="dropdown">
             <i class="glyphicon glyphicon-print"></i>
+            &nbsp;
+            <span class="caret"></span>
           </button>
+          <ul class="dropdown-menu">
+            <li>
+              <a id="btnImprimirLaser" href="#">Na Impressora Laser</a>
+            </li>
+            <li>
+              <a id="btnImprimir" href="#">Na Impressora Matricial</a>
+            </li>
+          </ul>
+        </div>
         <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
       </div>
     </div>
@@ -232,23 +244,28 @@
 @section('inscript')
 <script type="text/javascript">
 $(document).ready(function() {
-    
+
     @if ($imprimir == true)
         $('#frameImpressao').attr('src', '{{ url("vale-compra/{$model->codvalecompra}/imprimir?imprimir=true") }}');
         $('#modalRelatorio').modal('show')
     @endif
-    
+
     $('#linkImpressao').click(function (e) {
         $('#frameImpressao').attr('src', '{{ url("vale-compra/{$model->codvalecompra}/imprimir?imprimir=false") }}');
     });
-    
-    
+
+
     $('#btnImprimir').click(function (e) {
         $('#frameImpressao').attr('src', '{{ url("vale-compra/{$model->codvalecompra}/imprimir?imprimir=true") }}');
         $('#modalRelatorio').modal('hide')
         bootbox.alert('Documento enviado para impressora!');
     });
-    
+
+    $('#btnImprimirLaser').click(function (e) {
+      window.frames["frameImpressao"].focus();
+  		window.frames["frameImpressao"].print();
+    });
+
 });
 </script>
 @endsection
