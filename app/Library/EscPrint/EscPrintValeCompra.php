@@ -153,7 +153,7 @@ class EscPrintValeCompra extends EscPrint
         $total_prods = $prods->count();
         if ($total_prods >= 17 and $total_prods <= 19) {
           for ($i = 0; $i < (19-$total_prods); $i++) {
-            $this->adicionaLinha($i);
+            $this->adicionaLinha('');
           }
         }
 
