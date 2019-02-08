@@ -67,6 +67,16 @@ class Feriado extends MGModel
      * @return boolean
      */
     public static function diaUtil (Carbon $data, bool $sabado_dia_util = false) {
+        $excecoes = [
+            Carbon::parse('2019-02-03'),
+            Carbon::parse('2019-02-10')
+        ];
+        foreach ($excecoes as $exc) {
+            if ($data->startOfDay()->equalTo($exc)) {
+                return true;
+            }
+	    $exc;
+        }
         if ($data->dayOfWeek == Carbon::SUNDAY) {
             return false;
         }
@@ -94,15 +104,11 @@ class Feriado extends MGModel
         $feriados = Feriado::where('data', '>=', $data_inicial)->where('data', '<=', $data_final)->get();
         
         while ($data->lte($data_final)) {
-            if ($data->dayOfWeek == Carbon::SUNDAY) {
-                $data->addDay();
-                continue;
-            }
-            if (!$sabado_dia_util && $data->dayOfWeek == Carbon::SATURDAY) {
-                $data->addDay();
-                continue;
-            }
             if ($feriados->contains('data', $data)) {
+                $data->addDay();
+                continue;
+            }
+            if (!self::diaUtil($data, true)) {
                 $data->addDay();
                 continue;
             }
