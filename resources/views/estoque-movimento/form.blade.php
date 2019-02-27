@@ -5,7 +5,7 @@
         Data:
     </label>
     <div class="col-md-2">
-        {!! Form::datetimeLocal('data', $model->data, ['class'=> 'form-control text-center', 'id'=>'data', 'required'=>'required']) !!}
+        {!! Form::datetimeLocal('data', $model->data, ['class'=> 'form-control text-center', 'id'=>'data', 'required'=>'required', 'autofocus'=>'autofocus']) !!}
     </div>
 </div>
 

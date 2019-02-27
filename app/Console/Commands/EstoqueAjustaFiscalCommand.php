@@ -728,7 +728,7 @@ class EstoqueAjustaFiscalCommand extends Command
 			inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
 			inner join tblfilial f on (f.codfilial = el.codfilial)
 			inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = false)
-			inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '2017-12-31' order by mes desc limit 1))
+			inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '2018-12-31' order by mes desc limit 1))
 			where f.codempresa = 1
 		), fiscal as (
 			select 
@@ -745,7 +745,7 @@ class EstoqueAjustaFiscalCommand extends Command
 			inner join tblestoquelocal el on (el.codestoquelocal = elpv.codestoquelocal)
 			inner join tblfilial f on (f.codfilial = el.codfilial)
 			inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = true)
-			inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '2017-12-31' order by mes desc limit 1))
+			inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '2018-12-31' order by mes desc limit 1))
 			where f.codempresa = 1
 		)
 		select 
@@ -790,7 +790,7 @@ class EstoqueAjustaFiscalCommand extends Command
 
 	$dados = DB::select($sql);
 	$i = 0;
-        $data = Carbon::createFromFormat('Y-m-d', '2017-01-01')->startOfMonth();
+        $data = Carbon::createFromFormat('Y-m-d', '2018-01-01')->startOfMonth();
 
         while ($i < sizeof($dados))
         {
