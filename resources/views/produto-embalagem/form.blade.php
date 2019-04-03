@@ -12,7 +12,7 @@
 
 <div class="form-group">
     <label for="preco" class="col-sm-2 control-label">{!! Form::label('Quantidade:') !!}</label>
-    <div class="col-sm-1">{!! Form::number('quantidade', null, ['class'=> 'form-control text-right', 'step'=>'0.001', 'required'=>true, 'id'=>'quantidade']) !!}
+    <div class="col-sm-1">{!! Form::number('quantidade', null, ['class'=> 'form-control text-right', 'step'=>'0.0000000001', 'required'=>true, 'id'=>'quantidade']) !!}
     </div>
 </div>
 

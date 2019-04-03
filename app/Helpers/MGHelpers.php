@@ -295,7 +295,7 @@ if(!function_exists('formataCep')) {
 if(!function_exists('formataLocalEstoque')) {
     function formataLocalEstoque ($corredor, $prateleira, $coluna, $bloco)
     {
-        if (($corredor + $prateleira + $coluna + $bloco) > 0)
+	if (!empty($corredor) || !empty($prateleira) || !empty($coluna) || !empty($bloco))
         {
             $corredor = str_pad($corredor, 2, '0', STR_PAD_LEFT);
             $prateleira = str_pad($prateleira, 2, '0', STR_PAD_LEFT);
