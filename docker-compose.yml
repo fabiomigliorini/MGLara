@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+    mglara:
+        build:
+            './.docker'
+        tty: true
+        ports:
+            - "80:80"
+        volumes:
+            - ./:/opt/www/MGLara
+        network_mode: host
