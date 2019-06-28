@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-docker-compose up -d
+docker-compose up -d --build
+
+#docker-compose exec mglara bash -c "cd /opt/www/MGLara/ && composer install"

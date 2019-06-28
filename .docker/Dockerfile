@@ -26,7 +26,8 @@ RUN apt install -y php7.1-cli \
     php7.1-soap \
     php7.1-curl \
     php7.1-mbstring \
-    php7.1-xml
+    php7.1-xml \
+    php7.1-memcached
     
 RUN update-alternatives --set php /usr/bin/php7.1 \
     && apt install -y memcached \

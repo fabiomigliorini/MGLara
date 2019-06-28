@@ -4,6 +4,8 @@ services:
         build:
             './.docker'
         tty: true
+        command: >
+            bash -c "chmod -R a+w /opt/www/MGLara/storage && /bin/bash"
         volumes:
             - ./:/opt/www/MGLara
         network_mode: host
