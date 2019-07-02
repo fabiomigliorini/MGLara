@@ -3,6 +3,7 @@ services:
     mglara:
         build:
             './.docker'
+        working_dir: /opt/www/MGLara
         tty: true
         command: > 
             bash -c "chmod -R a+w /opt/www/MGLara/storage 
