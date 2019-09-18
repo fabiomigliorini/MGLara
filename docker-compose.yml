@@ -1,0 +1,13 @@
+version: '3.3'
+services:
+    mglara:
+        build:
+            './.docker'
+        working_dir: /opt/www/MGLara
+        tty: true
+        command: > 
+            bash -c "chmod -R a+w /opt/www/MGLara/storage 
+            && /bin/bash"
+        volumes:
+            - ./:/opt/www/MGLara
+        network_mode: host
