@@ -9,32 +9,32 @@ use Carbon\Carbon;
  * Campos
  * @property  bigint                         $codproduto                         NOT NULL DEFAULT nextval('tblproduto_codproduto_seq'::regclass)
  * @property  varchar(100)                   $produto                            NOT NULL
- * @property  varchar(50)                    $referencia                         
+ * @property  varchar(50)                    $referencia
  * @property  bigint                         $codunidademedida                   NOT NULL
  * @property  bigint                         $codsubgrupoproduto                 NOT NULL
  * @property  bigint                         $codmarca                           NOT NULL
- * @property  numeric(14,2)                  $preco                              
+ * @property  numeric(14,2)                  $preco
  * @property  boolean                        $importado                          NOT NULL DEFAULT false
  * @property  bigint                         $codtributacao                      NOT NULL
- * @property  date                           $inativo                            
+ * @property  date                           $inativo
  * @property  bigint                         $codtipoproduto                     NOT NULL
  * @property  boolean                        $site                               NOT NULL DEFAULT false
- * @property  varchar(1024)                  $descricaosite                      
- * @property  timestamp                      $alteracao                          
- * @property  bigint                         $codusuarioalteracao                
- * @property  timestamp                      $criacao                            
- * @property  bigint                         $codusuariocriacao                  
- * @property  bigint                         $codncm                             
- * @property  bigint                         $codcest                            
+ * @property  varchar(1024)                  $descricaosite
+ * @property  timestamp                      $alteracao
+ * @property  bigint                         $codusuarioalteracao
+ * @property  timestamp                      $criacao
+ * @property  bigint                         $codusuariocriacao
+ * @property  bigint                         $codncm
+ * @property  bigint                         $codcest
  *
  * Chaves Estrangeiras
- * @property  Cest                           $Cest                          
- * @property  Marca                          $Marca                         
- * @property  Ncm                            $Ncm                           
- * @property  SubGrupoProduto                $SubGrupoProduto               
- * @property  TipoProduto                    $TipoProduto                   
- * @property  Tributacao                     $Tributacao                    
- * @property  UnidadeMedida                  $UnidadeMedida                 
+ * @property  Cest                           $Cest
+ * @property  Marca                          $Marca
+ * @property  Ncm                            $Ncm
+ * @property  SubGrupoProduto                $SubGrupoProduto
+ * @property  TipoProduto                    $TipoProduto
+ * @property  Tributacao                     $Tributacao
+ * @property  UnidadeMedida                  $UnidadeMedida
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
  *
@@ -66,23 +66,24 @@ class Produto extends MGModel
         'codncm',
         'codcest',
         'observacoes',
+        'abc',
     ];
     protected $dates = [
         'inativo',
         'alteracao',
         'criacao',
     ];
-    
+
     public function getPrecocAttribute()
     {
         return $this->preco;
     }
-    
+
     public function validate() {
-        
+
         $unique  = "uniqueMultiple:tblproduto,codproduto,$this->codproduto,produto";
-        
-        $this->_regrasValidacao = [            
+
+        $this->_regrasValidacao = [
             'produto'           => "min:10|max:100|validaMarca:$this->codmarca,$this->inativo|$unique",
             'referencia'        => 'max:50',
             'codunidademedida'  => 'required|numeric',
@@ -94,7 +95,7 @@ class Produto extends MGModel
             'codncm'            => 'required|numeric|validaNcm',
             //'codcest'           => 'numeric|required_if:codtributacao,'.Tributacao::SUBSTITUICAO,
         ];
-    
+
         $this->_mensagensErro = [
             'produto.required'              => 'O campo descrição não pode ser vazio',
             'produto.unique_multiple'       => 'Já existe um produto com essa descrição!',
@@ -107,14 +108,14 @@ class Produto extends MGModel
             'codtributacao.required'        => 'O campo Tributação não pode ser vazio',
             'codtributacao.valida_tributacao' => 'Existe Regulamento de ICMS ST para este NCM!',
             'codtributacao.valida_tributacao_substituicao' => 'Não existe regulamento de ICMS ST para este NCM!',
-            
+
             'codtipoproduto.required'       => 'O campo Tipo não pode ser vazio',
             'codncm.required'               => 'O campo NCM não pode ser vazio',
             'codncm.valida_ncm'             => 'Ncm Inválido',
         ];
-        
+
         return parent::validate();
-    }    
+    }
 
     // Chaves Estrangeiras
     public function Cest()
@@ -161,7 +162,7 @@ class Produto extends MGModel
     {
         return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
     }
-    
+
     public function ImagemS()
     {
         return $this->belongsToMany(Imagem::class, 'tblprodutoimagem', 'codproduto', 'codimagem');
@@ -196,23 +197,23 @@ class Produto extends MGModel
     public static function search($parametros)
     {
         $query = Produto::query();
-            
+
         if(!empty($parametros['codproduto'])) {
             $query->id($parametros['codproduto']);
         }
 
         if(!empty($parametros['barras'])) {
-            
+
             $barras = $parametros['barras'];
-            
+
             $query->whereIn('codproduto', function ($query) use ($barras) {
                 $query->select('codproduto')
                     ->from('tblprodutobarra')
                     ->where('barras', 'ilike', "%$barras%");
             });
-            
+
         }
-            
+
         if(!empty($parametros['produto'])) {
             $query->produto($parametros['produto']);
         }
@@ -222,27 +223,27 @@ class Produto extends MGModel
         }
 
         if(!empty($parametros['codsubgrupoproduto'])) {
-            
+
             $query->where('codsubgrupoproduto', $parametros['codsubgrupoproduto']);
-            
+
         } elseif (!empty($parametros['codgrupoproduto'])) {
-            
+
             $query->join('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
             $query->where('tblsubgrupoproduto.codgrupoproduto', $parametros['codgrupoproduto']);
-            
+
         } elseif (!empty($parametros['codfamiliaproduto'])) {
-            
+
             $query->join('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
             $query->join('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto');
             $query->where('tblgrupoproduto.codfamiliaproduto', $parametros['codfamiliaproduto']);
-            
+
         } elseif (!empty($parametros['codsecaoproduto'])) {
-            
+
             $query->join('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
             $query->join('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto');
             $query->join('tblfamiliaproduto', 'tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto');
             $query->where('tblfamiliaproduto.codsecaoproduto', $parametros['codsecaoproduto']);
-            
+
         }
 
         if(!empty($parametros['referencia'])) {
@@ -265,50 +266,50 @@ class Produto extends MGModel
         }
 
         if(!empty($parametros['preco_de']) && empty($parametros['preco_ate'])) {
-            
+
             $sql = "codproduto in (
-                        select pe.codproduto 
-                        from tblprodutoembalagem pe 
-                        inner join tblproduto p on (p.codproduto = pe.codproduto) 
+                        select pe.codproduto
+                        from tblprodutoembalagem pe
+                        inner join tblproduto p on (p.codproduto = pe.codproduto)
                         where coalesce(pe.preco, pe.quantidade * p.preco) >= {$parametros['preco_de']}
                         or p.preco >= {$parametros['preco_de']}
                     )
                     ";
-            
+
             $query->whereRaw($sql);
-            
+
         }
 
         if(empty($parametros['preco_de']) && !empty($parametros['preco_ate'])) {
-            
+
             $sql = "codproduto in (
-                        select pe.codproduto 
-                        from tblprodutoembalagem pe 
-                        inner join tblproduto p on (p.codproduto = pe.codproduto) 
+                        select pe.codproduto
+                        from tblprodutoembalagem pe
+                        inner join tblproduto p on (p.codproduto = pe.codproduto)
                         where coalesce(pe.preco, pe.quantidade * p.preco) <= {$parametros['preco_ate']}
                         or p.preco <= {$parametros['preco_ate']}
                     )
                     ";
-            
+
             $query->whereRaw($sql);
-            
+
         }
-        
+
         if(!empty($parametros['preco_de']) && !empty($parametros['preco_ate'])) {
-            
+
             $sql = "codproduto in (
-                        select pe.codproduto 
-                        from tblprodutoembalagem pe 
-                        inner join tblproduto p on (p.codproduto = pe.codproduto) 
+                        select pe.codproduto
+                        from tblprodutoembalagem pe
+                        inner join tblproduto p on (p.codproduto = pe.codproduto)
                         where coalesce(pe.preco, pe.quantidade * p.preco) between {$parametros['preco_de']} and {$parametros['preco_ate']}
                         or p.preco between {$parametros['preco_de']} and {$parametros['preco_ate']}
                             )
                     ";
-            
+
             $query->whereRaw($sql);
-            
+
         }
-        
+
         if(!empty($parametros['criacao_de'])) {
             $query->where('criacao', '>=', $parametros['criacao_de']);
         }
@@ -335,29 +336,29 @@ class Produto extends MGModel
             case 9; //Todos
             default:
         }
-        
+
         return $query;
     }
 
-    
+
     public function scopeId($query, $id)
     {
         if (trim($id) === '')
             return;
-        
+
         $query->where('codproduto', $id);
     }
-    
+
     public function scopeProduto($query, $produto)
     {
         if (trim($produto) === '')
             return;
-        
+
         $produto = explode(' ', $produto);
         foreach ($produto as $str)
             $query->where('produto', 'ILIKE', "%$str%");
     }
-    
+
     public function scopeInativo($query)
     {
         $query->whereNotNull('tblproduto.inativo');
@@ -367,7 +368,7 @@ class Produto extends MGModel
     {
         $query->whereNull('tblproduto.inativo');
     }
-    
+
     public function getArraySaldoEstoque()
     {
 
@@ -376,7 +377,7 @@ class Produto extends MGModel
             'local' => [],
             //'total' => [],
         ];
-        
+
         // Array com Totais
         $arrTotal = [
             'estoqueminimo' => null,
@@ -395,7 +396,7 @@ class Produto extends MGModel
             ],
             'variacao' => [],
         ];
-        
+
         // Array com Totais Por Variacao
         $pvs = $this->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
         foreach ($pvs as $pv) {
@@ -422,10 +423,10 @@ class Produto extends MGModel
                 ],
             ];
         }
-        
+
         // Percorrre todos os Locais
         foreach (EstoqueLocal::ativo()->orderBy('codestoquelocal', 'asc')->get() as $el) {
-            
+
             // Array com Totais por Local
             $arrLocal = [
                 'codestoquelocal' => $el->codestoquelocal,
@@ -446,10 +447,10 @@ class Produto extends MGModel
                 ],
                 'variacao' => [],
             ];
-            
-            
+
+
             foreach ($pvs as $pv) {
-                
+
                 // Array com Saldo de Cada EstoqueLocalProdutoVariacao
                 $arrVar = [
                     'codprodutovariacao' => $pv->codprodutovariacao,
@@ -476,10 +477,10 @@ class Produto extends MGModel
                         'ultimaconferencia' => null,
                     ],
                 ];
-                
+
                 //Se já existe a combinação de Variacao para o Local
                 if ($elpv = $pv->EstoqueLocalProdutoVariacaoS()->where('codestoquelocal', $el->codestoquelocal)->first()) {
-                    
+
                     $arrVar['codestoquelocalprodutovariacao'] = $elpv->codestoquelocalprodutovariacao;
 
                     //Acumula Estoque Mínimo
@@ -489,7 +490,7 @@ class Produto extends MGModel
                         $arrTotal['estoqueminimo'] += $elpv->estoqueminimo;
                         $arrTotalVar[$pv->codprodutovariacao]['estoqueminimo'] += $elpv->estoqueminimo;
                     }
-                    
+
                     //Acumula Estoque Máximo
                     $arrVar['estoquemaximo'] = $elpv->estoquemaximo;
                     if (!empty($elpv->estoquemaximo)) {
@@ -517,12 +518,12 @@ class Produto extends MGModel
                     if (!empty($elpv->bloco)) {
                         $arrLocal['bloco'] = $elpv->bloco;
                     }
-                    
+
                     //Percorre os Saldos Físico e Fiscal
                     foreach($elpv->EstoqueSaldoS as $es) {
-                        
+
                         $tipo = ($es->fiscal == true)?'fiscal':'fisico';
-                        
+
                         $arrVar[$tipo]["codestoquesaldo"] = $es->codestoquesaldo;
 
                         //Acumula as quantidades de Saldo
@@ -530,58 +531,58 @@ class Produto extends MGModel
                         $arrLocal[$tipo]["saldoquantidade"] += $es->saldoquantidade;
                         $arrTotal[$tipo]["saldoquantidade"] += $es->saldoquantidade;
                         $arrTotalVar[$pv->codprodutovariacao][$tipo]["saldoquantidade"] += $es->saldoquantidade;
-                        
+
                         //Acumula os valores de Saldo
                         $arrVar[$tipo]["saldovalor"] = $es->saldovalor;
                         $arrLocal[$tipo]["saldovalor"] += $es->saldovalor;
                         $arrTotal[$tipo]["saldovalor"] += $es->saldovalor;
                         $arrTotalVar[$pv->codprodutovariacao][$tipo]["saldovalor"] += $es->saldovalor;
-                        
+
                         $arrVar[$tipo]["customedio"] = $es->customedio;
-                        
+
                         $arrVar[$tipo]["ultimaconferencia"] = $es->ultimaconferencia;
-                        
+
                         //Pega a data de conferência mais antiga para o total do Local
                         if (empty($arrLocal[$tipo]["ultimaconferencia"])) {
                             $arrLocal[$tipo]["ultimaconferencia"] = $es->ultimaconferencia;
                         } elseif (!empty($es->ultimaconferencia) && $es->ultimaconferencia < $arrLocal[$tipo]["ultimaconferencia"]) {
                             $arrLocal[$tipo]["ultimaconferencia"] = $es->ultimaconferencia;
                         }
-                        
+
                         //Pega a data de conferência mais antiga para o total da variacao
                         if (empty($arrTotalVar[$pv->codprodutovariacao][$tipo]["ultimaconferencia"])) {
                             $arrTotalVar[$pv->codprodutovariacao][$tipo]["ultimaconferencia"] = $es->ultimaconferencia;
                         } elseif (!empty($es->ultimaconferencia) && $es->ultimaconferencia < $arrTotalVar[$pv->codprodutovariacao][$tipo]["ultimaconferencia"]) {
-                            $arrTotalVar[$pv->codprodutovariacao][$tipo]["ultimaconferencia"] = $es->ultimaconferencia;                            
+                            $arrTotalVar[$pv->codprodutovariacao][$tipo]["ultimaconferencia"] = $es->ultimaconferencia;
                         }
-                        
+
                         //Pega a data de conferência mais antiga para o total geral
                         if (empty($arrTotal[$tipo]["ultimaconferencia"])) {
                             $arrTotal[$tipo]["ultimaconferencia"] = $es->ultimaconferencia;
                         } elseif (!empty($es->ultimaconferencia) && $es->ultimaconferencia < $arrTotal[$tipo]["ultimaconferencia"]) {
-                            $arrTotal[$tipo]["ultimaconferencia"] = $es->ultimaconferencia;                            
+                            $arrTotal[$tipo]["ultimaconferencia"] = $es->ultimaconferencia;
                         }
-                        
+
                     }
 
                 }
-                
+
                 // Adiciona variacao ao array de locais
                 $arrLocal['variacao'][$pv->codprodutovariacao] = $arrVar;
-                
+
             }
-            
+
             // Calcula o custo médio do Local
             if ($arrLocal['fisico']['saldoquantidade'] > 0)
                 $arrLocal['fisico']['customedio'] = $arrLocal['fisico']['saldovalor'] / $arrLocal['fisico']['saldoquantidade'];
             if ($arrLocal['fiscal']['saldoquantidade'] > 0)
                 $arrLocal['fiscal']['customedio'] = $arrLocal['fiscal']['saldovalor'] / $arrLocal['fiscal']['saldoquantidade'];
-            
+
             // Adiciona local no array de retorno
             $arrRet['local'][$el->codestoquelocal] = $arrLocal;
-            
+
         }
-        
+
         // Calcula o custo médio dos totais de cada variacao
         foreach($arrTotalVar as $codvariacao => $arr) {
             if ($arrTotalVar[$codvariacao]['fisico']['saldoquantidade'] > 0)
@@ -589,7 +590,7 @@ class Produto extends MGModel
             if ($arrTotalVar[$codvariacao]['fiscal']['saldoquantidade'] > 0)
                 $arrTotalVar[$codvariacao]['fiscal']['customedio'] = $arrTotalVar[$codvariacao]['fiscal']['saldovalor'] / $arrTotalVar[$codvariacao]['fiscal']['saldoquantidade'];
         }
-        
+
         // Adiciona totais das variações ao array de totais
         $arrTotal['variacao'] = $arrTotalVar;
 
@@ -598,7 +599,7 @@ class Produto extends MGModel
             $arrTotal['fisico']['customedio'] = $arrTotal['fisico']['saldovalor'] / $arrTotal['fisico']['saldoquantidade'];
         if ($arrTotal['fiscal']['saldoquantidade'] > 0)
             $arrTotal['fiscal']['customedio'] = $arrTotal['fiscal']['saldovalor'] / $arrTotal['fiscal']['saldoquantidade'];
-        
+
         // Adiciona totais no array de retorno
         $arrRet['local']['total'] = $arrTotal;
         //$arrRet['total'] = $arrTotal;
@@ -607,7 +608,7 @@ class Produto extends MGModel
         echo json_encode($arrRet);
         die();
         */
-        
+
         //retorna
         return $arrRet;
 

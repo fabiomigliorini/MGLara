@@ -2,13 +2,14 @@
     <div class="form-group">
         {!! Form::label('codtipoproduto', 'Tipo', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-6">{!! Form::select2TipoProduto('codtipoproduto', null, ['required' => true,  'class'=> 'form-control', 'id' => 'codtipoproduto', 'style'=>'width:100%', 'placeholder'=>'Tipo']) !!}</div>
+        <div class="col-sm-3">{!! Form::select2('abc', ['A'=>'A', 'B'=>'B', 'C'=>'C'], null, ['class' => 'form-control','id'=>'abc', 'style'=>'width:100%', 'required'=>true]) !!}</div>
     </div>
-    
+
     <div class="form-group">
         {!! Form::label('codmarca', 'Marca', ['class'=>'col-sm-3 control-label']) !!}
-        <div class="col-sm-5">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%', 'required'=>true]) !!}</div>    
+        <div class="col-sm-5">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%', 'required'=>true]) !!}</div>
     </div>
-    
+
     <div class="form-group">
         {!! Form::label('codsecaoproduto', 'Seção', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-6">{!! Form::select2SecaoProduto('codsecaoproduto', null, ['required' => true, 'class'=> 'form-control', 'id' => 'codsecaoproduto', 'style'=>'width:100%', 'placeholder' => 'Seção']) !!}</div>
@@ -27,14 +28,14 @@
 
     <div class="form-group">
         {!! Form::label('codsubgrupoproduto', 'Sub Grupo', ['class'=>'col-sm-3 control-label']) !!}
-        <div class="col-sm-6">{!! Form::select2SubGrupoProduto('codsubgrupoproduto', null, ['required' => true, 'class' => 'form-control','id'=>'codsubgrupoproduto', 'style'=>'width:100%', 'placeholder' => 'Sub Grupo', 'codgrupoproduto'=>'codgrupoproduto']) !!}</div>        
+        <div class="col-sm-6">{!! Form::select2SubGrupoProduto('codsubgrupoproduto', null, ['required' => true, 'class' => 'form-control','id'=>'codsubgrupoproduto', 'style'=>'width:100%', 'placeholder' => 'Sub Grupo', 'codgrupoproduto'=>'codgrupoproduto']) !!}</div>
     </div>
 
     <div class="form-group">
         {!! Form::label('codncm', 'NCM', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9">{!! Form::select2Ncm('codncm', null, ['required' => true, 'class' => 'form-control','id'=>'codncm', 'style'=>'width:100%', 'placeholder' => 'NCM']) !!}</div>
     </div>
-    
+
     <div class="form-group">
         {!! Form::label('codtributacao', 'Tributação', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-4">{!! Form::select2Tributacao('codtributacao', null, ['required' => true, 'placeholder'=>'Tributação',  'class'=> 'form-control', 'id' => 'codtributacao', 'style'=>'width:100%']) !!}</div>
@@ -68,11 +69,16 @@
         {!! Form::label('observacoes', 'Observações', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9">{!! Form::textarea('observacoes', null, ['class'=> 'form-control', 'id'=>'observacoes', 'rows'=>'3']) !!}</div>
     </div>
-    
+
     <div class="form-group">
         {!! Form::label('importado', 'Importado', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9" id="wrapper-importado">{!! Form::checkbox('importado', true, null, ['id'=>'importado', 'data-off-text' => 'Nacional', 'data-on-text' => 'Importado']) !!}</div>
     </div>
+
+    <!-- <div class="form-group">
+        {!! Form::label('abc', 'ABC', ['class'=>'col-sm-3 control-label']) !!}
+        <div class="col-sm-2">{!! Form::select2('abc', ['A', 'B', 'C'], null, ['class' => 'form-control','id'=>'abc', 'style'=>'width:100%', 'required'=>true]) !!}</div>
+    </div> -->
 
     <div class="form-group">
         {!! Form::label('site', 'Disponível no Site', ['class'=>'col-sm-3 control-label']) !!}
@@ -204,7 +210,7 @@ $(document).ready(function() {
     });
     $('#importado').bootstrapSwitch();
     $('#site').bootstrapSwitch();
-    
+
     @if (!empty($model->codsubgrupoproduto))
         $('#codsecaoproduto').val({{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto}});
         $('#codfamiliaproduto').val({{$model->SubGrupoProduto->GrupoProduto->codfamiliaproduto}});
@@ -212,7 +218,7 @@ $(document).ready(function() {
     @endif
 
     var codproduto = <?php echo (isset($model->codproduto) ? $model->codproduto:'""')?>;
-    
+
     function descricaoProdutoTypeahead(codsubgrupoproduto, codproduto) {
         var produtoTypeahead = new Bloodhound({
             remote: {
@@ -222,9 +228,9 @@ $(document).ready(function() {
             datumTokenizer: function(produtoTypeahead) {
                 return Bloodhound.tokenizers.whitespace(produtoTypeahead.produto);
             },
-            queryTokenizer: Bloodhound.tokenizers.whitespace       
+            queryTokenizer: Bloodhound.tokenizers.whitespace
         });
-        
+
         $("#produto").typeahead({
             hint: true,
             highlight: true,
@@ -233,8 +239,8 @@ $(document).ready(function() {
             source: produtoTypeahead.ttAdapter(),
             name: 'produtoTypeahead',
             displayKey: function(produtoTypeahead) {
-              return produtoTypeahead.produto;        
-            },            
+              return produtoTypeahead.produto;
+            },
             templates: {
                 empty: [
                     '<p style="margin: 0; padding: 2px 8px;">Nenhum produto encontrado!</p>'
@@ -248,7 +254,7 @@ $(document).ready(function() {
             },
             limit:14
         });
-        
+
         $("#produto").on('typeahead:selected', function(e, data) {
             if($('#codsubgrupoproduto').val() == '') {
                 $.getJSON(baseUrl + '/produto/popula-secao-produto', {
@@ -258,9 +264,9 @@ $(document).ready(function() {
                       $("#codgrupoproduto").select2('val', 'id='+data.grupoproduto);
                       $("#codfamiliaproduto").select2('val', 'id='+data.familiaproduto);
                       $("#codsecaoproduto").select2('val', data.secaoproduto);
-                });            
+                });
             }
-        });        
+        });
     };
 
     $('#codsubgrupoproduto').change(function() {
@@ -269,9 +275,9 @@ $(document).ready(function() {
         descricaoProdutoTypeahead(codsubgrupoproduto, codproduto);
         $("#produto").Setcase();
     });
-    
+
     descricaoProdutoTypeahead($('#codsubgrupoproduto').val(), codproduto);
-    
+
     $("#produto").Setcase();
 });
 </script>

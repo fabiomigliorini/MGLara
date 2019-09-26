@@ -7,6 +7,20 @@
     $filiais    = [''=>''] + Filial::lists('filial', 'codfilial')->all();
     $naturezaop = [''=>''] + NaturezaOperacao::lists('naturezaoperacao', 'codnaturezaoperacao')->all();
     //dd($model->ProdutoVariacaoS);
+
+    switch ($model->abc) {
+      case 'A':
+        $label = 'label-success';
+        break;
+
+      case 'B':
+        $label = 'label-warning';
+        break;
+
+      default:
+        $label = 'label-danger';
+        break;
+    }
 ?>
 <ol class="breadcrumb header">
     {!!
@@ -20,6 +34,7 @@
         6
     )
     !!}
+    <span class="label {{$label}}">{{$model->abc}}</span>
     <li class='active'>
         <small>
             <a href="<?php echo url("produto/$model->codproduto/edit");?>" alt="Editar"><span class="glyphicon glyphicon-pencil"></span></a>
