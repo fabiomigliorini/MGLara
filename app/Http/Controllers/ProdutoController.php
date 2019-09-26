@@ -41,17 +41,17 @@ class ProdutoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        
+
         // Busca filtro da sessao
         $parametros = self::filtroEstatico(
-            $request, 
-            'produto.index', 
-            ['ativo' => '1'], 
+            $request,
+            'produto.index',
+            ['ativo' => '1'],
             ['criacao_de', 'criacao_ate', 'alteracao_de', 'alteracao_ate']
         );
-        
+
         $model = Produto::search($parametros)->orderBy('produto', 'ASC')->paginate(20);
-        
+
         return view('produto.index', compact('model'));
     }
 
@@ -63,7 +63,7 @@ class ProdutoController extends Controller
     public function create(Request $request)
     {
         $model = new Produto;
-        
+
         if ($request->get('duplicar'))
         {
             $duplicar = Produto::findOrFail($request->get('duplicar'));
@@ -72,8 +72,9 @@ class ProdutoController extends Controller
         else
         {
             $model->codtipoproduto = TipoProduto::MERCADORIA;
+            $model->abc = 'C';
         }
-        
+
         return view('produto.create', compact('model'));
     }
 
@@ -85,41 +86,41 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $model = new Produto($request->all());
-        
+
         DB::beginTransaction();
-        
+
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
-        
+
         try {
             if (!$model->save())
                 throw new Exception ('Erro ao Criar Produto!');
-            
+
             $pv = new ProdutoVariacao();
             $pv->codproduto = $model->codproduto;
-                    
+
             if (!$pv->save())
                 throw new Exception ('Erro ao Criar Variação!');
-            
+
             $pb = new ProdutoBarra();
             $pb->codproduto = $model->codproduto;
             $pb->codprodutovariacao = $pv->codprodutovariacao;
             //$pb->barras = str_pad($model->codproduto, 6, '0', STR_PAD_LEFT);
-                    
+
             if (!$pb->save())
                 throw new Exception ('Erro ao Criar Barras!');
-            
+
             DB::commit();
             Session::flash('flash_success', "Produto '{$model->produto}' criado!");
-            return redirect("produto/$model->codproduto");               
-            
+            return redirect("produto/$model->codproduto");
+
         } catch (Exception $ex) {
             DB::rollBack();
-            $this->throwValidationException($request, $model->_validator);              
+            $this->throwValidationException($request, $model->_validator);
         }
-     
+
     }
 
     public function show(Request $request, $id)
@@ -157,9 +158,9 @@ class ProdutoController extends Controller
             default:
                 $view = 'produto.show';
         }
-        
+
         $ret = view($view, compact('model', 'nfpbs', 'npbs', 'parametros', 'estoque'));
-        
+
         return $ret;
     }
 
@@ -177,28 +178,28 @@ class ProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) 
+    public function update(Request $request, $id)
     {
-        
+
         $model = Produto::findOrFail($id);
         $model->fill($request->all());
-        
+
         if(is_null($request->input('importado'))) {
             $model->importado = FALSE;
         }
-        
+
         if(is_null($request->input('site'))) {
             $model->site = FALSE;
         }
 
         DB::beginTransaction();
-        
+
         if (!$model->validate())
             $this->throwValidationException($request, $model->_validator);
-        
+
         try {
             $preco = $model->getOriginal('preco');
-            
+
             if (!$model->save())
                 throw new Exception ('Erro ao alterar Produto!');
             if($preco != $model->preco) {
@@ -209,14 +210,14 @@ class ProdutoController extends Controller
                 if (!$historico->save())
                     throw new Exception ('Erro ao gravar Historico!');
             }
-            
+
             DB::commit();
             Session::flash('flash_success', "Produto '{$model->produto}' alterado!");
-            return redirect("produto/$model->codproduto");           
+            return redirect("produto/$model->codproduto");
         } catch (Exception $ex) {
             DB::rollBack();
-            $this->throwValidationException($request, $model->_validator);              
-        }        
+            $this->throwValidationException($request, $model->_validator);
+        }
 
     }
 
@@ -228,10 +229,10 @@ class ProdutoController extends Controller
             'grupoproduto' => $model->SubGrupoProduto->GrupoProduto->codgrupoproduto,
             'subgrupoproduto' => $model->SubGrupoProduto->codsubgrupoproduto,
         ];
-        
+
         return response()->json($retorno);
-    }    
-    
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -248,18 +249,18 @@ class ProdutoController extends Controller
             $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir produto!', 'exception' => $e];
         }
         return json_encode($ret);
-    }    
-    
-    
+    }
+
+
     public function buscaPorBarras(Request $request)
     {
         $barra = ProdutoBarra::buscaPorBarras($request->get('barras'));
         return response()->json($barra);
     }
 
-    
+
     public function listagemJson(Request $request)
-    //public function listagemJson($texto, $inativo = false, $limite = 20, $pagina = 1) 
+    //public function listagemJson($texto, $inativo = false, $limite = 20, $pagina = 1)
     {
         $pagina = $request->get('page');
         $limite = $request->get('per_page');
@@ -281,8 +282,8 @@ class ProdutoController extends Controller
         // se o texto foi preenchido
         #if (strlen($texto)>=3)
         #{
-            $sql = "SELECT codprodutobarra as id, codproduto, barras, descricao, sigla, preco, marca, referencia 
-                          FROM vwProdutoBarra 
+            $sql = "SELECT codprodutobarra as id, codproduto, barras, descricao, sigla, preco, marca, referencia
+                          FROM vwProdutoBarra
                          WHERE codProdutoBarra is not null ";
 
             #if (!$inativo) {
@@ -294,14 +295,14 @@ class ProdutoController extends Controller
             // Verifica se foi digitado um valor e procura pelo preco
         #    If ((Yii::app()->format->formatNumber(Yii::app()->format->unformatNumber($texto)) == $texto)
         #            && (strpos($texto, ",") != 0)
-        #            && ((strlen($texto) - strpos($texto, ",")) == 3)) 
+        #            && ((strlen($texto) - strpos($texto, ",")) == 3))
         #    {
         #            $sql .= "preco = :preco";
         #            $params = array(
         #                    ':preco'=>Yii::app()->format->unformatNumber($texto),
         #                    );
         #}
-            
+
             //senao procura por barras, descricao, marca e referencia
             #else
             #{
@@ -309,7 +310,7 @@ class ProdutoController extends Controller
                     $sql .= "OR descricao ilike '%$texto%' ";
                     $sql .= "OR marca ilike '%$texto%' ";
                     $sql .= "OR referencia ilike '%$texto%' ";
-                    
+
                     /*$params = array(
                         ':texto'=>'%'.$texto.'%',
                     );*/
@@ -317,9 +318,9 @@ class ProdutoController extends Controller
 
             //ordena
             $sql .= ") ORDER BY $ordem LIMIT $limite OFFSET $offset";
-            
+
             $resultados = DB::select($sql);
-            
+
             for ($i=0; $i<sizeof($resultados);$i++)
             {
                     $resultados[$i]->codproduto = \formataCodigo($resultados[$i]->codproduto, 6);
@@ -329,10 +330,10 @@ class ProdutoController extends Controller
             }
 
             return response()->json($resultados);
-            
-    } 
 
-    public function listagemJsonProduto(Request $request) 
+    }
+
+    public function listagemJsonProduto(Request $request)
     {
         if($request->get('q')) {
 
@@ -361,7 +362,7 @@ class ProdutoController extends Controller
                 else {
                     $produto = explode(' ', $produto);
                     foreach ($produto as $str) {
-                        $query->where('produto', 'ILIKE', "%$str%");                    
+                        $query->where('produto', 'ILIKE', "%$str%");
                     }
                 }
                 $query->select('codproduto as id', 'produto', 'preco', 'referencia', 'tblproduto.inativo', 'tblsecaoproduto.secaoproduto', 'tblfamiliaproduto.familiaproduto', 'tblgrupoproduto.grupoproduto', 'tblsubgrupoproduto.subgrupoproduto', 'tblmarca.marca')
@@ -397,7 +398,7 @@ class ProdutoController extends Controller
         }
     }
 
-    public function listagemJsonDescricao(Request $request) 
+    public function listagemJsonDescricao(Request $request)
     {
         $parametros['produto'] = $request->get('q');
         $parametros['codsubgrupoproduto'] = $request->get('codsubgrupoproduto');
@@ -429,7 +430,7 @@ class ProdutoController extends Controller
             } else {
                 $model->inativo = Carbon::now();
             }
-            
+
             $model->save();
             $acao = ($request->get('acao') == 'ativar') ? 'ativado' : 'inativado';
             $ret = ['resultado' => true, 'mensagem' => "Produto $model->produto $acao com sucesso!"];
@@ -438,9 +439,9 @@ class ProdutoController extends Controller
             $ret = ['resultado' => false, 'mensagem' => "Erro ao $acao produto!", 'exception' => $e];
         }
         return json_encode($ret);
-    } 
-    
-    public function estoqueSaldo(Request $request) 
+    }
+
+    public function estoqueSaldo(Request $request)
     {
         $query = DB::table('tblestoquesaldo')
             ->join('tblestoquelocalprodutovariacao', 'tblestoquelocalprodutovariacao.codestoquelocalprodutovariacao', '=', 'tblestoquesaldo.codestoquelocalprodutovariacao')
@@ -448,43 +449,43 @@ class ProdutoController extends Controller
             ->select('customedio', 'saldovalor', 'saldoquantidade');
 
         if($request->get('codestoquelocal')) $query->where('tblestoquelocalprodutovariacao.codestoquelocal', '=', $request->get('codestoquelocal'));
-        if($request->get('fiscal') == 1) 
+        if($request->get('fiscal') == 1)
             $query->where('fiscal', '=', true);
-        else 
+        else
             $query->where('fiscal', '=', false);
         $resultado = $query->get();
 
         return response()->json($resultado);
     }
-    
+
     public function transferirVariacao(Request $request, $id)
     {
         $model = Produto::findOrFail($id);
         return view('produto.transferir-variacao',  compact('model'));
     }
-        
+
     public function transferirVariacaoSalvar(Request $request, $id)
     {
         $form = $request->all();
 
         $validator = Validator::make(
-            $form, 
-            [            
+            $form,
+            [
                 'codproduto'           => "required",
                 'codprodutovariacao'   => 'required',
-            ], 
+            ],
             [
                 'codproduto.required'           => 'Selecione o produto de destino!',
                 'codprodutovariacao.required'   => 'Selecione uma variação!',
             ]
         );
-        
+
         if ($validator->fails()) {
             $this->throwValidationException($request, $validator);
         }
-        
+
         DB::BeginTransaction();
-        
+
         foreach($form['codprodutovariacao'] as $codprodutovariacao) {
 
             $pv = ProdutoVariacao::findOrFail($codprodutovariacao);
@@ -523,10 +524,10 @@ class ProdutoController extends Controller
         DB::commit();
 
         return redirect("produto/{$form['codproduto']}");
-        
+
         dd($validator);
     }
-    
+
     public function sincronizaProdutoOpenCart(Request $request)
     {
         try {
@@ -537,17 +538,17 @@ class ProdutoController extends Controller
         }
         return response()->json($retorno);
     }
-    
-    public function consulta (Request $request, $barras) 
+
+    public function consulta (Request $request, $barras)
     {
-        
+
         if (!$barras = ProdutoBarra::buscaPorBarras($barras)) {
             return [
-                'resultado' => false, 
-                'mensagem' => 'Nenhum produto localizado!', 
+                'resultado' => false,
+                'mensagem' => 'Nenhum produto localizado!',
             ];
         }
-        
+
         // Imagens
         $imagens = [];
         foreach ($barras->Produto->ImagemS as $imagem) {
@@ -562,7 +563,7 @@ class ProdutoController extends Controller
                 'url' => URL::asset('public/imagens/semimagem.jpg'),
             ];
         }
-        
+
         // Variacoes
         $variacoes = [];
         $estoquelocais = [];
@@ -607,7 +608,7 @@ class ProdutoController extends Controller
                 'saldos' => $saldos,
             ];
         }
-        
+
         // Embalagens
         $embalagens[] = [
             'codprodutoembalagem' => null,
@@ -625,10 +626,10 @@ class ProdutoController extends Controller
                 'precocalculado' => empty($embalagem->preco),
             ];
         }
-        
+
         //dd($barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codimagem);
         //dd($barras->Produto->SubGrupoProduto->codimagem);
-        
+
         $produto = [
             'codproduto' => $barras->codproduto,
             'url' => url("produto/{$barras->codproduto}"),
@@ -675,18 +676,18 @@ class ProdutoController extends Controller
             'embalagens' => $embalagens,
             'estoquelocais' => $estoquelocais,
         ];
-        
-        
+
+
         return [
             'resultado' => true,
             'produto' => $produto,
         ];
         //dd($prod);
     }
-    
+
     public function quiosque (Request $request)
     {
         return view('produto.quiosque');
     }
-    
+
 }
