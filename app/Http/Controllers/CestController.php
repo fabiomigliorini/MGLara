@@ -110,7 +110,7 @@ class CestController extends Controller
             return response()->json([
                 'id'        => $model->codcest,
                 'ncm'       => formataNcm($model->Ncm->ncm),
-                'cest'      => formataNcm($model->cest),
+                'cest'      => formataCest($model->cest),
                 'descricao' => $model->descricao
             ]);
         }
