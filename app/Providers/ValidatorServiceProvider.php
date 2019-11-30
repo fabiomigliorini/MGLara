@@ -47,6 +47,8 @@ class ValidatorServiceProvider extends ServiceProvider
 	 *  se existe pede para colocar como SUBSTITUICAO
 	 *  se não, não deixa marcar como SUBSTITUICAO
 	 */
+	/*
+	Extinto com nova Legislacao de ICMS para 2020
         $this->app['validator']->extend('validaTributacaoSubstituicao', function ($attribute, $value, $parameters)
         {
             $ncm = Ncm::find($parameters)->first();
@@ -56,7 +58,7 @@ class ValidatorServiceProvider extends ServiceProvider
                     return false;
             }
             return true;
-        });  
+	});  
 
         $this->app['validator']->extend('validaTributacao', function ($attribute, $value, $parameters)
         {
@@ -68,6 +70,7 @@ class ValidatorServiceProvider extends ServiceProvider
             }
             return true;
         });  
+	*/
         
         $this->app['validator']->extend('validaMarca', function ($attribute, $value, $parameters)
         {
