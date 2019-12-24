@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.5'
 services:
     mglara:
         build:
@@ -9,6 +9,7 @@ services:
             bash -c "chmod -R a+w /opt/www/MGLara/storage
             && service nginx start
             && service php7.1-fpm start
+            && service memcached start
             && /bin/bash"
         volumes:
             - ./:/opt/www/MGLara
