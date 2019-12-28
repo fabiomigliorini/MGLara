@@ -23,7 +23,7 @@ class NotaFiscalController extends Controller
      */
     public function index()
     {
-        return redirect()->away("/MGsis/index.php?r=notaFiscal/index");
+        return redirect()->away(env('MGSIS_URL') . "index.php?r=notaFiscal/index");
         //
         echo 'index nota fsical';
         die();
@@ -58,7 +58,7 @@ class NotaFiscalController extends Controller
      */
     public function show($id)
     {
-        return redirect()->away("/MGsis/index.php?r=notaFiscal/view&id=$id");
+        return redirect()->away(env('MGSIS_URL') . "index.php?r=notaFiscal/view&id=$id");
     }
 
     /**

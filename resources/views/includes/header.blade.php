@@ -106,7 +106,7 @@
                     </ul>
                 </li>
                 <li class="">
-                    <a href="/MGsis">MGsis</span></a>
+                    <a href="{{env('MGSIS_URL')}}">MGsis</span></a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">

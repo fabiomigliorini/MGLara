@@ -13,7 +13,7 @@ class NegocioController extends Controller
 {
     public function index(Request $request)
     {
-        return redirect()->away("/MGsis/index.php?r=negocio/index");
+        return redirect()->away(env('MGSIS_URL') . "index.php?r=negocio/index");
         $model = Negocio::orderBy('criacao', 'desc')->paginate(20);
 
         return view('negocios.index', compact('model'));
@@ -73,6 +73,6 @@ class NegocioController extends Controller
     
     public function show(Request $request, $id) 
     {
-        return redirect()->away("/MGsis/index.php?r=negocio/view&id=$id");
+        return redirect()->away(env('MGSIS_URL') . "index.php?r=negocio/view&id=$id");
     }
 }
