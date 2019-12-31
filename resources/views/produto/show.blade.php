@@ -100,8 +100,11 @@
                                 url("tributacao/{$model->codtributacao}") => $model->Tributacao->tributacao,
                             ];
 
-                            if (!empty($model->codcest))
-                                $arr[url("cest/{$model->codcest}")] = formataCest($model->Cest->cest);
+                            if (!empty($model->codcest)) {
+                              $arr[url("cest/{$model->codcest}")] = formataCest($model->Cest->cest);
+                            }
+
+                            $arr[] = ($model->bit)?'BIT':'Não BIT';
 
                             $arr[] = ($model->importado)?'Importado':'Nacional';
 

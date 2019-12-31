@@ -14,6 +14,7 @@ use Carbon\Carbon;
  * @property  bigint                         $codsubgrupoproduto                 NOT NULL
  * @property  bigint                         $codmarca                           NOT NULL
  * @property  numeric(14,2)                  $preco
+ * @property  boolean                        $bit                                NOT NULL DEFAULT false
  * @property  boolean                        $importado                          NOT NULL DEFAULT false
  * @property  bigint                         $codtributacao                      NOT NULL
  * @property  date                           $inativo
@@ -57,6 +58,7 @@ class Produto extends MGModel
         'codsubgrupoproduto',
         'codmarca',
         'preco',
+        'bit',
         'importado',
         'codtributacao',
         'inativo',

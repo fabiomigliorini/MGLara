@@ -60,6 +60,16 @@
     </div>
 
     <div class="form-group">
+        {!! Form::label('bit', 'BIT', ['class'=>'col-sm-3 control-label']) !!}
+        <div class="col-sm-9" id="wrapper-bit">{!! Form::checkbox('bit', true, null, ['id'=>'bit', 'data-off-text' => 'Não', 'data-on-text' => 'Informática ou Telecom']) !!}</div>
+    </div>
+
+    <div class="form-group">
+        {!! Form::label('importado', 'Importado', ['class'=>'col-sm-3 control-label']) !!}
+        <div class="col-sm-9" id="wrapper-importado">{!! Form::checkbox('importado', true, null, ['id'=>'importado', 'data-off-text' => 'Nacional', 'data-on-text' => 'Importado']) !!}</div>
+    </div>
+
+    <div class="form-group">
         {!! Form::label('codunidademedida', 'Preço', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-2">{!! Form::number('preco', null, ['required' => true, 'step' => 0.01, 'class'=> 'form-control text-right', 'id'=>'preco']) !!}</div>
         <div class="col-sm-3">{!! Form::select2UnidadeMedida('codunidademedida', null, ['required' => true,  'class'=> 'form-control', 'campo' => 'unidademedida', 'id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
@@ -68,11 +78,6 @@
     <div class="form-group">
         {!! Form::label('observacoes', 'Observações', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9">{!! Form::textarea('observacoes', null, ['class'=> 'form-control', 'id'=>'observacoes', 'rows'=>'3']) !!}</div>
-    </div>
-
-    <div class="form-group">
-        {!! Form::label('importado', 'Importado', ['class'=>'col-sm-3 control-label']) !!}
-        <div class="col-sm-9" id="wrapper-importado">{!! Form::checkbox('importado', true, null, ['id'=>'importado', 'data-off-text' => 'Nacional', 'data-on-text' => 'Importado']) !!}</div>
     </div>
 
     <!-- <div class="form-group">
@@ -208,6 +213,7 @@ $(document).ready(function() {
             }
         });
     });
+    $('#bit').bootstrapSwitch();
     $('#importado').bootstrapSwitch();
     $('#site').bootstrapSwitch();
 

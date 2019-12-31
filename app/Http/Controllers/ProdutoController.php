@@ -89,6 +89,18 @@ class ProdutoController extends Controller
 
         $model = new Produto($request->all());
 
+        if(is_null($request->input('bit'))) {
+            $model->bit = FALSE;
+        }
+
+        if(is_null($request->input('importado'))) {
+            $model->importado = FALSE;
+        }
+
+        if(is_null($request->input('site'))) {
+            $model->site = FALSE;
+        }
+
         DB::beginTransaction();
 
         if (!$model->validate())
@@ -183,6 +195,10 @@ class ProdutoController extends Controller
 
         $model = Produto::findOrFail($id);
         $model->fill($request->all());
+
+        if(is_null($request->input('bit'))) {
+            $model->bit = FALSE;
+        }
 
         if(is_null($request->input('importado'))) {
             $model->importado = FALSE;
