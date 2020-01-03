@@ -216,11 +216,20 @@
                     @endforeach
                 ]
                 @foreach(array_values($colunas) as $coluna)
-                <?php $v = $coluna[0]; array_shift($coluna)?>
+		<?php 
+                    $v = $coluna[0];
+                    if (is_array($coluna)) {
+                        array_shift($coluna); 
+                    } 
+                ?>
                 ,["{{$v}}", {{ implode(',', $coluna) }}]
                 @endforeach
-                <?php array_shift($coluna_xerox[0])?>
-                ,["Xerox", {{ implode(',', $coluna_xerox[0]) }}]
+		<?php 
+                    if (isset($coluna_xerox[0])) {
+                        array_shift($coluna_xerox[0]); 
+                    }
+                ?>
+                ,["Xerox", {{ implode(',', $coluna_xerox[0]??[]) }}]
             ]
         },
         axis : {

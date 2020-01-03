@@ -256,7 +256,7 @@
                                 @endforeach
                             ]
                             @foreach(array_values($colunas) as $coluna)
-                            <?php $v = $coluna[0]; array_shift($coluna)?>
+                            <?php $v = $coluna[0]; if (is_array($coluna)) { array_shift($coluna); } ?>
                             ,["{{$v}}", {{ implode(',', $coluna) }}]
                             @endforeach
                         ]
