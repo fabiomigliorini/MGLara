@@ -94,23 +94,23 @@ class NotaFiscalController extends Controller
     {
         //
     }
-    
-    
+
+
     public function geraTransferencias($codfilial)
     {
-        
+
         DB::BeginTransaction();
-        
+
         $sql = "
-            
+
             --Negocios gerados a partir de uma Filial, com NF emitida por outra Filial
-            select 
+            select
                       tblnegocio.codfilial
                     , tblnegocio.codestoquelocal
                     , destino.codpessoa
-                    , tblnegocio.codnaturezaoperacao	
+                    , tblnegocio.codnaturezaoperacao
                     , tblnegocioprodutobarra.codnegocioprodutobarra
-            from tblnotafiscal 
+            from tblnotafiscal
             inner join tblnotafiscalprodutobarra on (tblnotafiscalprodutobarra.codnotafiscal = tblnotafiscal.codnotafiscal)
             inner join tblnegocioprodutobarra on (tblnegocioprodutobarra.codnegocioprodutobarra = tblnotafiscalprodutobarra.codnegocioprodutobarra)
             inner join tblnegocio on (tblnegocio.codnegocio = tblnegocioprodutobarra.codnegocio)
@@ -118,13 +118,13 @@ class NotaFiscalController extends Controller
             inner join tblfilial as destino on (destino.codfilial = tblnotafiscal.codfilial)
             left join (
 
-                    select 
+                    select
                               tblnotafiscal.codnotafiscal
                             , tblnotafiscal.codfilial
                             , tblnotafiscal.codpessoa
                             , tblnotafiscalprodutobarra.codnotafiscalprodutobarra
                             , tblnotafiscalprodutobarra.codnegocioprodutobarra
-                    from tblnotafiscal 
+                    from tblnotafiscal
                     inner join tblnotafiscalprodutobarra on (tblnotafiscalprodutobarra.codnotafiscal = tblnotafiscal.codnotafiscal)
                     where tblnotafiscal.emitida = true
                     --and tblnotafiscal.nfeautorizacao is not null -- Nao importa se ainda esta em digitacao
@@ -143,7 +143,7 @@ class NotaFiscalController extends Controller
             and tblnotafiscal.nfeautorizacao is not null
             and tblnotafiscal.nfeinutilizacao is null
             and tblnotafiscal.nfecancelamento is null
-            and tblnotafiscal.emissao >= '2017-10-01 00:00:00.0'
+            and tblnotafiscal.emissao >= (now() - interval '3 months')
             and tblnegocio.codfilial <> destino.codfilial
             and origem.codempresa = destino.codempresa
             and emitida.codnotafiscal is null
@@ -155,7 +155,7 @@ class NotaFiscalController extends Controller
             union all
 
             --Negocios Intercompany
-            select 
+            select
                       tblnegocio.codfilial
                     , tblnegocio.codestoquelocal
                     , tblnegocio.codpessoa
@@ -167,13 +167,13 @@ class NotaFiscalController extends Controller
             inner join tblfilial as destino on (destino.codpessoa = tblnegocio.codpessoa)
             left join (
 
-                    select 
+                    select
                               tblnotafiscal.codnotafiscal
                             , tblnotafiscal.codfilial
                             , tblnotafiscal.codpessoa
                             , tblnotafiscalprodutobarra.codnotafiscalprodutobarra
                             , tblnotafiscalprodutobarra.codnegocioprodutobarra
-                    from tblnotafiscal 
+                    from tblnotafiscal
                     inner join tblnotafiscalprodutobarra on (tblnotafiscalprodutobarra.codnotafiscal = tblnotafiscal.codnotafiscal)
                     where tblnotafiscal.emitida = true
                     --and tblnotafiscal.nfeautorizacao is not null -- Nao importa se ainda esta em digitacao
@@ -189,7 +189,7 @@ class NotaFiscalController extends Controller
 
                     )
             where tblnegocio.codnegociostatus = 2
-            and tblnegocio.lancamento >= '2017-10-01 00:00:00'
+            and tblnegocio.lancamento >= (now() - interval '3 months')
             and emitida.codnotafiscal is null
             and tblnegocio.codfilial <> destino.codfilial
             and tblnegocio.codnaturezaoperacao not in (19) --Uso e Consumo
@@ -200,24 +200,24 @@ class NotaFiscalController extends Controller
             --limit 50
 
             limit 600
-            
+
             ";
-            
+
         $regs = DB::select(DB::raw($sql));
-        
+
         $gerados = [];
-        
+
         $nfs = [];
-        
-        foreach($regs as $reg) 
+
+        foreach($regs as $reg)
         {
             if (isset($gerados[$reg->codfilial][$reg->codpessoa][$reg->codnaturezaoperacao])) {
-                
+
                 $nf = $nfs[$gerados[$reg->codfilial][$reg->codpessoa][$reg->codnaturezaoperacao]['codnotafiscal']];
-                
+
             } else {
-                
-                
+
+
                 $nf = new NotaFiscal;
                 $nf->codfilial = $reg->codfilial;
                 $nf->codestoquelocal = $reg->codestoquelocal;
@@ -231,43 +231,43 @@ class NotaFiscalController extends Controller
                 $nf->emissao = new Carbon;
                 $nf->saida = $nf->emissao;
                 $nf->save();
-                
+
                 $gerados[$reg->codfilial][$reg->codpessoa][$reg->codnaturezaoperacao] = [
                         'itens' => 0,
                         'codnotafiscal' => 0,
                     ];
-                
+
             }
-            
+
             $npb = NegocioProdutoBarra::findOrFail($reg->codnegocioprodutobarra);
-            
+
             $nfpb = new NotaFiscalProdutoBarra;
-            
+
             $nfpb->codnotafiscal = $nf->codnotafiscal;
             $nfpb->codprodutobarra = $npb->codprodutobarra;
             $nfpb->quantidade = $npb->quantidade;
-            
+
             $preco = $npb->ProdutoBarra->Produto->preco;
             if (!empty($npb->ProdutoBarra->codprodutoembalagem)) {
                 $preco *= $npb->ProdutoBarra->ProdutoEmbalagem->quantidade;
             }
             $nfpb->valorunitario = round($preco * 0.7, 2);
-            
+
             $nfpb->valortotal = $nfpb->valorunitario * $npb->quantidade;
             $nfpb->codnegocioprodutobarra = $npb->codnegocioprodutobarra;
-            
+
             $nfpb->calculaTributacao();
-            
+
             $nfpb->save();
-            
+
             $gerados[$reg->codfilial][$reg->codpessoa][$reg->codnaturezaoperacao]['itens']++;
             $gerados[$reg->codfilial][$reg->codpessoa][$reg->codnaturezaoperacao]['codnotafiscal'] = $nf->codnotafiscal;
             $nfs[$nf->codnotafiscal] = $nf;
         }
-        
+
         DB::commit();
-        
+
         return response()->json($gerados);
-        
+
     }
 }
