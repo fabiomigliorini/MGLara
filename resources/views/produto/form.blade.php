@@ -60,11 +60,6 @@
     </div>
 
     <div class="form-group">
-        {!! Form::label('bit', 'BIT', ['class'=>'col-sm-3 control-label']) !!}
-        <div class="col-sm-9" id="wrapper-bit">{!! Form::checkbox('bit', true, null, ['id'=>'bit', 'data-off-text' => 'Não', 'data-on-text' => 'Informática ou Telecom']) !!}</div>
-    </div>
-
-    <div class="form-group">
         {!! Form::label('importado', 'Importado', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9" id="wrapper-importado">{!! Form::checkbox('importado', true, null, ['id'=>'importado', 'data-off-text' => 'Nacional', 'data-on-text' => 'Importado']) !!}</div>
     </div>
@@ -213,7 +208,6 @@ $(document).ready(function() {
             }
         });
     });
-    $('#bit').bootstrapSwitch();
     $('#importado').bootstrapSwitch();
     $('#site').bootstrapSwitch();
 

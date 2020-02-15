@@ -104,7 +104,7 @@
                               $arr[url("cest/{$model->codcest}")] = formataCest($model->Cest->cest);
                             }
 
-                            $arr[] = ($model->bit)?'BIT':'Não BIT';
+                            $arr[] = ($model->Ncm->bit)?'BIT':'Não BIT';
 
                             $arr[] = ($model->importado)?'Importado':'Nacional';
 

@@ -220,7 +220,7 @@ class NotaFiscalProdutoBarra extends MGModel
         $trib = TributacaoNaturezaOperacao
                 ::where('codtributacao', $this->ProdutoBarra->Produto->codtributacao)
                 ->where('codtipoproduto', $this->ProdutoBarra->Produto->codtipoproduto)
-                ->where('bit', $this->ProdutoBarra->Produto->bit)
+                ->where('bit', $this->ProdutoBarra->Produto->Ncm->bit)
                 ->where('codnaturezaoperacao', $this->NotaFiscal->codnaturezaoperacao)
                 ->whereRaw("('{$this->ProdutoBarra->Produto->Ncm->ncm}' ilike ncm || '%' or ncm is null)");
 
