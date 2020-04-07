@@ -1257,6 +1257,10 @@ class EstoqueSaldo extends MGModel
             $sql .= " AND fp.codsecaoproduto = {$filtro['codsecaoproduto']}";
         }
 
+	if (!empty($filtro['codtributacao'])) {
+	    $sql .= " AND p.codtributacao = {$filtro['codtributacao']}";
+	}
+
         switch ($filtro['saldo_fisico']) {
             case -1:
                 $sql .= " AND fisico.saldoquantidade < 0";
@@ -1264,6 +1268,10 @@ class EstoqueSaldo extends MGModel
             case 1:
                 $sql .= " AND fisico.saldoquantidade > 0";
                 break;
+            case 9:
+                $sql .= " AND coalesce(fisico.saldoquantidade, 0) = 0";
+                break;
+
         }
 
         switch ($filtro['saldo_fiscal']) {
@@ -1273,6 +1281,9 @@ class EstoqueSaldo extends MGModel
             case 1:
                 $sql .= " AND fiscal.saldoquantidade > 0";
                 break;
+	    case 9:
+		$sql .= " AND coalesce(fiscal.saldoquantidade, 0) = 0";
+		break;
         }
 
         switch ($filtro['saldo_fisico_fiscal']) {
