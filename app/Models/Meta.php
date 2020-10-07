@@ -238,8 +238,10 @@ class Meta extends MGModel
         
         $retorno_filiais = [];
         foreach ($filiais as $filial){
-            $filial->valorvendas = array_sum(array_column(json_decode($filial->valorvendaspordata), 'valorvendas'));
-                            
+            $filial->valorvendas = null;
+            if (!empty($filial->valorvendaspordata)) {    
+                $filial->valorvendas = array_sum(array_column(json_decode($filial->valorvendaspordata), 'valorvendas'));
+            }
             $falta = ($filial->valorvendas < $filial->valormetafilial ? $filial->valormetafilial - $filial->valorvendas : null);
             $premio = ($filial->valorvendas >= $filial->valormetafilial ? ($filial->valorvendas / 100 ) * $this->percentualcomissaosubgerentemeta : null);
             $retorno_filiais[] = [

@@ -39,7 +39,11 @@
 
     use MGLara\Models\Feriado;
     
-    $dias_uteis = Feriado::diasUteis($model->periodoinicial, ($model->periodofinal <= Carbon\Carbon::today() ? $model->periodofinal : Carbon\Carbon::today()), true);
+    $periodofinal = $model->periodofinal;
+    if ($model->periodofinal <= Carbon\Carbon::today() && $model->periodoinicial >= Carbon\Carbon::today()) {
+        $periodofinal = Carbon\Carbon::today();
+    }
+    $dias_uteis = Feriado::diasUteis($model->periodoinicial, $periodofinal, true);// <= Carbon\Carbon::today() ? $model->periodofinal : Carbon\Carbon::today()), true);
     $datas = [];
     
     foreach ($dias_uteis as $dia){
