@@ -122,9 +122,9 @@ class CaixaController extends Controller
             from tblvalecompra vc
             left join (
                 select vcfp.codvalecompra, sum(vcfp.valorpagamento) as aprazo
-                from tblvalecompraformapagamento vcfp 
+                from tblvalecompraformapagamento vcfp
                 inner join tblformapagamento fp on (fp.codformapagamento = vcfp.codformapagamento and fp.avista = false)
-                group by vcfp.codvalecompra            
+                group by vcfp.codvalecompra
             ) prazo on (prazo.codvalecompra = vc.codvalecompra)
             where vc.codusuariocriacao = {$parametros['codusuario']}
             and vc.criacao between '{$parametros['datainicial']->toDateTimeString()}' and '{$parametros['datafinal']->toDateTimeString()}'
@@ -134,7 +134,7 @@ class CaixaController extends Controller
             ";
 
         $dados['vales'] = DB::select($sql);
-        
+
         switch ($parametros['ativo']) {
             case 1:
                 $ativo = 'and lt.estornado is null';
@@ -163,6 +163,59 @@ class CaixaController extends Controller
             ";
 
         $dados['liquidacoes'] = DB::select($sql);
+
+        $sql = "
+            select
+                t.terminal
+                , count(pp.codliopedidopagamento) as quantidade
+                , sum(case when pp.codigov40 = 28 then pp.valor else null end) as entrada
+                , sum(case when pp.codigov40 != 28 then pp.valor else null end) as saida
+            from tblliopedidopagamento pp
+            left join tbllioterminal t on (t.codlioterminal = pp.codlioterminal)
+            where pp.criacao between '{$parametros['datainicial']->toDateTimeString()}' and '{$parametros['datafinal']->toDateTimeString()}'
+            and pp.codusuariocriacao = {$parametros['codusuario']}
+            group by t.terminal
+            order by 1, 2, 3
+            ";
+
+        $dados['lio'] = DB::select($sql);
+
+        $sql = "
+            select
+            	pp.codliopedidopagamento,
+            	t.terminal,
+            	bc.bandeiracartao ,
+            	pr.lioproduto,
+            	pp.parcelas,
+            	pp.valor,
+            	pp.cartao,
+            	pp.nome,
+            	pp.codigov40,
+            	p.uuid,
+            	p.valorpago,
+            	ps.liopedidostatus,
+            	n.codnegocio,
+              n.codnegociostatus,
+            	ns.negociostatus,
+            	n.lancamento,
+            	n.valortotal,
+            	pp.autorizacao,
+            	pp.nsu
+            from tblliopedidopagamento pp
+            inner join tblliopedido p on (p.codliopedido = pp.codliopedido)
+            left join tbllioterminal t on (t.codlioterminal = pp.codlioterminal)
+            left join tblliopedidostatus ps on (ps.codliopedidostatus = p.codliopedidostatus)
+            left join tbllioproduto pr on (pr.codlioproduto = pp.codlioproduto)
+            left join tblliobandeiracartao bc on (bc.codliobandeiracartao = pp.codliobandeiracartao)
+            left join tblnegocioformapagamento nfp on (nfp.codliopedido = p.codliopedido)
+            left join tblnegocio n on (n.codnegocio = nfp.codnegocio)
+            left join tblnegociostatus ns on (ns.codnegociostatus = n.codnegociostatus)
+            where pp.criacao between '{$parametros['datainicial']->toDateTimeString()}' and '{$parametros['datafinal']->toDateTimeString()}'
+            and pp.codusuariocriacao = {$parametros['codusuario']}
+            order by pp.criacao desc
+            ";
+
+        $dados['liolistagem'] = DB::select($sql);
 
         $parametros['datainicial'] = $parametros['datainicial']->format('Y-m-d\TH:i:s');
         $parametros['datafinal'] = $parametros['datafinal']->format('Y-m-d\TH:i:s');
