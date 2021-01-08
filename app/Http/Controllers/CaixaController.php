@@ -217,6 +217,25 @@ class CaixaController extends Controller
 
         $dados['liolistagem'] = DB::select($sql);
 
+
+        $sql = "
+            select
+              p.codportador,
+              po.portador,
+              sum(p.valor) as valor,
+              count(p.codpix) as quantidade
+            from tblpix p
+            left join tblportador po on (po.codportador = p.codportador)
+            inner join tblnegocioformapagamento nfp on (nfp.codpixcob = p.codpixcob)
+            inner join tblnegocio n on (n.codnegocio = nfp.codnegocio)
+            where p.horario between '{$parametros['datainicial']->toDateTimeString()}' and '{$parametros['datafinal']->toDateTimeString()}'
+            and n.codusuario = {$parametros['codusuario']}
+            group by p.codportador, po.portador
+            order by po.portador asc
+            ";
+
+        $dados['pix'] = DB::select($sql);
+
         $parametros['datainicial'] = $parametros['datainicial']->format('Y-m-d\TH:i:s');
         $parametros['datafinal'] = $parametros['datafinal']->format('Y-m-d\TH:i:s');
 

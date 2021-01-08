@@ -192,6 +192,24 @@
         </td>
       </tr>
     @endforeach
+
+    @foreach ($dados['pix'] as $pix)
+      <tr class='{{ $class }}'>
+        <td colspan='2'>
+          PIX
+          {{ $pix->portador }}
+          <span class="badge">{{ formataNumero($pix->quantidade, 0) }}</span>
+
+        </td>
+        <td class='text-right'>
+        </td>
+        <td class='text-right'>
+          {{ formataNumero($pix->valor) }}
+        </td>
+        <td class='text-right'>
+        </td>
+      </tr>
+    @endforeach
   </tbody>
 </table>
 
