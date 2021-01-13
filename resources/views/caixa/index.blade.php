@@ -193,8 +193,9 @@
       </tr>
     @endforeach
 
+
     @foreach ($dados['pix'] as $pix)
-      <tr class='{{ $class }}'>
+      <tr>
         <td colspan='2'>
           PIX
           {{ $pix->portador }}
