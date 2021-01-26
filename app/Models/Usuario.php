@@ -6,29 +6,29 @@ namespace MGLara\Models;
  * Campos
  * @property  bigint                         $codusuario                         NOT NULL DEFAULT nextval('tblusuario_codusuario_seq'::regclass)
  * @property  varchar(50)                    $usuario                            NOT NULL
- * @property  varchar(100)                   $senha                              
- * @property  bigint                         $codecf                             
- * @property  bigint                         $codfilial                          
+ * @property  varchar(100)                   $senha
+ * @property  bigint                         $codecf
+ * @property  bigint                         $codfilial
  * @property  bigint                         $codoperacao                        NOT NULL
- * @property  bigint                         $codpessoa                          
- * @property  varchar(100)                   $impressoratelanegocio              
- * @property  bigint                         $codportador                        
- * @property  varchar(50)                    $impressoratermica                  
- * @property  timestamp                      $alteracao                          
- * @property  bigint                         $codusuarioalteracao                
- * @property  timestamp                      $criacao                            
- * @property  bigint                         $codusuariocriacao                  
- * @property  timestamp                      $ultimoacesso                       
- * @property  date                           $inativo                            
- * @property  varchar(50)                    $impressoramatricial                
- * @property  varchar(100)                   $remember_token                     
+ * @property  bigint                         $codpessoa
+ * @property  varchar(100)                   $impressoratelanegocio
+ * @property  bigint                         $codportador
+ * @property  varchar(50)                    $impressoratermica
+ * @property  timestamp                      $alteracao
+ * @property  bigint                         $codusuarioalteracao
+ * @property  timestamp                      $criacao
+ * @property  bigint                         $codusuariocriacao
+ * @property  timestamp                      $ultimoacesso
+ * @property  date                           $inativo
+ * @property  varchar(50)                    $impressoramatricial
+ * @property  varchar(100)                   $remember_token
  *
  * Chaves Estrangeiras
- * @property  Ecf                            $Ecf                           
- * @property  Filial                         $Filial                        
- * @property  Operacao                       $Operacao                      
- * @property  Pessoa                         $Pessoa                        
- * @property  Portador                       $Portador                      
+ * @property  Ecf                            $Ecf
+ * @property  Filial                         $Filial
+ * @property  Operacao                       $Operacao
+ * @property  Pessoa                         $Pessoa
+ * @property  Portador                       $Portador
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
  *
@@ -230,7 +230,7 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
         'impressoramatricial',
         'remember_token',
     ];
-    
+
     protected $dates = [
         'alteracao',
         'criacao',
@@ -239,35 +239,35 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     ];
 
     protected $hidden = ['senha', 'remember_token'];
-    
-    
+
+
     public function validate() {
-        
+
     	if ($this->codusuario)
     		$unique_usuario = "unique:tblusuario,usuario,$this->codusuario,codusuario|required|min:2";
     	else
-    		$unique_usuario = "unique:tblusuario,usuario|required|min:2";    	
-    	
+    		$unique_usuario = "unique:tblusuario,usuario|required|min:2";
+
         $this->_regrasValidacao = [
-            'usuario' => $unique_usuario, 
-            'senha' => 'required_if:codusuario,null|min:6', 
-            'codoperacao' => 'required', 
-            'impressoramatricial' => 'required', 
-            'impressoratermica' => 'required', 
+            'usuario' => $unique_usuario,
+            'senha' => 'required_if:codusuario,null|min:6',
+            'codoperacao' => 'required',
+            // 'impressoramatricial' => 'required',
+            // 'impressoratermica' => 'required',
         ];
-    
+
         $this->_mensagensErro = [
             'usuario.required' => 'O campo usuário não pode ser vazio',
             'usuario.min' => 'O campo usuário deve ter mais de 2 caracteres',
         ];
-        
+
         return parent::validate();
     }
 
     public function getAuthPassword(){
         return $this->senha;
     }
-    
+
     // Chaves Estrangeiras
     public function Ecf()
     {
@@ -303,7 +303,7 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     {
         return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
     }
-    
+
 
     // Tabelas Filhas
 
@@ -346,7 +346,7 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     {
         return $this->hasMany(EstoqueMovimento::class, 'codusuario', 'codusuariocriacao');
     }
-    
+
     public function EstoqueSaldoConferenciaAlteracaoS()
     {
         return $this->hasMany(EstoqueSaldoConferencia::class, 'codusuario', 'codusuarioalteracao');
@@ -365,7 +365,7 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     public function FamiliaProdutoCriacaoS()
     {
         return $this->hasMany(FamiliaProduto::class, 'codusuario', 'codusuarioalteracao');
-    }    
+    }
 
     public function GrupoUsuarioAlteracaoS()
     {
@@ -1091,7 +1091,7 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     {
         return $this->hasMany(UnidadeMedida::class, 'codusuario', 'codusuariocriacao');
     }
-    
+
     public function MetaCriacaoS()
     {
         return $this->hasMany(Meta::class, 'codusuario', 'codusuarioalteracao');
@@ -1120,7 +1120,7 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     public function MetaFilialPessoaAlteracaoS()
     {
         return $this->hasMany(MetaFilialPessoa::class, 'codusuario', 'codusuariocriacao');
-    }    
+    }
 
     public function CargoCriacaoS()
     {
@@ -1130,8 +1130,8 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     public function CargoAlteracaoS()
     {
         return $this->hasMany(Cargo::class, 'codusuario', 'codusuariocriacao');
-    }    
-    
+    }
+
     public function UsuarioAlteracaoS()
     {
         return $this->hasMany(Usuario::class, 'codusuario', 'codusuarioalteracao');
@@ -1141,21 +1141,21 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     {
         return $this->hasMany(Usuario::class, 'codusuario', 'codusuariocriacao');
     }
-    
+
     // Métodos
     public function extractgrupos()
     {
         $arraygrupos = [];
-        foreach($this->GrupoUsuario as $data) 
+        foreach($this->GrupoUsuario as $data)
         {
             $arraygrupos [] = [
-                'filial'=>$data->pivot->codfilial, 
+                'filial'=>$data->pivot->codfilial,
                 'grupo'=>$data->pivot->codgrupousuario
             ];
         }
-        return $arraygrupos;        
+        return $arraygrupos;
     }
-    
+
     public function can($permission = null)
     {
         return (!is_null($permission) && $this->checkPermission($permission));
@@ -1171,60 +1171,60 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
 
     protected function checkPermission($perm)
     {
-        $permissions = $this->getAllPermissionsFormAllRoles();      
+        $permissions = $this->getAllPermissionsFormAllRoles();
         $permissionArray = is_array($perm) ? $perm : [$perm];
 
         return count(array_intersect($permissions, $permissionArray));
     }
-    
+
     protected function getAllPermissionsFormAllRoles()
     {
         $permissions = $this->GrupoUsuario->load('PermissaoS')->fetch('permissao_s')->toArray();
-       
+
         return array_map('strtolower', array_unique(array_flatten(array_map(function ($permission) {
             return array_pluck($permission, 'permissao');
         }, $permissions))));
-    } 
+    }
 
-    static function printers() 
+    static function printers()
     {
         $o = shell_exec("lpstat -d -p");
         $res = explode("\n", $o);
         $printers = [];
-        foreach ($res as $r) 
+        foreach ($res as $r)
         {
-            if (strpos($r, "printer") !== FALSE) 
+            if (strpos($r, "printer") !== FALSE)
             {
                 $r = str_replace("printer ", "", $r);
                 $r = explode(" ", $r);
                 $printers[$r[0]] = $r[0];
             }
         }
-        
+
         return $printers;
-    }    
-    
-    
+    }
+
+
     public static function search($parametros)
     {
         $query = Usuario::query();
-        
+
         if(!empty($parametros['codusuario'])) {
             $query->where('codusuario', $parametros['codusuario']);
-        }      
-        
+        }
+
         if(!empty($parametros['usuario'])) {
             $query->usuario($parametros['usuario']);
-        }        
-        
+        }
+
         if(!empty($parametros['codfilial'])) {
             $query->where('codfilial', $parametros['codfilial']);
-        }      
+        }
 
         if(!empty($parametros['codpessoa'])) {
             $query->where('codpessoa', $parametros['codpessoa']);
-        }      
-        
+        }
+
         switch (isset($parametros['ativo']) ? $parametros['ativo']:'9') {
             case 1: //Ativos
                 $query->ativo();
@@ -1235,7 +1235,7 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
             case 9; //Todos
             default:
         }
-        
+
         return $query;
     }
 
@@ -1243,12 +1243,12 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     {
         if (trim($usuario) === '')
             return;
-        
+
         $usuario = explode(' ', removeAcentos($usuario));
         foreach ($usuario as $str)
             $query->where('usuario', 'ILIKE', "%$str%");
     }
-    
+
     public function scopeInativo($query)
     {
         $query->whereNotNull('inativo');
@@ -1257,6 +1257,6 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     public function scopeAtivo($query)
     {
         $query->whereNull('inativo');
-    }    
-    
+    }
+
 }

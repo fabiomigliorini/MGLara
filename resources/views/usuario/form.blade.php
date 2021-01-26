@@ -1,15 +1,21 @@
 <?php
     $o = shell_exec("lpstat -d -p");
     $res = explode("\n", $o);
-    $printers = [];
-    foreach ($res as $r) 
+    $printers = ['' => 'Nenhuma'];
+    foreach ($res as $r)
     {
-        if (strpos($r, "printer") !== FALSE) 
+        if (strpos($r, "printer") !== FALSE)
         {
             $r = str_replace("printer ", "", $r);
             $r = explode(" ", $r);
             $printers[$r[0]] = $r[0];
         }
+    }
+    if (!in_array($model->impressoratermica, $printers)) {
+      $printers[$model->impressoratermica] = $model->impressoratermica;
+    }
+    if (!in_array($model->impressoramatricial, $printers)) {
+      $printers[$model->impressoramatricial] = $model->impressoramatricial;
     }
 ?>
 <div class="form-group">
@@ -63,22 +69,22 @@
 </div>
 
 <div class="form-group">
-    {!! Form::label('impressoramatricial', 'Impressora Matricial', ['class' => 'col-sm-2 control-label']) !!}  
+    {!! Form::label('impressoramatricial', 'Impressora Matricial', ['class' => 'col-sm-2 control-label']) !!}
     <div class="col-sm-3">
-        {!! Form::select2('impressoramatricial', $printers, null, ['class'=> 'form-control', 'id'=>'impressoramatricial','required'=>'required', 'placeholder' => 'Impressora Matricial']) !!}
+        {!! Form::select2('impressoramatricial', $printers, null, ['class'=> 'form-control', 'id'=>'impressoramatricial', 'placeholder' => 'Impressora Matricial', 'allowClear' => true]) !!}
     </div>
 </div>
 
 <div class="form-group">
-    {!! Form::label('impressoratermica', 'Impressora Térmica', ['class' => 'col-sm-2 control-label']) !!}  
+    {!! Form::label('impressoratermica', 'Impressora Térmica', ['class' => 'col-sm-2 control-label']) !!}
     <div class="col-sm-3">
-        {!! Form::select2('impressoratermica', $printers, null, ['class' => 'form-control', 'id'=>'impressoratermica','required'=>'required', 'placeholder' => 'Impressora Termica']) !!}
+        {!! Form::select2('impressoratermica', $printers, null, ['class' => 'form-control', 'id'=>'impressoratermica', 'placeholder' => 'Impressora Termica']) !!}
     </div>
 </div>
 
 <!--
 <div class="form-group">
-    {!! Form::label('impressoratelanegocio', 'Impressora tela negócio', ['class' => 'col-sm-2 control-label']) !!}  
+    {!! Form::label('impressoratelanegocio', 'Impressora tela negócio', ['class' => 'col-sm-2 control-label']) !!}
     <div class="col-sm-3">
         {!! Form::select('impressoratelanegocio', $printers, null, ['class'=> 'form-control', 'id'=>'impressoratelanegocio']) !!}
     </div>
@@ -86,7 +92,7 @@
 -->
 
 <div class="form-group">
-    {!! Form::label('codportador', 'Portador', ['class' => 'col-sm-2 control-label']) !!}  
+    {!! Form::label('codportador', 'Portador', ['class' => 'col-sm-2 control-label']) !!}
     <div class="col-sm-3">
         {!! Form::select2Portador('codportador', null, ['class' => 'form-control', 'id'=>'codportador']) !!}
     </div>
@@ -107,7 +113,7 @@
 </style>
 <script type="text/javascript">
 $(document).ready(function() {
-    function validarSenha(form){ 
+    function validarSenha(form){
         senha = $('#senha').val();
         senhaRepetida = $('#repetir_senha').val();
         if (senha != senhaRepetida){
@@ -116,17 +122,17 @@ $(document).ready(function() {
             destino.append(aviso);
             setTimeout(function(){
                 $('#rpt').remove();
-            },13000);            
+            },13000);
             $('repetir_senha').focus();
             console.log(senha + '-' + senhaRepetida);
             return false;
         } else {
             $("#rpt").remove();
         }
-    }    
+    }
     $("#repetir_senha" ).blur(function() {
       validarSenha();
-    });    
+    });
 
     $('#form-usuario').on("submit", function(e) {
         var currentForm = this;
