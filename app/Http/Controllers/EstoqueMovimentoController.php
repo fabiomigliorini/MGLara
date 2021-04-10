@@ -37,6 +37,7 @@ class EstoqueMovimentoController extends Controller
         $model = new EstoqueMovimento();
         $model->codestoquemes = $codestoquemes;
         $model->data = $model->EstoqueMes->mes->endOfMonth();
+	$model->codestoquemovimentotipo = 1002;
         
         $codprodutoorigem = $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto;
         
