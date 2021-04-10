@@ -5,7 +5,7 @@
         Data:
     </label>
     <div class="col-md-2">
-        {!! Form::datetimeLocal('data', $model->data, ['class'=> 'form-control text-center', 'id'=>'data', 'required'=>'required', 'autofocus'=>'autofocus']) !!}
+        {!! Form::datetimeLocal('data', $model->data, ['class'=> 'form-control text-center', 'id'=>'data', 'required'=>'required']) !!}
     </div>
 </div>
 
@@ -38,7 +38,7 @@
         Entrada:
     </label>
     <div class="col-md-2">
-        {!! Form::number('entradaquantidade', null, ['class'=> 'form-control text-right', 'id'=>'entradaquantidade', 'min' => 0, 'step' => 0.001, 'onChange'=>'calculaTotal("entrada")']) !!}
+        {!! Form::number('entradaquantidade', null, ['class'=> 'form-control text-right', 'id'=>'entradaquantidade', 'min' => 0, 'step' => 0.001, 'autofocus'=>'autofocus', 'onChange'=>'calculaTotal("entrada")']) !!}
     </div>
     <label for="entradaquantidade" class="col-sm-1 control-label">
         Unitário:
