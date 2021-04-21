@@ -38,11 +38,22 @@ class EstoqueMovimentoController extends Controller
         $model->codestoquemes = $codestoquemes;
         $model->data = $model->EstoqueMes->mes->endOfMonth();
 	$model->codestoquemovimentotipo = 1002;
+
+        if ($model->EstoqueMes->saldoquantidade < 0) {
+		$model->entradaquantidade = abs($model->EstoqueMes->saldoquantidade);
+		$model->entradavalor = abs($model->EstoqueMes->saldovalor);
+		$model->entradaunitario = $model->entradavalor / $model->entradaquantidade;
+        }
+        if ($model->EstoqueMes->saldoquantidade > 0) {
+             $model->saidaquantidade = abs($model->EstoqueMes->saldoquantidade);
+             $model->saidavalor = abs($model->EstoqueMes->saldovalor);
+             $model->saidaunitario = $model->saidavalor / $model->saidaquantidade;
+        }
+
+
         
         $codprodutoorigem = $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->ProdutoVariacao->codproduto;
-        
         $codprodutovariacaoorigem = $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codprodutovariacao;
-        
         $codestoquelocalorigem = $model->EstoqueMes->EstoqueSaldo->EstoqueLocalProdutoVariacao->codestoquelocal;
         
         $tipoPrecoInformado = EstoqueMovimentoTipo::where('preco', EstoqueMovimentoTipo::PRECO_INFORMADO)->lists('codestoquemovimentotipo');
