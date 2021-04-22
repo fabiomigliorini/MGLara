@@ -49,7 +49,7 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
             $this->release(rand(30,240));
         }
         
-        if ($this->ciclo >= 100) {
+        if ($this->ciclo >= 30) {
             return;
         }
 
@@ -62,8 +62,8 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         // recalcula valor movimentacao com base no registro de origem
         $sql = "
             update tblestoquemovimento
-            set entradavalor = orig.saidavalor / orig.saidaquantidade * tblestoquemovimento.entradaquantidade
-                , saidavalor = orig.entradavalor / orig.entradaquantidade * tblestoquemovimento.saidaquantidade
+            set entradavalor = ((orig.saidavalor / orig.saidaquantidade) * tblestoquemovimento.entradaquantidade)
+                , saidavalor = ((orig.entradavalor / orig.entradaquantidade) * tblestoquemovimento.saidaquantidade)
             from tblestoquemovimento orig
             where tblestoquemovimento.codestoquemovimentoorigem = orig.codestoquemovimento
             and tblestoquemovimento.codestoquemes = {$mes->codestoquemes}
@@ -162,7 +162,7 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         $customediodiferenca = abs($customedio - $customedioanterior);
         
         $mesesRecalcular = [];
-        if ($customediodiferenca > 0.01)
+        if ($customediodiferenca > 0.005)
         {
             $sql = "
                 select distinct dest.codestoquemes

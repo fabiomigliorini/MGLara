@@ -111,20 +111,30 @@ function decideIconeUltimaConferencia($data)
 
 <?php
 
-    $proximos = $model->buscaProximos(8);
-    $anteriores = $model->buscaAnteriores(16 - sizeof($proximos));
-    if (sizeof($anteriores) < 8)
-        $proximos = $model->buscaProximos(16 - sizeof($anteriores));
+    $proximos = $model->buscaProximos(7);
+    $anteriores = $model->buscaAnteriores(14 - sizeof($proximos));
+    if (sizeof($anteriores) < 7) {
+	    $proximos = $model->buscaProximos(14 - sizeof($anteriores));
+    }
 
+    function labelClass ($saldo) {
+	    if ($saldo > 0) {
+		    return 'label-primary';
+	    }
+	    if ($saldo < 0) {
+		    return 'label-danger';
+	    }
+	    return 'label-default';
+    }
 ?>
 
 <ul class="nav nav-pills">
     @foreach($anteriores as $em)
-        <li role="presentation"><a href="<?php echo url("estoque-mes/$em->codestoquemes");?>">{{ formataData($em->mes, 'EC') }}</a></li>
+	<li role="presentation"><a href="<?php echo url("estoque-mes/$em->codestoquemes");?>">{{ formataData($em->mes, 'EC') }} <span class="label {{ labelClass($em->saldoquantidade) }}"> {{ formataNumero($em->saldoquantidade, 0) }} </span></a></li>
     @endforeach
-    <li role="presentation" class="active"><a href="#">{{ formataData($model->mes, 'EC') }}</a></li>
+    <li role="presentation" class="active"><a href="#">{{ formataData($model->mes, 'EC') }} <span class="label {{ labelClass($model->saldoquantidade) }}"> {{ formataNumero($model->saldoquantidade, 0) }} </span></a></li>
     @foreach($proximos as $em)
-        <li role="presentation"><a href="<?php echo url("estoque-mes/$em->codestoquemes");?>">{{ formataData($em->mes, 'EC') }}</a></li>
+	<li role="presentation"><a href="<?php echo url("estoque-mes/$em->codestoquemes");?>">{{ formataData($em->mes, 'EC') }} <span class="label {{ labelClass($em->saldoquantidade) }}"> {{ formataNumero($em->saldoquantidade, 0) }} </span></a></li>
     @endforeach
 </ul>
 
