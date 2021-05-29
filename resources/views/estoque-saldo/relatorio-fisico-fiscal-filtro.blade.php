@@ -25,7 +25,7 @@
                     <div class="input-group">
                         {!! Form::number('mes', null, ['class'=> 'form-control text-center', 'placeholder' => 'Mês', 'step' => 1, 'min' => '1', 'max' => '12', 'required' => true]) !!}
                         <span class="input-group-addon">/</span>
-                        {!! Form::number('ano', null, ['class'=> 'form-control text-center', 'placeholder' => 'Ano', 'step' => 1, 'min' => 2015, 'max' => 2020, 'required' => true]) !!}
+                        {!! Form::number('ano', null, ['class'=> 'form-control text-center', 'placeholder' => 'Ano', 'step' => 1, 'min' => 2015, 'max' => 2030, 'required' => true]) !!}
                     </div>
                 </div>
             </div>

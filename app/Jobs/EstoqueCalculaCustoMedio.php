@@ -49,7 +49,7 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
             $this->release(rand(30,240));
         }
         
-        if ($this->ciclo >= 30) {
+        if ($this->ciclo >= 100) {
             return;
         }
 
@@ -116,6 +116,10 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         if ($customedio > 100000) {
             return;
         }
+
+	if (empty($customedio)) {
+		$customedio = 0;
+	}	
         
         //recalcula valor movimentacao com base custo medio
         $sql = "
@@ -217,8 +221,9 @@ class EstoqueCalculaCustoMedio extends Job implements SelfHandling, ShouldQueue
         }
 	*/
         
+	$this->ciclo += 1;
         foreach ($mesesRecalcular as $mes) {
-            $this->dispatch((new EstoqueCalculaCustoMedio($mes, $this->ciclo +1))->onQueue('urgent'));
+            $this->dispatch((new EstoqueCalculaCustoMedio($mes, $this->ciclo))->onQueue('urgent'));
         }
         
     }
