@@ -2,6 +2,8 @@
 
 namespace MGLara\Models;
 
+use DB;
+
 /**
  * Campos
  * @property  bigint                         $codncm                             NOT NULL DEFAULT nextval('tblncm_codncm_seq'::regclass)
@@ -124,15 +126,14 @@ class Ncm extends MGModel
      */
     public function cestsDisponiveis()
     {
-        $cests = [];
-        if (sizeof($this->CestS) > 0) {
-            $cests = array_merge($cests, $this->CestS->toArray());
-        }
-
-        if ($this->Ncm) {
-            $cests = array_merge($cests, $this->Ncm->cestsDisponiveis());
-        }
-
+        $sql = "
+            select codcest, ncm, cest, descricao
+            from tblcest 
+            where :ncm ilike ncm || '%'
+        ";
+        $cests = DB::select($sql, [
+            'ncm' => $this->ncm
+        ]);
         return $cests;
     }
 

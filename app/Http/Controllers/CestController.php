@@ -97,10 +97,10 @@ class CestController extends Controller
             foreach($cests as $cest)
             {
                 $resultados[] = array(
-                    'id'        => $cest['codcest'],
-                    'ncm'       => formataNcm($cest['ncm']),
-                    'cest'      => formataCest($cest['cest']),
-                    'descricao' => $cest['descricao'],
+                    'id'        => $cest->codcest,
+                    'ncm'       => formataNcm($cest->ncm),
+                    'cest'      => formataCest($cest->cest),
+                    'descricao' => $cest->descricao,
                 );
             }            
             return response()->json($resultados);
@@ -109,7 +109,7 @@ class CestController extends Controller
             $model = Cest::find($request->get('id'));
             return response()->json([
                 'id'        => $model->codcest,
-                'ncm'       => formataNcm($model->Ncm->ncm),
+                'ncm'       => formataNcm($model->ncm),
                 'cest'      => formataCest($model->cest),
                 'descricao' => $model->descricao
             ]);
