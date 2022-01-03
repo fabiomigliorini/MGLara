@@ -1,16 +1,13 @@
 version: '3.5'
 services:
     mglara:
-        build:
-            './.docker'
-        working_dir: /opt/www/MGLara
-        tty: true
-        command: >
-            bash -c "chmod -R a+w /opt/www/MGLara/storage
-            && service nginx start
-            && service php7.1-fpm start
-            && service memcached start
-            && /bin/bash"
+        build: ./
         volumes:
-            - ./:/opt/www/MGLara
-        network_mode: host
+            - /opt/www:/opt/www
+            - /tmp:/tmp/host
+            - ./php.ini:/usr/local/etc/php/php.ini
+            - /media/publico:/media/publico                
+        extra_hosts:
+            - "host.docker.internal:host-gateway"              
+        ports:
+            - "9001:9000"              
