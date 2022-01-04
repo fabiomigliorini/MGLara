@@ -2,6 +2,7 @@ version: '3.7'
 services:
     mglara:
         build: ./
+        restart: always        
         volumes:
             - /opt/www:/opt/www
             - /tmp:/tmp/host
