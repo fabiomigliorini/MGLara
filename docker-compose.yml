@@ -8,6 +8,9 @@ services:
             - /tmp:/tmp/host
             - ./php.ini:/usr/local/etc/php/php.ini
             - /media/publico:/media/publico                
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - /usr/share/zoneinfo:/usr/share/zoneinfo              
         extra_hosts:
             - "host.docker.internal:host-gateway"              
         ports:
