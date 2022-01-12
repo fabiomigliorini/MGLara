@@ -1,22 +1,6 @@
 <?php
-    $o = shell_exec("lpstat -d -p");
-    $res = explode("\n", $o);
-    $printers = ['' => 'Nenhuma'];
-    foreach ($res as $r)
-    {
-        if (strpos($r, "printer") !== FALSE)
-        {
-            $r = str_replace("printer ", "", $r);
-            $r = explode(" ", $r);
-            $printers[$r[0]] = $r[0];
-        }
-    }
-    if (!in_array($model->impressoratermica, $printers)) {
-      $printers[$model->impressoratermica] = $model->impressoratermica;
-    }
-    if (!in_array($model->impressoramatricial, $printers)) {
-      $printers[$model->impressoramatricial] = $model->impressoramatricial;
-    }
+$printers = json_decode(file_get_contents(base_path('printers.json')), true);
+$printers = array_merge([''=>''], $printers);
 ?>
 <div class="form-group">
     {!! Form::label('usuario', 'Usuário', ['class' => 'col-sm-2 control-label']) !!}
@@ -71,7 +55,7 @@
 <div class="form-group">
     {!! Form::label('impressoramatricial', 'Impressora Matricial', ['class' => 'col-sm-2 control-label']) !!}
     <div class="col-sm-3">
-        {!! Form::select2('impressoramatricial', $printers, null, ['class'=> 'form-control', 'id'=>'impressoramatricial', 'placeholder' => 'Impressora Matricial', 'allowClear' => true]) !!}
+        {!! Form::select2('impressoramatricial', $printers, null, ['class'=> 'form-control', 'id'=>'impressoramatricial', 'placeholder' => 'Impressora Matricial']) !!}
     </div>
 </div>
 

@@ -233,7 +233,7 @@ function decideIconeUltimaConferencia($data)
             </td>
         </tr>
         @endforeach
-        @if (count($model) === 0)
+        @if (empty($model))
         <tr>
             <th colspan="10">Nenhum registro encontrado!</th>
         </tr>
