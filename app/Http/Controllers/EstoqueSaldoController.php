@@ -152,6 +152,8 @@ class EstoqueSaldoController extends Controller
 
         $filtro = self::filtroEstatico($request, 'estoque-saldo.relatorio-analise', ['ativo' => 1]);
 
+	$arr_valor = [];
+
         $arr_saldos = [
             '' => '',
             -1=>'Negativo',
@@ -291,6 +293,11 @@ class EstoqueSaldoController extends Controller
             [
             ]
         );
+
+	$arr_saldo_deposito = [];
+	$arr_saldo_filial = [];
+	$arr_minimo = [];
+	$arr_maximo = [];
         
         return view('estoque-saldo.relatorio-fisico-fiscal-filtro', compact('arr_saldo_deposito', 'arr_saldo_filial', 'arr_minimo', 'arr_maximo', 'filtro'));
     }
