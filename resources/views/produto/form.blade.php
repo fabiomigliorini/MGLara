@@ -66,7 +66,7 @@
 
     <div class="form-group">
         {!! Form::label('codunidademedida', 'Preço', ['class'=>'col-sm-3 control-label']) !!}
-        <div class="col-sm-2">{!! Form::number('preco', null, ['required' => true, 'step' => 0.01, 'class'=> 'form-control text-right', 'id'=>'preco']) !!}</div>
+        <div class="col-sm-2">{!! Form::number('preco', null, ['required' => true, 'step' => 0.01, 'class'=> 'form-control text-right', 'id'=>'preco', 'autofocus']) !!}</div>
         <div class="col-sm-3">{!! Form::select2UnidadeMedida('codunidademedida', null, ['required' => true,  'class'=> 'form-control', 'campo' => 'unidademedida', 'id' => 'codunidademedida', 'style'=>'width:100%']) !!}</div>
     </div>
 

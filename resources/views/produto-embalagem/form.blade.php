@@ -18,7 +18,7 @@
 
 <div class="form-group">
     <label for="preco" class="col-sm-2 control-label">{!! Form::label('Preço:') !!}</label>
-    <div class="col-sm-1">{!! Form::number('preco', null, ['class'=> 'form-control text-right', 'step'=>'0.01', 'id'=>'preco']) !!}
+    <div class="col-sm-1">{!! Form::number('preco', null, ['class'=> 'form-control text-right', 'step'=>'0.01', 'id'=>'preco', 'autofocus']) !!}
     </div>
 </div>
 
