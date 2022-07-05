@@ -122,7 +122,7 @@
             <h3 class="panel-title">Vendas por dia</h3>
           </div>
           <div class="panel-body">
-              <div id="{{ $filial['filial'] }}" style="width: 90%"></div>
+              <div id="divgraf{{ $filial['codfilial'] }}" style="width: 90%"></div>
           </div>
         </div>                
     </div>    
@@ -150,6 +150,9 @@
         $coluna_xerox[0] = [$xerox['pessoa']];
         
         $vendedor_collect = collect($vendedor['valorvendaspordata']);
+	if (empty($xerox['valorvendaspordata'])) {
+		$xerox['valorvendaspordata'] = [];
+	}
         $xerox_collect = collect($xerox['valorvendaspordata']);
         
         foreach ($dias as $dia) {
@@ -200,9 +203,9 @@
         }        
     });  
                 
-   
-    var {{ $filial['filial'] }} = c3.generate({
-        bindto: "#{{ $filial['filial'] }}",
+
+    var graf{{ $filial['codfilial'] }} = c3.generate({
+        bindto: "#divgraf{{ $filial['codfilial'] }}",
         padding: {
           left: 20
         },        
