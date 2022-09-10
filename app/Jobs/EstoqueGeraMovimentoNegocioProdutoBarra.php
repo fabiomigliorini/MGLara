@@ -63,92 +63,93 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
             && $this->NegocioProdutoBarra->Negocio->lancamento->gte($corte)
             && $this->NegocioProdutoBarra->Negocio->NaturezaOperacao->estoque == TRUE
             && $this->NegocioProdutoBarra->ProdutoBarra->Produto->TipoProduto->estoque == TRUE        
-            ) {
-            
-            $mov = EstoqueMovimento::where('codnegocioprodutobarra', $this->NegocioProdutoBarra->codnegocioprodutobarra)->where('codestoquemovimentoorigem', null)->first();
-
-            if ($mov == false) {
-                $mov = new EstoqueMovimento;
-            }
-            
-            $mes = EstoqueMes::buscaOuCria(
-                $this->NegocioProdutoBarra->ProdutoBarra->codprodutovariacao,
-                $this->NegocioProdutoBarra->Negocio->codestoquelocal,
-                false, 
-                $this->NegocioProdutoBarra->Negocio->lancamento
-                );
-            
-            if (!empty($mov->codestoquemes) && $mov->codestoquemes != $mes->codestoquemes) {
-                $codestoquemes_recalcular[$mov->codestoquemes] = $mov->codestoquemes;
-            }
-            
-            $mov->codestoquemes = $mes->codestoquemes;
-
-            $mov->codestoquemovimentotipo = $this->NegocioProdutoBarra->Negocio->NaturezaOperacao->codestoquemovimentotipo;
-            $mov->manual = false;
-            $mov->data = $this->NegocioProdutoBarra->Negocio->lancamento;
-            
+        ) {
             $quantidade = $this->NegocioProdutoBarra->quantidade;
-            
             if (!empty($this->NegocioProdutoBarra->ProdutoBarra->codprodutoembalagem)) {
                 $quantidade *= $this->NegocioProdutoBarra->ProdutoBarra->ProdutoEmbalagem->quantidade;
             }
+                
+            if ($this->NegocioProdutoBarra->Negocio->EstoqueLocal->controlaestoque == TRUE) {
             
-            if ($this->NegocioProdutoBarra->Negocio->NaturezaOperacao->codoperacao == Operacao::ENTRADA) {
-                if ($mov->entradaquantidade != $quantidade) {
-                    $mov->entradaquantidade = $quantidade;
+                $mov = EstoqueMovimento::where('codnegocioprodutobarra', $this->NegocioProdutoBarra->codnegocioprodutobarra)->where('codestoquemovimentoorigem', null)->first();
+
+                if ($mov == false) {
+                    $mov = new EstoqueMovimento;
                 }
-                $mov->saidaquantidade = null;
-            }
-            else
-            {
-                $mov->entradaquantidade = null;
-                if ($mov->saidaquantidade != $quantidade) {
-                    $mov->saidaquantidade = $quantidade;
-                }
-            }
             
-            if ($mov->EstoqueMovimentoTipo->preco == EstoqueMovimentoTipo::PRECO_INFORMADO) {
-                
-                $valor = $this->NegocioProdutoBarra->valortotal;
-                
-                if ($this->NegocioProdutoBarra->Negocio->valordesconto > 0 && $this->NegocioProdutoBarra->Negocio->valorprodutos > 0) {
-                    $valor *= 1 - ($this->NegocioProdutoBarra->Negocio->valordesconto / $this->NegocioProdutoBarra->Negocio->valorprodutos);
+                $mes = EstoqueMes::buscaOuCria(
+                    $this->NegocioProdutoBarra->ProdutoBarra->codprodutovariacao,
+                    $this->NegocioProdutoBarra->Negocio->codestoquelocal,
+                    false, 
+                    $this->NegocioProdutoBarra->Negocio->lancamento
+                    );
+            
+                if (!empty($mov->codestoquemes) && $mov->codestoquemes != $mes->codestoquemes) {
+                    $codestoquemes_recalcular[$mov->codestoquemes] = $mov->codestoquemes;
                 }
-                
+            
+                $mov->codestoquemes = $mes->codestoquemes;
+
+                $mov->codestoquemovimentotipo = $this->NegocioProdutoBarra->Negocio->NaturezaOperacao->codestoquemovimentotipo;
+                $mov->manual = false;
+                $mov->data = $this->NegocioProdutoBarra->Negocio->lancamento;
+            
                 if ($this->NegocioProdutoBarra->Negocio->NaturezaOperacao->codoperacao == Operacao::ENTRADA) {
-                    if ($mov->entradavalor != $valor) {
-                        $mov->entradavalor = $valor;
+                    if ($mov->entradaquantidade != $quantidade) {
+                        $mov->entradaquantidade = $quantidade;
                     }
-                    $mov->saidavalor = null;
-                } else {
-                    $mov->entradavalor = null;
-                    if ($mov->saidavalor != $valor) {
-                        $mov->saidavalor = $valor;
+                    $mov->saidaquantidade = null;
+                }
+                else
+                {
+                    $mov->entradaquantidade = null;
+                    if ($mov->saidaquantidade != $quantidade) {
+                        $mov->saidaquantidade = $quantidade;
                     }
                 }
-
-            }
             
-            $mov->codnotafiscalprodutobarra = null;
-            $mov->codnegocioprodutobarra = $this->NegocioProdutoBarra->codnegocioprodutobarra;
-            
-            if ($mov->isDirty()) {
+                if ($mov->EstoqueMovimentoTipo->preco == EstoqueMovimentoTipo::PRECO_INFORMADO) {
                 
-                $codestoquemes_recalcular[$mes->codestoquemes] = $mes->codestoquemes;
+                    $valor = $this->NegocioProdutoBarra->valortotal;
+                
+                    if ($this->NegocioProdutoBarra->Negocio->valordesconto > 0 && $this->NegocioProdutoBarra->Negocio->valorprodutos > 0) {
+                        $valor *= 1 - ($this->NegocioProdutoBarra->Negocio->valordesconto / $this->NegocioProdutoBarra->Negocio->valorprodutos);
+                    }
+                    
+                    if ($this->NegocioProdutoBarra->Negocio->NaturezaOperacao->codoperacao == Operacao::ENTRADA) {
+                        if ($mov->entradavalor != $valor) {
+                            $mov->entradavalor = $valor;
+                        }
+                        $mov->saidavalor = null;
+                    } else {
+                        $mov->entradavalor = null;
+                        if ($mov->saidavalor != $valor) {
+                            $mov->saidavalor = $valor;
+                        }
+                    }
 
-                $mov->alteracao = $this->NegocioProdutoBarra->alteracao;
-                $mov->codusuarioalteracao = $this->NegocioProdutoBarra->codusuarioalteracao;
-                $mov->criacao = $this->NegocioProdutoBarra->criacao;
-                $mov->codusuariocriacao = $this->NegocioProdutoBarra->codusuariocriacao;
-
-                // Se nao salvou, manda rodar novamente em 10 segundos
-                if (!$mov->save()) {
-                    $this->release(10);
                 }
-            }
             
-            $codestoquemovimento_gerado[] = $mov->codestoquemovimento;
+                $mov->codnotafiscalprodutobarra = null;
+                $mov->codnegocioprodutobarra = $this->NegocioProdutoBarra->codnegocioprodutobarra;
+            
+                if ($mov->isDirty()) {
+                
+                    $codestoquemes_recalcular[$mes->codestoquemes] = $mes->codestoquemes;
+
+                    $mov->alteracao = $this->NegocioProdutoBarra->alteracao;
+                    $mov->codusuarioalteracao = $this->NegocioProdutoBarra->codusuarioalteracao;
+                    $mov->criacao = $this->NegocioProdutoBarra->criacao;
+                    $mov->codusuariocriacao = $this->NegocioProdutoBarra->codusuariocriacao;
+    
+                    // Se nao salvou, manda rodar novamente em 10 segundos
+                    if (!$mov->save()) {
+                        $this->release(10);
+                    }
+                }
+            
+                $codestoquemovimento_gerado[] = $mov->codestoquemovimento;
+	    }
 
             //caso intercompany, gera movimento destino
             $localDest = EstoqueLocal::whereHas('Filial', function($iq){
@@ -157,12 +158,19 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
             
             $tipoDest = NULL;
             if ($localDest != NULL) {
-                $tipoDest = $mov->EstoqueMovimentoTipo->EstoqueMovimentoTipoS->first();
+                if ($localDest->controlaestoque == TRUE) {
+                    $tipoDest = $this->NegocioProdutoBarra->Negocio->NaturezaOperacao->EstoqueMovimentoTipo->EstoqueMovimentoTipoS->first();
+                }
             }
+
             
             if ($tipoDest != NULL) {
                 
-                $movDest = EstoqueMovimento::where('codnegocioprodutobarra', $this->NegocioProdutoBarra->codnegocioprodutobarra)->where('codestoquemovimentoorigem', $mov->codestoquemovimento)->first();
+                if (isset($mov)) {
+                    $movDest = EstoqueMovimento::where('codnegocioprodutobarra', $this->NegocioProdutoBarra->codnegocioprodutobarra)->where('codestoquemovimentoorigem', $mov->codestoquemovimento)->first();
+                } else {
+                    $movDest = EstoqueMovimento::where('codnegocioprodutobarra', $this->NegocioProdutoBarra->codnegocioprodutobarra)->whereNull('codestoquemovimentoorigem')->first();
+                }
                 
                 if ($movDest == false) {
                     $movDest = new EstoqueMovimento;
@@ -180,25 +188,59 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                 }
 
                 $movDest->codestoquemes = $mesDest->codestoquemes;
-                $movDest->codestoquemovimentoorigem = $mov->codestoquemovimento;
+                $movDest->codestoquemovimentoorigem = $mov->codestoquemovimento??null;
                 $movDest->codestoquemovimentotipo = $tipoDest->codestoquemovimentotipo;
                 $movDest->manual = false;
-                $movDest->data = $mov->data;
-                $movDest->entradaquantidade = $mov->saidaquantidade;
-                $movDest->entradavalor = $mov->saidavalor;
-                $movDest->saidaquantidade = $mov->entradaquantidade;
-                $movDest->saidavalor = $mov->entradavalor;
+                $movDest->data = $this->NegocioProdutoBarra->Negocio->lancamento;
+                if (isset($mov)) {
+                    $movDest->entradaquantidade = $mov->saidaquantidade;
+                    $movDest->entradavalor = $mov->saidavalor;
+                    $movDest->saidaquantidade = $mov->entradaquantidade;
+                    $movDest->saidavalor = $mov->entradavalor;
+                } else {
+                    if ($this->NegocioProdutoBarra->Negocio->NaturezaOperacao->codoperacao != Operacao::ENTRADA) {
+                        if ($movDest->entradaquantidade != $quantidade) {
+                            $movDest->entradaquantidade = $quantidade;
+                        }
+                        $movDest->saidaquantidade = null;
+                    }
+                    else
+                    {
+                        $movDest->entradaquantidade = null;
+                        if ($movDest->saidaquantidade != $quantidade) {
+                            $movDest->saidaquantidade = $quantidade;
+                        }
+                    }
+                    if ($movDest->EstoqueMovimentoTipo->preco == EstoqueMovimentoTipo::PRECO_INFORMADO) {
+                        $valor = $this->NegocioProdutoBarra->valortotal;
+                        if ($this->NegocioProdutoBarra->Negocio->valordesconto > 0 && $this->NegocioProdutoBarra->Negocio->valorprodutos > 0) {
+                            $valor *= 1 - ($this->NegocioProdutoBarra->Negocio->valordesconto / $this->NegocioProdutoBarra->Negocio->valorprodutos);
+                        }
+                        if ($this->NegocioProdutoBarra->Negocio->NaturezaOperacao->codoperacao == Operacao::ENTRADA) {
+                            if ($movDest->entradavalor != $valor) {
+                                $movDest->entradavalor = $valor;
+                            }
+                            $movDest->saidavalor = null;
+                        } else {
+                            $movDest->entradavalor = null;
+                            if ($movDest->saidavalor != $valor) {
+                                $movDest->saidavalor = $valor;
+                            }
+                        }
+                    }
+                    
+                }                
                 $movDest->codnotafiscalprodutobarra = null;
-                $movDest->codnegocioprodutobarra = $mov->codnegocioprodutobarra;
+                $movDest->codnegocioprodutobarra = $this->NegocioProdutoBarra->codnegocioprodutobarra;
 
                 if ($movDest->isDirty()) {
                     
                     $codestoquemes_recalcular[$mesDest->codestoquemes] = $mesDest->codestoquemes;
                 
-                    $movDest->alteracao = $mov->alteracao;
-                    $movDest->codusuarioalteracao = $mov->codusuarioalteracao;
-                    $movDest->criacao = $mov->criacao;
-                    $movDest->codusuariocriacao = $mov->codusuariocriacao;
+                    $movDest->alteracao = $this->NegocioProdutoBarra->alteracao;
+                    $movDest->codusuarioalteracao = $this->NegocioProdutoBarra->codusuarioalteracao;
+                    $movDest->criacao = $this->NegocioProdutoBarra->criacao;
+                    $movDest->codusuariocriacao = $this->NegocioProdutoBarra->codusuariocriacao;
 
                     // Se nao salvou, manda rodar novamente em 10 segundos
                     if (!$movDest->save()) {
