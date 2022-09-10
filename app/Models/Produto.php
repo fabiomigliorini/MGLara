@@ -426,7 +426,7 @@ class Produto extends MGModel
         }
 
         // Percorrre todos os Locais
-        foreach (EstoqueLocal::ativo()->orderBy('codestoquelocal', 'asc')->get() as $el) {
+        foreach (EstoqueLocal::ativo()->where('controlaestoque', true)->orderBy('codestoquelocal', 'asc')->get() as $el) {
 
             // Array com Totais por Local
             $arrLocal = [
