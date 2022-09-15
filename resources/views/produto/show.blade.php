@@ -57,11 +57,11 @@
 </ol>
 
 <br>
-<div class="col-md-6">
+<div class="col-md-4">
     @include('produto.show-imagens')
 </div>
 
-<div class="col-md-6">
+<div class="col-md-8">
     <div>
         <ul class="nav nav-tabs" role="tablist" id='tab-produto'>
             <li role="presentation" class='active'><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Detalhes</a></li>

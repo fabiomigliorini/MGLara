@@ -35,7 +35,7 @@
     <div class="container-fluid">
 
         <div id="app">
-            <div class="col-md-6" style="margin-bottom: 15px">
+            <div class="col-md-5" style="margin-bottom: 15px;">
                 <div class="row" v-if="produto != null">
                     <!-- Carousel
                     ================================================== -->
@@ -65,7 +65,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6" id='div-resultados'>
+            <div class="col-md-7" id='div-resultados'>
                 <form class="" role="search">
                     <div class='row' id='div-form'>
                         <div class='col-md-12'>
