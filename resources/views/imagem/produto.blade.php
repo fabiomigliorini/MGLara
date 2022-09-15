@@ -30,16 +30,18 @@
 
 <div class="form-group">
     <label for="usuario" class="col-sm-2 control-label">
-        {!! Form::label('Imagem: 4:5 1536x1920 ') !!}
+        {!! Form::label('Imagem: 1:1 1536x1536 ') !!}
     </label>    
     <div class="col-md-10">
         <div 
             class="slim" 
             id="my-cropper"
             data-label="Arraste a Imagem..." 
-            data-ratio="4:5" 
-            data-size="1536,1920" 
+            data-ratio="1:1" 
+            data-size="1536,1536" 
+            data-min-size="1080,1080"
             data-status-upload-success="Imagem Salva..." 
+            data-status-image-too-small="Imagem Muito Pequena! Mínimo de 1024x1024 pixels!"
             data-force-type="jpg" 
             data-did-upload="imageUpload"
             data-button-edit-label="Editar"
