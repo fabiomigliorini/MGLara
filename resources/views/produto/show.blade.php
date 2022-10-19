@@ -149,7 +149,7 @@
             <div role="tabpanel" class="tab-pane fade" id="tab-estoque">
                 <div id="div-estoque">
                     <b>Aguarde...</b>
-                    <img width="20px" id="lblSincronizando" src="{{ URL::asset('public/img/carregando.gif') }}">
+                    <img width="20px" src="{{ URL::asset('public/img/carregando.gif') }}">
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="tab-magazord">
@@ -212,7 +212,7 @@
                 <br>
                 <div id="div-negocios">
                     <b>Aguarde...</b>
-                    <img width="20px" id="lblSincronizando" src="{{ URL::asset('public/img/carregando.gif') }}">
+                    <img width="20px" src="{{ URL::asset('public/img/carregando.gif') }}">
                 </div>
             </div>
             <!-- -->
@@ -269,7 +269,7 @@
                 <br>
                 <div id="div-notasfiscais">
                     <b>Aguarde...</b>
-                    <img width="20px" id="lblSincronizando" src="{{ URL::asset('public/img/carregando.gif') }}">
+                    <img width="20px" src="{{ URL::asset('public/img/carregando.gif') }}">
                 </div>
             </div>
         </div>
@@ -415,7 +415,7 @@ $(document).ready(function() {
 
     $('#btnMagazordSincroniza').click(function (e) {
         e.preventDefault();
-        bootbox.confirm("Tem certeza que deseja lblSincronizando esse produto", function(result) {
+        bootbox.confirm("Tem certeza que deseja sincronizar com o Magazord esse produto?", function(result) {
             if (result) {
                 $.ajax({
                     type: 'GET',
