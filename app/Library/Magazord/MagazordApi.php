@@ -21,7 +21,7 @@ class MagazordApi {
     public $token;
 
     protected $response;
-    protected $responseObject;
+    public $responseObject;
     protected $status;
 
     /**
@@ -168,6 +168,27 @@ class MagazordApi {
 
         // monta URL
         $url = $this->url . "api/v1/estoque";
+
+        // aborta caso erro no put
+        if (!$this->post($url, $data)) {
+            throw new \Exception($this->responseObject->mensagem, 1);
+        }
+
+        // aborta se nao veio variavel de success
+        if (!isset($this->responseObject->sucesso)) {
+            return false;
+        }
+
+        // retorna o success
+        return $this->responseObject->sucesso;
+
+    }
+
+    public function postPrecos ($data)
+    {
+
+        // monta URL
+        $url = $this->url . "api/v1/preco";
 
         // aborta caso erro no put
         if (!$this->post($url, $data)) {

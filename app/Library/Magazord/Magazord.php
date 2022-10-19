@@ -98,6 +98,72 @@ class Magazord {
         return $ret;
     }
 
+    public static function sincronizaPrecos ($limit = 50)
+    {
+        $sql = '
+            with atualizar as (
+            	select
+            		coalesce(pe.preco, p.preco * coalesce(pe.quantidade, 1)) as preco,
+            		coalesce(mp.precovarejo, 0) as precovarejo,
+            		mp.codmagazordproduto,
+                    mp.codprodutoembalagem,
+            		pv.codproduto,
+                    mp.sku,
+                    mp.codmagazordproduto
+            	from tblmagazordproduto mp
+            	inner join tblprodutovariacao pv on (pv.codprodutovariacao = mp.codprodutovariacao)
+            	inner join tblproduto p on (p.codproduto = pv.codproduto)
+            	left join tblprodutoembalagem pe on (pe.codprodutoembalagem = mp.codprodutoembalagem)
+            )
+            select *
+            from atualizar
+            where preco != precovarejo
+            limit :limit
+        ';
+        $regs = DB::select($sql, ['limit' => $limit]);
+        if (count($regs) == 0) {
+            return 0;
+        }
+
+        DB::beginTransaction();
+        $data = [];
+        $count = 0;
+        foreach ($regs as $reg) {
+            $data[] = (object) [
+                'produto' => $reg->sku,
+                'tabelaPreco' => intval(env('MAGAZORD_TABELAPRECO_VAREJO')),
+                'precoVenda' => floatval($reg->preco)
+            ];
+
+            $percentual = 1 - (env('MAGAZORD_DESCONTO_ATACADO') / 100);
+            $precoAtacado = round(floatval($reg->preco) * $percentual, 2);
+            $data[] = (object) [
+                'produto' => $reg->sku,
+                'tabelaPreco' => intval(env('MAGAZORD_TABELAPRECO_ATACADO')),
+                'precoVenda' => $precoAtacado
+            ];
+            $sql = '
+                update tblmagazordproduto
+                set precovarejo = :precovarejo,
+                    precovarejoatualizado = NOW(),
+                    precoatacado = :precoatacado,
+                    precoatacadoatualizado = NOW()
+                where codmagazordproduto = :codmagazordproduto
+            ';
+            $count += DB::update($sql, [
+                'precovarejo' => $reg->preco,
+                'precoatacado' => $precoAtacado,
+                'codmagazordproduto' => $reg->codmagazordproduto
+            ]);
+        }
+        $api = new MagazordApi();
+        $ret = $api->postPrecos($data);
+        if ($ret) {
+            DB::commit();
+        }
+        return $count;
+    }
+
 
 
     // protected $manufacturers = [];
