@@ -1,10 +1,12 @@
 <?php
 $mps = $model->MagazordProdutoS()->get();
 ?>
-<a href="<?php echo url("produto/{$model->codproduto}/magazord");?>">Editar Integração com Magazord <span class="glyphicon glyphicon-pencil"></span></a>
+<a href="<?php echo url("produto/{$model->codproduto}/magazord");?>">Editar Integração com Magazord <span class="glyphicon glyphicon-pencil"></span></a> |
+<a href="#" id="btnMagazordSincroniza">Sincronizar com Magazord <span class="glyphicon glyphicon-refresh"></span></a>
+<img width="20px" id="lblSincronizando" src="{{ URL::asset('public/img/carregando.gif') }}" style="display:none">
 <br>
 <br>
-<div class="panel panel-default" id="div-variacoes">
+<div class="panel panel-default" id="div-magazord">
   <table class="table table-striped table-hover">
     <thead>
       <tr>

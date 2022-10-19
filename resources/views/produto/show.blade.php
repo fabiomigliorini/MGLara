@@ -149,6 +149,7 @@
             <div role="tabpanel" class="tab-pane fade" id="tab-estoque">
                 <div id="div-estoque">
                     <b>Aguarde...</b>
+                    <img width="20px" id="lblSincronizando" src="{{ URL::asset('public/img/carregando.gif') }}">
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="tab-magazord">
@@ -211,6 +212,7 @@
                 <br>
                 <div id="div-negocios">
                     <b>Aguarde...</b>
+                    <img width="20px" id="lblSincronizando" src="{{ URL::asset('public/img/carregando.gif') }}">
                 </div>
             </div>
             <!-- -->
@@ -267,6 +269,7 @@
                 <br>
                 <div id="div-notasfiscais">
                     <b>Aguarde...</b>
+                    <img width="20px" id="lblSincronizando" src="{{ URL::asset('public/img/carregando.gif') }}">
                 </div>
             </div>
         </div>
@@ -397,47 +400,6 @@ $(document).ready(function() {
         window.location.href = '{{ url("produto/") }}' + $('#codproduto').val();
     });
 
-    $('#sincronizar').hide();
-    $('#integracao-magazord').click(function (e) {
-        e.preventDefault();
-        bootbox.confirm("Tem certeza que deseja sincronizar esse produto", function(result) {
-            if (result) {
-                $.ajax({
-                    type: 'GET',
-                    url: baseUrl + '/produto/sincroniza-produto-magazord',
-                    data: {
-                        id:{{ $model->codproduto }}
-                    },
-                    beforeSend: function( xhr ) {
-                        $('#sincronizar').show(function() {
-                            $('#integracao-magazord').attr('disabled','disabled');
-                        });
-                    }
-                })
-                .done(function (data) {
-                    $('#sincronizar').hide(function() {
-                        $('#integracao-magazord').removeAttr('disabled');
-                    });
-                    if(data.resultado === true) {
-                        var mensagem = '<strong class="text-success">'+data.mensagem+'</strong>';
-                        bootbox.alert(mensagem);
-                        console.log(data.resultado);
-                    } else {
-                        var mensagem = '<strong class="text-danger">'+data.mensagem+'</strong>';
-                        mensagem += '<hr><pre>';
-                        mensagem += JSON.stringify(data.exception, undefined, 2);
-                        mensagem += '</pre>';
-                        bootbox.alert(mensagem);
-                        console.log(data.resultado);
-                    }
-                })
-                .fail(function (data) {
-                    console.log('erro no POST');
-                });
-            }
-        });
-    });
-
     $('#btnVaiPara').click(function (e) {
         e.preventDefault();
         bootbox.prompt({
@@ -451,6 +413,41 @@ $(document).ready(function() {
         });
     });
 
+    $('#btnMagazordSincroniza').click(function (e) {
+        e.preventDefault();
+        bootbox.confirm("Tem certeza que deseja lblSincronizando esse produto", function(result) {
+            if (result) {
+                $.ajax({
+                    type: 'GET',
+                    url: baseUrl + '/produto/' + {{$model->codproduto}} + '/magazord/sincroniza',
+                    beforeSend: function( xhr ) {
+                        $('#btnMagazordSincroniza').hide();
+                        $('#lblSincronizando').show();
+                    }
+                })
+                .done(function (data) {
+                    $('#btnMagazordSincroniza').show();
+                    $('#lblSincronizando').hide();
+                    if(data.resultado === true) {
+                        var mensagem = '<strong class="text-success">'+data.mensagem+'</strong>';
+                        recarregaDiv('div-magazord')
+                        bootbox.alert(mensagem);
+                        console.log(data.resultado);
+                    } else {
+                        var mensagem = '<strong class="text-danger">'+data.mensagem+'</strong>';
+                        recarregaDiv('div-magazord')
+                        bootbox.alert(mensagem);
+                        console.log(data.resultado);
+                    }
+                })
+                .fail(function (data) {
+                    $('#btnMagazordSincroniza').show();
+                    $('#lblSincronizando').hide();
+                    console.log('erro no POST');
+                });
+            }
+        });
+    });
 
 });
 </script>

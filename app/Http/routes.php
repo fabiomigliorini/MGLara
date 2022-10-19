@@ -118,11 +118,15 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto/descricao', 'ProdutoController@listagemJsonDescricao');
     Route::resource('produto/popula-secao-produto', 'ProdutoController@populaSecaoProduto');
     Route::resource('produto/estoque-saldo', 'ProdutoController@estoqueSaldo');
-    Route::resource('produto/sincroniza-produto-open-cart', 'ProdutoController@sincronizaProdutoOpenCart');
     Route::resource('produto/inativar', 'ProdutoController@inativar');
     Route::patch('produto/{id}/transferir-variacao-salvar', 'ProdutoController@transferirVariacaoSalvar');
     Route::get('produto/{id}/transferir-variacao', 'ProdutoController@transferirVariacao');
     Route::resource('produto', 'ProdutoController');
+
+    /* Magazord Produto */
+    Route::get('produto/{id}/magazord/sincroniza', 'ProdutoController@sincronizaProdutoMagazord');
+    Route::get('produto/{id}/magazord', 'ProdutoController@editMagazord');
+    Route::patch('produto/{id}/magazord', 'ProdutoController@updateMagazord');
 
     /* Estoque Saldo Conferencia */
     Route::resource('estoque-saldo-conferencia', 'EstoqueSaldoConferenciaController');
@@ -136,10 +140,6 @@ Route::group(['middleware' => 'auth'], function() {
 
     /* Produto Embalagem */
     Route::resource('produto-embalagem', 'ProdutoEmbalagemController');
-
-    /* Magazord Produto */
-    Route::get('produto/{id}/magazord', 'ProdutoController@editMagazord');
-    Route::patch('produto/{id}/magazord', 'ProdutoController@updateMagazord');
 
     /* Estoque Local Produto Variacao */
     Route::resource('estoque-local-produto-variacao', 'EstoqueLocalProdutoVariacaoController');
