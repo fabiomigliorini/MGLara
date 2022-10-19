@@ -5,20 +5,20 @@ namespace MGLara\Models;
 /**
  * Campos
  * @property  bigint                         $codprodutovariacao                 NOT NULL DEFAULT nextval('tblprodutovariacao_codprodutovariacao_seq'::regclass)
- * @property  varchar(100)                   $variacao                           
+ * @property  varchar(100)                   $variacao
  * @property  bigint                         $codproduto                         NOT NULL
- * @property  bigint                         $codmarca                           
- * @property  timestamp                      $alteracao                          
- * @property  bigint                         $codusuarioalteracao                
- * @property  timestamp                      $criacao                            
- * @property  bigint                         $codusuariocriacao                  
- * @property  varchar(50)                    $referencia                         
+ * @property  bigint                         $codmarca
+ * @property  timestamp                      $alteracao
+ * @property  bigint                         $codusuarioalteracao
+ * @property  timestamp                      $criacao
+ * @property  bigint                         $codusuariocriacao
+ * @property  varchar(50)                    $referencia
  *
  * Chaves Estrangeiras
- * @property  Marca                          $Marca                         
+ * @property  Marca                          $Marca
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
- * @property  Produto                        $Produto                       
+ * @property  Produto                        $Produto
  *
  * Tabelas Filhas
  * @property  ProdutoBarra[]                 $ProdutoBarraS
@@ -74,10 +74,14 @@ class ProdutoVariacao extends MGModel
         return $this->hasMany(EstoqueLocalProdutoVariacao::class, 'codprodutovariacao', 'codprodutovariacao');
     }
 
+    public function MagazordProduto()
+    {
+        return $this->hasMany(MagazordProduto::class, 'codprodutovariacao', 'codprodutovariacao');
+    }
 
     public function validate()
     {
-        
+
         $this->_regrasValidacao = [
           'variacao' => "uniqueMultiple:tblprodutovariacao,codprodutovariacao,$this->codprodutovariacao,variacao,codproduto,$this->codproduto",
           'codmarca' => "not_in:{$this->Produto->codmarca}"
@@ -88,15 +92,15 @@ class ProdutoVariacao extends MGModel
             'variacao.required' => 'Já existe uma Variação em branco, preencha a descrição desta nova Variação!',
             'codmarca.not_in' => 'Somente selecione a Marca caso seja diferente do produto!',
         ];
-        
+
         if (isset($this->codproduto) && empty($this->variacao))
             if ($this->Produto->ProdutoVariacaoS()->whereNull('variacao')->count() > 0)
                 $this->_regrasValidacao['variacao'] = 'required|' . $this->_regrasValidacao['variacao'];
 
         $ret = parent::validate();
-        
+
         return $ret;
-    }    
+    }
 
 
 }

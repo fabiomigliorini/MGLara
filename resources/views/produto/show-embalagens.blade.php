@@ -13,9 +13,7 @@
             </a>
         </span>
     </li>
-
-
-    @foreach($model->ProdutoEmbalagemS()->orderBy('quantidade')->get() as $pe)
+    @foreach($pes as $pe)
         <li class="list-group-item">
             <small class="pull-left text-muted">
                 R$
@@ -28,7 +26,7 @@
                         </small>
                     </i>
                 @else
-                    {{ formataNumero($pe->preco) }}                            
+                    {{ formataNumero($pe->preco) }}
                 @endif
             </b>
             <small class="text-muted">

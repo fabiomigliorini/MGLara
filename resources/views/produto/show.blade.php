@@ -3,10 +3,10 @@
 <?php
     use MGLara\Models\Filial;
     use MGLara\Models\NaturezaOperacao;
+    use MGLara\Models\MagazordProduto;
 
     $filiais    = [''=>''] + Filial::lists('filial', 'codfilial')->all();
     $naturezaop = [''=>''] + NaturezaOperacao::lists('naturezaoperacao', 'codnaturezaoperacao')->all();
-    //dd($model->ProdutoVariacaoS);
 
     switch ($model->abc) {
       case 'A':
@@ -21,6 +21,8 @@
         $label = 'label-danger';
         break;
     }
+    $pes = $model->ProdutoEmbalagemS()->orderBy('quantidade')->get();
+    $pvs = $model->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
 ?>
 <ol class="breadcrumb header">
     {!!
@@ -64,17 +66,16 @@
 <div class="col-md-7">
     <div>
         <ul class="nav nav-tabs" role="tablist" id='tab-produto'>
-            <li role="presentation" class='active'><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Detalhes</a></li>
-            <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab" data-toggle="tab">Estoque</a></li>
-            <li role="presentation"><a href="#tab-site" aria-controls="profile" role="tab" data-toggle="tab">Site</a></li>
-            <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">NCM</a></li>
-            <li role="presentation"><a href="#tab-negocio" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
-            <li role="presentation"><a href="#tab-notasfiscais" aria-controls="messages" role="tab" data-toggle="tab">Notas Fiscais</a></li>
-            <li role="presentation"><a href="#tab-observacoes" aria-controls="observacoes" role="tab" data-toggle="tab">Observações</a></li>
+          <li role="presentation" class='active'><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Detalhes</a></li>
+          <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab" data-toggle="tab">Estoque</a></li>
+          <li role="presentation"><a href="#tab-magazord" aria-controls="profile" role="tab" data-toggle="tab">Magazord</a></li>
+          <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">NCM</a></li>
+          <li role="presentation"><a href="#tab-negocio" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
+          <li role="presentation"><a href="#tab-notasfiscais" aria-controls="messages" role="tab" data-toggle="tab">Notas Fiscais</a></li>
         </ul>
         <br>
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane fade in active" id="tab-variacoes">
+          <div role="tabpanel" class="tab-pane fade in active" id="tab-variacoes">
                 <div class='clearfix'>
                     <div class='col-md-7'>
                         <ol class="breadcrumb">
@@ -117,6 +118,21 @@
                     @include('produto.show-embalagens')
                 </div>
 
+                @if(!empty($model->descricaosite))
+                  <div class="panel panel-default">
+                    <div class="panel-body">
+                      {!! nl2br($model->descricaosite) !!}
+                    </div>
+                  </div>
+                @endif
+
+                @if(!empty($model->observacoes))
+                  <div class="panel panel-default">
+                    <div class="panel-body">
+                      {!! nl2br($model->observacoes) !!}
+                    </div>
+                  </div>
+                @endif
 
                 <a href="<?php echo url("produto-variacao/create?codproduto={$model->codproduto}");?>">Nova Variação <span class="glyphicon glyphicon-plus"></span></a>
                 |
@@ -135,18 +151,8 @@
                     <b>Aguarde...</b>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="tab-site">
-                <p>
-                    <botton class="btn btn-default" id="integracao-open-cart"><i class="glyphicon glyphicon-shopping-cart"></i>
-                        Sincronizar &nbsp;&nbsp;
-                        <img width="20px" id="sincronizar" src="{{ URL::asset('public/img/carregando.gif') }}">
-                    </botton>
-
-                </p>
-                <br>
-                <strong>Divulgado no Site: {{ ($model->site)?'Sim':'Não' }}</strong>
-                <hr>
-                {!! nl2br($model->descricaosite) !!}
+            <div role="tabpanel" class="tab-pane fade" id="tab-magazord">
+              @include('produto.show-magazord')
             </div>
             <div role="tabpanel" class="tab-pane fade" id="tab-fiscal">
                 @include('produto.show-ncm')
@@ -262,9 +268,6 @@
                 <div id="div-notasfiscais">
                     <b>Aguarde...</b>
                 </div>
-            </div>
-            <div role="tabpanel" class="tab-pane fade" id="tab-observacoes">
-                {!! $model->observacoes !!}
             </div>
         </div>
     </div>
@@ -395,25 +398,25 @@ $(document).ready(function() {
     });
 
     $('#sincronizar').hide();
-    $('#integracao-open-cart').click(function (e) {
+    $('#integracao-magazord').click(function (e) {
         e.preventDefault();
         bootbox.confirm("Tem certeza que deseja sincronizar esse produto", function(result) {
             if (result) {
                 $.ajax({
                     type: 'GET',
-                    url: baseUrl + '/produto/sincroniza-produto-open-cart',
+                    url: baseUrl + '/produto/sincroniza-produto-magazord',
                     data: {
                         id:{{ $model->codproduto }}
                     },
                     beforeSend: function( xhr ) {
                         $('#sincronizar').show(function() {
-                            $('#integracao-open-cart').attr('disabled','disabled');
+                            $('#integracao-magazord').attr('disabled','disabled');
                         });
                     }
                 })
                 .done(function (data) {
                     $('#sincronizar').hide(function() {
-                        $('#integracao-open-cart').removeAttr('disabled');
+                        $('#integracao-magazord').removeAttr('disabled');
                     });
                     if(data.resultado === true) {
                         var mensagem = '<strong class="text-success">'+data.mensagem+'</strong>';

@@ -21,6 +21,7 @@ use MGLara\Models\NegocioProdutoBarra;
 use MGLara\Models\NotaFiscalProdutoBarra;
 use MGLara\Models\TipoProduto;
 use MGLara\Models\ProdutoHistoricoPreco;
+use MGLara\Models\MagazordProduto;
 use MGLara\Library\IntegracaoOpenCart\IntegracaoOpenCart;
 
 class ProdutoController extends Controller
@@ -171,7 +172,6 @@ class ProdutoController extends Controller
 
         return $ret;
     }
-
 
     public function edit($id)
     {
@@ -698,4 +698,50 @@ class ProdutoController extends Controller
         return view('produto.quiosque');
     }
 
-}
+    public function editMagazord($id)
+    {
+        $model = Produto::findOrFail($id);
+        return view('produto.edit-magazord',  compact('model'));
+    }
+
+    public function updateMagazord(Request $request, $id)
+    {
+
+        // Inicia Transacao
+        DB::beginTransaction();
+
+        // Percorre array de SKU
+        foreach ($request->sku as $codprodutovariacao => $itens) {
+          foreach ($itens as $codprodutoembalagem => $sku) {
+
+            // caso tenha SKU informado
+            if (!empty($sku)) {
+              if ($codprodutoembalagem == 'null') {
+                $codprodutoembalagem = null;
+              }
+
+              // salva SKU
+              $mp = MagazordProduto::firstOrNew([
+                'codprodutovariacao' => $codprodutovariacao,
+                'codprodutoembalagem' => $codprodutoembalagem
+              ]);
+              $mp->codproduto = $id;
+              $mp->sku = $sku;
+              $mp->save();
+              $salvos[] = $mp->codmagazordproduto;
+            }
+
+          }
+        }
+
+        // Apaga registros que nao foram informados
+        MagazordProduto::where('codproduto', $id)
+          ->whereNotIn('codmagazordproduto', $salvos)
+          ->delete();
+
+        // Salva Transacao
+        DB::commit();
+
+        return redirect("produto/$id");
+    }
+  }

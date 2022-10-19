@@ -71,6 +71,11 @@
     </div>
 
     <div class="form-group">
+        {!! Form::label('descricaosite', 'Descrição', ['class'=>'col-sm-3 control-label']) !!}
+        <div class="col-sm-9">{!! Form::textarea('descricaosite', null, ['class'=> 'form-control', 'id'=>'descricaosite', 'rows'=>'6']) !!}</div>
+    </div>
+
+    <div class="form-group">
         {!! Form::label('observacoes', 'Observações', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9">{!! Form::textarea('observacoes', null, ['class'=> 'form-control', 'id'=>'observacoes', 'rows'=>'3']) !!}</div>
     </div>
@@ -80,15 +85,11 @@
         <div class="col-sm-2">{!! Form::select2('abc', ['A', 'B', 'C'], null, ['class' => 'form-control','id'=>'abc', 'style'=>'width:100%', 'required'=>true]) !!}</div>
     </div> -->
 
-    <div class="form-group">
+    <!-- <div class="form-group">
         {!! Form::label('site', 'Disponível no Site', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9" id="wrapper-site">     {!! Form::checkbox('site', true, null, ['id'=>'site', 'data-off-text' => 'Não', 'data-on-text' => 'Sim']) !!}</div>
-    </div>
+    </div> -->
 
-    <div class="form-group">
-        {!! Form::label('descricaosite', 'Descrição Site', ['class'=>'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">{!! Form::textarea('descricaosite', null, ['class'=> 'form-control', 'id'=>'descricaosite', 'rows'=>'4']) !!}</div>
-    </div>
 </div>
 <hr>
 <div class="form-group">
@@ -209,7 +210,7 @@ $(document).ready(function() {
         });
     });
     $('#importado').bootstrapSwitch();
-    $('#site').bootstrapSwitch();
+    // $('#site').bootstrapSwitch();
 
     @if (!empty($model->codsubgrupoproduto))
         $('#codsecaoproduto').val({{$model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto}});

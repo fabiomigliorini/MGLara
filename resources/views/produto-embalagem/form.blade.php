@@ -1,8 +1,6 @@
 <?php
-
     use MGLara\Models\UnidadeMedida;
     $medidas        = [''=>''] + UnidadeMedida::orderBy('unidademedida')->lists('unidademedida', 'codunidademedida')->all();
-
 ?>
 
 <div class="form-group">
@@ -21,7 +19,6 @@
     <div class="col-sm-1">{!! Form::number('preco', null, ['class'=> 'form-control text-right', 'step'=>'0.01', 'id'=>'preco', 'autofocus']) !!}
     </div>
 </div>
-
 
 <div class="form-group">
 	<div class="col-sm-offset-2 col-sm-10">

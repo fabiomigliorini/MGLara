@@ -1,7 +1,4 @@
 <div class="panel panel-default" id="div-variacoes">
-    <?php
-    $pvs = $model->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
-    ?>
     <ul class="list-group list-group-striped list-group-hover">
         @foreach ($pvs as $pv)
             <li class="list-group-item">
@@ -23,7 +20,7 @@
                     <a href="{{ url("produto-variacao/$pv->codprodutovariacao/edit") }}"><i class="glyphicon glyphicon-pencil"></i></a>
                     <a href="{{ url("produto-variacao/$pv->codprodutovariacao") }}" data-excluir data-pergunta="Tem certeza que deseja excluir a variação '{{ $pv->variacao }}'?" data-after-delete="recarregaDiv('div-variacoes');"><i class="glyphicon glyphicon-trash"></i></a>
                 </div>
-                    
+
                 <div class="row">
                 <?php
                 $pbs = $pv->ProdutoBarraS()->leftJoin('tblprodutoembalagem as pe', 'pe.codprodutoembalagem', '=', 'tblprodutobarra.codprodutoembalagem')

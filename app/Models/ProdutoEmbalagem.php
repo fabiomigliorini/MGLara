@@ -5,18 +5,18 @@ namespace MGLara\Models;
 /**
  * Campos
  * @property  bigint                         $codprodutoembalagem                NOT NULL DEFAULT nextval('tblprodutoembalagem_codprodutoembalagem_seq'::regclass)
- * @property  bigint                         $codproduto                         
- * @property  bigint                         $codunidademedida                   
- * @property  numeric(17,5)                  $quantidade                         
- * @property  numeric(14,2)                  $preco                              
- * @property  timestamp                      $alteracao                          
- * @property  bigint                         $codusuarioalteracao                
- * @property  timestamp                      $criacao                            
- * @property  bigint                         $codusuariocriacao                  
+ * @property  bigint                         $codproduto
+ * @property  bigint                         $codunidademedida
+ * @property  numeric(17,5)                  $quantidade
+ * @property  numeric(14,2)                  $preco
+ * @property  timestamp                      $alteracao
+ * @property  bigint                         $codusuarioalteracao
+ * @property  timestamp                      $criacao
+ * @property  bigint                         $codusuariocriacao
  *
  * Chaves Estrangeiras
- * @property  Produto                        $Produto                       
- * @property  UnidadeMedida                  $UnidadeMedida                 
+ * @property  Produto                        $Produto
+ * @property  UnidadeMedida                  $UnidadeMedida
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
  *
@@ -40,44 +40,44 @@ class ProdutoEmbalagem extends MGModel
         'alteracao',
         'criacao',
     ];
-    
+
     public function getDescricaoAttribute()
     {
         if (floor($this->quantidade) == $this->quantidade)
             $digitos = 0;
         else
             $digitos = 5;
-        
+
         return $this->UnidadeMedida->sigla . ' C/' . formataNumero($this->quantidade, $digitos);
     }
-    
+
     public function getPrecoCalculadoAttribute()
     {
         if ($this->Produto)
             $preco_calculado = ($this->preco) ? $this->preco : $this->Produto->preco * $this->quantidade;
-        
+
         return $preco_calculado;
     }
-    
-    public function validate() 
+
+    public function validate()
     {
 
         $preco = 'numeric|min:0.01';
-        
+
         if (!empty($this->codproduto))
         {
             $preco .= "|min:" . ($this->Produto->preco * $this->quantidade * .5);
             $preco .= "|max:" . $this->Produto->preco * $this->quantidade;
         }
-        
-        $this->_regrasValidacao = [            
+
+        $this->_regrasValidacao = [
             'codproduto'  => 'required|numeric',
             'codunidademedida'  => 'required|numeric',
             //'quantidade' => "required|numeric|validaQuantidade:$this->codproduto,$this->codprodutoembalagem",
             'quantidade' => "required|numeric|uniqueMultiple:tblprodutoembalagem,codprodutoembalagem,$this->codprodutoembalagem,quantidade,codproduto,$this->codproduto",
             'preco' => $preco,
         ];
-    
+
         $this->_mensagensErro = [
             'codunidademedida.required'         => 'O campo Unidade Medida não pode ser vazio!',
             'codunidademedida.numeric'          => 'O campo Unidade Medida deve ser um valor numérico!',
@@ -87,10 +87,10 @@ class ProdutoEmbalagem extends MGModel
             'preco.max'                         => 'Preço maior que o custo unitário!',
             'preco.min'                         => 'Preço inferior à 50% do custo unitário!',
         ];
-        
+
         return parent::validate();
-    }     
-    
+    }
+
     // Chaves Estrangeiras
     public function Produto()
     {
@@ -112,7 +112,6 @@ class ProdutoEmbalagem extends MGModel
         return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
     }
 
-
     // Tabelas Filhas
     public function ProdutoBarraS()
     {
@@ -122,6 +121,11 @@ class ProdutoEmbalagem extends MGModel
     public function ProdutoHistoricoPrecoS()
     {
         return $this->hasMany(ProdutoHistoricoPreco::class, 'codprodutoembalagem', 'codprodutoembalagem');
-    }    
+    }
+
+    public function MagazordProduto()
+    {
+        return $this->hasMany(MagazordProduto::class, 'codprodutoembalagem', 'codprodutoembalagem');
+    }
 
 }
