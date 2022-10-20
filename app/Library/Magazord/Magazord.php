@@ -148,14 +148,15 @@ class Magazord {
             $sql = '
                 update tblmagazordproduto
                 set precovarejo = :precovarejo,
-                    precovarejoatualizado = NOW(),
+                    precovarejoatualizado = :agora,
                     precoatacado = :precoatacado,
-                    precoatacadoatualizado = NOW()
+                    precoatacadoatualizado = :agora
                 where codmagazordproduto = :codmagazordproduto
             ';
             $count += DB::update($sql, [
                 'precovarejo' => $reg->preco,
                 'precoatacado' => $precoAtacado,
+                'agora' => Carbon::now(),
                 'codmagazordproduto' => $reg->codmagazordproduto
             ]);
         }
