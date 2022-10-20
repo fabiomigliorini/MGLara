@@ -3,9 +3,9 @@
 namespace MGLara\Library\Magazord;
 
 use \Carbon\Carbon;
-// use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-//
+
 // use MGLara\Library\Magazord\MagazordBase;
 // use MGLara\Models\Marca;
 // use MGLara\Models\SecaoProduto;
@@ -100,6 +100,7 @@ class Magazord {
 
     public static function sincronizaPrecos ($limit = 50)
     {
+        Log::info ('Buscando precos para sinconizar com Magazord!');
         $sql = '
             with atualizar as (
             	select
@@ -121,7 +122,9 @@ class Magazord {
             limit :limit
         ';
         $regs = DB::select($sql, ['limit' => $limit]);
-        if (count($regs) == 0) {
+        $count = count($regs);
+        Log::info ("{$count} precos encontrados para sinconizar com Magazord!");
+        if ($count == 0) {
             return 0;
         }
 
@@ -159,7 +162,10 @@ class Magazord {
         $api = new MagazordApi();
         $ret = $api->postPrecos($data);
         if ($ret) {
+            Log::info ("{$count} precos sinconizados com Magazord!");
             DB::commit();
+        } else {
+            Log::info ("Falha ao sincronizar precos com Magazord!");
         }
         return $count;
     }
