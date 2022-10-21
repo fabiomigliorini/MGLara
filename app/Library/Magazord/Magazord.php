@@ -243,14 +243,14 @@ class Magazord {
         foreach ($regs as $reg) {
             $ret = $api->postEstoque($reg->sku, intval($reg->saldoquantidademg));
             if ($ret) {
-                Log::info ("SKU {$reg->sku} saldo de {$reg->saldoquantidademg} sinconizado com Magazord!");
+                Log::info ("Produto {$reg->codproduto} SKU {$reg->sku} saldo de {$reg->saldoquantidademg} sinconizado com Magazord!");
                 $count += DB::update($sql, [
                     'saldoquantidade' => intval($reg->saldoquantidademg),
                     'agora' => Carbon::now(),
                     'codmagazordproduto' => $reg->codmagazordproduto
                 ]);
             } else {
-                Log::error ("SKU {$reg->sku} Falha ao atualizar saldo de {$reg->saldoquantidademg} com Magazord!");
+                Log::error ("Produto {$reg->codproduto} SKU {$reg->sku} Falha ao atualizar saldo de {$reg->saldoquantidademg} com Magazord!");
             }
         }
         Log::info ("{$count} precos sinconizados com Magazord!");
