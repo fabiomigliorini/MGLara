@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         \MGLara\Console\Commands\EstoqueAjustaFiscalCommand::class,
         \MGLara\Console\Commands\EstoqueCalculaEstatisticasCommand::class,
         \MGLara\Console\Commands\MagazordSincronizaPrecosCommand::class,
+        \MGLara\Console\Commands\MagazordSincronizaSaldosCommand::class,
     ];
 
     /**
