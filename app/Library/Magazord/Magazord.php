@@ -253,7 +253,7 @@ class Magazord {
                 Log::error ("Produto {$reg->codproduto} SKU {$reg->sku} Falha ao atualizar saldo de {$reg->saldoquantidademg} com Magazord!");
             }
         }
-        Log::info ("{$count} precos sinconizados com Magazord!");
+        Log::info ("{$count} saldos sinconizados com Magazord!");
         return $count;
     }
 
