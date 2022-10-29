@@ -89,7 +89,7 @@ class ProdutoVariacao extends MGModel
     {
 
         $this->_regrasValidacao = [
-          'variacao' => "uniqueMultiple:tblprodutovariacao,codprodutovariacao,$this->codprodutovariacao,variacao,codproduto,$this->codproduto",
+          'variacao' => "uniqueMultiple:tblprodutovariacao,codprodutovariacao,{$this->codprodutovariacao},variacao,codproduto,{$this->codproduto}",
           'codmarca' => "not_in:{$this->Produto->codmarca}"
         ];
         $this->_mensagensErro = [
@@ -99,9 +99,16 @@ class ProdutoVariacao extends MGModel
             'codmarca.not_in' => 'Somente selecione a Marca caso seja diferente do produto!',
         ];
 
-        if (isset($this->codproduto) && empty($this->variacao))
-            if ($this->Produto->ProdutoVariacaoS()->whereNull('variacao')->count() > 0)
+        // Verifica se já existe um "Sem Variacao"
+        if (empty($this->variacao)) {
+            $qry = $this->Produto->ProdutoVariacaoS()->whereNull('variacao');
+            if (!empty($this->codprodutovariacao)) {
+                $qry = $qry->where('codprodutovariacao', '!=', $this->codprodutovariacao);
+            }
+            if ($qry->count() > 0) {
                 $this->_regrasValidacao['variacao'] = 'required|' . $this->_regrasValidacao['variacao'];
+            }
+        }
 
         $ret = parent::validate();
 

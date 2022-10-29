@@ -37,6 +37,7 @@ class ProdutoVariacaoController extends Controller
     public function create(Request $request)
     {
         $model = new ProdutoVariacao();
+        $model->codproduto = $request->codproduto;
         $produto = Produto::findOrFail($request->codproduto);
         return view('produto-variacao.create', compact('model', 'produto'));
     }
