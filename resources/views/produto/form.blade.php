@@ -71,15 +71,15 @@
     </div>
 
     <div class="form-group">
-        {!! Form::label('codunidademedida', 'Peso KG', ['class'=>'col-sm-3 control-label']) !!}
-        <div class="col-sm-2">{!! Form::number('peso', null, ['required' => true, 'step' => 0.001, 'class'=> 'form-control text-right', 'id'=>'peso']) !!}</div>
+        {!! Form::label('altura', 'Dimensões CM (A/L/P)', ['class'=>'col-sm-3 control-label']) !!}
+        <div class="col-sm-2">{!! Form::number('altura', null, ['step' => 0.01, 'class'=> 'form-control text-right', 'id'=>'altura']) !!}</div>
+        <div class="col-sm-2">{!! Form::number('largura', null, ['step' => 0.01, 'class'=> 'form-control text-right', 'id'=>'largura']) !!}</div>
+        <div class="col-sm-2">{!! Form::number('profundidade', null, ['step' => 0.01, 'class'=> 'form-control text-right', 'id'=>'profundidade']) !!}</div>
     </div>
 
     <div class="form-group">
-        {!! Form::label('altura', 'Dimensões CM (A/L/P)', ['class'=>'col-sm-3 control-label']) !!}
-        <div class="col-sm-2">{!! Form::number('altura', null, ['required' => true, 'step' => 0.01, 'class'=> 'form-control text-right', 'id'=>'altura']) !!}</div>
-        <div class="col-sm-2">{!! Form::number('largura', null, ['required' => true, 'step' => 0.01, 'class'=> 'form-control text-right', 'id'=>'largura']) !!}</div>
-        <div class="col-sm-2">{!! Form::number('profundidade', null, ['required' => true, 'step' => 0.01, 'class'=> 'form-control text-right', 'id'=>'profundidade']) !!}</div>
+        {!! Form::label('peso', 'Peso KG', ['class'=>'col-sm-3 control-label']) !!}
+        <div class="col-sm-2">{!! Form::number('peso', null, ['step' => 0.001, 'class'=> 'form-control text-right', 'id'=>'peso']) !!}</div>
     </div>
 
     <div class="form-group">

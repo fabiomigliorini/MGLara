@@ -4,7 +4,7 @@
             <li class="list-group-item">
                 @if (!empty($pv->codprodutoimagem))
                     <?php $pi = MGLara\Models\ProdutoImagem::findOrFail($pv->codprodutoimagem); ?>
-                    <img src="<?php echo URL::asset('public/imagens/'.$pi->Imagem->observacoes);?>" id="{{$pi->Imagem->codimagem}}" style='max-width: 70px;' class="pull-left img-circle">
+                    <img src="<?php echo URL::asset('public/imagens/'.$pi->Imagem->observacoes);?>" id="{{$pi->Imagem->codimagem}}" style='max-width: 60px;' class="pull-left img-circle">
                 @endif
                 <strong>
                     @if (!empty($pv->variacao))
