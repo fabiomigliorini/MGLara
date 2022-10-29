@@ -114,6 +114,37 @@
                                 titulo(NULL, $arr, NULL)
                             !!}
                         </ol>
+                        <ol class="breadcrumb">
+                            @if (!empty($model->peso))
+                                <li class="active">
+                                    <abbr title="Peso">
+                                        {{formataNumero($model->peso, 3)}} KG
+                                    </abbr>
+                                </li>
+                            @endif
+                            @if (!empty($model->altura))
+                                <li class="active">
+                                    <abbr title="Altura">
+                                        {{formataNumero($model->altura, 2)}} CM
+                                    </abbr>
+                                </li>
+                            @endif
+                            @if (!empty($model->largura))
+                                <li class="active">
+                                    <abbr title="Largura">
+                                        {{formataNumero($model->largura, 2)}} CM
+                                    </abbr>
+                                </li>
+                            @endif
+                            @if (!empty($model->profundidade))
+                                <li class="active">
+                                    <abbr title="Profundidade">
+                                        {{formataNumero($model->profundidade, 2)}} CM
+                                    </abbr>
+                                </li>
+                            @endif
+                        </ol>
+
                     </div>
                     @include('produto.show-embalagens')
                 </div>

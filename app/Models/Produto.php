@@ -67,6 +67,10 @@ class Produto extends MGModel
         'codcest',
         'observacoes',
         'abc',
+        'peso',
+        'altura',
+        'largura',
+        'profundidade'
     ];
     protected $dates = [
         'inativo',
@@ -90,6 +94,10 @@ class Produto extends MGModel
             'codsubgrupoproduto' => 'required|numeric',
             'codmarca'          => 'required|numeric',
             'preco'             => 'required|numeric|min:0.01',
+            'peso'             => 'required|numeric|min:0.001',
+            'altura'             => 'required|numeric|min:0.01',
+            'largura'             => 'required|numeric|min:0.01',
+            'profundidade'             => 'required|numeric|min:0.01',
             //'codtributacao'     => "required|numeric|validaTributacao:$this->codncm|validaTributacaoSubstituicao:$this->codncm",
             'codtributacao'     => 'required|numeric',
             'codtipoproduto'    => 'required|numeric',
