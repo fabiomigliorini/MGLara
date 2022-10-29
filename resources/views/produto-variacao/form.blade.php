@@ -19,16 +19,30 @@
     </div>
 </div>
 <div class="form-group">
-    <label for="codprodutoimagem" class="col-sm-2 control-label">{!! Form::label('Imagem:') !!}</label>
+    <label for="codprodutoimagem" class="col-sm-2 control-label">{!! Form::label('Imagem Principal:') !!}</label>
     <div class="col-sm-6">
           <label>
             <input type="radio" name="codprodutoimagem" id="optionsRadiosNull" value="" <?php echo empty($model->codprodutoimagem)?'checked':'' ?>>
-	    <img src="<?php echo URL::asset('public/imagens/semimagem.jpg') ?>" style="max-width:130px" class="img-thumbnail">
+            <img src="<?php echo URL::asset('public/imagens/semimagem.jpg') ?>" style="max-width:130px" class="img-thumbnail">
           </label>
           @foreach ($model->Produto->ProdutoImagemS()->orderBy('ordem')->get() as $pi)
               <label>
                 <input type="radio" name="codprodutoimagem" id="optionsRadios{{$pi->codprodutoimagem}}" value="{{$pi->codprodutoimagem}}" <?php echo ($model->codprodutoimagem == $pi->codprodutoimagem)?'checked':'' ?>>
-                <!-- {{$pi->codprodutoimagem}}/{{$pi->codimagem}} -->
+                <img src="<?php echo URL::asset('public/imagens/'.$pi->Imagem->observacoes);?>" id="{{$pi->Imagem->codimagem}}" style='max-width: 130px;' class="img-thumbnail">
+              </label>
+          @endforeach
+    </div>
+</div>
+<div class="form-group">
+    <label for="codprodutoimagemadicional" class="col-sm-2 control-label">{!! Form::label('Imagens Adicionais:') !!}</label>
+    <div class="col-sm-6">
+          <?php
+            $codprodutoimagemadicionals = $model->ProdutoImagemProdutoVariacaoS()->select('codprodutoimagem')->get()->pluck('codprodutoimagem')->values()->toArray();
+            // dd($codprodutoimagemadicionals);
+          ?>
+          @foreach ($model->Produto->ProdutoImagemS()->orderBy('ordem')->get() as $pi)
+              <label>
+                <input type="checkbox" name="codprodutoimagemadicional[{{$pi->codprodutoimagem}}]" id="optionsCheckbox{{$pi->codprodutoimagem}}" value="{{$pi->codprodutoimagem}}" <?php echo in_array($pi->codprodutoimagem, $codprodutoimagemadicionals)?'checked':'' ?>>
                 <img src="<?php echo URL::asset('public/imagens/'.$pi->Imagem->observacoes);?>" id="{{$pi->Imagem->codimagem}}" style='max-width: 130px;' class="img-thumbnail">
               </label>
           @endforeach

@@ -40,6 +40,11 @@ class ProdutoImagem extends MGModel
 
 
     // Tabelas Filhas
+    public function ProdutoImagemProdutoVariacaoS()
+    {
+        return $this->hasMany(ProdutoImagemProdutoVariacao::class, 'codprodutoimagem', 'codprodutoimagem');
+    }
+
 
 
 }

@@ -80,6 +80,11 @@ class ProdutoVariacao extends MGModel
         return $this->hasMany(EstoqueLocalProdutoVariacao::class, 'codprodutovariacao', 'codprodutovariacao');
     }
 
+    public function ProdutoImagemProdutoVariacaoS()
+    {
+        return $this->hasMany(ProdutoImagemProdutoVariacao::class, 'codprodutovariacao', 'codprodutovariacao');
+    }
+
     public function MagazordProduto()
     {
         return $this->hasMany(MagazordProduto::class, 'codprodutovariacao', 'codprodutovariacao');
@@ -114,6 +119,25 @@ class ProdutoVariacao extends MGModel
 
         return $ret;
     }
+
+    public function vincularProdutoImagemAdicional($arr)
+    {
+        $codprodutoimagemprodutovariacaos = [];
+        if (is_array($arr)) {
+            foreach ($arr as $codprodutoimagem) {
+                $pipv = ProdutoImagemProdutoVariacao::firstOrNew([
+                    'codprodutoimagem' => $codprodutoimagem,
+                    'codprodutovariacao' => $this->codprodutovariacao
+                ]);
+                $pipv->save();
+                $codprodutoimagemprodutovariacaos[] = $pipv->codprodutoimagemprodutovariacao;
+            }
+        }
+        $this->ProdutoImagemProdutoVariacaoS()
+            ->whereNotIn('codprodutoimagemprodutovariacao', $codprodutoimagemprodutovariacaos)
+            ->delete();
+    }
+
 
 
 }

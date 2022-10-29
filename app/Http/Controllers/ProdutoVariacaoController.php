@@ -63,6 +63,8 @@ class ProdutoVariacaoController extends Controller
             if (!$model->save())
                 throw new Exception ('Erro ao Criar Variação!');
 
+            $model->vincularProdutoImagemAdicional($request->codprodutoimagemadicional);
+
             $pb = new ProdutoBarra();
             $pb->codproduto = $model->codproduto;
             $pb->codprodutovariacao = $model->codprodutovariacao;
@@ -122,8 +124,11 @@ class ProdutoVariacaoController extends Controller
         $model = ProdutoVariacao::findOrFail($id);
         $model->fill($request->all());
 
-        if (!$model->validate())
+        if (!$model->validate()) {
             $this->throwValidationException($request, $model->_validator);
+        }
+
+        $model->vincularProdutoImagemAdicional($request->codprodutoimagemadicional);
 
         $model->save();
         Session::flash('flash_success', "Variação '{$model->variacao}' alterada!");
