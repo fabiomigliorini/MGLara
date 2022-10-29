@@ -21,16 +21,17 @@
 <div class="form-group">
     <label for="codprodutoimagem" class="col-sm-2 control-label">{!! Form::label('Imagem:') !!}</label>
     <div class="col-sm-6">
-        <div class="radio">
+          <label>
+            <input type="radio" name="codprodutoimagem" id="optionsRadiosNull" value="" <?php echo empty($model->codprodutoimagem)?'checked':'' ?>>
+	    <img src="<?php echo URL::asset('public/imagens/semimagem.jpg') ?>" style="max-width:130px" class="img-thumbnail">
+          </label>
           @foreach ($model->Produto->ProdutoImagemS()->orderBy('ordem')->get() as $pi)
               <label>
                 <input type="radio" name="codprodutoimagem" id="optionsRadios{{$pi->codprodutoimagem}}" value="{{$pi->codprodutoimagem}}" <?php echo ($model->codprodutoimagem == $pi->codprodutoimagem)?'checked':'' ?>>
                 <!-- {{$pi->codprodutoimagem}}/{{$pi->codimagem}} -->
-                <img src="<?php echo URL::asset('public/imagens/'.$pi->Imagem->observacoes);?>" id="{{$pi->Imagem->codimagem}}" style='max-width: 100px;'>
+                <img src="<?php echo URL::asset('public/imagens/'.$pi->Imagem->observacoes);?>" id="{{$pi->Imagem->codimagem}}" style='max-width: 130px;' class="img-thumbnail">
               </label>
           @endforeach
-        </div>
-        <!-- {!! Form::text('codprodutoimagem', null, ['class'=> 'form-control', 'id'=>'codprodutoimagem']) !!} -->
     </div>
 </div>
 

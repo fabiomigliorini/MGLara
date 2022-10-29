@@ -11,6 +11,7 @@ use MGLara\Models\Produto;
 use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use DB;
 
 use MGLara\Library\SlimImageCropper\Slim;
 
@@ -84,7 +85,24 @@ class ImagemController extends Controller
         $imagem->save();
         
         // Anexa imagem ao produto
-        $model->ImagemS()->attach($imagem->codimagem);
+        $ret = $model->ImagemS()->attach($imagem->codimagem);
+
+        // Anexa imagem as variacoes sem imagem
+        $sql = '
+            update tblprodutovariacao
+            set codprodutoimagem = (
+                select i.codprodutoimagem  
+                from tblprodutoimagem i 
+                where i.codimagem = :codimagem
+                and i.codproduto = tblprodutovariacao.codproduto  
+            ) 
+            where codprodutoimagem is null
+            and codproduto = :codproduto 
+        ';
+        DB::update($sql, [
+            'codimagem' => $imagem->codimagem,
+            'codproduto' => $model->codproduto
+        ]);
         
         // Salva o arquivo
         Slim::saveFile($image['output']['data'], $arquivo, './public/imagens', false);
