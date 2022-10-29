@@ -1,7 +1,7 @@
 <?php
 
     use MGLara\Models\ProdutoEmbalagem;
-    
+
 ?>
 
 <div class="form-group">
@@ -18,6 +18,21 @@
     <div class="col-sm-2">{!! Form::text('referencia', null, ['class'=> 'form-control', 'id'=>'referencia']) !!}
     </div>
 </div>
+<div class="form-group">
+    <label for="codprodutoimagem" class="col-sm-2 control-label">{!! Form::label('Imagem:') !!}</label>
+    <div class="col-sm-6">
+        <div class="radio">
+          @foreach ($model->Produto->ProdutoImagemS()->orderBy('ordem')->get() as $pi)
+              <label>
+                <input type="radio" name="codprodutoimagem" id="optionsRadios{{$pi->codprodutoimagem}}" value="{{$pi->codprodutoimagem}}" <?php echo ($model->codprodutoimagem == $pi->codprodutoimagem)?'checked':'' ?>>
+                <!-- {{$pi->codprodutoimagem}}/{{$pi->codimagem}} -->
+                <img src="<?php echo URL::asset('public/imagens/'.$pi->Imagem->observacoes);?>" id="{{$pi->Imagem->codimagem}}" style='max-width: 100px;'>
+              </label>
+          @endforeach
+        </div>
+        <!-- {!! Form::text('codprodutoimagem', null, ['class'=> 'form-control', 'id'=>'codprodutoimagem']) !!} -->
+    </div>
+</div>
 
 <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
@@ -29,7 +44,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $("#variacao").Setcase();
-    
+
     $('#form-produto-variacao').on("submit", function(e) {
         var currentForm = this;
         e.preventDefault();
@@ -44,22 +59,22 @@ $(document).ready(function() {
         minimumInputLength: 1,
         allowClear: true,
         closeOnSelect: true,
-      
+
         formatResult: function(item) {
             var markup = "<div class='row-fluid'>";
             markup    += item.marca;
             markup    += "</div>";
             return markup;
         },
-        formatSelection: function(item) { 
-            return item.marca; 
+        formatSelection: function(item) {
+            return item.marca;
         },
         ajax:{
             url: baseUrl + "/marca/listagem-json",
             dataType: 'json',
             quietMillis: 500,
-            data: function(term,page) { 
-            return {q: term}; 
+            data: function(term,page) {
+            return {q: term};
         },
         results: function(data,page) {
             var more = (page * 20) < data.total;
@@ -75,7 +90,7 @@ $(document).ready(function() {
               });
         },
         width: 'resolve'
-    });     
+    });
 });
 </script>
 @endsection

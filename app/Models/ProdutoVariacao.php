@@ -33,6 +33,7 @@ class ProdutoVariacao extends MGModel
         'variacao',
         'codproduto',
         'codmarca',
+        'codprodutoimagem',
         'referencia',
     ];
     protected $dates = [
@@ -60,6 +61,11 @@ class ProdutoVariacao extends MGModel
     public function Produto()
     {
         return $this->belongsTo(Produto::class, 'codproduto', 'codproduto');
+    }
+
+    public function ProdutoImagem()
+    {
+        return $this->hasMany(ProdutoImagem::class, 'codprodutoimagem', 'codprodutoimagem');
     }
 
 

@@ -2,6 +2,10 @@
     <ul class="list-group list-group-striped list-group-hover">
         @foreach ($pvs as $pv)
             <li class="list-group-item">
+                @if (!empty($pv->codprodutoimagem))
+                    <?php $pi = MGLara\Models\ProdutoImagem::findOrFail($pv->codprodutoimagem); ?>
+                    <img src="<?php echo URL::asset('public/imagens/'.$pi->Imagem->observacoes);?>" id="{{$pi->Imagem->codimagem}}" style='max-width: 100px;' class="pull-left">
+                @endif
                 <strong>
                     @if (!empty($pv->variacao))
                         {{ $pv->variacao }}
@@ -28,7 +32,7 @@
                    ->with('ProdutoEmbalagem')->get();
                 ?>
                 @foreach ($pbs as $pb)
-                    <div class="col-md-6 small">
+                    <div class="col-md-5 small">
                         {{ $pb->barras }}
                         <span class='text-muted'>
                             {{ $pb->referencia }}

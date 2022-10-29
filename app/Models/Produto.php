@@ -198,6 +198,11 @@ class Produto extends MGModel
         return $this->hasMany(ProdutoEmbalagem::class, 'codproduto', 'codproduto');
     }
 
+    public function ProdutoImagemS()
+    {
+        return $this->hasMany(ProdutoImagem::class, 'codproduto', 'codproduto');
+    }
+
     public function ProdutoHistoricoPrecoS()
     {
         return $this->hasMany(ProdutoHistoricoPreco::class, 'codproduto', 'codproduto');
