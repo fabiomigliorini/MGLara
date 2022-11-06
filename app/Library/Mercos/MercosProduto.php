@@ -113,7 +113,7 @@ class MercosProduto {
         $grade_tamanhos = null;
         $excluido = false;
         $ativo = true;
-        $categoria_id = null;
+        // $categoria_id = null;
         $codigo_ncm = $p->Ncm->ncm;
         $multiplo = null;
         $peso_dimensoes_unitario = true;
@@ -140,7 +140,7 @@ class MercosProduto {
                 $grade_tamanhos,
                 $excluido,
                 $ativo,
-                $categoria_id,
+                // $categoria_id,
                 $codigo_ncm,
                 $multiplo,
                 $peso_bruto,
@@ -168,7 +168,7 @@ class MercosProduto {
                 $grade_tamanhos,
                 $excluido,
                 $ativo,
-                $categoria_id,
+                // $categoria_id,
                 $codigo_ncm,
                 $multiplo,
                 $peso_bruto,
