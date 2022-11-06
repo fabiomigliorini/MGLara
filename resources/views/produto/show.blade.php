@@ -68,6 +68,7 @@
         <ul class="nav nav-tabs" role="tablist" id='tab-produto'>
           <li role="presentation" class='active'><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Detalhes</a></li>
           <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab" data-toggle="tab">Estoque</a></li>
+          <li role="presentation"><a href="#tab-mercos" aria-controls="profile" role="tab" data-toggle="tab">Mercos</a></li>
           <li role="presentation"><a href="#tab-magazord" aria-controls="profile" role="tab" data-toggle="tab">Magazord</a></li>
           <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">NCM</a></li>
           <li role="presentation"><a href="#tab-negocio" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
@@ -182,6 +183,9 @@
                     <b>Aguarde...</b>
                     <img width="20px" src="{{ URL::asset('public/img/carregando.gif') }}">
                 </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="tab-mercos">
+              @include('produto.show-mercos')
             </div>
             <div role="tabpanel" class="tab-pane fade" id="tab-magazord">
               @include('produto.show-magazord')
@@ -311,6 +315,43 @@
 
 @section('inscript')
 <script type="text/javascript">
+
+function criarMercosProduto(codproduto, codprodutovariacao, codprodutoembalagem)
+{
+    bootbox.confirm("Tem certeza que deseja exportar essa combinação para o Mercos?", function(result) {
+        if (result) {
+            $.ajax({
+                type: 'GET',
+                url: baseUrl + '/produto/' + codproduto + '/mercos/exporta',
+                data: {
+                    codprodutovariacao: codprodutovariacao,
+                    codprodutoembalagem: codprodutoembalagem
+                },
+                beforeSend: function( xhr ) {
+                    $('.btnMercos').prop('disabled', true);
+                    $('#lblSincronizandoMercos').show();
+                }
+            })
+            .done(function (data) {
+                $('.btnMercos').prop('disabled', false);
+                $('#lblSincronizandoMercos').hide();
+                if(data.retorno === true) {
+                    var mensagem = '<strong class="text-success">Exportado para Mercos com o ID '+data.produtoid+'</strong>';
+                } else {
+                    var mensagem = '<strong class="text-danger">Falha na exportação para Mercos</strong>';
+                }
+                recarregaDiv('div-mercos')
+                bootbox.alert(mensagem);
+            })
+            .fail(function (data) {
+                $('.btnMercos').prop('disabled', false);
+                $('#lblSincronizandoMercos').hide();
+                console.log('erro no POST');
+            });
+        }
+    });
+
+}
 
 function mostraListagemNegocios()
 {

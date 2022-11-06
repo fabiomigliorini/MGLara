@@ -128,6 +128,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('produto/{id}/magazord', 'ProdutoController@editMagazord');
     Route::patch('produto/{id}/magazord', 'ProdutoController@updateMagazord');
 
+    /* Mercos Produto */
+    Route::get('produto/{id}/mercos/exporta', 'ProdutoController@exportaProdutoMercos');
+    Route::get('produto/{id}/magazord', 'ProdutoController@editMagazord');
+    Route::patch('produto/{id}/magazord', 'ProdutoController@updateMagazord');
+
     /* Estoque Saldo Conferencia */
     Route::resource('estoque-saldo-conferencia', 'EstoqueSaldoConferenciaController');
 

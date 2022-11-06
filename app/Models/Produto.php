@@ -209,6 +209,11 @@ class Produto extends MGModel
         return $this->hasMany(MagazordProduto::class, 'codproduto', 'codproduto');
     }
 
+    public function MercosProdutoS()
+    {
+        return $this->hasMany(MercosProduto::class, 'codproduto', 'codproduto');
+    }
+
     public static function search($parametros)
     {
         $query = Produto::query();

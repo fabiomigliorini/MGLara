@@ -35,6 +35,10 @@ class ProdutoEmbalagem extends MGModel
         'codunidademedida',
         'quantidade',
         'preco',
+        'peso',
+        'altura',
+        'largura',
+        'profundidade'
     ];
     protected $dates = [
         'alteracao',

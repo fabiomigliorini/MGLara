@@ -6,12 +6,12 @@ use DB;
 /**
  * Campos
  * @property  bigint                         $codimagem                          NOT NULL DEFAULT nextval('tblimagem_codimagem_seq'::regclass)
- * @property  varchar(200)                   $observacoes                        
- * @property  timestamp                      $inativo                            
- * @property  timestamp                      $criacao                            
- * @property  bigint                         $codusuariocriacao                  
- * @property  timestamp                      $alteracao                          
- * @property  bigint                         $codusuarioalteracao                
+ * @property  varchar(200)                   $observacoes
+ * @property  timestamp                      $inativo
+ * @property  timestamp                      $criacao
+ * @property  bigint                         $codusuariocriacao
+ * @property  timestamp                      $alteracao
+ * @property  bigint                         $codusuarioalteracao
  *
  * Chaves Estrangeiras
  *
@@ -42,7 +42,7 @@ class Imagem extends MGModel
 
     // Chaves Estrangeiras
 
-    
+
     // Tabelas Filhas
     public function ProdutoS()
     {
@@ -75,8 +75,13 @@ class Imagem extends MGModel
         return $this->hasMany(SubGrupoProduto::class, 'codimagem', 'codimagem');
     }
 
-    
-    // Buscas 
+    public function MercosProdutoImagemS()
+    {
+        return $this->hasMany(MercosProdutoImagem::class, 'codimagem', 'codimagem');
+    }
+
+
+    // Buscas
     public static function search($parametros)
     {
         $query = Imagem::query();
@@ -91,10 +96,10 @@ class Imagem extends MGModel
             case 9; //Todos
             default:
         }
-        
+
         return $query;
     }
-    
+
     public function scopeInativo($query)
     {
         $query->whereNotNull('inativo');
@@ -110,20 +115,20 @@ class Imagem extends MGModel
         $sql = "
             SELECT
                   tc.table_name AS table_name
-                --, kcu.column_name AS foreign_column_name 
-                --, ccu.column_name 
-            FROM 
-                information_schema.table_constraints AS tc 
+                --, kcu.column_name AS foreign_column_name
+                --, ccu.column_name
+            FROM
+                information_schema.table_constraints AS tc
                 JOIN information_schema.key_column_usage AS kcu
                   ON tc.constraint_name = kcu.constraint_name
                 JOIN information_schema.constraint_column_usage AS ccu
                   ON ccu.constraint_name = tc.constraint_name
-            WHERE constraint_type = 'FOREIGN KEY' 
+            WHERE constraint_type = 'FOREIGN KEY'
             AND ccu.table_name='tblimagem';
         ";
-            
+
         $query = DB::select($sql);
-        
+
         foreach ($query as $rel)
         {
             $table_name = DB::select("SELECT * FROM $rel->table_name WHERE codimagem = $id");
@@ -134,11 +139,11 @@ class Imagem extends MGModel
                 $classe = str_replace('grupo', 'Grupo', $classe);
                 $classe = str_pad(ucfirst($classe), 30, ' ');
                 $classe = trim($classe);
-                
+
                 $Model = "\MGLara\Models\\$classe";
             }
         }
-        
+
         return $Model;
     }
 }

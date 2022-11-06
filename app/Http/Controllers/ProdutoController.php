@@ -23,6 +23,7 @@ use MGLara\Models\TipoProduto;
 use MGLara\Models\ProdutoHistoricoPreco;
 use MGLara\Models\MagazordProduto;
 use MGLara\Library\Magazord\Magazord;
+use MGLara\Library\Mercos\MercosProduto;
 
 class ProdutoController extends Controller
 {
@@ -697,6 +698,19 @@ class ProdutoController extends Controller
     public function quiosque (Request $request)
     {
         return view('produto.quiosque');
+    }
+
+    public function exportaProdutoMercos(Request $request, $id)
+    {
+        $codproduto = $id;
+        $codprodutovariacao = $request->codprodutovariacao;
+        $codprodutoembalagem = empty($request->codprodutoembalagem)?null:$request->codprodutoembalagem;
+        $retorno = MercosProduto::exportaProduto(
+            $codproduto,
+            $codprodutovariacao,
+            $codprodutoembalagem
+        );
+        return response()->json($retorno);
     }
 
     public function editMagazord($id)
