@@ -131,6 +131,7 @@ Route::group(['middleware' => 'auth'], function() {
     /* Mercos */
     Route::get('mercos/produto/{id}/exporta', 'MercosController@exportaProduto');
     Route::get('mercos/pedido/apos/{alterado_apos}', 'MercosController@importaPedidoApos');
+    Route::get('mercos/pedido/{codpedido}/faturamento', 'MercosController@exportaFaturamento');
 
     /* Estoque Saldo Conferencia */
     Route::resource('estoque-saldo-conferencia', 'EstoqueSaldoConferenciaController');

@@ -249,6 +249,9 @@ class MercosProduto {
     public static function procurarProdutoBarra($id, $codigo)
     {
         $mp = static::procurarPeloId($id);
+        if ($mp == null) {
+            return ProdutoBarra::findOrFail(env('MERCOS_CODPRODUTOBARRA_NAO_CADASTRADO'));
+        }
         if (empty($mp)) {
             $mp = static::criarPeloCodigo($id, $codigo);
         }
@@ -282,6 +285,8 @@ class MercosProduto {
         $codprodutovariacao = null;
         if (isset($arr[1])) {
             $codprodutovariacao = numeroLimpo($arr[1]);
+        } else {
+            return null;
         }
         $codprodutoembalagem = null;
         if (isset($arr[2])) {

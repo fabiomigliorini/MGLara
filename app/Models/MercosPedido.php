@@ -9,6 +9,7 @@ class MercosPedido extends MGModel
     protected $primaryKey = 'codmercospedido';
     protected $fillable = [
         'pedidoid',
+        'faturamentoid',
         'numero',
         'condicaopagamento',
         'enderecoentrega',

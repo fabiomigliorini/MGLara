@@ -93,6 +93,9 @@ class MercosPedido {
         $n->codestoquelocal = env('MERCOS_CODESTOQUELOCAL');
         $n->codfilial = $n->EstoqueLocal->codfilial;
         $n->lancamento = $ped->data_criacao;
+        if (empty($n->lancamento)) {
+            $n->lancamento = $ped->ultima_alteracao;
+        }
         $n->codnaturezaoperacao = env('MERCOS_CODNATUREZAOPERACAO');
         $n->codoperacao = $n->NaturezaOperacao->codoperacao;
         $n->codnegociostatus = 1;
@@ -164,6 +167,9 @@ class MercosPedido {
                     'contato' => $ped->contato_nome,
                     'notafiscal' => 0,
                 ]);
+                if (empty($p->fantasia)) {
+                    $p->fantasia = $p->pessoa;
+                }
                 $p->save();
                 // TODO: Buscar dados no Mercos via get para complementar email e telefone
             }
@@ -211,6 +217,41 @@ class MercosPedido {
         $mpi->codnegocioprodutobarra = $npb->codnegocioprodutobarra;
         $mpi->save();
         return $mpi;
+    }
+
+    public static function exportaFaturamento (Negocio $n)
+    {
+        $ret = [];
+        if ($n->codnegociostatus != 2) {
+            return $ret;
+        }
+        $api = new MercosApi();
+        foreach ($n->MercosPedidoS as $mp) {
+            if (empty($mp->faturamentoid)) {
+                $api->postFaturamento(
+                    $mp->pedidoid,
+                    $n->valortotal,
+                    $n->lancamento,
+                    null,
+                    'Negocio ' . formataCodigo($n->codnegocio)
+                );
+                $mp->faturamentoid = $api->headers['meuspedidosid'];
+                $mp->save();
+                $ret[] = $mp->faturamentoid;
+            } else {
+                $api->putFaturamento(
+                    $mp->faturamentoid,
+                    $mp->pedidoid,
+                    $n->valortotal,
+                    $n->lancamento,
+                    null,
+                    'Negocio ' . formataCodigo($n->codnegocio)
+                );
+                $ret[] = $mp->faturamentoid;
+            }
+        }
+        return $ret;
+        dd($n);
     }
 
 }

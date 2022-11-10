@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Library\Mercos\MercosProduto;
 use MGLara\Library\Mercos\MercosPedido;
+use MGLara\Models\Negocio;
 
 class MercosController extends Controller
 {
@@ -35,4 +36,10 @@ class MercosController extends Controller
         return response()->json($retorno);
     }
 
+    public function exportaFaturamento(Request $request, $codnegocio)
+    {
+        $n = Negocio::findOrFail($codnegocio);
+        $retorno = MercosPedido::exportaFaturamento($n);
+        return response()->json($retorno);
+    }
 }

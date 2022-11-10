@@ -365,4 +365,60 @@ class MercosApi {
         return $this->responseObject;
     }
 
+    public function postFaturamento (
+        $pedido_id,
+        $valor_faturado,
+        Carbon $data_faturamento,
+        $numero_nf,
+        $informacoes_adicionais)
+    {
+        // monta Array com dados
+        $data = (object) [
+            "pedido_id" => $pedido_id,
+            "valor_faturado" => $valor_faturado,
+            "data_faturamento" => $data_faturamento->format('Y-m-d'),
+            "numero_nf" => $numero_nf,
+            "informacoes_adicionais" => $informacoes_adicionais,
+        ];
+
+        // monta URL
+        $url = $this->url . "api/v1/faturamento";
+
+        // aborta caso erro no put
+        if (!$this->post($url, $data)) {
+            throw new \Exception($this->response, 1);
+        }
+
+        return $this->status == 201;
+    }
+
+    public function putFaturamento (
+        $faturamento_id,
+        $pedido_id,
+        $valor_faturado,
+        Carbon $data_faturamento,
+        $numero_nf,
+        $informacoes_adicionais)
+    {
+        // monta Array com dados
+        $data = (object) [
+            "pedido_id" => $pedido_id,
+            "valor_faturado" => $valor_faturado,
+            "data_faturamento" => $data_faturamento->format('Y-m-d'),
+            "numero_nf" => $numero_nf,
+            "informacoes_adicionais" => $informacoes_adicionais,
+        ];
+
+        // monta URL
+        $url = $this->url . "api/v1/faturamento/{$faturamento_id}";
+
+        // aborta caso erro no put
+        if (!$this->put($url, $data)) {
+            throw new \Exception($this->response, 1);
+        }
+
+        return $this->status == 201;
+    }
+
+
 }
