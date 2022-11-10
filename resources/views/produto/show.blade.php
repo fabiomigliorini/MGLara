@@ -322,7 +322,8 @@ function criarMercosProduto(codproduto, codprodutovariacao, codprodutoembalagem)
         if (result) {
             $.ajax({
                 type: 'GET',
-                url: baseUrl + '/produto/' + codproduto + '/mercos/exporta',
+                //url: baseUrl + '/produto/' + codproduto + '/mercos/exporta',
+                url: baseUrl + '/mercos/produto/' + codproduto + '/exporta',
                 data: {
                     codprodutovariacao: codprodutovariacao,
                     codprodutoembalagem: codprodutoembalagem

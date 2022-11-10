@@ -12,16 +12,16 @@ use Illuminate\Support\Facades\DB;
  * @property  numeric(14,3)                  $valorunitario                      NOT NULL
  * @property  numeric(14,2)                  $valortotal                         NOT NULL
  * @property  bigint                         $codprodutobarra                    NOT NULL
- * @property  timestamp                      $alteracao                          
- * @property  bigint                         $codusuarioalteracao                
- * @property  timestamp                      $criacao                            
- * @property  bigint                         $codusuariocriacao                  
- * @property  bigint                         $codnegocioprodutobarradevolucao    
+ * @property  timestamp                      $alteracao
+ * @property  bigint                         $codusuarioalteracao
+ * @property  timestamp                      $criacao
+ * @property  bigint                         $codusuariocriacao
+ * @property  bigint                         $codnegocioprodutobarradevolucao
  *
  * Chaves Estrangeiras
- * @property  Negocio                        $Negocio                       
- * @property  NegocioProdutoBarra            $NegocioProdutoBarra           
- * @property  ProdutoBarra                   $ProdutoBarra                  
+ * @property  Negocio                        $Negocio
+ * @property  NegocioProdutoBarra            $NegocioProdutoBarra
+ * @property  ProdutoBarra                   $ProdutoBarra
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
  *
@@ -75,11 +75,11 @@ class NegocioProdutoBarra extends MGModel
     {
         return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
     }
-    
+
     public function NegocioProdutoBarraDevolucao()
     {
         return $this->belongsTo(NegocioProdutoBarra::class, 'codnegocioprodutobarra', 'codnegocioprodutobarradevolucao');
-    }    
+    }
 
 
     // Tabelas Filhas
@@ -93,8 +93,13 @@ class NegocioProdutoBarra extends MGModel
         return $this->hasMany(CupomFiscalProdutoBarra::class, 'codnegocioprodutobarra', 'codnegocioprodutobarra');
     }
 
+    public function MercosPedidoItemS()
+    {
+        return $this->hasMany(MercosPedidoItem::class, 'codnegocioprodutobarra', 'codnegocioprodutobarra');
+    }
+
     /**
-     * 
+     *
      * @return EstoqueMovimento[]
      */
     public function EstoqueMovimentoS()
@@ -111,30 +116,30 @@ class NegocioProdutoBarra extends MGModel
     {
         return $this->hasMany(NegocioProdutoBarra::class, 'codnegocioprodutobarradevolucao', 'codnegocioprodutobarra');
     }
-    
+
     public static function search($parametros, $registros = 20)
     {
         $query = NegocioProdutoBarra::orderBy('tblnegocio.lancamento', 'DESC');
-        
+
         $query = $query->join('tblnegocio', function($join) use ($parametros) {
             $join->on('tblnegocio.codnegocio', '=', 'tblnegocioprodutobarra.codnegocio');
         });
-        
+
         if (!empty($parametros['negocio_codpessoa']))
             $query = $query->where('tblnegocio.codpessoa', '=', $parametros['negocio_codpessoa']);
-        
+
         if (!empty($parametros['negocio_codnaturezaoperacao']))
             $query = $query->where('tblnegocio.codnaturezaoperacao', '=', $parametros['negocio_codnaturezaoperacao']);
-        
+
         if (!empty($parametros['negocio_codfilial']))
             $query = $query->where('tblnegocio.codfilial', '=', $parametros['negocio_codfilial']);
-        
+
         if (!empty($parametros['negocio_lancamento_de']))
             $query = $query->where('tblnegocio.lancamento', '>=', $parametros['negocio_lancamento_de']);
-        
+
         if (!empty($parametros['negocio_lancamento_ate']))
             $query = $query->where('tblnegocio.lancamento', '<=', $parametros['negocio_lancamento_ate']);
-        
+
         if (!empty($parametros['negocio_codproduto']))
         {
             $query = $query->join('tblprodutobarra', function($join) use ($parametros) {
@@ -148,10 +153,10 @@ class NegocioProdutoBarra extends MGModel
 
         if (!empty($parametros['negocio_codprodutovariacao']))
             $query->where('tblprodutovariacao.codprodutovariacao', '=', $parametros['negocio_codprodutovariacao']);
-        
+
         //dd($query->toSql());
         return $query->paginate($registros);
-        
+
     }
-    
+
 }

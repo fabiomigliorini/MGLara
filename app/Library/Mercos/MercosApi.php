@@ -21,7 +21,7 @@ class MercosApi {
 
     public $token;
 
-    protected $response;
+    public $response;
     public $responseObject;
     protected $status;
 
@@ -338,6 +338,31 @@ class MercosApi {
         }
 
         return $this->status == 201;
+    }
+
+    public function getPedidos (Carbon $alterado_apos)
+    {
+
+        $data = [];
+        if (!empty($alterado_apos)) {
+            $alt = clone $alterado_apos;
+            $alt->setTimezone('America/Sao_Paulo');
+            $data ['alterado_apos'] = $alterado_apos->format('Y-m-d H:i:s');
+        }
+
+        // monta URL
+        $url = $this->url . "api/v1/pedidos";
+
+        // aborta caso erro no put
+        if (!$this->get($url, $data)) {
+            throw new \Exception($this->response, 1);
+        }
+
+        if ($this->status != 200) {
+            return false;
+        }
+
+        return $this->responseObject;
     }
 
 }

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use MGLara\Models\MercosProduto as MercosProdutoModel;
 use MGLara\Models\MercosProdutoImagem;
 use MGLara\Models\Produto;
+use MGLara\Models\ProdutoBarra;
 use MGLara\Models\ProdutoVariacao;
 use MGLara\Models\ProdutoEmbalagem;
 use MGLara\Models\ProdutoImagem;
@@ -244,5 +245,57 @@ class MercosProduto {
         }
         return $ret;
     }
+
+    public static function procurarProdutoBarra($id, $codigo)
+    {
+        $mp = static::procurarPeloId($id);
+        if (empty($mp)) {
+            $mp = static::criarPeloCodigo($id, $codigo);
+        }
+        $qry = ProdutoBarra::where([
+            'codproduto' => $mp->codproduto,
+            'codprodutovariacao' => $mp->codprodutovariacao,
+        ]);
+        if (empty($mp->codprodutoembalagem)) {
+            $qry->whereNull('codprodutoembalagem');
+        } else {
+            $qry->where('codprodutoembalagem', $mp->codprodutoembalagem);
+        }
+        return $qry->first();
+    }
+
+    public static function procurarPeloId ($id)
+    {
+        $mp = MercosProdutoModel::where([
+            'produtoid' => $id
+        ])->first();
+        return $mp;
+    }
+
+    public static function criarPeloCodigo ($id, $codigo)
+    {
+        $arr = explode('-', $codigo);
+        $codproduto = null;
+        if (isset($arr[0])) {
+            $codproduto = numeroLimpo($arr[0]);
+        }
+        $codprodutovariacao = null;
+        if (isset($arr[1])) {
+            $codprodutovariacao = numeroLimpo($arr[1]);
+        }
+        $codprodutoembalagem = null;
+        if (isset($arr[2])) {
+            $codprodutoembalagem = numeroLimpo($arr[2]);
+        }
+        $mp = new MercosProdutoModel([
+            'produtoid' => $id,
+            'codproduto' => $codproduto,
+            'codprodutovariacao' => $codprodutovariacao,
+            'codprodutoembalagem' => $codprodutoembalagem,
+        ]);
+        $mp->save();
+        return $mp;
+    }
+
 
 }

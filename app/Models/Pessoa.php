@@ -285,7 +285,7 @@ class Pessoa extends MGModel
     {
         return $this->hasMany(MetaFilialPessoa::class, 'codpessoa', 'codpessoa');
     }
-    
+
     public function CobrancaHistoricoS()
     {
         return $this->hasMany(CobrancaHistorico::class, 'codpessoa', 'codpessoa');
@@ -349,6 +349,11 @@ class Pessoa extends MGModel
     public function ChequeS()
     {
         return $this->hasMany(Cheque::class, 'codpessoa', 'codpessoa');
+    }
+
+    public function MercosClienteS()
+    {
+        return $this->hasMany(MercosCliente::class, 'codpessoa', 'codpessoa');
     }
 
     public static function getNotaFiscalOpcoes()

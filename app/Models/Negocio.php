@@ -69,12 +69,19 @@ class Negocio extends MGModel
         'valoraprazo',
         'valoravista',
         'codestoquelocal',
+        'codestoquelocaldestino',
+        'recebimento',
+        'codusuariorecebimento',
+        'cpf',
+        'valorfrete',
+        'codpessoatransportador',
     ];
     protected $dates = [
         'lancamento',
         'acertoentrega',
         'alteracao',
         'criacao',
+        'recebimento',
     ];
 
     // Chaves Estrangeiras
@@ -108,6 +115,11 @@ class Negocio extends MGModel
         return $this->belongsTo(Pessoa::class, 'codpessoavendedor', 'codpessoa');
     }
 
+    public function PessoaTransportador()
+    {
+        return $this->belongsTo(Pessoa::class, 'codpessoatransportador', 'codpessoa');
+    }
+
     public function Usuario()
     {
         return $this->belongsTo(Usuario::class, 'codusuario', 'codusuario');
@@ -128,7 +140,17 @@ class Negocio extends MGModel
         return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
     }
 
+    public function UsuarioRecebimento()
+    {
+        return $this->belongsTo(Usuario::class, 'codusuariorecebimento', 'codusuario');
+    }
+
     public function EstoqueLocal()
+    {
+        return $this->belongsTo(EstoqueLocal::class, 'codestoquelocal', 'codestoquelocal');
+    }
+
+    public function EstoqueLocalDestino()
     {
         return $this->belongsTo(EstoqueLocal::class, 'codestoquelocal', 'codestoquelocal');
     }
@@ -142,6 +164,11 @@ class Negocio extends MGModel
     public function NegocioProdutoBarraS()
     {
         return $this->hasMany(NegocioProdutoBarra::class, 'codnegocio', 'codnegocio');
+    }
+
+    public function MercosPedidos()
+    {
+        return $this->hasMany(MercosPedido::class, 'codnegocio', 'codnegocio');
     }
 
     public function validate()
