@@ -14,10 +14,12 @@ class MercosPedido extends MGModel
         'enderecoentrega',
         'codnegocio',
         'codmercoscliente',
+        'ultimaalteracaomercos',
     ];
     protected $dates = [
-        'alteracao',
+        'ultimaalteracaomercos',
         'criacao',
+        'alteracao',
     ];
 
     // Chaves Estrangeiras

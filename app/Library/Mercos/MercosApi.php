@@ -299,7 +299,7 @@ class MercosApi {
         if (!empty($alterado_apos)) {
             $alt = clone $alterado_apos;
             $alt->setTimezone('America/Sao_Paulo');
-            $data ['alterado_apos'] = $alterado_apos->format('Y-m-d H:i:s');
+            $data ['alterado_apos'] = $alt->format('Y-m-d H:i:s');
         }
 
         // monta URL
@@ -347,7 +347,7 @@ class MercosApi {
         if (!empty($alterado_apos)) {
             $alt = clone $alterado_apos;
             $alt->setTimezone('America/Sao_Paulo');
-            $data ['alterado_apos'] = $alterado_apos->format('Y-m-d H:i:s');
+            $data ['alterado_apos'] = $alt->format('Y-m-d H:i:s');
         }
 
         // monta URL

@@ -15,8 +15,18 @@ use MGLara\Models\NegocioProdutoBarra;
 
 class MercosPedido {
 
-    public static function importaPedidoApos (Carbon $alterado_apos)
+    public static function importaPedidoApos ($alterado_apos)
     {
+
+        // busca ultima alteracao importada do mercos
+        if (! ($alterado_apos instanceof Carbon)) {
+            $alterado_apos = MercosPedidoModel::max('ultimaalteracaomercos');
+            if ($alterado_apos != null) {
+                $alterado_apos = Carbon::parse($alterado_apos)->addSeconds(1);
+            } else {
+                $alterado_apos = Carbon::now()->subYear(1);
+            }
+        }
 
         $importados = 0;
         $erros = 0;
@@ -26,12 +36,16 @@ class MercosPedido {
         $peds = $api->getPedidos($alterado_apos);
         foreach ($peds as $ped) {
             // if (empty($ped->)) { continue; }
-            $retParse = static::parsePedido ($ped);
-            if ($retParse) {
+            $mp = static::parsePedido ($ped);
+            if ($mp) {
                 $importados++;
+                if ($mp->ultimaalteracaomercos > $ate) {
+                    $ate = $mp->ultimaalteracaomercos;
+                }
             } else {
                 $erros++;
             }
+
 
         }
         $ret = [
@@ -50,6 +64,7 @@ class MercosPedido {
         ]);
         $mp->numero = $ped->numero;
         $mp->condicaopagamento = $ped->condicao_pagamento;
+        $mp->ultimaalteracaomercos = Carbon::createFromFormat('Y-m-d H:i:s', $ped->ultima_alteracao, 'America/Sao_Paulo')->setTimezone('America/Cuiaba');
         $ee = $ped->endereco_entrega;
         $end = '';
         if (!empty($ee->endereco)) {

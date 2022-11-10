@@ -28,7 +28,9 @@ class MercosController extends Controller
 
     public function importaPedidoApos (Request $request, $alterado_apos)
     {
-        $alterado_apos = Carbon::createFromFormat('Y-m-d H:i:s', $alterado_apos);
+        if ($alterado_apos != 'ultima') {
+            $alterado_apos = Carbon::createFromFormat('Y-m-d H:i:s', $alterado_apos);
+        }
         $retorno = MercosPedido::importaPedidoApos($alterado_apos);
         return response()->json($retorno);
     }
