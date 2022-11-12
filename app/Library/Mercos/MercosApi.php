@@ -138,9 +138,6 @@ class MercosApi {
             if ($this->status == 429) {
                 $segundos = isset($this->headers['retry-after'])?$this->headers['retry-after']:5;
                 sleep($segundos);
-                // dd("esperou {$this->headers['retry-after']}");
-                // dd($this->responseObject);
-                // dd($this);
             }
 
         // Enquanto nao der Throttle

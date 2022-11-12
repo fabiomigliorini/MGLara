@@ -73,7 +73,6 @@ class MercosProduto {
 
         if (!empty($codprodutoembalagem)) {
             $pe = ProdutoEmbalagem::findOrFail($codprodutoembalagem);
-            // dd($pe);
             $nome .= ' C/' . formataNumero($pe->quantidade, 0);
             if (!empty($pe->preco)) {
                 $preco_tabela = $pe->preco;

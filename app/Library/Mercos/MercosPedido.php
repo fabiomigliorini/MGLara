@@ -251,7 +251,6 @@ class MercosPedido {
             }
         }
         return $ret;
-        dd($n);
     }
 
 }
