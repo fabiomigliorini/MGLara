@@ -102,40 +102,55 @@ class MercosApi {
         curl_setopt($ch, CURLOPT_TIMEOUT, 90);
 
         // Executa
-        $this->error = null;
-        $this->errno = null;
-        $this->status = null;
-        $this->headers = null;
-        $this->response = curl_exec($ch);
-        if ($this->response === false) {
-            $this->error = curl_error($ch);
-            $this->errno = curl_errno($ch);
-        } else {
-            $this->status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        }
-        $headerSize = curl_getinfo($ch , CURLINFO_HEADER_SIZE);
-        $headerStr = substr($this->response , 0 , $headerSize );
-        $this->headers = $this->parseHeader($headerStr);
+        do {
+            $this->error = null;
+            $this->errno = null;
+            $this->status = null;
+            $this->headers = null;
+            $this->response = curl_exec($ch);
+            if ($this->response === false) {
+                $this->error = curl_error($ch);
+                $this->errno = curl_errno($ch);
+            } else {
+                $this->status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            }
+            $headerSize = curl_getinfo($ch , CURLINFO_HEADER_SIZE);
+
+            $headerStr = substr($this->response , 0 , $headerSize );
+            $this->headers = $this->parseHeader($headerStr);
+
+            // Loga Reotrno
+            if ($this->debug) {
+                Log::debug(class_basename($this) . " - $this->status - $this->response");
+            }
+
+            // Limpa responseObject
+            $this->responseObject = null;
+            $ret = true;
+
+            // decodifica Json
+            if (!empty($this->response)) {
+                $bodyStr = substr($this->response, $headerSize);
+                $this->responseObject = json_decode($bodyStr);
+            }
+
+            // Caso de Throttle espera os segundos que o
+            if ($this->status == 429) {
+                $segundos = isset($this->headers['retry-after'])?$this->headers['retry-after']:5;
+                sleep($segundos);
+                // dd("esperou {$this->headers['retry-after']}");
+                // dd($this->responseObject);
+                // dd($this);
+            }
+
+        // Enquanto nao der Throttle
+        } while ($this->status == 429);
+
         curl_close($ch);
-
-        // Loga Reotrno
-        if ($this->debug) {
-            Log::debug(class_basename($this) . " - $this->status - $this->response");
-        }
-
-        // Limpa responseObject
-        $this->responseObject = null;
-        $ret = true;
 
         // Se nao retornou 200 retorna erro
         if (!in_array($this->status, [200, 201])) {
             $ret = false;
-        }
-
-        // decodifica Json
-        if (!empty($this->response)) {
-            $bodyStr = substr($this->response, $headerSize);
-            $this->responseObject = json_decode($bodyStr);
         }
 
         // retorna

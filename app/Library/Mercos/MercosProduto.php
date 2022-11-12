@@ -225,7 +225,6 @@ class MercosProduto {
         if ($qtd > 0) {
             return;
         }
-        sleep(5);
         $api = new MercosApi();
         $arquivo = './public/imagens/' . $pi->Imagem->arquivo;
         $data = file_get_contents($arquivo);
