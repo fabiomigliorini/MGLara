@@ -131,7 +131,8 @@ if(!function_exists('formataPorMascara')) {
 
 if(!function_exists('numeroLimpo')) {
     function numeroLimpo($string) {
-        return preg_replace('/[^0-9\s]/', '', $string);
+        return preg_replace('/\D/', '', $string);
+        // return preg_replace('/[^0-9\s]/', '', $string);
     }
 }
 

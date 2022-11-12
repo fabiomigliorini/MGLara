@@ -10,8 +10,10 @@ class MercosCliente extends MGModel
     protected $fillable = [
         'clienteid',
         'codpessoa',
+        'ultimaalteracaomercos',
     ];
     protected $dates = [
+        'ultimaalteracaomercos',
         'alteracao',
         'criacao',
     ];

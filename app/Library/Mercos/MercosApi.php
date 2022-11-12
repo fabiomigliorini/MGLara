@@ -420,5 +420,30 @@ class MercosApi {
         return $this->status == 201;
     }
 
+    public function getClientes (Carbon $alterado_apos)
+    {
+
+        $data = [];
+        if (!empty($alterado_apos)) {
+            $alt = clone $alterado_apos;
+            $alt->setTimezone('America/Sao_Paulo');
+            $data ['alterado_apos'] = $alt->format('Y-m-d H:i:s');
+        }
+
+        // monta URL
+        $url = $this->url . "api/v1/clientes";
+
+        // aborta caso erro no put
+        if (!$this->get($url, $data)) {
+            throw new \Exception($this->response, 1);
+        }
+
+        if ($this->status != 200) {
+            return false;
+        }
+
+        return $this->responseObject;
+    }
+
 
 }

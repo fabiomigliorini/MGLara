@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Library\Mercos\MercosProduto;
 use MGLara\Library\Mercos\MercosPedido;
+use MGLara\Library\Mercos\MercosCliente;
 use MGLara\Models\Negocio;
 
 class MercosController extends Controller
@@ -42,4 +43,15 @@ class MercosController extends Controller
         $retorno = MercosPedido::exportaFaturamento($n);
         return response()->json($retorno);
     }
+
+    public function importaClienteApos (Request $request, $alterado_apos)
+    {
+        if ($alterado_apos != 'ultima') {
+            $alterado_apos = Carbon::createFromFormat('Y-m-d H:i:s', $alterado_apos);
+        }
+        $retorno = MercosCliente::importaClienteApos($alterado_apos);
+        return response()->json($retorno);
+    }
+
+
 }
