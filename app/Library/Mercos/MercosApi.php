@@ -38,27 +38,27 @@ class MercosApi {
         // $this->languagePTBR = (!empty($language_ptbr))?$language_ptbr:env('MERCOS_LANGUAGE_PTBR');
     }
 
-    public function get($url, $data = null, $http_header = null, $data_as_json = true)
+    public function get($url, $data = [], $http_header = null, $data_as_json = true)
     {
         return $this->curl('GET', $url, $data, $http_header, $data_as_json);
     }
 
-    public function post($url, $data = null, $http_header = null, $data_as_json = true)
+    public function post($url, $data = [], $http_header = null, $data_as_json = true)
     {
         return $this->curl('POST', $url, $data, $http_header, $data_as_json);
     }
 
-    public function put($url, $data = null, $http_header = null, $data_as_json = true)
+    public function put($url, $data = [], $http_header = null, $data_as_json = true)
     {
         return $this->curl('PUT', $url, $data, $http_header, $data_as_json);
     }
 
-    public function delete($url, $data = null, $http_header = null, $data_as_json = true)
+    public function delete($url, $data = [], $http_header = null, $data_as_json = true)
     {
         return $this->curl('DELETE', $url, $data, $http_header, $data_as_json);
     }
 
-    public function curl($request, $url, $data = null, $http_header = null, $data_as_json = true)
+    public function curl($request, $url, $data = [], $http_header = null, $data_as_json = true)
     {
         // Padrao de autorizacao como Bearer $this->token
         if (empty($http_header)) {
@@ -74,8 +74,8 @@ class MercosApi {
         if (!empty($data)) {
             $data_string = ($data_as_json)?json_encode($data):$data;
         } else {
-            $url = $endpoint . '?' . http_build_query($data);
-            curl_setopt($ch, CURLOPT_URL, $url);
+            $url = $url . '?' . http_build_query($data);
+            // curl_setopt($ch, CURLOPT_URL, $url);
         }
 
         // Loga Execucao
@@ -447,6 +447,24 @@ class MercosApi {
 
         // aborta caso erro no put
         if (!$this->get($url, $data)) {
+            throw new \Exception($this->response, 1);
+        }
+
+        if ($this->status != 200) {
+            return false;
+        }
+
+        return $this->responseObject;
+    }
+
+    public function getCliente ($cliente_id)
+    {
+
+        // monta URL
+        $url = $this->url . "api/v1/clientes/{$cliente_id}";
+
+        // aborta caso erro no put
+        if (!$this->get($url)) {
             throw new \Exception($this->response, 1);
         }
 

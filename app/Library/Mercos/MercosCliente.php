@@ -57,6 +57,14 @@ class MercosCliente {
         return $ret;
     }
 
+    public static function importaCliente ($cliente_id)
+    {
+        $api = new MercosApi();
+        $cli = $api->getCliente($cliente_id);
+        $mp = static::parseCliente ($cli);
+        return $mp;
+    }
+
     public static function buscaPessoa ($cnpj, $ie)
     {
         if (empty($cnpj)) {
@@ -219,6 +227,19 @@ class MercosCliente {
 
         DB::commit();
 
+        return $mc;
+    }
+
+    static function buscaOuCriaPeloId ($cliente_id)
+    {
+        // se já cadastrado
+        $mc = MercosClienteModel::where([
+            'clienteid' => $cliente_id,
+        ])->first();
+        // se nnao cadastrado tenta importar
+        if ($mc == null) {
+            $mc = static::importaCliente($cliente_id);
+        }
         return $mc;
     }
 

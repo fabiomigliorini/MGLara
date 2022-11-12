@@ -35,7 +35,6 @@ class MercosPedido {
         $api = new MercosApi();
         $peds = $api->getPedidos($alterado_apos);
         foreach ($peds as $ped) {
-            // if (empty($ped->)) { continue; }
             $mp = static::parsePedido ($ped);
             if ($mp) {
                 $importados++;
@@ -45,8 +44,6 @@ class MercosPedido {
             } else {
                 $erros++;
             }
-
-
         }
         $ret = [
             'importados'=> $importados,
@@ -103,79 +100,7 @@ class MercosPedido {
         $n->codusuariocriacao = env('MERCOS_CODUSUARIO');
         $n->codusuarioalteracao = env('MERCOS_CODUSUARIO');
 
-        $mc = MercosClienteModel::firstOrNew([
-            'clienteid' => $ped->cliente_id,
-        ]);
-
-        if (empty($mc->codpessoa) && empty($ped->cliente_cnpj)) {
-            $mc->codpessoa = 1; // CONSUMIDOR
-            $mc->save();
-        } elseif (empty($mc->codpessoa)) {
-            $sql = "
-                select codpessoa
-                from tblpessoa p
-                where p.cnpj = :cnpj
-            ";
-            $params = [
-                'cnpj' => $ped->cliente_cnpj
-            ];
-            $ie = numeroLimpo($ped->cliente_inscricao_estadual);
-            if (!empty($ie)) {
-                $sql .= " and regexp_replace(p.ie, '[^0-9]+', '', 'g')::numeric = :ie ";
-                $params['ie'] = $ie;
-            } else {
-                $sql .= " and p.ie is null ";
-            }
-            $ps = DB::select($sql, $params);
-            if (isset($ps[0])) {
-                $p = Pessoa::findOrFail($ps[0]->codpessoa);
-            } else {
-                $sql = "
-                    select c.codcidade
-                    from tblcidade c
-                    inner join tblestado e on (e.codestado = c.codestado)
-                    where c.cidade ilike :cidade
-                    and e.sigla = :estado
-                ";
-                $cidade = DB::select($sql, [
-                    'cidade' => removeAcentos($ped->cliente_cidade),
-                    'estado' => removeAcentos($ped->cliente_estado)
-                ]);
-                if (isset($cidade[0])) {
-                    $codcidade = $cidade[0]->codcidade;
-                } else {
-                    $codcidade = env('CODCIDADE_SINOP');
-                }
-                $p = new Pessoa([
-                    'pessoa' => $ped->cliente_razao_social,
-                    'fantasia' => $ped->cliente_nome_fantasia,
-                    'cnpj' => $ped->cliente_cnpj,
-                    'ie' => $ped->cliente_inscricao_estadual,
-                    'endereco' => $ped->cliente_rua,
-                    'enderecocobranca' => $ped->cliente_rua,
-                    'numero' => $ped->cliente_numero,
-                    'numerocobranca' => $ped->cliente_numero,
-                    'complemento' => $ped->cliente_complemento,
-                    'complementocobranca' => $ped->cliente_complemento,
-                    'cep' => $ped->cliente_cep,
-                    'cepcobranca' => $ped->cliente_cep,
-                    'bairro' => $ped->cliente_bairro,
-                    'bairrocobranca' => $ped->cliente_bairro,
-                    'bairro' => $ped->cliente_bairro,
-                    'codcidade' => $codcidade,
-                    'codcidadecobranca' => $codcidade,
-                    'contato' => $ped->contato_nome,
-                    'notafiscal' => 0,
-                ]);
-                if (empty($p->fantasia)) {
-                    $p->fantasia = $p->pessoa;
-                }
-                $p->save();
-                // TODO: Buscar dados no Mercos via get para complementar email e telefone
-            }
-            $mc->codpessoa = $p->codpessoa;
-            $mc->save();
-        }
+        $mc = MercosCliente::buscaOuCriaPeloId($ped->cliente_id);
         $n->codpessoa = $mc->codpessoa;
         // $n->valortotal = $ped->total;
         $n->valorfrete = $ped->valor_frete;
