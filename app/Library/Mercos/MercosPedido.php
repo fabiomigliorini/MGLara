@@ -127,6 +127,9 @@ class MercosPedido {
         if (!empty($mpi->codnegocioprodutobarra)) {
             return $mpi;
         }
+        if ($item->excluido) {
+            return;
+        }
         $pb = MercosProduto::procurarProdutoBarra($item->produto_id, $item->produto_codigo);
         if (!$pb) {
             return false;
