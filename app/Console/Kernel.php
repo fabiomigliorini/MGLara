@@ -30,7 +30,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('estoque:calcula-estatisticas')->dailyAt('00:00');
         $schedule->command('cache:clear')->dailyAt('01:00');
-        $schedule->command('magazord:sincroniza-precos')->hourly();
-        $schedule->command('magazord:sincroniza-saldos')->hourly();
+        // $schedule->command('magazord:sincroniza-precos')->hourly();
+        // $schedule->command('magazord:sincroniza-saldos')->hourly();
+        $schedule->command('mercos:sincroniza-produtos')->everyFiveMinutes();
     }
 }
