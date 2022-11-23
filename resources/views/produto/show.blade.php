@@ -337,7 +337,11 @@ function criarMercosProduto(codproduto, codprodutovariacao, codprodutoembalagem)
                 $('.btnMercos').prop('disabled', false);
                 $('#lblSincronizandoMercos').hide();
                 if(data.retorno === true) {
-                    var mensagem = '<strong class="text-success">Exportado para Mercos com o ID '+data.produtoid+'</strong>';
+                    if (data.inativo === null) {
+                        var mensagem = '<strong class="text-success">Exportado para Mercos com o ID '+data.produtoid+'</strong>';
+                    } else {
+                        var mensagem = '<strong class="text-danger">O Produto '+data.produtoid+' foi excluído no Mercos! Inativando De/Para de Integração!</strong>';
+                    }
                 } else {
                     var mensagem = '<strong class="text-danger">Falha na exportação para Mercos</strong>';
                 }

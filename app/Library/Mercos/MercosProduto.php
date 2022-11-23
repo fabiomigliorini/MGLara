@@ -28,7 +28,7 @@ class MercosProduto {
         $qry = MercosProdutoModel::where([
             'codproduto' => $codproduto,
             'codprodutovariacao' => $codprodutovariacao,
-        ]);
+        ])->whereNull('inativo');
         if (!empty($codprodutoembalagem)) {
             $qry->where('codprodutoembalagem', $codprodutoembalagem);
         } else {
@@ -191,6 +191,10 @@ class MercosProduto {
         $mp->precoatualizado = $alt;
         $mp->saldoquantidade = $saldo_estoque;
         $mp->saldoquantidadeatualizado = $alt;
+        // Verifica se o produto foi excluido no mercos
+        if (($api->status == 412) && (empty($mp->inativo))) {
+            $mp->inativo = Carbon::now();
+        }
         $ret = $mp->save();
 
         // exporta imagem principal
@@ -205,10 +209,11 @@ class MercosProduto {
 
         // retorna
         return [
+            'codmercosproduto' => $mp->codmercosproduto,
             'codproduto' => $codproduto,
             'codprodutovariacao' => $codprodutovariacao,
             'codprodutoembalagem' => $codprodutoembalagem,
-            'codprodutoembalagem' => $codprodutoembalagem,
+            'inativo' => $mp->inativo,
             'produtoid' => $mp->produtoid,
             'retorno' => $ret,
         ];

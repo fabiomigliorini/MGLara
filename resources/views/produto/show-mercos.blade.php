@@ -1,5 +1,5 @@
 <?php
-$mps = $model->MercosProdutoS()->get();
+$mps = $model->MercosProdutoS()->whereNull('inativo')->get();
 ?>
 <!-- <a href="<?php echo url("produto/{$model->codproduto}/mercos");?>">Editar Integração com Mercos <span class="glyphicon glyphicon-pencil"></span></a> | -->
 <!-- <a href="#" id="btnMercosSincroniza">Sincronizar com Mercos <span class="glyphicon glyphicon-refresh"></span></a> -->

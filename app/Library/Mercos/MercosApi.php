@@ -23,7 +23,7 @@ class MercosApi {
 
     public $response;
     public $responseObject;
-    protected $status;
+    public $status;
 
     /**
      * Construtor
@@ -298,7 +298,9 @@ class MercosApi {
 
         // aborta caso erro no put
         if (!$this->put($url, $data)) {
-            throw new \Exception($this->response, 1);
+            if ($this->status != 412) {
+                throw new \Exception($this->response, 1);
+            }
         }
 
         return $this->status == 201;
