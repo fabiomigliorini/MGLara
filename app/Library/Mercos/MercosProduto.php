@@ -6,11 +6,6 @@ use \Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
-// use MGLara\Library\Magazord\MagazordBase;
-// use MGLara\Models\Marca;
-// use MGLara\Models\SecaoProduto;
-// use MGLara\Models\FamiliaProduto;
-// use MGLara\Models\GrupoProduto;
 use MGLara\Models\MercosProduto as MercosProdutoModel;
 use MGLara\Models\MercosProdutoImagem;
 use MGLara\Models\Produto;
@@ -22,6 +17,7 @@ use MGLara\Models\EstoqueLocalProdutoVariacao;
 
 class MercosProduto {
 
+    // Exporta Produto para o Mercos
     public static function exportaProduto ($codproduto, $codprodutovariacao, $codprodutoembalagem)
     {
 
@@ -230,6 +226,7 @@ class MercosProduto {
         ];
     }
 
+    // Exporta Imagem do Produto para o Mercos
     public static function exportaImagem($produtoid, $codprodutoimagem, $codmercosproduto, $ordem = 2)
     {
         $pi = ProdutoImagem::findOrFail($codprodutoimagem);
@@ -260,6 +257,7 @@ class MercosProduto {
         return $ret;
     }
 
+    // Tenta descobrir qual o codprodutobarra
     public static function procurarProdutoBarra($id, $codigo)
     {
         $mp = static::procurarPeloId($id);
@@ -281,6 +279,7 @@ class MercosProduto {
         return $qry->first();
     }
 
+    // carrega model Produto Pelo ID do Mercos
     public static function procurarPeloId ($id)
     {
         $mp = MercosProdutoModel::where([
@@ -289,6 +288,7 @@ class MercosProduto {
         return $mp;
     }
 
+    // Cria De/Para de Produto pelo Codigo
     public static function criarPeloCodigo ($id, $codigo)
     {
         $arr = explode('-', $codigo);
@@ -316,5 +316,89 @@ class MercosProduto {
         return $mp;
     }
 
+    // Sincroniza Listagem de Produtos pelo SQL Generico
+    public static function sincronizaPeloSql ($sql, $params = [])
+    {
+        $prods = DB::select($sql, $params);
+        foreach ($prods as $prod) {
+            static::exportaProduto (
+                $prod->codproduto,
+                $prod->codprodutovariacao,
+                $prod->codprodutoembalagem
+            );
+        }
+    }
+
+    // Inativa Produtos no Mercos que foram Inativados no MGLara
+    public static function sincronizaInativos()
+    {
+        $sql = '
+            select mp.codproduto, mp.codprodutovariacao, mp.codprodutoembalagem
+            from tblmercosproduto mp
+            inner join tblproduto p on (p.codproduto = mp.codproduto)
+            where mp.inativo is null
+            and p.inativo is not null
+            order by p.alteracao
+        ';
+        static::sincronizaPeloSql($sql);
+    }
+
+    // ALtera precos unitarios de produtos no mercos
+    public static function sincronizaPrecosUnitarios()
+    {
+        $sql = '
+            select mp.codproduto, mp.codprodutovariacao, mp.codprodutoembalagem
+            from tblmercosproduto mp
+            inner join tblproduto p on (p.codproduto = mp.codproduto)
+            where mp.inativo is null
+            and mp.codprodutoembalagem is null
+            and p.preco != mp.preco
+            order by p.alteracao
+        ';
+        static::sincronizaPeloSql($sql);
+    }
+
+    // Altera Precos de Embalagens no Mercos
+    public static function sincronizaPrecosEmbalagens()
+    {
+        $sql = '
+            select mp.codproduto, mp.codprodutovariacao, mp.codprodutoembalagem
+            from tblmercosproduto mp
+            inner join tblproduto p on (p.codproduto = mp.codproduto)
+            inner join tblprodutoembalagem pe on (pe.codprodutoembalagem = mp.codprodutoembalagem)
+            where mp.inativo is null
+            and round(coalesce(pe.preco, p.preco * pe.quantidade), 2) != mp.preco
+            order by p.alteracao
+        ';
+        static::sincronizaPeloSql($sql);
+    }
+
+    // Altera Estoque no Mercos
+    public static function sincronizaEstoque()
+    {
+        $sql = '
+            select mp.codproduto, mp.codprodutovariacao, mp.codprodutoembalagem, mp.saldoquantidade, floor(es.saldoquantidade / coalesce(pe.quantidade, 1))
+            from tblmercosproduto mp
+            inner join tblproduto p on (p.codproduto = mp.codproduto)
+            left join tblprodutoembalagem pe on (pe.codprodutoembalagem = mp.codprodutoembalagem)
+            inner join tblestoquelocalprodutovariacao elpv on (elpv.codestoquelocal = :codestoquelocal and elpv.codprodutovariacao = mp.codprodutovariacao)
+            inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = false)
+            where mp.inativo is null
+            and mp.saldoquantidade != floor(es.saldoquantidade / coalesce(pe.quantidade, 1))
+        ';
+        $params = [
+            'codestoquelocal' => env('MERCOS_CODESTOQUELOCAL')
+        ];
+        static::sincronizaPeloSql($sql, $params);
+    }
+
+    // Sincroniza Inativos/Precos/Estoque no Mercos
+    public static function sincroniza()
+    {
+        static::sincronizaInativos();
+        static::sincronizaPrecosUnitarios();
+        static::sincronizaPrecosEmbalagens();
+        static::sincronizaEstoque();
+    }
 
 }
