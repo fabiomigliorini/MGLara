@@ -32,6 +32,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('cache:clear')->dailyAt('01:00');
         // $schedule->command('magazord:sincroniza-precos')->hourly();
         // $schedule->command('magazord:sincroniza-saldos')->hourly();
-        $schedule->command('mercos:sincroniza-produtos')->everyFiveMinutes();
+	
+	// TODO: Descobrir pq nao roda por aqui - tive que colocar fixo no Crontab
+        //$schedule->command('mercos:sincroniza-produtos')->everyMinute();
     }
 }
