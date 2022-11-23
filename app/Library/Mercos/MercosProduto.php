@@ -111,7 +111,7 @@ class MercosProduto {
         }
         $grade_cores = null;
         $grade_tamanhos = null;
-        $excluido = false;
+        $excluido = (!empty($p->inativo));
         $ativo = true;
         // $categoria_id = null;
         $codigo_ncm = $p->Ncm->ncm;
@@ -192,7 +192,13 @@ class MercosProduto {
         $mp->saldoquantidade = $saldo_estoque;
         $mp->saldoquantidadeatualizado = $alt;
         // Verifica se o produto foi excluido no mercos
-        if (($api->status == 412) && (empty($mp->inativo))) {
+        if ($api->status == 412) {
+            $excluido = true;
+        } elseif (isset($api->responseObject->excluido)) {
+            $excluido = $api->responseObject->excluido;
+        }
+        // dd($api->response);
+        if (($excluido) && (empty($mp->inativo))) {
             $mp->inativo = Carbon::now();
         }
         $ret = $mp->save();
@@ -207,13 +213,18 @@ class MercosProduto {
             static::exportaImagem($mp->produtoid, $pipv->codprodutoimagem, $mp->codmercosproduto, 2);
         }
 
+        $inativo = null;
+        if ($mp->inativo instanceof Carbon) {
+            $inativo = $mp->inativo->toIso8601String();
+        }
+
         // retorna
         return [
             'codmercosproduto' => $mp->codmercosproduto,
             'codproduto' => $codproduto,
             'codprodutovariacao' => $codprodutovariacao,
             'codprodutoembalagem' => $codprodutoembalagem,
-            'inativo' => $mp->inativo,
+            'inativo' => $inativo,
             'produtoid' => $mp->produtoid,
             'retorno' => $ret,
         ];
