@@ -40,7 +40,7 @@ class MercosProduto {
         $codigo = formataCodigo($codproduto, 6);
         $codigo .= '-' . formataCodigo($codprodutovariacao, 8);
         $unidade = $p->UnidadeMedida->sigla;
-        $peso_bruto = (double) $p->peso;
+        $peso_bruto = round((double) $p->peso, 3);
         $largura = (double) $p->largura;
         $altura = (double) $p->altura;
         $comprimento = (double) $p->profundidade;
@@ -79,7 +79,7 @@ class MercosProduto {
             $unidade = $pe->UnidadeMedida->sigla;
             $saldo_estoque = floor($saldo_estoque / $pe->quantidade);
 
-            $peso_bruto = (double) $pe->peso;
+            $peso_bruto = round((double) $pe->peso, 3);
             $largura = (double) $pe->largura;
             $altura = (double) $pe->altura;
             $comprimento = (double) $pe->profundidade;
