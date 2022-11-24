@@ -365,7 +365,7 @@ class MercosApi {
         }
 
         // monta URL
-        $url = $this->url . "api/v1/pedidos";
+        $url = $this->url . "api/v2/pedidos";
 
         // aborta caso erro no put
         if (!$this->get($url, $data)) {

@@ -109,7 +109,7 @@ class MercosPedido {
         $mp->codnegocio = $n->codnegocio;
         $mp->save();
 
-        foreach ($ped->items as $item) {
+        foreach ($ped->itens as $item) {
             static::parsePedidoItem($item, $n, $mp);
         }
 
