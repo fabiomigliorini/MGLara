@@ -70,12 +70,14 @@ class Produto extends MGModel
         'peso',
         'altura',
         'largura',
-        'profundidade'
+        'profundidade',
+        'revisao'
     ];
     protected $dates = [
         'inativo',
         'alteracao',
         'criacao',
+        'revisao',
     ];
 
     public function getPrecocAttribute()

@@ -122,6 +122,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::patch('produto/{id}/transferir-variacao-salvar', 'ProdutoController@transferirVariacaoSalvar');
     Route::get('produto/{id}/transferir-variacao', 'ProdutoController@transferirVariacao');
     Route::resource('produto', 'ProdutoController');
+    Route::post('produto/{id}/revisado', 'ProdutoController@revisado');
 
     /* Magazord Produto */
     Route::get('produto/{id}/magazord/sincroniza', 'ProdutoController@sincronizaProdutoMagazord');

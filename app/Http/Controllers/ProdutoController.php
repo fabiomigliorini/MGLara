@@ -705,6 +705,21 @@ class ProdutoController extends Controller
         return view('produto.edit-magazord',  compact('model'));
     }
 
+    public function revisado($id, Request $request)
+    {
+        $model = Produto::findOrFail($id);
+        if ($request->revisado == 1) {
+            $model->update([
+                'revisao' => Carbon::now()
+            ]);
+        } else {
+            $model->update([
+                'revisao' => null
+            ]);
+        }
+        return $model->fresh();
+    }
+
     public function updateMagazord(Request $request, $id)
     {
 

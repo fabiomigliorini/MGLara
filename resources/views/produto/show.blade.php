@@ -154,6 +154,25 @@
                     @include('produto.show-embalagens')
                 </div>
 
+                <div id="div-revisao">
+                    <div class="panel <?php echo (empty($model->revisao))?'panel-danger':'panel-success' ?>">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    @if (empty($model->revisao))
+                                    Cadastro do produto nunca revisado!
+                                    @else
+                                    Ultima Revisão do cadastro <abbr title='{{$model->revisao->format("d/m/Y H:i:s")}}'>{{$model->revisao->diffForHumans()}}</abbr>!
+                                    <button type="button" class="btn btn-sm btn-danger pull-right" style="margin-right: 5px" onclick="btnDesmarcarRevisaoClick()">Desmarcar Revisão</button>
+                                    &nbsp
+                                    @endif
+                                    <button type="button" class="btn btn-sm btn-success pull-right" style="margin-right: 5px" onclick="btnRevisarClick()">Marcar Como Revisado</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 @if(!empty($model->descricaosite))
                   <div class="panel panel-default">
                     <div class="panel-body">
@@ -319,6 +338,38 @@
 
 @section('inscript')
 <script type="text/javascript">
+
+function postRevisado (revisado)
+{
+    $.ajax({
+        type: 'POST',
+        url: baseUrl + '/produto/{{$model->codproduto}}/revisado',
+        data: {
+            'revisado': revisado,
+            '_token': '{{ csrf_token() }}'
+        }
+    })
+    .done(function (data) {
+        recarregaDiv('div-revisao')
+    });
+
+}
+
+function btnRevisarClick() {
+    bootbox.confirm("Tem certeza que deseja Marcar o produto como revisado?", function(result) {
+        if (result) {
+            postRevisado(1);
+        }
+    });
+}
+
+function btnDesmarcarRevisaoClick() {
+    bootbox.confirm("Tem certeza que deseja desmarcar a data de revisão do produto?", function(result) {
+        if (result) {
+            postRevisado(0);
+        }
+    });
+}
 
 function criarMercosProduto(codproduto, codprodutovariacao, codprodutoembalagem)
 {
