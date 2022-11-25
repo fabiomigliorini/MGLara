@@ -343,32 +343,44 @@ class MercosProduto {
         static::sincronizaPeloSql($sql);
     }
 
-    // ALtera precos unitarios de produtos no mercos
-    public static function sincronizaPrecosUnitarios()
+    // ALtera precos unitarios e detalhes de produtos no mercos
+    public static function sincronizaProdutos()
     {
         $sql = '
-            select mp.codproduto, mp.codprodutovariacao, mp.codprodutoembalagem
+            select mp.codproduto, mp.codprodutovariacao, mp.codprodutoembalagem, p.alteracao, mp.alteracao
             from tblmercosproduto mp
             inner join tblproduto p on (p.codproduto = mp.codproduto)
             where mp.inativo is null
-            and mp.codprodutoembalagem is null
-            and p.preco != mp.preco
+            and p.alteracao > mp.alteracao
             order by p.alteracao
         ';
         static::sincronizaPeloSql($sql);
     }
 
-    // Altera Precos de Embalagens no Mercos
-    public static function sincronizaPrecosEmbalagens()
+    // Altera Precos e detalhes de Embalagens no Mercos
+    public static function sincronizaEmbalagens()
     {
         $sql = '
             select mp.codproduto, mp.codprodutovariacao, mp.codprodutoembalagem
             from tblmercosproduto mp
-            inner join tblproduto p on (p.codproduto = mp.codproduto)
             inner join tblprodutoembalagem pe on (pe.codprodutoembalagem = mp.codprodutoembalagem)
             where mp.inativo is null
-            and round(coalesce(pe.preco, p.preco * pe.quantidade), 2) != mp.preco
-            order by p.alteracao
+            and pe.alteracao > mp.alteracao
+            order by pe.alteracao
+        ';
+        static::sincronizaPeloSql($sql);
+    }
+
+    // Altera detalhes de Variacoes no Mercos
+    public static function sincronizaVariacoes()
+    {
+        $sql = '
+            select mp.codproduto, mp.codprodutovariacao, mp.codprodutoembalagem
+            from tblmercosproduto mp
+            inner join tblprodutovariacao pv on (pv.codprodutovariacao = mp.codprodutovariacao)
+            where mp.inativo is null
+            and pv.alteracao > mp.alteracao
+            order by pv.alteracao
         ';
         static::sincronizaPeloSql($sql);
     }
@@ -443,8 +455,9 @@ class MercosProduto {
     public static function sincroniza()
     {
         static::sincronizaInativos();
-        static::sincronizaPrecosUnitarios();
-        static::sincronizaPrecosEmbalagens();
+        static::sincronizaProdutos();
+        static::sincronizaEmbalagens();
+        static::sincronizaVariacoes();
         static::sincronizaImagensPrincipais();
         static::sincronizaImagensAdicionais();
         static::sincronizaEstoque();
