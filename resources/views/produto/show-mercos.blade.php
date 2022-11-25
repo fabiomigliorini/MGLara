@@ -1,8 +1,12 @@
 <?php
 $mps = $model->MercosProdutoS()->whereNull('inativo')->get();
+$url_painel_listagem = env('MERCOS_URL_PAINEL_LISTAGEM_PRODUTOS') . '?nome_codigo=' . urlencode(formataCodigo($model->codproduto, 6));
 ?>
-<!-- <a href="<?php echo url("produto/{$model->codproduto}/mercos");?>">Editar Integração com Mercos <span class="glyphicon glyphicon-pencil"></span></a> | -->
-<!-- <a href="#" id="btnMercosSincroniza">Sincronizar com Mercos <span class="glyphicon glyphicon-refresh"></span></a> -->
+
+<a href="{{$url_painel_listagem}}" target="_blank">
+    Listagem dos Produtos no Mercos
+</a>
+
 <img width="20px" id="lblSincronizandoMercos" src="{{ URL::asset('public/img/carregando.gif') }}" style="display:none">
 <br>
 <br>

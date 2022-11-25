@@ -392,12 +392,61 @@ class MercosProduto {
         static::sincronizaPeloSql($sql, $params);
     }
 
+    // Exporta Imagens Principais para Mercos que não haviam sido enviadas ainda
+    public static function sincronizaImagensPrincipais()
+    {
+        $sql = '
+            select mp.produtoid, pim.codprodutoimagem, mp.codmercosproduto, mp.codproduto
+            from tblmercosproduto mp
+            inner join tblprodutovariacao pv on (pv.codprodutovariacao = mp.codprodutovariacao)
+            inner join tblprodutoimagem pim on (pim.codprodutoimagem = pv.codprodutoimagem)
+            left join tblmercosprodutoimagem mpi on (mpi.codmercosproduto = mp.codmercosproduto and mpi.codimagem = pim.codimagem)
+            where mp.inativo is null
+            and mpi.codmercosprodutoimagem is null
+        ';
+        $prods = DB::select($sql);
+        foreach ($prods as $prod) {
+            static::exportaImagem(
+                $prod->produtoid,
+                $prod->codprodutoimagem,
+                $prod->codmercosproduto,
+                1
+            );
+        }
+    }
+
+    // Exporta Imagens Principais para Mercos que não haviam sido enviadas ainda
+    public static function sincronizaImagensAdicionais()
+    {
+        $sql = '
+            select mp.produtoid, pim.codprodutoimagem, mp.codmercosproduto, mp.codproduto
+            from tblmercosproduto mp
+            inner join tblprodutovariacao pv on (pv.codprodutovariacao = mp.codprodutovariacao)
+            inner join tblprodutoimagemprodutovariacao pipv on (pipv.codprodutovariacao = pv.codprodutovariacao)
+            inner join tblprodutoimagem pim on (pim.codprodutoimagem = pipv.codprodutoimagem)
+            left join tblmercosprodutoimagem mpi on (mpi.codmercosproduto = mp.codmercosproduto and mpi.codimagem = pim.codimagem)
+            where mp.inativo is null
+            and mpi.codmercosprodutoimagem is null
+        ';
+        $prods = DB::select($sql);
+        foreach ($prods as $prod) {
+            static::exportaImagem(
+                $prod->produtoid,
+                $prod->codprodutoimagem,
+                $prod->codmercosproduto,
+                2
+            );
+        }
+    }
+
     // Sincroniza Inativos/Precos/Estoque no Mercos
     public static function sincroniza()
     {
         static::sincronizaInativos();
         static::sincronizaPrecosUnitarios();
         static::sincronizaPrecosEmbalagens();
+        static::sincronizaImagensPrincipais();
+        static::sincronizaImagensAdicionais();
         static::sincronizaEstoque();
     }
 
