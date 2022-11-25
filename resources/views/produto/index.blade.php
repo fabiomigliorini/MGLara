@@ -164,10 +164,10 @@
                 @endif
             </div>
             <div class="col-md-4">
+                <span class="label {{$label}}">{{$row->abc}}</span>
                 <a href="{{ url("produto/$row->codproduto") }}">
                     <strong>{!! listagemTitulo($row->produto, $row->inativo) !!}</strong>
                 </a>
-                <span class="label {{$label}}">{{$row->abc}}</span>
                 @if(!empty($row->codsubgrupoproduto))
                 <div>
                     <a href="{{ url("secao-produto/{$row->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto}") }}">
