@@ -1,8 +1,8 @@
 <div class='col-md-5'>
     <div class="form-group">
         {!! Form::label('codtipoproduto', 'Tipo', ['class'=>'col-sm-3 control-label']) !!}
-        <div class="col-sm-6">{!! Form::select2TipoProduto('codtipoproduto', null, ['required' => true,  'class'=> 'form-control', 'id' => 'codtipoproduto', 'style'=>'width:100%', 'placeholder'=>'Tipo']) !!}</div>
-        <div class="col-sm-3">{!! Form::select2('abc', ['A'=>'A', 'B'=>'B', 'C'=>'C'], null, ['class' => 'form-control','id'=>'abc', 'style'=>'width:100%', 'required'=>true]) !!}</div>
+        <div class="col-sm-5">{!! Form::select2TipoProduto('codtipoproduto', null, ['required' => true,  'class'=> 'form-control', 'id' => 'codtipoproduto', 'style'=>'width:100%', 'placeholder'=>'Tipo']) !!}</div>
+        <div class="col-sm-4">{!! Form::select2('abc', ['A'=>'A - Contínuo', 'B'=>'B - Alto Giro', 'C'=>'C - Comum', 'D'=>'D - Sazonal'], null, ['class' => 'form-control','id'=>'abc', 'style'=>'width:100%', 'required'=>true]) !!}</div>
     </div>
 
     <div class="form-group">

@@ -17,6 +17,10 @@
         $label = 'label-warning';
         break;
 
+      case 'C':
+        $label = 'label-info';
+        break;
+
       default:
         $label = 'label-danger';
         break;

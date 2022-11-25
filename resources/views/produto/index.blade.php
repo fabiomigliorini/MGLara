@@ -37,7 +37,7 @@
             {!! Form::label('produto', 'Descrição', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-md-9">{!! Form::text('produto', null, ['class' => 'form-control', 'placeholder' => 'Descrição']) !!}</div>
         </div>
-        
+
         <div class="form-group">
             {!! Form::label('referencia', 'Referência', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-md-6">{!! Form::text('referencia', null, ['class' => 'form-control', 'placeholder' => 'Referência']) !!}</div>
@@ -56,7 +56,7 @@
             <div class="col-md-4">{!! Form::select2Ativo('ativo', null, ['class'=> 'form-control', 'id' => 'ativo']) !!}</div>
         </div>
     </div>
-    
+
     <div class="col-md-3">
         <div class="form-group">
             {!! Form::label('codsecaoproduto', 'Seção', ['class' => 'col-sm-3 control-label']) !!}
@@ -82,9 +82,9 @@
             {!! Form::label('codmarca', 'Marca', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-md-9">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:160px']) !!}</div>
         </div>
-        
+
     </div>
-    
+
     <div class="col-md-5">
         <div class="form-group">
             {!! Form::label('codtributacao', 'Tributação', ['class' => 'col-sm-2 control-label']) !!}
@@ -116,7 +116,7 @@
                 {!! Form::date('alteracao_ate', null, ['class' => 'form-control pull-left', 'id' => 'alteracao_ate', 'placeholder' => 'Até', 'style'=>'width:160px;']) !!}
             </div>
         </div>
-        
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Buscar</button>
@@ -130,6 +130,25 @@
 <div id="registros">
   <div class="list-group list-group-striped list-group-hover" id="items">
     @foreach($model as $row)
+      <?php
+          switch ($row->abc) {
+            case 'A':
+              $label = 'label-success';
+              break;
+
+            case 'B':
+              $label = 'label-warning';
+              break;
+
+            case 'C':
+              $label = 'label-info';
+              break;
+
+            default:
+              $label = 'label-danger';
+              break;
+          }
+      ?>
       <div class="list-group-item">
         <div class="row item">
             <div class="col-md-1">
@@ -148,6 +167,7 @@
                 <a href="{{ url("produto/$row->codproduto") }}">
                     <strong>{!! listagemTitulo($row->produto, $row->inativo) !!}</strong>
                 </a>
+                <span class="label {{$label}}">{{$row->abc}}</span>
                 @if(!empty($row->codsubgrupoproduto))
                 <div>
                     <a href="{{ url("secao-produto/{$row->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto}") }}">
@@ -296,7 +316,7 @@ function atualizaFiltro()
         state: {
             currPage: 1,
             isDestroyed: false,
-            isDone: false             
+            isDone: false
         },
         path: ['?page=', '&'+frmValues]
     });
@@ -315,7 +335,7 @@ function scroll()
         navSelector : "#registros .pagination",
         nextSelector : "#registros .pagination li.active + li a",
         itemSelector : "#items div.list-group-item",
-    });    
+    });
 }
 
 $(document).ready(function() {
@@ -334,14 +354,14 @@ $(document).ready(function() {
         } else {
             controlgroup.removeClass('has-error');
         }
-    }); 
+    });
 
     $("#produto-search").on("change", function (e) {
         if($('#produto-search')[0].checkValidity()){
             $("#produto-search").submit();
         }
         return false;
-        
+
     }).on('submit', function (e){
         e.preventDefault();
         $('#items').infinitescroll('destroy');
@@ -361,14 +381,14 @@ $(document).ready(function() {
         } else {
             $('#alteracao_ate').attr('min', valor);
         }
-        
+
     });
-    
+
     var alteracao_ate = $('#alteracao_ate').val();
     if(alteracao_ate.length > 0){
         $('#alteracao_de').attr('max', alteracao_ate);
     }
-    $('#alteracao_ate').on('change', function(e) {        
+    $('#alteracao_ate').on('change', function(e) {
         e.preventDefault();
         var valor = $(this).val();
         if(valor.length === 0 ) {
@@ -378,7 +398,7 @@ $(document).ready(function() {
             $('#alteracao_de').attr('max', valor);
         }
     });
-    
+
     var criacao_de = $('#criacao_de').val();
     if(criacao_de.length > 0 ){
         $('#criacao_ate').attr('min', criacao_de);
@@ -392,14 +412,14 @@ $(document).ready(function() {
         } else {
             $('#criacao_ate').attr('min', valor);
         }
-        
+
     });
-    
+
     var criacao_ate = $('#criacao_ate').val();
     if(criacao_ate.length > 0){
         $('#criacao_de').attr('max', criacao_ate);
     }
-    $('#criacao_ate').on('change', function(e) {        
+    $('#criacao_ate').on('change', function(e) {
         e.preventDefault();
         var valor = $(this).val();
         if(valor.length === 0 ) {
@@ -427,12 +447,12 @@ $(document).ready(function() {
             $('#preco_de').attr('max', preco_ate);
         }
     };
-    
+
     var preco_de = $('#preco_de').val();
     if(preco_de.length > 0 ){
         $('#preco_ate').attr('min', preco_de);
     }
-    
+
     var preco_ate = $('#preco_ate').val();
     if(preco_de.length > 0 ){
         $('#preco_de').attr('min', preco_ate);
