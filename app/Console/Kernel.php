@@ -17,7 +17,10 @@ class Kernel extends ConsoleKernel
         \MGLara\Console\Commands\EstoqueCalculaEstatisticasCommand::class,
         \MGLara\Console\Commands\MagazordSincronizaPrecosCommand::class,
         \MGLara\Console\Commands\MagazordSincronizaSaldosCommand::class,
+        \MGLara\Console\Commands\MercosSincronizaCommand::class,
         \MGLara\Console\Commands\MercosSincronizaProdutosCommand::class,
+        \MGLara\Console\Commands\MercosImportaClientesCommand::class,
+        \MGLara\Console\Commands\MercosImportaPedidosCommand::class,
     ];
 
     /**
@@ -30,10 +33,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('estoque:calcula-estatisticas')->dailyAt('00:00');
         $schedule->command('cache:clear')->dailyAt('01:00');
-        // $schedule->command('magazord:sincroniza-precos')->hourly();
-        // $schedule->command('magazord:sincroniza-saldos')->hourly();
-	
-	// TODO: Descobrir pq nao roda por aqui - tive que colocar fixo no Crontab
+
+        // TODO: Descobrir pq nao roda por aqui - tive que colocar fixo no Crontab
         //$schedule->command('mercos:sincroniza-produtos')->everyMinute();
     }
 }
