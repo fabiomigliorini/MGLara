@@ -89,7 +89,8 @@ class MercosPedido {
         }
         $n->codestoquelocal = env('MERCOS_CODESTOQUELOCAL');
         $n->codfilial = $n->EstoqueLocal->codfilial;
-        $n->lancamento = $ped->data_criacao;
+        // $n->lancamento = $ped->data_criacao;
+        $n->lancamento = $ped->data_emissao;
         if (empty($n->lancamento)) {
             $n->lancamento = $ped->ultima_alteracao;
         }

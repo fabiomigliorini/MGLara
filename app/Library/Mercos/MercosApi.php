@@ -354,10 +354,15 @@ class MercosApi {
         return $this->status == 201;
     }
 
-    public function getPedidos (Carbon $alterado_apos)
+    public function getPedidos (Carbon $alterado_apos, int $status = 2)
     {
 
-        $data = [];
+        // somente pedidos (0-Cancelado / 1-Orcamento / 2-Pedido)
+        $data = [
+            'status' => $status
+        ];
+
+        // ultima alteracao
         if (!empty($alterado_apos)) {
             $alt = clone $alterado_apos;
             $alt->setTimezone('America/Sao_Paulo');
