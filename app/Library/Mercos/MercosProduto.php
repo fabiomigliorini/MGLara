@@ -83,9 +83,8 @@ class MercosProduto {
             $largura = (double) $pe->largura;
             $altura = (double) $pe->altura;
             $comprimento = (double) $pe->profundidade;
-
         }
-
+        $preco_tabela = round($preco_tabela, 2);
         $preco_minimo = $preco_tabela;
         $comissao = null;
         $ipi = null;
