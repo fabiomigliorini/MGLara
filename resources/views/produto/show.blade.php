@@ -3,7 +3,6 @@
 <?php
     use MGLara\Models\Filial;
     use MGLara\Models\NaturezaOperacao;
-    use MGLara\Models\MagazordProduto;
 
     $filiais    = [''=>''] + Filial::lists('filial', 'codfilial')->all();
     $naturezaop = [''=>''] + NaturezaOperacao::lists('naturezaoperacao', 'codnaturezaoperacao')->all();
@@ -73,7 +72,6 @@
           <li role="presentation" class='active'><a href="#tab-variacoes" aria-controls="home" role="tab" data-toggle="tab">Detalhes</a></li>
           <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab" data-toggle="tab">Estoque</a></li>
           <li role="presentation"><a href="#tab-mercos" aria-controls="profile" role="tab" data-toggle="tab">Mercos</a></li>
-          <li role="presentation"><a href="#tab-magazord" aria-controls="profile" role="tab" data-toggle="tab">Magazord</a></li>
           <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab" data-toggle="tab">NCM</a></li>
           <li role="presentation"><a href="#tab-negocio" aria-controls="messages" role="tab" data-toggle="tab">Negócios</a></li>
           <li role="presentation"><a href="#tab-notasfiscais" aria-controls="messages" role="tab" data-toggle="tab">Notas Fiscais</a></li>
@@ -209,9 +207,6 @@
             </div>
             <div role="tabpanel" class="tab-pane fade" id="tab-mercos">
               @include('produto.show-mercos')
-            </div>
-            <div role="tabpanel" class="tab-pane fade" id="tab-magazord">
-              @include('produto.show-magazord')
             </div>
             <div role="tabpanel" class="tab-pane fade" id="tab-fiscal">
                 @include('produto.show-ncm')
@@ -575,42 +570,6 @@ $(document).ready(function() {
                 if(result) {
                     location.replace(baseUrl + '/produto/' + result)
                 }
-            }
-        });
-    });
-
-    $('#btnMagazordSincroniza').click(function (e) {
-        e.preventDefault();
-        bootbox.confirm("Tem certeza que deseja sincronizar com o Magazord esse produto?", function(result) {
-            if (result) {
-                $.ajax({
-                    type: 'GET',
-                    url: baseUrl + '/produto/' + {{$model->codproduto}} + '/magazord/sincroniza',
-                    beforeSend: function( xhr ) {
-                        $('#btnMagazordSincroniza').hide();
-                        $('#lblSincronizando').show();
-                    }
-                })
-                .done(function (data) {
-                    $('#btnMagazordSincroniza').show();
-                    $('#lblSincronizando').hide();
-                    if(data.resultado === true) {
-                        var mensagem = '<strong class="text-success">'+data.mensagem+'</strong>';
-                        recarregaDiv('div-magazord')
-                        bootbox.alert(mensagem);
-                        console.log(data.resultado);
-                    } else {
-                        var mensagem = '<strong class="text-danger">'+data.mensagem+'</strong>';
-                        recarregaDiv('div-magazord')
-                        bootbox.alert(mensagem);
-                        console.log(data.resultado);
-                    }
-                })
-                .fail(function (data) {
-                    $('#btnMagazordSincroniza').show();
-                    $('#lblSincronizando').hide();
-                    console.log('erro no POST');
-                });
             }
         });
     });

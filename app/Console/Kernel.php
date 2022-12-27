@@ -15,8 +15,6 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \MGLara\Console\Commands\EstoqueAjustaFiscalCommand::class,
         \MGLara\Console\Commands\EstoqueCalculaEstatisticasCommand::class,
-        \MGLara\Console\Commands\MagazordSincronizaPrecosCommand::class,
-        \MGLara\Console\Commands\MagazordSincronizaSaldosCommand::class,
         \MGLara\Console\Commands\MercosSincronizaCommand::class,
         \MGLara\Console\Commands\MercosSincronizaProdutosCommand::class,
         \MGLara\Console\Commands\MercosImportaClientesCommand::class,

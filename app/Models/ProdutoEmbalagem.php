@@ -127,9 +127,4 @@ class ProdutoEmbalagem extends MGModel
         return $this->hasMany(ProdutoHistoricoPreco::class, 'codprodutoembalagem', 'codprodutoembalagem');
     }
 
-    public function MagazordProduto()
-    {
-        return $this->hasMany(MagazordProduto::class, 'codprodutoembalagem', 'codprodutoembalagem');
-    }
-
 }

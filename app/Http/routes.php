@@ -124,11 +124,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('produto', 'ProdutoController');
     Route::post('produto/{id}/revisado', 'ProdutoController@revisado');
 
-    /* Magazord Produto */
-    Route::get('produto/{id}/magazord/sincroniza', 'ProdutoController@sincronizaProdutoMagazord');
-    Route::get('produto/{id}/magazord', 'ProdutoController@editMagazord');
-    Route::patch('produto/{id}/magazord', 'ProdutoController@updateMagazord');
-
     /* Mercos */
     Route::get('mercos/produto/{id}/exporta', 'MercosController@exportaProduto');
     Route::get('mercos/produto/{id}/atualiza', 'MercosController@atualizaProduto');

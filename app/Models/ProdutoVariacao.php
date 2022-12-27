@@ -85,11 +85,6 @@ class ProdutoVariacao extends MGModel
         return $this->hasMany(ProdutoImagemProdutoVariacao::class, 'codprodutovariacao', 'codprodutovariacao');
     }
 
-    public function MagazordProduto()
-    {
-        return $this->hasMany(MagazordProduto::class, 'codprodutovariacao', 'codprodutovariacao');
-    }
-
     public function validate()
     {
 
