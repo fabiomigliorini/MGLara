@@ -6,7 +6,11 @@ $url_painel_listagem = env('MERCOS_URL_PAINEL_LISTAGEM_PRODUTOS') . '?nome_codig
 <a href="{{$url_painel_listagem}}" target="_blank">
     Listagem dos Produtos no Mercos
 </a>
-
+&nbsp
+<button type="button" class="btn btn-sm btn-default btnMercos" aria-label="Left Align" onclick="atualizarTodosMercosProduto({{$model->codproduto}})">
+    <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span> Atualizar Todos
+</button>
+&nbsp
 <img width="20px" id="lblSincronizandoMercos" src="{{ URL::asset('public/img/carregando.gif') }}" style="display:none">
 <br>
 <br>

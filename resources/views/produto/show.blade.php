@@ -371,6 +371,40 @@ function btnDesmarcarRevisaoClick() {
     });
 }
 
+function atualizarTodosMercosProduto(codproduto)
+{
+    // $('.btnMercosExistente').trigger('click');
+    bootbox.confirm("Tem certeza que deseja exportar essa combinação para o Mercos?", function(result) {
+        if (result) {
+            $.ajax({
+                type: 'GET',
+                //url: baseUrl + '/produto/' + codproduto + '/mercos/exporta',
+                url: baseUrl + '/mercos/produto/' + codproduto + '/atualiza',
+                beforeSend: function( xhr ) {
+                    $('.btnMercos').prop('disabled', true);
+                    $('#lblSincronizandoMercos').show();
+                }
+            })
+            .done(function (data) {
+                $('.btnMercos').prop('disabled', false);
+                $('#lblSincronizandoMercos').hide();
+                if(data.retorno === true) {
+                    var mensagem = '<strong class="text-success">Atualizado(s) ' + data.atualizados + ' registro(s) no Mercos!</strong>';
+                } else {
+                    var mensagem = '<strong class="text-danger">Falha na exportação para Mercos</strong>';
+                }
+                recarregaDiv('div-mercos')
+                bootbox.alert(mensagem);
+            })
+            .fail(function (data) {
+                $('.btnMercos').prop('disabled', false);
+                $('#lblSincronizandoMercos').hide();
+                console.log('erro no POST');
+            });
+        }
+    });
+}
+
 function criarMercosProduto(codproduto, codprodutovariacao, codprodutoembalagem)
 {
     bootbox.confirm("Tem certeza que deseja exportar essa combinação para o Mercos?", function(result) {

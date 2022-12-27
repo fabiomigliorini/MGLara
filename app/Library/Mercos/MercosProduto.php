@@ -275,6 +275,21 @@ class MercosProduto {
         ];
     }
 
+    public static function atualizaProduto($codproduto)
+    {
+        $prod = Produto::findOrFail($codproduto);
+        $res = [];
+        foreach ($prod->MercosProdutoS()->whereNull('inativo')->get() as $mp) {
+            $res[] = static::exportaProduto($mp->codproduto, $mp->codprodutovariacao, $mp->codprodutoembalagem);
+            // break;
+        }
+        return [
+            'retorno' => true,
+            'atualizados' => count($res),
+            'resultados' => $res,
+        ];
+    }
+
     // Exporta Imagem do Produto para o Mercos
     public static function exportaImagem($produtoid, $codprodutoimagem, $codmercosproduto, $ordem = 2)
     {

@@ -28,6 +28,12 @@ class MercosController extends Controller
         return response()->json($retorno);
     }
 
+    public function atualizaProduto(Request $request, $id)
+    {
+        $retorno = MercosProduto::atualizaProduto($id);
+        return response()->json($retorno);
+    }
+
     public function importaPedidoApos (Request $request, $alterado_apos)
     {
         if ($alterado_apos != 'ultima') {
