@@ -94,18 +94,35 @@ class MercosProduto {
         $moeda = 0;
         $observacoes = $p->descricaosite;
 
-        $observacoes .= "\n\n<b>Código de Barras:</b> \n";
-        $observacoes .= $codigo . " \n";
-        foreach ($pv->ProdutoBarraS()->orderBy('codprodutoembalagem', 'ASC')->get() as $pb) {
-            $observacoes .= $pb->barras . ' ';
-            if (empty($pb->codprodutoembalagem)) {
-                $observacoes .= $p->UnidadeMedida->sigla;
-            } else {
-                $observacoes .= $pb->ProdutoEmbalagem->UnidadeMedida->sigla .
-                    ' C/' . formataNumero($pb->ProdutoEmbalagem->quantidade, 0);
+        $barras = collect([]);
+        // $barras[] = (object) [
+        //     'barras' => $codigo,
+        //     'quantidade' => 1,
+        //     'unidademedida' => $p->UnidadeMedida->unidademedida,
+        // ];
+        foreach ($pv->ProdutoBarraS()->get() as $pb) {
+            $barra = (object) [
+                'barras' => $pb->barras,
+                'quantidade' => 1,
+                'unidademedida' => $p->UnidadeMedida->unidademedida,
+            ];
+            if (!empty($pb->codprodutoembalagem)) {
+                $barra->unidademedida = $pb->ProdutoEmbalagem->UnidadeMedida->unidademedida;
+                $barra->quantidade = intval($pb->ProdutoEmbalagem->quantidade);
             }
-            $observacoes .= "\n";
+            $barras[] = $barra;
         }
+
+        $observacoes .= "\n<b>Código de Barras:</b><ul>";
+        foreach ($barras->sortBy('quantidade') as $barra) {
+            if ($barra->quantidade > 1) {
+                $lbl = "({$barra->unidademedida} com {$barra->quantidade})";
+            } else {
+                $lbl = "({$barra->unidademedida})";
+            }
+            $observacoes .= "<li>{$barra->barras} {$lbl}</li>";
+        }
+        $observacoes .= "</ul>";
 
         $outrasVariacoes = collect();
         $outrasEmbalagens = collect();
@@ -136,23 +153,25 @@ class MercosProduto {
         }
 
         if (count($outrasEmbalagens) > 0)  {
-            $observacoes .= " \n<b>Outras Embalagens:</b> \n";
+            $observacoes .= " <b>Outras Embalagens:</b><ul>";
             foreach ($outrasEmbalagens->sortBy('quantidade') as $emb) {
                 $lbl = $emb->embalagem;
                 if ($emb->quantidade > 1) {
                     $lbl .= ' com ' . $emb->quantidade;
                 }
-                $observacoes .= "* <a href='/produtos/{$emb->produtoid}'>{$lbl}</a> \n";
+                $observacoes .= "<li> <a href='/produtos/{$emb->produtoid}'>{$lbl}</a> </li>";
             }
+            $observacoes .= " </ul>";
         }
 
         if (count($outrasVariacoes) > 0)  {
-            $observacoes .= " \n<b>Outras Variações:</b> \n";
+            $observacoes .= " <b>Outras Variações:</b> <ul>";
             foreach ($outrasVariacoes->sortBy('variacao') as $var) {
-                $observacoes .= "* <a href='/produtos/{$var->produtoid}'>{$var->variacao}</a> \n";
+                $observacoes .= "<li> <a href='/produtos/{$var->produtoid}'>{$var->variacao}</a> </li>";
             }
+            $observacoes .= "</ul>";
         }
-        $observacoes = str_replace("\r\n", "\n", $observacoes);
+        // $observacoes = str_replace("\r\n", "\n", $observacoes);
 
         $grade_cores = null;
         $grade_tamanhos = null;
