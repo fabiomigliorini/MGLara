@@ -33,7 +33,15 @@
                 ?>
                 @foreach ($pbs as $pb)
                     <div class="col-md-5 small">
-                        {{ $pb->barras }}
+                        @if (substr($pb->barras, 0, 3) == '234')
+                            <b class="text-danger">
+                                {{ $pb->barras }}
+                            </b>
+                        @else
+                            <b class="text-success">
+                                {{ $pb->barras }}
+                            </b>
+                        @endif
                         <span class='text-muted'>
                             {{ $pb->referencia }}
                             {{ $pb->variacao }}
