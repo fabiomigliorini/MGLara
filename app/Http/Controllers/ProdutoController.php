@@ -165,8 +165,10 @@ class ProdutoController extends Controller
             default:
                 $view = 'produto.show';
         }
+        $pes = $model->ProdutoEmbalagemS()->orderBy('quantidade')->get();
+        $pvs = $model->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
 
-        $ret = view($view, compact('model', 'nfpbs', 'npbs', 'parametros', 'estoque'));
+        $ret = view($view, compact('model', 'nfpbs', 'npbs', 'parametros', 'estoque', 'pes', 'pvs'));
 
         return $ret;
     }

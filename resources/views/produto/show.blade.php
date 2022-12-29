@@ -24,8 +24,6 @@
         $label = 'label-danger';
         break;
     }
-    $pes = $model->ProdutoEmbalagemS()->orderBy('quantidade')->get();
-    $pvs = $model->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
 ?>
 <ol class="breadcrumb header">
     {!!
