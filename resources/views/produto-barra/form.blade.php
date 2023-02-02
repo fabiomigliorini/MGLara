@@ -1,20 +1,33 @@
 <?php
 
     use MGLara\Models\ProdutoEmbalagem;
-    
-    $embalagens[0] = $produto->UnidadeMedida->sigla;
-    
-    foreach ($produto->ProdutoEmbalagemS as $pe)
-        $embalagens[$pe->codprodutoembalagem] = $pe->descricao;
-    
-    $variacoes = $produto->ProdutoVariacaoS()->orderBy('variacao', 'ASC NULLS FIRST')->lists('variacao', 'codprodutovariacao')->all();
 
-    foreach($variacoes as $cod => $descr)
-        if (empty($descr))
+    $embalagens[0] = $produto->UnidadeMedida->sigla;
+
+    foreach ($produto->ProdutoEmbalagemS()->orderBy('quantidade')->get() as $pe){
+        $embalagens[$pe->codprodutoembalagem] = $pe->descricao;
+    }
+
+    $variacoes = $produto->ProdutoVariacaoS()->orderBy('variacao', 'ASC')->lists('variacao', 'codprodutovariacao')->all();
+
+    foreach($variacoes as $cod => $descr){
+        if (empty($descr)) {
             $variacoes[$cod] = '{Sem Variação}';
-    
+        }
+    }
+
     $variacoes = ['' => ''] + $variacoes;
-    
+
+    $optionsUnidadeMedida = [
+        'class'=> 'form-control',
+        'id' => 'codprodutoembalagem',
+        'style'=>'width:100%',
+    ];
+
+    if (!empty($model->codprodutobarra)) {
+        $optionsUnidadeMedida['disabled'] = 'disabled';
+    }
+
 ?>
 <div class="form-group">
     <label for="codprodutovariacao" class="col-sm-2 control-label">{!! Form::label('Variação:') !!}</label>
@@ -22,7 +35,7 @@
 </div>
 <div class="form-group">
     <label for="codprodutoembalagem" class="col-sm-2 control-label">{!! Form::label('Unidade Medida:') !!}</label>
-    <div class="col-sm-2">{!! Form::select('codprodutoembalagem', $embalagens, null, ['class'=> 'form-control', 'id' => 'codprodutoembalagem', 'style'=>'width:100%']) !!}</div>
+    <div class="col-sm-2">{!! Form::select('codprodutoembalagem', $embalagens, null, $optionsUnidadeMedida) !!}</div>
 </div>
 <div class="form-group">
     <label for="barras" class="col-sm-2 control-label">{!! Form::label('Barras:') !!}</label>
@@ -70,20 +83,20 @@ function calculaDigitoGtin(codigo)
     }
 
     //subtrai da maior dezena
-    digito = (Math.ceil(soma/10)*10) - soma;	
+    digito = (Math.ceil(soma/10)*10) - soma;
 
     //retorna digitocalculado
     return digito;
 }
 
-//valida o codigo de barras 
+//valida o codigo de barras
 function validaGtin(codigo)
 {
     codigooriginal = codigo;
     codigo = codigo.replace(/[^0-9]/g, '');
-    
+
     //se estiver em branco retorna verdadeiro
-    if (codigo.length == 0) 
+    if (codigo.length == 0)
         return true;
 
     //se tiver letras no meio retorna false
@@ -91,10 +104,10 @@ function validaGtin(codigo)
         return false;
 
     //se nao tiver comprimento adequado retorna false
-    if ((codigo.length != 8) 
-        && (codigo.length != 12) 
-        && (codigo.length != 13) 
-        && (codigo.length != 14) 
+    if ((codigo.length != 8)
+        && (codigo.length != 12)
+        && (codigo.length != 13)
+        && (codigo.length != 14)
         && (codigo.length != 18))
         return false;
 
@@ -110,13 +123,13 @@ function validaBarrasDigitado()
 {
     //inicializa var
     var codigo = $('#barras').val();
-    
+
     if (validaGtin(codigo))
         return true;
     /*
     if (codigo.substring(0, 7) == '{!! str_pad($produto->codproduto, 6, '0', STR_PAD_LEFT)  !!}-')
         return true;
-    
+
     if (codigo.substring(0, 6) == '{!! str_pad($produto->codproduto, 6, '0', STR_PAD_LEFT)  !!}' && codigo.length == 6)
         return true;
     */
@@ -139,9 +152,9 @@ function mostraPopoverBarras()
     //fecha
     if (!abrir && aberto)
     {
-        $("#barrasDiv").popover('destroy');  	
+        $("#barrasDiv").popover('destroy');
     }
-	
+
 }
 
 function bootboxSalvar(form)
@@ -168,12 +181,12 @@ $(document).ready(function() {
         else
             bootboxSalvar(currentForm);
     });
-    
+
     $('#codprodutoembalagem').select2({
         placeholder: 'Embalagem',
         allowClear: true,
         closeOnSelect: true
-    });    
+    });
     $('#codprodutovariacao').select2({
         placeholder: 'Variação',
         allowClear: true,
@@ -185,8 +198,8 @@ $(document).ready(function() {
     });
 
     $("#variacao").Setcase();
-    mostraPopoverBarras();    
-    
+    mostraPopoverBarras();
+
 });
 
 
