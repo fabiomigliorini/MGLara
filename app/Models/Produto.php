@@ -71,7 +71,8 @@ class Produto extends MGModel
         'altura',
         'largura',
         'profundidade',
-        'revisao'
+        'revisao',
+        'estoque'
     ];
     protected $dates = [
         'inativo',

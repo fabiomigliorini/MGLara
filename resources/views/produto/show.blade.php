@@ -198,6 +198,12 @@
 
             </div>
             <div role="tabpanel" class="tab-pane fade" id="tab-estoque">
+                @if (!$model->estoque)
+                    <div class="alert alert-danger" role="alert">
+                      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                      Atenção: Produto configurado para não controlar movimentação de estoque!
+                    </div>
+                @endif
                 <div id="div-estoque">
                     <b>Aguarde...</b>
                     <img width="20px" src="{{ URL::asset('public/img/carregando.gif') }}">

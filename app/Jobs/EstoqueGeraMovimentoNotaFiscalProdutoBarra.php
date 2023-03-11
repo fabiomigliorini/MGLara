@@ -24,7 +24,7 @@ class EstoqueGeraMovimentoNotaFiscalProdutoBarra extends Job implements SelfHand
     use InteractsWithQueue, SerializesModels, DispatchesJobs;
 
     protected $codnotafiscalprodutobarra;
-    
+
     /**
      * Create a new job instance.
      *
@@ -44,49 +44,50 @@ class EstoqueGeraMovimentoNotaFiscalProdutoBarra extends Job implements SelfHand
     public function handle()
     {
         Log::info('EstoqueGeraMovimentoNotaFiscalProdutoBarra', ['codnotafiscalprodutobarra' => $this->codnotafiscalprodutobarra]);
-        
+
         $nfpb = NotaFiscalProdutoBarra::findOrFail($this->codnotafiscalprodutobarra);
-        
+
         $codestoquemes_recalcular = [];
         $codestoquemovimento_gerado = [];
-        
+
         $corte = Carbon::createFromFormat('Y-m-d H:i:s', EstoqueMes::CORTE_FISCAL);
-        
+
         if ($nfpb->NotaFiscal->ativa()
             && $nfpb->NotaFiscal->saida->gte($corte)
             && $nfpb->NotaFiscal->NaturezaOperacao->estoque == TRUE
-            && $nfpb->ProdutoBarra->Produto->TipoProduto->estoque == TRUE        
+            && $nfpb->ProdutoBarra->Produto->TipoProduto->estoque == TRUE
+            && $nfpb->ProdutoBarra->Produto->estoque == TRUE
             ) {
-            
+
             $mov = EstoqueMovimento::where('codnotafiscalprodutobarra', $nfpb->codnotafiscalprodutobarra)->where('codestoquemovimentoorigem', null)->first();
 
             if ($mov == false) {
                 $mov = new EstoqueMovimento;
             }
-            
+
             $mes = EstoqueMes::buscaOuCria(
                 $nfpb->ProdutoBarra->codprodutovariacao,
                 $nfpb->NotaFiscal->codestoquelocal,
-                true, 
+                true,
                 $nfpb->NotaFiscal->saida
                 );
-            
+
             if (!empty($mov->codestoquemes) && $mov->codestoquemes != $mes->codestoquemes) {
                 $codestoquemes_recalcular[$mov->codestoquemes] = $mov->codestoquemes;
             }
-            
+
             $mov->codestoquemes = $mes->codestoquemes;
 
             $mov->codestoquemovimentotipo = $nfpb->NotaFiscal->NaturezaOperacao->codestoquemovimentotipo;
             $mov->manual = false;
             $mov->data = $nfpb->NotaFiscal->saida;
-            
+
             $quantidade = $nfpb->quantidade;
-            
+
             if (!empty($nfpb->ProdutoBarra->codprodutoembalagem)) {
                 $quantidade *= $nfpb->ProdutoBarra->ProdutoEmbalagem->quantidade;
             }
-            
+
             if ($nfpb->NotaFiscal->NaturezaOperacao->codoperacao == Operacao::ENTRADA) {
                 if ($mov->entradaquantidade != $quantidade) {
                     $mov->entradaquantidade = $quantidade;
@@ -100,16 +101,16 @@ class EstoqueGeraMovimentoNotaFiscalProdutoBarra extends Job implements SelfHand
                     $mov->saidaquantidade = $quantidade;
                 }
             }
-            
-            
+
+
             if ($mov->EstoqueMovimentoTipo->preco == EstoqueMovimentoTipo::PRECO_INFORMADO) {
-                
+
                 $valor = $nfpb->valortotal;
-                
+
                 if ($nfpb->NotaFiscal->valordesconto > 0 && $nfpb->NotaFiscal->valorprodutos > 0) {
                     $valor *= 1 - ($nfpb->NotaFiscal->valordesconto / $nfpb->NotaFiscal->valorprodutos);
                 }
-                
+
                 if ($nfpb->NotaFiscal->NaturezaOperacao->codoperacao == Operacao::ENTRADA) {
                     if ($mov->entradavalor != $valor) {
                         $mov->entradavalor = $valor;
@@ -123,10 +124,10 @@ class EstoqueGeraMovimentoNotaFiscalProdutoBarra extends Job implements SelfHand
                 }
 
             }
-            
+
             $mov->codnegocioprodutobarra = null;
             $mov->codnotafiscalprodutobarra = $nfpb->codnotafiscalprodutobarra;
-            
+
             // Vincula movimento de origem
             if (!empty($nfpb->codnotafiscalprodutobarraorigem)) {
                 if ($orig = $nfpb->NotaFiscalProdutoBarraOrigem->EstoqueMovimentoS->first()) {
@@ -143,9 +144,9 @@ class EstoqueGeraMovimentoNotaFiscalProdutoBarra extends Job implements SelfHand
                     }
                 }
             }
-            
+
             if ($mov->isDirty()) {
-                
+
                 $codestoquemes_recalcular[$mes->codestoquemes] = $mes->codestoquemes;
 
                 $mov->alteracao = $nfpb->alteracao;
@@ -158,9 +159,9 @@ class EstoqueGeraMovimentoNotaFiscalProdutoBarra extends Job implements SelfHand
                     $this->release(10);
                 }
             }
-            
+
             $codestoquemovimento_gerado[] = $mov->codestoquemovimento;
-            
+
             // Vincula movimentos de destino
             foreach ($nfpb->NotaFiscalProdutoBarraS as $nfpb_dest) {
                 foreach ($nfpb_dest->EstoqueMovimentoS as $dest) {
@@ -174,18 +175,18 @@ class EstoqueGeraMovimentoNotaFiscalProdutoBarra extends Job implements SelfHand
                 }
             }
         }
-        
+
         // Apaga estoquemovimento excedente que existir anexado ao notafiscalprodutobarra
-        $movExcedente = 
+        $movExcedente =
                 EstoqueMovimento
                 ::whereNotIn('codestoquemovimento', $codestoquemovimento_gerado)
                 ->where('codnotafiscalprodutobarra', $nfpb->codnotafiscalprodutobarra)
                 ->get();
-        
+
         foreach ($movExcedente as $mov) {
-            
+
             $codestoquemes_recalcular[$mov->codestoquemes] = $mov->codestoquemes;
-            
+
             foreach ($mov->EstoqueMovimentoS as $movDest) {
                 $codestoquemes_recalcular[$movDest->codestoquemes] = $movDest->codestoquemes;
                 $movDest->codestoquemovimentoorigem = null;
@@ -194,17 +195,17 @@ class EstoqueGeraMovimentoNotaFiscalProdutoBarra extends Job implements SelfHand
                     $this->release(10);
                 }
             }
-            
+
             // Se nao excluiu, manda rodar novamente em 10 segundos
             if (!$mov->delete()) {
                 $this->release(10);
             }
         }
-                
+
         //Coloca Recalculo Custo Medio na Fila
         foreach($codestoquemes_recalcular as $codestoquemes => $mes) {
             $this->dispatch((new EstoqueCalculaCustoMedio($codestoquemes))->onQueue('urgent'));
         }
-        
+
     }
 }

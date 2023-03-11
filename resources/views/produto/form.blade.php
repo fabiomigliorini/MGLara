@@ -6,6 +6,11 @@
     </div>
 
     <div class="form-group">
+        {!! Form::label('estoque', 'Estoque', ['class'=>'col-sm-3 control-label']) !!}
+        <div class="col-sm-9" id="wrapper-estoque">{!! Form::checkbox('estoque', true, null, ['id'=>'estoque', 'data-off-text' => 'Não Controla', 'data-on-text' => 'Controla']) !!}</div>
+    </div>
+
+    <div class="form-group">
         {!! Form::label('codmarca', 'Marca', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-5">{!! Form::select2Marca('codmarca', null, ['class' => 'form-control','id'=>'codmarca', 'style'=>'width:100%', 'required'=>true]) !!}</div>
     </div>
@@ -222,6 +227,7 @@ $(document).ready(function() {
         });
     });
     $('#importado').bootstrapSwitch();
+    $('#estoque').bootstrapSwitch();
     // $('#site').bootstrapSwitch();
 
     @if (!empty($model->codsubgrupoproduto))

@@ -91,7 +91,9 @@ class ProdutoController extends Controller
         if(is_null($request->input('importado'))) {
             $model->importado = FALSE;
         }
-
+        if(is_null($request->input('estoque'))) {
+            $model->estoque = FALSE;
+        }
         if(is_null($request->input('site'))) {
             $model->site = FALSE;
         }
@@ -195,7 +197,9 @@ class ProdutoController extends Controller
         if(is_null($request->input('importado'))) {
             $model->importado = FALSE;
         }
-
+        if(is_null($request->input('estoque'))) {
+            $model->estoque = FALSE;
+        }
         if(is_null($request->input('site'))) {
             $model->site = FALSE;
         }
