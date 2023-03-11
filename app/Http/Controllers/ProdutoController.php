@@ -71,6 +71,7 @@ class ProdutoController extends Controller
         else
         {
             $model->codtipoproduto = TipoProduto::MERCADORIA;
+            $model->estoque = true;
             $model->abc = 'C';
         }
 
