@@ -36,7 +36,13 @@ class CaixaController extends Controller
             [
                 'datainicial',
                 'datafinal',
-            ]);
+        ]);
+
+	abort(500, 'teste');
+
+        if (empty($parametros['codusuario'])) {
+            $parametros['codusuario'] = Auth::user()->codusuario;
+	}
 
         if (empty($parametros['codusuario'])) {
             abort(500, 'Usuário não informado!');
