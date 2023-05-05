@@ -114,7 +114,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ Auth::user()->usuario }} <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="<?php echo url('usuario/' . Auth::user()->codusuario); ?>">Perfil</a></li>
-                        <li><a href="<?php echo url('auth/logout'); ?>">Sair</a></li>
+                        <li><a href="<?php echo env('SSO_HOST') . ('/logout'); ?>">Sair</a></li>
                     </ul>
                 </li>
             </ul>

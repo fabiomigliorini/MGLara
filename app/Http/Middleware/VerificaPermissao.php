@@ -31,7 +31,7 @@ class VerificaPermissao
             }
         }
         
-        return $request->ajax ? response('Unauthorized.', 401) : redirect()->guest('auth/login');
+        return $request->ajax ? response('Unauthorized.', 401) : redirect()->guest('/sso/login');
     }
 
 }

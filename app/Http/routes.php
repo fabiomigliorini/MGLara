@@ -12,9 +12,14 @@
  */
 
 // Rotas de autenticação
-Route::get('auth/login', 'Auth\AuthController@getLogin');
-Route::post('auth/login', 'Auth\AuthController@postLogin');
+//Route::get('auth/login', 'Auth\AuthController@getLogin');
+//Route::post('auth/login', 'Auth\AuthController@postLogin');
 Route::get('auth/logout', 'Auth\AuthController@getLogout');
+
+// SSO
+Route::get("/sso/login", 'SSO\SSOController@getLogin')->name("sso.login");
+Route::get("/callback", 'SSO\SSOController@getCallback')->name("sso.callback");
+Route::get("/sso/connect", 'SSO\SSOController@connectUser')->name("sso.connect");
 
 /* Estoque */
 Route::get('estoque/calcula-custo-medio/{id}', 'EstoqueController@calculaCustoMedio');
