@@ -141,6 +141,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     /* Produto Variacao */
     Route::get('produto-variacao/listagem-json', 'ProdutoVariacaoController@listagemJson');
+    Route::resource('produto-variacao/descontinuar', 'ProdutoVariacaoController@descontinuar');
     Route::resource('produto-variacao', 'ProdutoVariacaoController');
 
     /* Produto Barra */

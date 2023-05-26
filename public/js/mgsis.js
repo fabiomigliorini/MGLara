@@ -225,6 +225,12 @@ function inicializa(elemento)
         event.preventDefault();
         return inativarClick($(this));
     });
+    $(elemento).find('a[data-descontinuar]').click(function(event) {
+        event.preventDefault();
+        return inativarClick($(this));
+    });
+
+
 }
 
 $(document).ready(function() {

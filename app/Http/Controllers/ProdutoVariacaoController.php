@@ -3,7 +3,7 @@
 namespace MGLara\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
@@ -187,6 +187,30 @@ class ProdutoVariacaoController extends Controller
         }
 
         return $ret;
+    }
+
+
+
+    public function descontinuar(Request $request)
+    {
+        try{
+            $model = ProdutoVariacao::findOrFail($request->get('id'));
+        
+            if ($request->get('acao') == 'ativar') {
+              $model->descontinuado = null;
+            } else {
+              $model->descontinuado = Carbon::now();
+            }
+            
+            $model->save();
+            $acao = ($request->get('acao') == 'ativar') ? 'ativado' : 'descontinuado';
+           
+            $ret = ['resultado' => true, 'mensagem' => "Variaçao $model->variacao $acao com sucesso!"];
+        }
+            catch(\Exception $e){
+            $ret = ['resultado' => false, 'mensagem' => "Erro ao $acao variação!", 'exception' => $e];
+        } 
+        return json_encode($ret);
     }
 
 }
