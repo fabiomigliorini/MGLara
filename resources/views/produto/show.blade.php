@@ -54,7 +54,7 @@
             &nbsp;
             <a href="" id="btnVaiPara"><span class="glyphicon glyphicon-new-window"></span></a>
             &nbsp;
-            <a target="_blank" href="http://mgspa.mgpapelaria.com.br/#/estoque-estatistica/{{ $model->codproduto }}"><span class="glyphicon glyphicon-signal"></span></a>
+            <a target="_blank" href="https://mgspa.mgpapelaria.com.br/#/estoque-estatistica/{{ $model->codproduto }}"><span class="glyphicon glyphicon-signal"></span></a>
         </small>
     </li>
 </ol>
