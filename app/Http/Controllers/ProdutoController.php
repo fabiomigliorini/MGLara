@@ -140,6 +140,8 @@ class ProdutoController extends Controller
         $npbs = null;
         $parametros = null;
         $estoque = null;
+        $ultimaCompra = null;
+        $ultimaVenda = null;
         switch ($request->get('_div'))
         {
             case 'div-imagens':
@@ -167,11 +169,33 @@ class ProdutoController extends Controller
                 break;
             default:
                 $view = 'produto.show';
+                $sql = '
+                    select max(n.lancamento) as ultimacompra
+                    from tblprodutobarra pb
+                    inner join tblnegocioprodutobarra npb on (npb.codprodutobarra = pb.codprodutobarra)
+                    inner join tblnegocio n on (n.codnegocio = npb.codnegocio)
+                    inner join tblnaturezaoperacao nat on (nat.codnaturezaoperacao = n.codnaturezaoperacao)
+                    where pb.codproduto = :codproduto
+                    and n.codnegociostatus = 2 --Fechado
+                    and nat.compra = true
+                ';
+                $ultimaCompra = DB::select($sql, ['codproduto' => $id])[0]->ultimacompra;
+                $sql = '
+                    select max(n.lancamento) as ultimavenda
+                    from tblprodutobarra pb
+                    inner join tblnegocioprodutobarra npb on (npb.codprodutobarra = pb.codprodutobarra)
+                    inner join tblnegocio n on (n.codnegocio = npb.codnegocio)
+                    inner join tblnaturezaoperacao nat on (nat.codnaturezaoperacao = n.codnaturezaoperacao)
+                    where pb.codproduto = :codproduto
+                    and n.codnegociostatus = 2 --Fechado
+                    and nat.venda = true
+                ';
+                $ultimaVenda = DB::select($sql, ['codproduto' => $id])[0]->ultimavenda;
         }
         $pes = $model->ProdutoEmbalagemS()->orderBy('quantidade')->get();
         $pvs = $model->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
 
-        $ret = view($view, compact('model', 'nfpbs', 'npbs', 'parametros', 'estoque', 'pes', 'pvs'));
+        $ret = view($view, compact('model', 'nfpbs', 'npbs', 'parametros', 'estoque', 'pes', 'pvs', 'ultimaCompra', 'ultimaVenda'));
 
         return $ret;
     }
