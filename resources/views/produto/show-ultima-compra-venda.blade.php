@@ -20,7 +20,7 @@ use \Carbon\Carbon;
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-xs-12">
-                            Última compra em
+                            Última compra
                             {{ Carbon::parse($ultimaCompra)->diffForHumans() }}
                         </div>
                     </div>
@@ -44,7 +44,7 @@ use \Carbon\Carbon;
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-xs-12">
-                            Última venda em
+                            Última venda
                             {{ Carbon::parse($ultimaVenda)->diffForHumans() }}
                         </div>
                     </div>
