@@ -128,6 +128,10 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('produto/{id}/transferir-variacao', 'ProdutoController@transferirVariacao');
     Route::resource('produto', 'ProdutoController');
     Route::post('produto/{id}/revisado', 'ProdutoController@revisado');
+    Route::get('produto/{id}/unifica-variacao', 'ProdutoController@unificaVariacao');
+    Route::get('produto/{id}/unifica-barras', 'ProdutoController@unificaBarras');
+    Route::get('produto/{id}/converter-embalagem', 'ProdutoController@converterEmbalagem');
+
 
     /* Mercos */
     Route::get('mercos/produto/{id}/exporta', 'MercosController@exportaProduto');

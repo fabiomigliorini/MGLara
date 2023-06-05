@@ -501,6 +501,25 @@ class ProdutoController extends Controller
         return view('produto.transferir-variacao',  compact('model'));
     }
 
+    public function unificaVariacao(Request $request, $id)
+    {
+        $model = Produto::findOrFail($id);
+        return view('produto.unifica-variacao', compact('model'));
+    }
+
+    public function unificaBarras(Request $request, $id)
+    {
+        $model = Produto::findOrFail($id);
+        return view('produto.unifica-barras', compact('model'));
+    }
+
+    public function converterEmbalagem(Request $request, $id)
+    {
+        $model = Produto::findOrFail($id);
+        return view('produto.converter-embalagem', compact('model'));
+    }
+
+
     public function transferirVariacaoSalvar(Request $request, $id)
     {
         $form = $request->all();

@@ -174,7 +174,11 @@
                 |
                 <a href="<?php echo url("produto/$model->codproduto/transferir-variacao");?>">Transferir Variação <span class="glyphicon glyphicon-transfer"></span></a>
                 |
+                <a href="<?php echo url("produto/{$model->codproduto}/unifica-variacao");?>">Unifica Variações <span class="glyphicon glyphicon-resize-small"></span></a>
+                |
                 <a href="<?php echo url("produto-barra/create?codproduto={$model->codproduto}");?>">Novo Código de Barras <span class="glyphicon glyphicon-plus"></span></a>
+                |
+                <a href="<?php echo url("produto/{$model->codproduto}/unifica-barras");?>">Unifica Barras <span class="glyphicon glyphicon-resize-small"></span></a>
 
                 <br>
                 <br>

@@ -38,4 +38,14 @@
             </small>
         </li>
     @endforeach
+    @if(isset($pe->codprodutoembalagem))
+        <li class="list-group-item">
+            <small class="">
+                <a href="<?php echo url("produto/{$model->codproduto}/converter-embalagem");?>">
+                    Converter Embalagem em Unidade
+                    <span class="glyphicon glyphicon-resize-small"></span>
+                </a>
+            </small>
+        </li>
+    @endif
 </ul>
