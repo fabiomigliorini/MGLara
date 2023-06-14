@@ -557,11 +557,18 @@ class ProdutoController extends Controller
         $estoqueminimo = ($request->get('estoqueminimo'));
         $estoquemaximo = ($request->get('estoquemaximo'));
         $model = Produto::findOrFail($id);
-
-        if (($model->codprodutoembalagemcompra != $request->codprodutoembalagemcompra) 
-            || ($model->codprodutoembalagemtransferencia != $request->codprodutoembalagemtransferencia)) {
-            $model->codprodutoembalagemcompra = $request->codprodutoembalagemcompra;
-            $model->codprodutoembalagemtransferencia = $request->codprodutoembalagemtransferencia;
+        $codprodutoembalagemcompra = $request->codprodutoembalagemcompra;
+        if ($codprodutoembalagemcompra == 0) {
+            $codprodutoembalagemcompra = null;
+        }
+        $codprodutoembalagemtransferencia = $request->codprodutoembalagemtransferencia;	
+        if ($codprodutoembalagemtransferencia == 0) {
+            $codprodutoembalagemtransferencia = null;
+        }
+        if (($model->codprodutoembalagemcompra != $codprodutoembalagemcompra) 
+            || ($model->codprodutoembalagemtransferencia != $codprodutoembalagemtransferencia)) {
+            $model->codprodutoembalagemcompra = $codprodutoembalagemcompra;
+            $model->codprodutoembalagemtransferencia = $codprodutoembalagemtransferencia;
             $model->save();
         }
         
