@@ -78,7 +78,11 @@ function divDescricao($arr) {
 
 <div id='div-estoque'>
     <div class="panel-group">
-
+    <a href="<?php echo url("produto/{$model->codproduto}/min-max/editar");?>">
+        Editar mínima e máxima
+        <span class="glyphicon glyphicon-edit"></span>
+    </a>
+    <br></br>
         <div class="panel panel-default panel-condensed">
 
             <!-- Titulo -->

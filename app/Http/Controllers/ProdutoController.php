@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use URL;
 
 use MGLara\Http\Controllers\Controller;
+use MGLara\Models\EstoqueLocalProdutoVariacao;
 use MGLara\Models\Produto;
 use MGLara\Models\ProdutoBarra;
 use MGLara\Models\ProdutoVariacao;
@@ -517,6 +518,72 @@ class ProdutoController extends Controller
     {
         $model = Produto::findOrFail($id);
         return view('produto.converter-embalagem', compact('model'));
+    }
+
+    public function EditarMinMax($id)
+    {
+        $model = Produto::findOrFail($id);
+       
+        $sql = 'select * from tblestoquelocal where controlaestoque = true and inativo is null order by codestoquelocal';
+        $colunas = collect(DB::select($sql));
+        
+        $sql = 'select * from tblprodutovariacao where codproduto = :codproduto order by variacao';
+        $linhas = collect(DB::select($sql, [
+            'codproduto' => $id
+        ]));
+        
+        $sql = '
+            select 
+                elpv.codestoquelocal, 
+                elpv.codprodutovariacao, 
+                elpv.codestoquelocalprodutovariacao,
+                elpv.estoqueminimo, 
+                elpv.estoquemaximo  
+            from tblprodutovariacao pv
+            left join tblestoquelocalprodutovariacao elpv on (elpv.codprodutovariacao = pv.codprodutovariacao)
+            where pv.codproduto = :codproduto 
+        ';
+        $valores = collect(DB::select($sql, [
+            'codproduto' => $id
+        ]));
+        
+       
+        return view('produto.min-max-editar', compact('model', 'valores', 'colunas', 'linhas'));
+
+    }
+
+    public function SalvarMinMax(Request $request, $id)
+    {
+        $estoqueminimo = ($request->get('estoqueminimo'));
+        $estoquemaximo = ($request->get('estoquemaximo'));
+        $model = Produto::findOrFail($id);
+
+        if (($model->codprodutoembalagemcompra != $request->codprodutoembalagemcompra) 
+            || ($model->codprodutoembalagemtransferencia != $request->codprodutoembalagemtransferencia)) {
+            $model->codprodutoembalagemcompra = $request->codprodutoembalagemcompra;
+            $model->codprodutoembalagemtransferencia = $request->codprodutoembalagemtransferencia;
+            $model->save();
+        }
+        
+        foreach ($estoqueminimo as $codestoquelocal => $variacoes)
+        {  
+            foreach ($variacoes as $codprodutovariacao => $minimo)
+            {   
+                $elpv = EstoqueLocalProdutoVariacao::FirstOrNew([
+                    'codestoquelocal'    => $codestoquelocal,
+                    'codprodutovariacao' => $codprodutovariacao
+                ]);
+                $maximo = $estoquemaximo[$codestoquelocal][$codprodutovariacao];
+                if ($minimo != $elpv->estoqueminimo || $maximo != $elpv->estoquemaximo)
+                {
+                    $elpv->estoqueminimo = $minimo;
+                    $elpv->estoquemaximo = $maximo;
+                    $elpv->save();
+                }
+            }    
+        }
+        Session::flash('flash_success', "Tabela de Estoque Minimo e Máximo atualizada!");
+        return redirect("produto/$model->codproduto");
     }
 
 

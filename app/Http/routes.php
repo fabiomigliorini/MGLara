@@ -32,6 +32,7 @@ Route::get('estoque/gera-movimento-produto/{id}', 'EstoqueController@geraMovimen
 Route::get('estoque/gera-movimento-produto-variacao/{id}', 'EstoqueController@geraMovimentoProdutoVariacao');
 Route::get('estoque/gera-movimento-periodo/{inicial}/{final}', 'EstoqueController@geraMovimentoPeriodo');
 
+
 /* Acessar da rede interna sem autenticacao, ou da rede externa com autenticacao */
 Route::group(['middleware' => 'redeconfiavel'], function() {
     Route::get('produto/quiosque', 'ProdutoController@quiosque');
@@ -131,6 +132,9 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('produto/{id}/unifica-variacao', 'ProdutoController@unificaVariacao');
     Route::get('produto/{id}/unifica-barras', 'ProdutoController@unificaBarras');
     Route::get('produto/{id}/converter-embalagem', 'ProdutoController@converterEmbalagem');
+    Route::get('produto/{id}/min-max/editar', 'ProdutoController@EditarMinMax');
+    Route::post('produto/{id}/min-max/editar', 'ProdutoController@SalvarMinMax');
+    
 
 
     /* Mercos */
