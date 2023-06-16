@@ -37,7 +37,7 @@
             <tbody>
                 @foreach ($linhas as $linha)
                     <tr>
-                        <th>
+                        <th rowspan="2">
                             {{$linha->variacao}}
                         </th>
                         @foreach ($colunas as $coluna)
@@ -47,9 +47,6 @@
                                         ($value->codestoquelocal == $coluna->codestoquelocal)
                                         && ($value->codprodutovariacao == $linha->codprodutovariacao);
                                 });
-                                // dd([
-                                //     $linha, $coluna, $valor
-                                // ]);
 
                                 $estoqueminimo = null;
                                 $estoquemaximo = null;
@@ -69,7 +66,7 @@
                                     min="0"
                                     max=""
                                     onchange="atualizaMinMaxInput({{$coluna->codestoquelocal}}, {{$linha->codprodutovariacao}}, 'minimo'); atualizaTotais()" 
-                                    />
+                                    />                                  
                             </td>
                             <td>
                                 <input 
@@ -92,6 +89,48 @@
                             <span id="maximovariacao_{{$linha->codprodutovariacao}}"></span>
                         </th>                                        
                     </tr>
+                    <tr>
+                        @foreach ($colunas as $coluna)
+                            <?php
+                                $valor = $valores->first(function ($key, $value) use ($linha, $coluna) {
+                                    return 
+                                        ($value->codestoquelocal == $coluna->codestoquelocal)
+                                        && ($value->codprodutovariacao == $linha->codprodutovariacao);
+                                });
+
+                                $saldoquantidade = null;
+                                $vendaano = null;
+                                if ($valor) {
+                                    $saldoquantidade = $valor->saldoquantidade;
+                                    $vendaano = $valor->vendaano;
+                                }
+                            ?>
+                            <td colspan="2">
+                                <input 
+                                    type="hidden" 
+                                    id="saldoquantidade_{{$coluna->codestoquelocal}}_{{$linha->codprodutovariacao}}" 
+                                    value="{{$saldoquantidade}}" 
+                                    />   
+                                <input 
+                                    type="hidden" 
+                                    id="vendaano_{{$coluna->codestoquelocal}}_{{$linha->codprodutovariacao}}" 
+                                    value="{{$vendaano}}" 
+                                    />                                                                    
+                                <div class="progress" style="margin-bottom: 0px">
+                                    <div class="progress-bar progress-bar-success  " style="width: 0%" id="pb_success_{{$coluna->codestoquelocal}}_{{$linha->codprodutovariacao}}">
+                                        <span id="pb_label_success_{{$coluna->codestoquelocal}}_{{$linha->codprodutovariacao}}"></span>
+                                    </div>                                    
+                                    <div class="progress-bar progress-bar-danger " style="width: 0%" id="pb_danger_{{$coluna->codestoquelocal}}_{{$linha->codprodutovariacao}}">
+                                        <span id="pb_label_danger_{{$coluna->codestoquelocal}}_{{$linha->codprodutovariacao}}"></span>
+                                    </div>
+                                    <div class="progress-bar progress-bar-warning " style="width: 0%" id="pb_warning_{{$coluna->codestoquelocal}}_{{$linha->codprodutovariacao}}">
+                                        <span id="pb_label_warning_{{$coluna->codestoquelocal}}_{{$linha->codprodutovariacao}}"></span>
+                                    </div>
+                                </div>
+                            </td>
+                        @endforeach
+                    </tr>
+
                 @endforeach
 
                 <tr>
@@ -200,15 +239,43 @@ function atualizaTotais()
         minimovariacao = 0;
         maximovariacao = 0;
         codestoquelocals.forEach(function(codestoquelocal) {
-            var val = parseFloat($('#estoqueminimo_' + codestoquelocal + '_' + codprodutovariacao).val());
-            if (val) {
-                minimovariacao += val;
-                minimo += val;
+            var min = parseFloat($('#estoqueminimo_' + codestoquelocal + '_' + codprodutovariacao).val());
+            if (min) {
+                minimovariacao += min;
+                minimo += min;
             }
-            var val = parseFloat($('#estoquemaximo_' + codestoquelocal + '_' + codprodutovariacao).val());
-            if (val) {
-                maximovariacao += val;
-                maximo += val;
+            var max = parseFloat($('#estoquemaximo_' + codestoquelocal + '_' + codprodutovariacao).val());
+            if (max) {
+                maximovariacao += max;
+                maximo += max;
+            }
+            var sld = parseFloat($('#saldoquantidade_' + codestoquelocal + '_' + codprodutovariacao).val());
+            var vda = parseInt($('#vendaano_' + codestoquelocal + '_' + codprodutovariacao).val());
+            $('#pb_success_' + codestoquelocal + '_' + codprodutovariacao).css('width', '0%');
+            $('#pb_danger_' + codestoquelocal + '_' + codprodutovariacao).css('width', '0%');
+            $('#pb_warning_' + codestoquelocal + '_' + codprodutovariacao).css('width', '0%');
+            $('#pb_label_success_' + codestoquelocal + '_' + codprodutovariacao).html('');
+            $('#pb_label_danger_' + codestoquelocal + '_' + codprodutovariacao).html('');
+            $('#pb_label_warning_' + codestoquelocal + '_' + codprodutovariacao).html('');
+            if (max > 0) {
+                var perc = parseInt((sld/max) * 100);
+            }
+            var html = sld + ' (' + perc + '%)';
+            if (vda) {
+                html += ' / ' + vda + ' Ano';
+            }
+            if (perc > 100) {
+                $('#pb_warning_' + codestoquelocal + '_' + codprodutovariacao).css('width', '100%');
+                $('#pb_label_warning_' + codestoquelocal + '_' + codprodutovariacao).html(html);
+            } else {
+                if (sld > min) {
+                    $('#pb_success_' + codestoquelocal + '_' + codprodutovariacao).css('width', perc + '%');
+                    $('#pb_label_success_' + codestoquelocal + '_' + codprodutovariacao).html(html);
+                } else {
+                    $('#pb_success_' + codestoquelocal + '_' + codprodutovariacao).css('width', perc + '%');
+                    $('#pb_danger_' + codestoquelocal + '_' + codprodutovariacao).css('width', (100 - perc) + '%');
+                    $('#pb_label_danger_' + codestoquelocal + '_' + codprodutovariacao).html(html);
+                }
             }
         });
         $('#minimovariacao_' + codprodutovariacao).html(minimovariacao);

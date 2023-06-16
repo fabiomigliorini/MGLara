@@ -538,16 +538,31 @@ class ProdutoController extends Controller
                 elpv.codprodutovariacao, 
                 elpv.codestoquelocalprodutovariacao,
                 elpv.estoqueminimo, 
-                elpv.estoquemaximo  
+                elpv.estoquemaximo,
+                es.saldoquantidade,
+                (
+                    select sum(coalesce(pe.quantidade, 1) * npb.quantidade * (case when nat.codoperacao = 1 then -1 else 1 end))
+                    from tblprodutobarra pb
+                    inner join tblnegocioprodutobarra npb on (npb.codprodutobarra = pb.codprodutobarra)
+                    inner join tblnegocio n on (n.codnegocio = npb.codnegocio)
+                    inner join tblnaturezaoperacao nat on (nat.codnaturezaoperacao = n.codnaturezaoperacao)
+                    left join tblprodutoembalagem pe on (pe.codprodutoembalagem = pb.codprodutoembalagem)
+                    where pb.codprodutovariacao = pv.codprodutovariacao 
+                    and n.codestoquelocal = elpv.codestoquelocal 
+                    and n.codnegociostatus = 2
+                    and nat.venda = true
+                    and n.lancamento >= now() - \'1 year\'::interval     	
+                ) as vendaano
             from tblprodutovariacao pv
-            left join tblestoquelocalprodutovariacao elpv on (elpv.codprodutovariacao = pv.codprodutovariacao)
-            where pv.codproduto = :codproduto 
+            left join tblestoquelocalprodutovariacao elpv on (elpv.codprodutovariacao = pv.codprodutovariacao and elpv.codestoquelocal in (101001, 102001, 103001, 104001, 105001))
+            left join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = false)
+            where pv.codproduto = :codproduto
         ';
+        
         $valores = collect(DB::select($sql, [
             'codproduto' => $id
         ]));
         
-       
         return view('produto.min-max-editar', compact('model', 'valores', 'colunas', 'linhas'));
 
     }
