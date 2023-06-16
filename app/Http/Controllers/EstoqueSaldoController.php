@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 use MGLara\Http\Controllers\Controller;
+use MGLara\Models\EstoqueLocal;
 use MGLara\Models\EstoqueSaldo;
 use MGLara\Models\EstoqueMes;
 
@@ -313,6 +314,28 @@ class EstoqueSaldoController extends Controller
         }
 
         return view('estoque-saldo.relatorio-fisico-fiscal', compact('dados'));
+    }
+
+    public function relatorioTransferenciaFiltro(Request $request)
+    {
+        $filtro = self::filtroEstatico($request);
+        
+        return view('estoque-saldo.relatorio-transferencias-filtro', compact('filtro'));
+
+    }
+
+
+    public function relatorioTransferencia(Request $request)
+    {
+        $filtro = self::filtroEstatico($request);
+        
+        $dados = EstoqueSaldo::RelatorioTransferencias($filtro);
+         
+        $localorigem = EstoqueLocal::findOrFail($filtro['codestoquelocalorigem']);
+        $localdestino = EstoqueLocal::findOrFail($filtro['codestoquelocaldestino']);
+
+        return view('estoque-saldo.relatorio-transferencias', compact('dados', 'localorigem', 'localdestino'));
+
     }
 
 }

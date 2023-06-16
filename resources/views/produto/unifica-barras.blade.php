@@ -56,6 +56,10 @@
                         @endforeach 
                     </select>
                 </div>
+                 <div id="div-unifica-barras" class="col-md-8 text-right" style="display:none">
+                    <b>Aguarde...</b>
+                    <img width="20px" src="{{ URL::asset('public/img/carregando.gif') }}">
+                </div>
                 <button type="button" class="btn btn-primary" onclick="confirmar({{$pv->codprodutovariacao}})">Unificar</button>
             </form>
         </div>
@@ -120,7 +124,9 @@ function confirmar (codprodutovariacao)
         // cancelButtonColor: '#d33',
         confirmButtonText: 'Unificar'
     }).then((result) => {
+        document.getElementById('div-unifica-barras').style.display = 'block';
         if (!result.isConfirmed) {
+            document.getElementById('div-unifica-barras').style.display = 'none';
             return;
         }
         unificaBarras(codprodutobarraorigem, codprodutobarradestino);
@@ -149,12 +155,14 @@ function unificaBarras(codprodutobarraorigem, codprodutobarradestino)
                 icon: 'success',
                 confirmButtonText: 'Fechar'
             }).then((result) => {
+                document.getElementById('div-unifica-barras').style.display = 'none';
                 window.location="/MGLara/produto/{{$model->codproduto}}";
             });
         },
         error: function (err) {
             console.info(err);
             var erro = JSON.parse(err.responseText);
+            document.getElementById('div-unifica-barras').style.display = 'none';
             Swal.fire({
                 title: 'Erro',
                 text: "Erro:" + erro.message,

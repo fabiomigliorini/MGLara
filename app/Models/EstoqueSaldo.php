@@ -1316,6 +1316,66 @@ class EstoqueSaldo extends MGModel
         return $ret;
     }
 
+    public static function RelatorioTransferencias($filtro)
+    {
+
+        $sql = '
+            with itens as (
+                select 
+                    m.marca, 
+                    p.codproduto, 
+                    p.produto, 
+                    pv.variacao, 
+                    elpv_dest.estoqueminimo, 
+                    elpv_dest.estoquemaximo, 
+                    sld_dest.saldoquantidade as saldodestino, 
+                    sld_orig.saldoquantidade as saldoorigem, 
+                    coalesce(pe.quantidade, 1) as quantidadeembalagem 
+                from tblproduto p
+                inner join tblmarca m on (m.codmarca = p.codmarca)
+                inner join tblprodutovariacao pv on (pv.codproduto = p.codproduto)
+                left join tblprodutoembalagem pe on (pe.codprodutoembalagem = p.codprodutoembalagemtransferencia)
+                inner join tblestoquelocalprodutovariacao elpv_orig on (elpv_orig.codprodutovariacao = pv.codprodutovariacao and elpv_orig.codestoquelocal = :codestoquelocalorigem)
+                inner join tblestoquelocalprodutovariacao elpv_dest on (elpv_dest.codprodutovariacao = pv.codprodutovariacao and elpv_dest.codestoquelocal = :codestoquelocaldestino)
+                inner join tblestoquesaldo sld_orig on (sld_orig.codestoquelocalprodutovariacao = elpv_orig.codestoquelocalprodutovariacao and sld_orig.fiscal = false)
+                inner join tblestoquesaldo sld_dest on (sld_dest.codestoquelocalprodutovariacao = elpv_dest.codestoquelocalprodutovariacao and sld_dest.fiscal = false)
+                where sld_dest.saldoquantidade < elpv_dest.estoqueminimo
+                and sld_orig.saldoquantidade > 0
+        ';
+
+        $params = [
+            'codestoquelocalorigem' => $filtro['codestoquelocalorigem'],
+            'codestoquelocaldestino' => $filtro['codestoquelocaldestino'],
+        ];
+        
+        if (!empty($filtro['codmarca'])) {
+            $sql .= '
+                and p.codmarca = :codmarca 
+            ';
+            $params['codmarca']  = $filtro['codmarca'];
+        }
+
+        $sql .= '
+                order by m.marca, p.produto, pv.variacao, pv.codprodutovariacao 
+            )
+            select 
+                *,
+                round((estoquemaximo - saldodestino)/quantidadeembalagem) * quantidadeembalagem as transferir
+            from itens
+        ';
+
+        $result =  DB::select($sql, $params);
+        
+
+        $retorno =  ['filtro' => $filtro,
+            'urlfiltro' => urlArrGet($filtro, 'estoque-saldo/relatorio-transferencias-filtro'),
+            'itens' => $result
+        ];
+
+
+       return $retorno;
+    }
+
     public function scopeFiscal($query, $fiscal)
     {
         if ($fiscal)
