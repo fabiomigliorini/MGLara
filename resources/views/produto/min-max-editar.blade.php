@@ -482,7 +482,7 @@ function SugerirMinimoMaximo()
                 vendaano = 0;
             }
             sugestaomaximo = Math.ceil(((vendaano/365) * diasloja) / step) * step;
-            sugestaominimo = Math.floor((sugestaomaximo/2));
+            sugestaominimo = Math.floor((sugestaomaximo/2) / step) * step;
 
             $('#estoqueminimo_' + codestoquelocal + '_' + codprodutovariacao).val(sugestaominimo);
             $('#estoquemaximo_' + codestoquelocal + '_' + codprodutovariacao).val(sugestaomaximo);
