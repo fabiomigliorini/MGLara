@@ -507,17 +507,12 @@ function SugerirMinimoMaximo()
             }
             totalmaximolojas += maximolojas;
         })
-
-        console.log(codprodutovariacao, totalmaximolojas, totalvendaano);
-        // console.log(totalvendaano);
-
-        // sugestaomaximo = Math.ceil((totalvendaano/365) * diasdeposito) - totalmaximolojas;
         sugestaomaximo = (Math.ceil(((totalvendaano/365) * diasdeposito) / step) * step) - totalmaximolojas;
 
         if (sugestaomaximo < 0) {
             sugestaomaximo = 0;
         }
-        sugestaominimo = Math.floor((sugestaomaximo/2));
+        sugestaominimo = Math.floor((sugestaomaximo/2) / step) * step;
 
         $('#estoqueminimo_' + codestoquelocaldeposito + '_' + codprodutovariacao).val(sugestaominimo);
         $('#estoquemaximo_' + codestoquelocaldeposito + '_' + codprodutovariacao).val(sugestaomaximo);
