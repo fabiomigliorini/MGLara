@@ -17,18 +17,17 @@
                 <th colspan='3'></th>
                 <th colspan='3'>{{$localorigem->estoquelocal}}</th>
                 <th colspan='3'>{{$localdestino->estoquelocal}}</th>
-                <th></th>
             </tr>
             <tr>
                 <th>Marca</th>
                 <th>Produto</th>
-                <th>Cod Barras</th>
+                <th>Barras</th>
                 <th>Min</th>
                 <th>Max</th>
-                <th>Saldo </th>
-                <th>Destino</th>
-                <th>Embalagem</th>
-                <th>Transf</th>
+                <th>Sld</th>
+                <th>Sld</th>
+                <th>Emb</th>
+                <th>Trn</th>
             </tr>
         </thead>
         @foreach ($dados['itens'] as $dadostransf)
@@ -47,9 +46,10 @@
                         {{formataCodigo($dadostransf->codproduto, 6)}}
                     </td>               
                     <td class="codbarras text-left">
-                        @foreach (explode(';', $dadostransf->barras) as $barra)
+                    <b> @foreach (explode(';', $dadostransf->barras) as $barra)
                             {{$barra}} <br>
                         @endforeach
+                    </b>
                     </td>
                     <td class="estoqueminimo text-right">
                         {{formataNumero($dadostransf->estoqueminimo, 0)}}
@@ -67,7 +67,7 @@
                        {{formataNumero($dadostransf->quantidadeembalagem, 0)}}
                     </td>
                     <td class="transferir text-right" id="transferir">
-                       {{formataNumero($dadostransf->transferir, 0)}}
+                       <b>{{formataNumero($dadostransf->transferir, 0)}}
                     </td>
                 </tr>
         </tbody>
