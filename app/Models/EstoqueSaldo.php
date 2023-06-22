@@ -1325,7 +1325,9 @@ class EstoqueSaldo extends MGModel
                     m.marca, 
                     p.codproduto, 
                     p.produto, 
+                    pv.codprodutovariacao,
                     pv.variacao, 
+                    coalesce(pv.referencia, p.referencia) as referencia,
                     elpv_dest.estoqueminimo, 
                     elpv_dest.estoquemaximo, 
                     sld_dest.saldoquantidade as saldodestino, 
@@ -1357,21 +1359,49 @@ class EstoqueSaldo extends MGModel
 
         $sql .= '
                 order by m.marca, p.produto, pv.variacao, pv.codprodutovariacao 
+            ),
+            barras as (
+                with barrasvar as (
+                    select 
+                        pb.codprodutovariacao,
+                        pb.barras || \' \' || un.sigla || coalesce(\' C/\' || emb.quantidade::bigint, \'\') as barras,
+                        coalesce(emb.quantidade, 1) as quantidade
+                    from tblprodutobarra pb
+                    inner join tblproduto prod on (prod.codproduto = pb.codproduto)
+                    left join tblprodutoembalagem emb on (emb.codprodutoembalagem = pb.codprodutoembalagem)
+                    left join tblunidademedida un on (un.codunidademedida = coalesce(emb.codunidademedida, prod.codunidademedida))
+                    order by emb.quantidade asc nulls first, pb.barras desc
+                )
+                select 
+                    b.codprodutovariacao,
+                    array_agg(barras order by quantidade desc) as barras
+                from barrasvar b
+                group by b.codprodutovariacao
             )
             select 
-                *,
-                round((estoquemaximo - saldodestino)/quantidadeembalagem) * quantidadeembalagem as transferir
-            from itens
+                itens.marca, 
+                itens.referencia,
+                itens.codproduto, 
+                itens.produto, 
+                itens.codprodutovariacao,
+                itens.variacao, 
+                array_to_string(barras.barras, \';\') as barras,
+                itens.estoqueminimo, 
+                itens.estoquemaximo, 
+                itens.saldodestino, 
+                itens.saldoorigem, 
+                itens.quantidadeembalagem,
+                ceil((estoquemaximo - saldodestino)/quantidadeembalagem) * quantidadeembalagem as transferir
+            from itens 
+            left join barras on (itens.codprodutovariacao = barras.codprodutovariacao);
         ';
 
         $result =  DB::select($sql, $params);
         
-
         $retorno =  ['filtro' => $filtro,
             'urlfiltro' => urlArrGet($filtro, 'estoque-saldo/relatorio-transferencias-filtro'),
             'itens' => $result
         ];
-
 
        return $retorno;
     }

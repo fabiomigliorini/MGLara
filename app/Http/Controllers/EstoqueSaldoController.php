@@ -4,7 +4,7 @@ namespace MGLara\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-
+use Illuminate\Contracts\Validation\ValidationException;
 use MGLara\Http\Controllers\Controller;
 use MGLara\Models\EstoqueLocal;
 use MGLara\Models\EstoqueSaldo;
@@ -318,19 +318,29 @@ class EstoqueSaldoController extends Controller
 
     public function relatorioTransferenciaFiltro(Request $request)
     {
+
         $filtro = self::filtroEstatico($request);
+
         
         return view('estoque-saldo.relatorio-transferencias-filtro', compact('filtro'));
 
     }
 
 
+        
     public function relatorioTransferencia(Request $request)
     {
+        
+        $this->validate($request, [
+            'codestoquelocalorigem' => 'required',
+            'codestoquelocaldestino' => 'required'
+        ]);
+       
         $filtro = self::filtroEstatico($request);
         
         $dados = EstoqueSaldo::RelatorioTransferencias($filtro);
-         
+
+    
         $localorigem = EstoqueLocal::findOrFail($filtro['codestoquelocalorigem']);
         $localdestino = EstoqueLocal::findOrFail($filtro['codestoquelocaldestino']);
 

@@ -15,38 +15,42 @@
         <thead class='negativo'>
             <tr>
                 <th colspan='3'></th>
-                <th colspan='3'></th>
-                <th colspan='3'></th>
+                <th colspan='3'>{{$localorigem->estoquelocal}}</th>
+                <th colspan='3'>{{$localdestino->estoquelocal}}</th>
                 <th></th>
             </tr>
             <tr>
                 <th>Marca</th>
                 <th>Produto</th>
-                <th class=''>Variação</th>
-                <th>Estoque Mínimo</th>
-                <th>Estoque Máximo</th>
-                <th>Saldo Origem</th>
-                <th>Saldo Destino</th>
-                <th>Quantidade de Embalagem</th>
-                <th>Transferir</th>
+                <th>Cod Barras</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Saldo </th>
+                <th>Destino</th>
+                <th>Embalagem</th>
+                <th>Transf</th>
             </tr>
         </thead>
         @foreach ($dados['itens'] as $dadostransf)
         <tbody class='zebrada'>   
                 <tr>
-                    <td class="codigo text-center">{{$dadostransf->marca}}</td>
+                    <td class="codigo text-center">
+                        {{$dadostransf->marca}} <br> {{$dadostransf->referencia}}
+                    </td>
                     <td class="produto">
-                        <a href="{{ url('produto', $dadostransf->codproduto) }}">{{$dadostransf->produto}}</a>
+                        <a href="{{ url('produto', $dadostransf->codproduto) }}">
+                         {{$dadostransf->produto}}
+                            @if (!empty($dadostransf->variacao))
+                                {{$dadostransf->variacao}}
+                            @endif
+                        </a> <br>
+                        {{formataCodigo($dadostransf->codproduto, 6)}}
+                    </td>               
+                    <td class="codbarras text-left">
+                        @foreach (explode(';', $dadostransf->barras) as $barra)
+                            {{$barra}} <br>
+                        @endforeach
                     </td>
-                    @if($dadostransf->variacao == null)
-                    <td class='variacao text-right'>
-                         Sem variação
-                    </td>
-                    @else
-                    <td class='variacao text-right'>
-                         {{$dadostransf->variacao}} 
-                    </td>
-                    @endif
                     <td class="estoqueminimo text-right">
                         {{formataNumero($dadostransf->estoqueminimo, 0)}}
                     </td>
@@ -62,11 +66,21 @@
                     <td class="quantidadeembalagem text-right">
                        {{formataNumero($dadostransf->quantidadeembalagem, 0)}}
                     </td>
-                    <td class="transferir text-right">
+                    <td class="transferir text-right" id="transferir">
                        {{formataNumero($dadostransf->transferir, 0)}}
                     </td>
                 </tr>
         </tbody>
+                <th colspan='1'></th>
+                <th colspan='1'></th>
+                <th colspan='1'></th>
+                <th colspan='1'></th>
+                <th colspan='1'></th>
+                <th colspan='1'></th>
+                <th colspan='1'></th>
+                <th colspan='1'></th>
+                <th colspan='1'></th>
+                
         @endforeach
     </table>
 </div>
@@ -109,4 +123,10 @@
         width: 0.5cm;
     }
 </style>
+<script type="text/javascript">
+
+const teste = $('#transferir').text();
+
+console.log(teste);
+</script>
 @stop
