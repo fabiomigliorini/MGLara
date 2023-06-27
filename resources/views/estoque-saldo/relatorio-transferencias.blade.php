@@ -2,7 +2,7 @@
 @section('content')
 <div class='cabecalho'>
     <a href="{{$dados['urlfiltro']}}">
-        Relatório Transferências de Estoque
+        Transferências de Estoque
     </a>
     <small class='pull-right text-right' style='font-size: 0.5em'>
         {{$localorigem->estoquelocal}} X {{$localdestino->estoquelocal}}
@@ -71,16 +71,15 @@
                     </td>
                 </tr>
         </tbody>
-                <th colspan='1'></th>
-                <th colspan='1'></th>
-                <th colspan='1'></th>
-                <th colspan='1'></th>
-                <th colspan='1'></th>
-                <th colspan='1'></th>
-                <th colspan='1'></th>
-                <th colspan='1'></th>
-                <th colspan='1'></th>
-                
+            <th colspan='1'></th>
+            <th colspan='1'></th>
+            <th colspan='1'></th>
+            <th colspan='1'></th>
+            <th colspan='1'></th>
+            <th colspan='1'></th>
+            <th colspan='1'></th>
+            <th colspan='1'></th>
+            <th colspan='1'></th>    
         @endforeach
     </table>
 </div>
