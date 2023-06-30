@@ -211,15 +211,15 @@ class ProdutoController extends Controller
     public function BuscaProdutoPorBarra(Request $request)
     {
         $sql = '
-            select codproduto 
+            select codproduto
             from tblprodutobarra pb
-            where pb.codproduto = :barras
+            where pb.codproduto = left(\'0\' || regexp_replace(:barras, \'[^0-9]+\', \'\', \'g\'), 8)::bigint
             or pb.barras = :barras::text
             limit 1
         ';
 
         $params = [
-            'barras' => $request->get('barras')
+            'barras' => trim($request->get('barras'))
         ];
 
         if ($request->get('barras') !== ""){
