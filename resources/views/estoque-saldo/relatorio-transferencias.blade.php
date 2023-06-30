@@ -15,8 +15,8 @@
         <thead class='negativo'>
             <tr>
                 <th colspan='3'></th>
-                <th colspan='3'>{{$localorigem->estoquelocal}}</th>
                 <th colspan='3'>{{$localdestino->estoquelocal}}</th>
+                <th colspan='3'>{{$localorigem->estoquelocal}}</th>
             </tr>
             <tr>
                 <th>Marca</th>
@@ -58,10 +58,10 @@
                     {{formataNumero($dadostransf->estoquemaximo, 0)}}
                     </td>
                     <td class="saldoorigem text-right">
-                    {{formataNumero($dadostransf->saldoorigem, 0)}}
+                    {{formataNumero($dadostransf->saldodestino, 0)}}
                     </td>
                     <td class="saldodestino text-right">
-                      {{formataNumero($dadostransf->saldodestino, 0)}}
+                      {{formataNumero($dadostransf->saldoorigem, 0)}}
                     </td>
                     <td class="quantidadeembalagem text-right">
                        {{formataNumero($dadostransf->quantidadeembalagem, 0)}}
