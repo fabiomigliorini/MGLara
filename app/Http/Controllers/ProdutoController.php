@@ -207,6 +207,33 @@ class ProdutoController extends Controller
         return view('produto.edit',  compact('model'));
     }
 
+
+    public function BuscaProdutoPorBarra(Request $request)
+    {
+        $sql = '
+            select codproduto 
+            from tblprodutobarra pb
+            where pb.codproduto = :barras
+            or pb.barras = :barras::text
+            limit 1
+        ';
+
+        $params = [
+            'barras' => $request->get('barras')
+        ];
+
+        if ($request->get('barras') !== ""){
+            $resultado = DB::select($sql, $params);
+            
+            if (isset($resultado[0]->codproduto)){
+                return response()->json($resultado[0]->codproduto, 200);
+            }else{
+                return response()->json('Nenhum registro encontrado!', 200);
+            }
+        }        
+
+    }
+
     /**
      * Update the specified resource in storage.
      *

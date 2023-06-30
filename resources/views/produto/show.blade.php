@@ -557,11 +557,22 @@ $(document).ready(function() {
     $('#btnVaiPara').click(function (e) {
         e.preventDefault();
         bootbox.prompt({
-            title: "Digite o código do produto",
-            inputType: 'number',
+            title: "Digite o código ou barra do produto",
+            inputType: 'text',
             callback: function (result) {
                 if(result) {
-                    location.replace(baseUrl + '/produto/' + result)
+                    $.ajax({
+                        url: "<?php echo url('produto/'. $model->codproduto . '/busca-barras')?>" ,
+                        data: {
+                        barras: result,
+                        }
+                    }).done(function(resp) {
+                      if (resp == 'Nenhum registro encontrado!'){
+                        bootbox.alert(resp);
+                      }else{
+                        location.replace(baseUrl + '/produto/' + resp)
+                      }
+                    });
                 }
             }
         });
