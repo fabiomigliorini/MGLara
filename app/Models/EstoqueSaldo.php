@@ -1358,7 +1358,6 @@ class EstoqueSaldo extends MGModel
         }
 
         $sql .= '
-                order by m.marca, p.produto, pv.variacao, pv.codprodutovariacao 
             ),
             barras as (
                 with barrasvar as (
@@ -1393,7 +1392,9 @@ class EstoqueSaldo extends MGModel
                 itens.quantidadeembalagem,
                 ceil((estoquemaximo - saldodestino)/quantidadeembalagem) * quantidadeembalagem as transferir
             from itens 
-            left join barras on (itens.codprodutovariacao = barras.codprodutovariacao);
+            left join barras on (itens.codprodutovariacao = barras.codprodutovariacao)
+            order by itens.marca, itens.produto, itens.variacao, itens.codprodutovariacao
+
         ';
 
         $result =  DB::select($sql, $params);

@@ -34,7 +34,8 @@
         <tbody class='zebrada'>   
                 <tr>
                     <td class="codigo text-center">
-                        {{$dadostransf->marca}} <br> {{$dadostransf->referencia}}
+			{{$dadostransf->marca}} <br> 
+                        <small>{{$dadostransf->referencia}}</small>
                     </td>
                     <td class="produto">
                         <a href="{{ url('produto', $dadostransf->codproduto) }}">
@@ -43,7 +44,9 @@
                                 {{$dadostransf->variacao}}
                             @endif
                         </a> <br>
-                        {{formataCodigo($dadostransf->codproduto, 6)}}
+                        <small style="text-overflow: ellipsis;">
+                          {{formataCodigo($dadostransf->codproduto, 6)}}
+                        </small>
                     </td>               
                     <td class="codbarras text-left">
                     <b> @foreach (explode(';', $dadostransf->barras) as $barra)

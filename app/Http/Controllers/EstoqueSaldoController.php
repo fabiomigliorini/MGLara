@@ -339,7 +339,6 @@ class EstoqueSaldoController extends Controller
         $filtro = self::filtroEstatico($request);
         
         $dados = EstoqueSaldo::RelatorioTransferencias($filtro);
-
     
         $localorigem = EstoqueLocal::findOrFail($filtro['codestoquelocalorigem']);
         $localdestino = EstoqueLocal::findOrFail($filtro['codestoquelocaldestino']);
