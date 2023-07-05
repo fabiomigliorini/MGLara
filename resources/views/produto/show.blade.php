@@ -559,19 +559,25 @@ $(document).ready(function() {
         bootbox.prompt({
             title: "Digite o código ou barra do produto",
             inputType: 'text',
-            callback: function (result) {
-                if(result) {
+            callback: function (barras) {
+                if(barras) {
+                    const url = "<?php echo '/MGLara/produto/'. $model->codproduto . '/busca-barras'?>";
                     $.ajax({
-                        url: "<?php echo url('produto/'. $model->codproduto . '/busca-barras')?>" ,
+                        type: 'GET',
+                        url: url,
                         data: {
-                        barras: result,
+                            barras: barras,
                         }
                     }).done(function(resp) {
-                      if (resp == 'Nenhum registro encontrado!'){
-                        bootbox.alert(resp);
-                      }else{
-                        location.replace(baseUrl + '/produto/' + resp)
-                      }
+                        if (resp == 'Nenhum registro encontrado!'){
+                            bootbox.alert(resp);
+                        }else{
+                            location.replace(baseUrl + '/produto/' + resp)
+                        }
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        alert(jqXHR.statusText);
+                    }).always(function() {
+                        //alert( "complete" );
                     });
                 }
             }
