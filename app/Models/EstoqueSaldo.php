@@ -1337,12 +1337,12 @@ class EstoqueSaldo extends MGModel
                 inner join tblmarca m on (m.codmarca = p.codmarca)
                 inner join tblprodutovariacao pv on (pv.codproduto = p.codproduto)
                 left join tblprodutoembalagem pe on (pe.codprodutoembalagem = p.codprodutoembalagemtransferencia)
-                inner join tblestoquelocalprodutovariacao elpv_orig on (elpv_orig.codprodutovariacao = pv.codprodutovariacao and elpv_orig.codestoquelocal = :codestoquelocalorigem)
-                inner join tblestoquelocalprodutovariacao elpv_dest on (elpv_dest.codprodutovariacao = pv.codprodutovariacao and elpv_dest.codestoquelocal = :codestoquelocaldestino)
-                inner join tblestoquesaldo sld_orig on (sld_orig.codestoquelocalprodutovariacao = elpv_orig.codestoquelocalprodutovariacao and sld_orig.fiscal = false)
-                inner join tblestoquesaldo sld_dest on (sld_dest.codestoquelocalprodutovariacao = elpv_dest.codestoquelocalprodutovariacao and sld_dest.fiscal = false)
-                where sld_dest.saldoquantidade < elpv_dest.estoqueminimo
-                and sld_orig.saldoquantidade > 0
+                left join tblestoquelocalprodutovariacao elpv_orig on (elpv_orig.codprodutovariacao = pv.codprodutovariacao and elpv_orig.codestoquelocal = :codestoquelocalorigem)
+                left join tblestoquelocalprodutovariacao elpv_dest on (elpv_dest.codprodutovariacao = pv.codprodutovariacao and elpv_dest.codestoquelocal = :codestoquelocaldestino)
+                left join tblestoquesaldo sld_orig on (sld_orig.codestoquelocalprodutovariacao = elpv_orig.codestoquelocalprodutovariacao and sld_orig.fiscal = false)
+                left join tblestoquesaldo sld_dest on (sld_dest.codestoquelocalprodutovariacao = elpv_dest.codestoquelocalprodutovariacao and sld_dest.fiscal = false)
+                where coalesce(sld_dest.saldoquantidade, 0) <= coalesce(elpv_dest.estoqueminimo, 0)
+                and coalesce(sld_orig.saldoquantidade, 0) > 0
         ';
 
         $params = [
@@ -1390,13 +1390,15 @@ class EstoqueSaldo extends MGModel
                 itens.saldodestino, 
                 itens.saldoorigem, 
                 itens.quantidadeembalagem,
-                ceil((estoquemaximo - saldodestino)/quantidadeembalagem) * quantidadeembalagem as transferir
+                ceil ( (coalesce(estoquemaximo, 0) - coalesce(saldodestino, 0)) / quantidadeembalagem) * quantidadeembalagem as transferir
+                --ceil((estoquemaximo - saldodestino)/quantidadeembalagem) * quantidadeembalagem as transferir
             from itens 
             left join barras on (itens.codprodutovariacao = barras.codprodutovariacao)
             order by itens.marca, itens.produto, itens.variacao, itens.codprodutovariacao
 
         ';
 
+	//dd($sql);
         $result =  DB::select($sql, $params);
         
         $retorno =  ['filtro' => $filtro,
