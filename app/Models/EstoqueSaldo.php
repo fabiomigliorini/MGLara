@@ -1337,11 +1337,12 @@ class EstoqueSaldo extends MGModel
                 inner join tblmarca m on (m.codmarca = p.codmarca)
                 inner join tblprodutovariacao pv on (pv.codproduto = p.codproduto)
                 left join tblprodutoembalagem pe on (pe.codprodutoembalagem = p.codprodutoembalagemtransferencia)
-                left join tblestoquelocalprodutovariacao elpv_orig on (elpv_orig.codprodutovariacao = pv.codprodutovariacao and elpv_orig.codestoquelocal = :codestoquelocalorigem)
-                left join tblestoquelocalprodutovariacao elpv_dest on (elpv_dest.codprodutovariacao = pv.codprodutovariacao and elpv_dest.codestoquelocal = :codestoquelocaldestino)
+                inner join tblestoquelocalprodutovariacao elpv_orig on (elpv_orig.codprodutovariacao = pv.codprodutovariacao and elpv_orig.codestoquelocal = :codestoquelocalorigem)
+                inner join tblestoquelocalprodutovariacao elpv_dest on (elpv_dest.codprodutovariacao = pv.codprodutovariacao and elpv_dest.codestoquelocal = :codestoquelocaldestino)
                 left join tblestoquesaldo sld_orig on (sld_orig.codestoquelocalprodutovariacao = elpv_orig.codestoquelocalprodutovariacao and sld_orig.fiscal = false)
                 left join tblestoquesaldo sld_dest on (sld_dest.codestoquelocalprodutovariacao = elpv_dest.codestoquelocalprodutovariacao and sld_dest.fiscal = false)
                 where coalesce(sld_dest.saldoquantidade, 0) <= coalesce(elpv_dest.estoqueminimo, 0)
+                and coalesce(elpv_dest.estoquemaximo, 0) > 1
                 and coalesce(sld_orig.saldoquantidade, 0) > 0
         ';
 

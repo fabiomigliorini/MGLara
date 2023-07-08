@@ -37,18 +37,48 @@ class EstoqueMovimentoController extends Controller
         $model = new EstoqueMovimento();
         $model->codestoquemes = $codestoquemes;
         $model->data = $model->EstoqueMes->mes->endOfMonth();
-	$model->codestoquemovimentotipo = 1002;
+        $model->codestoquemovimentotipo = 1002;
+	
+        $sql = '
+            select max(saldoquantidade) as max, min(saldoquantidade) as min 
+            from tblestoquemes em 
+            where em.codestoquesaldo = :codestoquesaldo 
+            and em.mes >= :mes
+        ';
+        //dd($model->EstoqueMes->codestoquesaldo);
+
+        //dd($model->mes);
+        $minmax = DB::select($sql, [
+            'codestoquesaldo' => $model->EstoqueMes->codestoquesaldo,
+            'mes' => $model->EstoqueMes->mes->format('Y-m-d')
+        ]);
+        $min = doubleval($minmax[0]->min);
+        $max = doubleval($minmax[0]->max);
+
+        if ($min < 0) {
+            $model->entradaquantidade = abs($min);
+            $model->entradaunitario = abs($model->EstoqueMes->customedio);
+            $model->entradavalor = round($model->entradaquantidade * $model->entradaunitario, 2);
+        } elseif ($min > 0) {
+            $model->saidaquantidade = abs($min);
+            $model->saidaunitario = abs($model->EstoqueMes->customedio);
+            $model->saidavalor = round($model->saidaquantidade * $model->saidaunitario, 2);
+        }
+
+        /*
+        dd($model);
 
         if ($model->EstoqueMes->saldoquantidade < 0) {
-		$model->entradaquantidade = abs($model->EstoqueMes->saldoquantidade);
-		$model->entradavalor = abs($model->EstoqueMes->saldovalor);
-		$model->entradaunitario = $model->entradavalor / $model->entradaquantidade;
+        $model->entradaquantidade = abs($model->EstoqueMes->saldoquantidade);
+        $model->entradavalor = abs($model->EstoqueMes->saldovalor);
+        $model->entradaunitario = $model->entradavalor / $model->entradaquantidade;
         }
         if ($model->EstoqueMes->saldoquantidade > 0) {
              $model->saidaquantidade = abs($model->EstoqueMes->saldoquantidade);
              $model->saidavalor = abs($model->EstoqueMes->saldovalor);
              $model->saidaunitario = $model->saidavalor / $model->saidaquantidade;
         }
+        */	
 
 
         

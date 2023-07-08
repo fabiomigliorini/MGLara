@@ -111,10 +111,10 @@ function decideIconeUltimaConferencia($data)
 
 <?php
 
-    $proximos = $model->buscaProximos(7);
-    $anteriores = $model->buscaAnteriores(14 - sizeof($proximos));
+    $proximos = $model->buscaProximos(12);
+    $anteriores = $model->buscaAnteriores(24 - sizeof($proximos));
     if (sizeof($anteriores) < 7) {
-	    $proximos = $model->buscaProximos(14 - sizeof($anteriores));
+	    $proximos = $model->buscaProximos(24 - sizeof($anteriores));
     }
 
     function labelClass ($saldo) {
