@@ -9,6 +9,11 @@
         {!! Form::label('estoque', 'Estoque', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9" id="wrapper-estoque">{!! Form::checkbox('estoque', true, null, ['id'=>'estoque', 'data-off-text' => 'Não Controla', 'data-on-text' => 'Controla']) !!}</div>
     </div>
+    
+    <div class="form-group">
+        {!! Form::label('conferenciaperiodica', 'Conferência', ['class'=>'col-sm-3 control-label']) !!}
+        <div class="col-sm-9">{!! Form::checkbox('conferenciaperiodica', true, null, ['id'=>'conferenciaperiodica', 'data-off-text' => 'Normal', 'data-on-text' => 'Periódica']) !!}</div>
+    </div>
 
     <div class="form-group">
         {!! Form::label('codmarca', 'Marca', ['class'=>'col-sm-3 control-label']) !!}
@@ -228,6 +233,7 @@ $(document).ready(function() {
     });
     $('#importado').bootstrapSwitch();
     $('#estoque').bootstrapSwitch();
+    $('#conferenciaperiodica').bootstrapSwitch();
     // $('#site').bootstrapSwitch();
 
     @if (!empty($model->codsubgrupoproduto))

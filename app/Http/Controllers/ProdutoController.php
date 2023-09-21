@@ -40,7 +40,8 @@ class ProdutoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
 
         // Busca filtro da sessao
         $parametros = self::filtroEstatico(
@@ -64,13 +65,10 @@ class ProdutoController extends Controller
     {
         $model = new Produto;
 
-        if ($request->get('duplicar'))
-        {
+        if ($request->get('duplicar')) {
             $duplicar = Produto::findOrFail($request->get('duplicar'));
             $model->fill($duplicar->getAttributes());
-        }
-        else
-        {
+        } else {
             $model->codtipoproduto = TipoProduto::MERCADORIA;
             $model->estoque = true;
             $model->abc = 'C';
@@ -90,13 +88,16 @@ class ProdutoController extends Controller
 
         $model = new Produto($request->all());
 
-        if(is_null($request->input('importado'))) {
+        if (is_null($request->input('importado'))) {
             $model->importado = FALSE;
         }
-        if(is_null($request->input('estoque'))) {
+        if (is_null($request->input('estoque'))) {
             $model->estoque = FALSE;
         }
-        if(is_null($request->input('site'))) {
+        if (is_null($request->input('conferenciaperiodica'))) {
+            $model->conferenciaperiodica = FALSE;
+        }
+        if (is_null($request->input('site'))) {
             $model->site = FALSE;
         }
 
@@ -107,13 +108,13 @@ class ProdutoController extends Controller
 
         try {
             if (!$model->save())
-                throw new Exception ('Erro ao Criar Produto!');
+                throw new Exception('Erro ao Criar Produto!');
 
             $pv = new ProdutoVariacao();
             $pv->codproduto = $model->codproduto;
 
             if (!$pv->save())
-                throw new Exception ('Erro ao Criar Variação!');
+                throw new Exception('Erro ao Criar Variação!');
 
             $pb = new ProdutoBarra();
             $pb->codproduto = $model->codproduto;
@@ -121,17 +122,15 @@ class ProdutoController extends Controller
             //$pb->barras = str_pad($model->codproduto, 6, '0', STR_PAD_LEFT);
 
             if (!$pb->save())
-                throw new Exception ('Erro ao Criar Barras!');
+                throw new Exception('Erro ao Criar Barras!');
 
             DB::commit();
             Session::flash('flash_success', "Produto '{$model->produto}' criado!");
             return redirect("produto/$model->codproduto");
-
         } catch (Exception $ex) {
             DB::rollBack();
             $this->throwValidationException($request, $model->_validator);
         }
-
     }
 
     public function show(Request $request, $id)
@@ -143,8 +142,7 @@ class ProdutoController extends Controller
         $estoque = null;
         $ultimaCompra = null;
         $ultimaVenda = null;
-        switch ($request->get('_div'))
-        {
+        switch ($request->get('_div')) {
             case 'div-imagens':
                 $view = 'produto.show-imagens';
                 break;
@@ -222,16 +220,15 @@ class ProdutoController extends Controller
             'barras' => trim($request->get('barras'))
         ];
 
-        if ($request->get('barras') !== ""){
+        if ($request->get('barras') !== "") {
             $resultado = DB::select($sql, $params);
-            
-            if (isset($resultado[0]->codproduto)){
+
+            if (isset($resultado[0]->codproduto)) {
                 return response()->json($resultado[0]->codproduto, 200);
-            }else{
+            } else {
                 return response()->json('Nenhum registro encontrado!', 200);
             }
-        }        
-
+        }
     }
 
     /**
@@ -246,14 +243,17 @@ class ProdutoController extends Controller
 
         $model = Produto::findOrFail($id);
         $model->fill($request->all());
-
-        if(is_null($request->input('importado'))) {
+        
+        if (is_null($request->input('importado'))) {
             $model->importado = FALSE;
         }
-        if(is_null($request->input('estoque'))) {
+        if (is_null($request->input('estoque'))) {
             $model->estoque = FALSE;
         }
-        if(is_null($request->input('site'))) {
+        if (is_null($request->input('conferenciaperiodica'))) {
+            $model->conferenciaperiodica = FALSE;
+        }
+        if (is_null($request->input('site'))) {
             $model->site = FALSE;
         }
 
@@ -266,14 +266,14 @@ class ProdutoController extends Controller
             $preco = $model->getOriginal('preco');
 
             if (!$model->save())
-                throw new Exception ('Erro ao alterar Produto!');
-            if($preco != $model->preco) {
+                throw new Exception('Erro ao alterar Produto!');
+            if ($preco != $model->preco) {
                 $historico = new ProdutoHistoricoPreco();
                 $historico->codproduto  = $model->codproduto;
                 $historico->precoantigo = $preco;
                 $historico->preconovo   = $model->preco;
                 if (!$historico->save())
-                    throw new Exception ('Erro ao gravar Historico!');
+                    throw new Exception('Erro ao gravar Historico!');
             }
 
             DB::commit();
@@ -283,10 +283,10 @@ class ProdutoController extends Controller
             DB::rollBack();
             $this->throwValidationException($request, $model->_validator);
         }
-
     }
 
-    public function populaSecaoProduto(Request $request) {
+    public function populaSecaoProduto(Request $request)
+    {
         $model = Produto::find($request->get('id'));
         $retorno = [
             'secaoproduto' => $model->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codsecaoproduto,
@@ -306,11 +306,10 @@ class ProdutoController extends Controller
      */
     public function destroy($id)
     {
-        try{
+        try {
             Produto::find($id)->delete();
             $ret = ['resultado' => true, 'mensagem' => 'Produto excluído com sucesso!'];
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir produto!', 'exception' => $e];
         }
         return json_encode($ret);
@@ -331,7 +330,7 @@ class ProdutoController extends Controller
         $limite = $request->get('per_page');
         $inativo = $request->get('inativo');
         // limpa texto
-        $ordem = (strstr($request->get('q'), '$'))?'preco ASC, descricao ASC':'descricao ASC, preco ASC';
+        $ordem = (strstr($request->get('q'), '$')) ? 'preco ASC, descricao ASC' : 'descricao ASC, preco ASC';
         $texto = str_replace('$', '', $request->get('q'));
         $texto  = str_replace(' ', '%', trim($request->get('q')));
 
@@ -339,7 +338,7 @@ class ProdutoController extends Controller
         if ($pagina < 1) $pagina = 1;
 
         // calcula de onde continuar a consulta
-        $offset = ($pagina-1)*$limite;
+        $offset = ($pagina - 1) * $limite;
 
         // inicializa array com resultados
         $resultados = array();
@@ -347,17 +346,17 @@ class ProdutoController extends Controller
         // se o texto foi preenchido
         #if (strlen($texto)>=3)
         #{
-            $sql = "SELECT codprodutobarra as id, codproduto, barras, descricao, sigla, preco, marca, referencia
+        $sql = "SELECT codprodutobarra as id, codproduto, barras, descricao, sigla, preco, marca, referencia
                           FROM vwProdutoBarra
                          WHERE codProdutoBarra is not null ";
 
-            #if (!$inativo) {
-            #    $sql .= "AND Inativo is null ";
-            #}
+        #if (!$inativo) {
+        #    $sql .= "AND Inativo is null ";
+        #}
 
         $sql .= " AND (";
 
-            // Verifica se foi digitado um valor e procura pelo preco
+        // Verifica se foi digitado um valor e procura pelo preco
         #    If ((Yii::app()->format->formatNumber(Yii::app()->format->unformatNumber($texto)) == $texto)
         #            && (strpos($texto, ",") != 0)
         #            && ((strlen($texto) - strpos($texto, ",")) == 3))
@@ -368,82 +367,78 @@ class ProdutoController extends Controller
         #                    );
         #}
 
-            //senao procura por barras, descricao, marca e referencia
-            #else
-            #{
-                    $sql .= "barras ilike '%$texto%' ";
-                    $sql .= "OR descricao ilike '%$texto%' ";
-                    $sql .= "OR marca ilike '%$texto%' ";
-                    $sql .= "OR referencia ilike '%$texto%' ";
+        //senao procura por barras, descricao, marca e referencia
+        #else
+        #{
+        $sql .= "barras ilike '%$texto%' ";
+        $sql .= "OR descricao ilike '%$texto%' ";
+        $sql .= "OR marca ilike '%$texto%' ";
+        $sql .= "OR referencia ilike '%$texto%' ";
 
-                    /*$params = array(
+        /*$params = array(
                         ':texto'=>'%'.$texto.'%',
                     );*/
-            #}
+        #}
 
-            //ordena
-            $sql .= ") ORDER BY $ordem LIMIT $limite OFFSET $offset";
+        //ordena
+        $sql .= ") ORDER BY $ordem LIMIT $limite OFFSET $offset";
 
-            $resultados = DB::select($sql);
+        $resultados = DB::select($sql);
 
-            for ($i=0; $i<sizeof($resultados);$i++)
-            {
-                    $resultados[$i]->codproduto = \formataCodigo($resultados[$i]->codproduto, 6);
-                    $resultados[$i]->preco = \formataNumero($resultados[$i]->preco);
-                    if (empty($resultados[$i]->referencia))
-                            $resultados[$i]->referencia = "-";
-            }
+        for ($i = 0; $i < sizeof($resultados); $i++) {
+            $resultados[$i]->codproduto = \formataCodigo($resultados[$i]->codproduto, 6);
+            $resultados[$i]->preco = \formataNumero($resultados[$i]->preco);
+            if (empty($resultados[$i]->referencia))
+                $resultados[$i]->referencia = "-";
+        }
 
-            return response()->json($resultados);
-
+        return response()->json($resultados);
     }
 
     public function listagemJsonProduto(Request $request)
     {
-        if($request->get('q')) {
+        if ($request->get('q')) {
 
             $query = DB::table('tblproduto')
-                ->join('tblsubgrupoproduto', function($join) {
+                ->join('tblsubgrupoproduto', function ($join) {
                     $join->on('tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
                 })
-                ->join('tblgrupoproduto', function($join) {
+                ->join('tblgrupoproduto', function ($join) {
                     $join->on('tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto');
                 })
-                ->join('tblfamiliaproduto', function($join) {
+                ->join('tblfamiliaproduto', function ($join) {
                     $join->on('tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto');
                 })
-                ->join('tblsecaoproduto', function($join) {
+                ->join('tblsecaoproduto', function ($join) {
                     $join->on('tblsecaoproduto.codsecaoproduto', '=', 'tblfamiliaproduto.codsecaoproduto');
                 })
-                ->join('tblmarca', function($join) {
+                ->join('tblmarca', function ($join) {
                     $join->on('tblmarca.codmarca', '=', 'tblproduto.codmarca');
                 });
 
-                $produto = $request->get('q');
+            $produto = $request->get('q');
 
-                if (strlen($produto) == 6 & is_numeric($produto)) {
-                    $query->where('codproduto', '=', $produto);
+            if (strlen($produto) == 6 & is_numeric($produto)) {
+                $query->where('codproduto', '=', $produto);
+            } else {
+                $produto = explode(' ', $produto);
+                foreach ($produto as $str) {
+                    $query->where('produto', 'ILIKE', "%$str%");
                 }
-                else {
-                    $produto = explode(' ', $produto);
-                    foreach ($produto as $str) {
-                        $query->where('produto', 'ILIKE', "%$str%");
-                    }
-                }
-                $query->select('codproduto as id', 'produto', 'preco', 'referencia', 'tblproduto.inativo', 'tblsecaoproduto.secaoproduto', 'tblfamiliaproduto.familiaproduto', 'tblgrupoproduto.grupoproduto', 'tblsubgrupoproduto.subgrupoproduto', 'tblmarca.marca')
-                    ->orderBy('produto', 'ASC')
-                    ->paginate(20);
+            }
+            $query->select('codproduto as id', 'produto', 'preco', 'referencia', 'tblproduto.inativo', 'tblsecaoproduto.secaoproduto', 'tblfamiliaproduto.familiaproduto', 'tblgrupoproduto.grupoproduto', 'tblsubgrupoproduto.subgrupoproduto', 'tblmarca.marca')
+                ->orderBy('produto', 'ASC')
+                ->paginate(20);
 
             $dados = $query->get();
             $resultado = [];
-            foreach ($dados as $item => $value)
-            {
-                $resultado[$item]=[
+            foreach ($dados as $item => $value) {
+                $resultado[$item] = [
                     'id'        =>  $value->id,
                     'codigo'    => formataCodigo($value->id, 6),
                     'produto'   => $value->produto,
                     'preco'     => formataNumero($value->preco),
-                    'referencia'=> $value->referencia,
+                    'referencia' => $value->referencia,
                     'inativo'   => $value->inativo,
                     'secaoproduto'     => $value->secaoproduto,
                     'familiaproduto'   => $value->familiaproduto,
@@ -453,11 +448,11 @@ class ProdutoController extends Controller
                 ];
             }
             return response()->json($resultado);
-        } elseif($request->get('id')) {
+        } elseif ($request->get('id')) {
             $query = DB::table('tblproduto')
-                    ->where('codproduto', '=', $request->get('id'))
-                    ->select('codproduto as id', 'produto', 'referencia', 'preco')
-                    ->first();
+                ->where('codproduto', '=', $request->get('id'))
+                ->select('codproduto as id', 'produto', 'referencia', 'preco')
+                ->first();
 
             return response()->json($query);
         }
@@ -470,7 +465,7 @@ class ProdutoController extends Controller
 
         $sql = Produto::search($parametros)
             ->select('produto', 'codproduto')
-            ->where('codproduto', '<>',  ($request->get('codproduto')?$request->get('codproduto'):0))
+            ->where('codproduto', '<>', ($request->get('codproduto') ? $request->get('codproduto') : 0))
             ->orderBy('produto', 'DESC')
             ->limit(15)
             ->get();
@@ -480,7 +475,7 @@ class ProdutoController extends Controller
             $resultado[] = [
                 'produto' => $value['produto'],
                 'codproduto' => $value['codproduto']
-                ];
+            ];
         }
 
         return  response()->json($resultado);
@@ -488,7 +483,7 @@ class ProdutoController extends Controller
 
     public function inativar(Request $request)
     {
-        try{
+        try {
             $model = Produto::find($request->get('id'));
             if ($request->get('acao') == 'ativar') {
                 $model->inativo = null;
@@ -499,8 +494,7 @@ class ProdutoController extends Controller
             $model->save();
             $acao = ($request->get('acao') == 'ativar') ? 'ativado' : 'inativado';
             $ret = ['resultado' => true, 'mensagem' => "Produto $model->produto $acao com sucesso!"];
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             $ret = ['resultado' => false, 'mensagem' => "Erro ao $acao produto!", 'exception' => $e];
         }
         return json_encode($ret);
@@ -513,8 +507,8 @@ class ProdutoController extends Controller
             ->where('codproduto', '=', $request->get('codproduto'))
             ->select('customedio', 'saldovalor', 'saldoquantidade');
 
-        if($request->get('codestoquelocal')) $query->where('tblestoquelocalprodutovariacao.codestoquelocal', '=', $request->get('codestoquelocal'));
-        if($request->get('fiscal') == 1)
+        if ($request->get('codestoquelocal')) $query->where('tblestoquelocalprodutovariacao.codestoquelocal', '=', $request->get('codestoquelocal'));
+        if ($request->get('fiscal') == 1)
             $query->where('fiscal', '=', true);
         else
             $query->where('fiscal', '=', false);
@@ -550,15 +544,15 @@ class ProdutoController extends Controller
     public function EditarMinMax($id)
     {
         $model = Produto::findOrFail($id);
-       
+
         $sql = 'select * from tblestoquelocal where controlaestoque = true and inativo is null order by codestoquelocal';
         $colunas = collect(DB::select($sql));
-        
+
         $sql = 'select * from tblprodutovariacao where codproduto = :codproduto order by variacao';
         $linhas = collect(DB::select($sql, [
             'codproduto' => $id
         ]));
-        
+
         $sql = '
             select 
                 elpv.codestoquelocal, 
@@ -585,13 +579,12 @@ class ProdutoController extends Controller
             left join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = false)
             where pv.codproduto = :codproduto
         ';
-        
+
         $valores = collect(DB::select($sql, [
             'codproduto' => $id
         ]));
-        
-        return view('produto.min-max-editar', compact('model', 'valores', 'colunas', 'linhas'));
 
+        return view('produto.min-max-editar', compact('model', 'valores', 'colunas', 'linhas'));
     }
 
     public function SalvarMinMax(Request $request, $id)
@@ -603,33 +596,31 @@ class ProdutoController extends Controller
         if ($codprodutoembalagemcompra == 0) {
             $codprodutoembalagemcompra = null;
         }
-        $codprodutoembalagemtransferencia = $request->codprodutoembalagemtransferencia;	
+        $codprodutoembalagemtransferencia = $request->codprodutoembalagemtransferencia;
         if ($codprodutoembalagemtransferencia == 0) {
             $codprodutoembalagemtransferencia = null;
         }
-        if (($model->codprodutoembalagemcompra != $codprodutoembalagemcompra) 
-            || ($model->codprodutoembalagemtransferencia != $codprodutoembalagemtransferencia)) {
+        if (($model->codprodutoembalagemcompra != $codprodutoembalagemcompra)
+            || ($model->codprodutoembalagemtransferencia != $codprodutoembalagemtransferencia)
+        ) {
             $model->codprodutoembalagemcompra = $codprodutoembalagemcompra;
             $model->codprodutoembalagemtransferencia = $codprodutoembalagemtransferencia;
             $model->save();
         }
-        
-        foreach ($estoqueminimo as $codestoquelocal => $variacoes)
-        {  
-            foreach ($variacoes as $codprodutovariacao => $minimo)
-            {   
+
+        foreach ($estoqueminimo as $codestoquelocal => $variacoes) {
+            foreach ($variacoes as $codprodutovariacao => $minimo) {
                 $elpv = EstoqueLocalProdutoVariacao::FirstOrNew([
                     'codestoquelocal'    => $codestoquelocal,
                     'codprodutovariacao' => $codprodutovariacao
                 ]);
                 $maximo = $estoquemaximo[$codestoquelocal][$codprodutovariacao];
-                if ($minimo != $elpv->estoqueminimo || $maximo != $elpv->estoquemaximo)
-                {
+                if ($minimo != $elpv->estoqueminimo || $maximo != $elpv->estoquemaximo) {
                     $elpv->estoqueminimo = $minimo;
                     $elpv->estoquemaximo = $maximo;
                     $elpv->save();
                 }
-            }    
+            }
         }
         Session::flash('flash_success', "Tabela de Estoque Minimo e Máximo atualizada!");
         return redirect("produto/$model->codproduto");
@@ -658,13 +649,13 @@ class ProdutoController extends Controller
 
         DB::BeginTransaction();
 
-        foreach($form['codprodutovariacao'] as $codprodutovariacao) {
+        foreach ($form['codprodutovariacao'] as $codprodutovariacao) {
 
             $pv = ProdutoVariacao::findOrFail($codprodutovariacao);
             $pv->codproduto = $form['codproduto'];
             $pv->save();
 
-            foreach($pv->ProdutoBarraS as $pb) {
+            foreach ($pv->ProdutoBarraS as $pb) {
 
                 $pb->codproduto = $form['codproduto'];
 
@@ -685,22 +676,17 @@ class ProdutoController extends Controller
                     }
 
                     $pb->codprodutoembalagem = $pe->codprodutoembalagem;
-
                 }
 
                 $pb->save();
             }
-
         }
         //DB::rollback();
         DB::commit();
-
         return redirect("produto/{$form['codproduto']}");
-
-        dd($validator);
     }
 
-    public function consulta (Request $request, $barras)
+    public function consulta(Request $request, $barras)
     {
 
         if (!$barras = ProdutoBarra::buscaPorBarras($barras)) {
@@ -715,7 +701,7 @@ class ProdutoController extends Controller
         foreach ($barras->Produto->ImagemS as $imagem) {
             $imagens[] = [
                 'codimagem' => $imagem->codimagem,
-                'url' => URL::asset('public/imagens/'.$imagem->observacoes),
+                'url' => URL::asset('public/imagens/' . $imagem->observacoes),
             ];
         }
         if (sizeof($imagens) == 0) {
@@ -736,9 +722,9 @@ class ProdutoController extends Controller
                     'codprodutoembalagem' => $pb->codprodutoembalagem,
                     'barras' => $pb->barras,
                     'detalhes' => $pb->variacao,
-                    'referencia' => ($pb->referencia??$pb->ProdutoVariacao->referencia)??$pb->ProdutoVariacao->Produto->referencia,
+                    'referencia' => ($pb->referencia ?? $pb->ProdutoVariacao->referencia) ?? $pb->ProdutoVariacao->Produto->referencia,
                     'unidademedida' => $pb->UnidadeMedida->sigla,
-                    'quantidade' => (!empty($pb->codprodutoembalagem)?(float)$pb->ProdutoEmbalagem->quantidade:null),
+                    'quantidade' => (!empty($pb->codprodutoembalagem) ? (float)$pb->ProdutoEmbalagem->quantidade : null),
                 ];
             }
             $saldos = [];
@@ -761,8 +747,8 @@ class ProdutoController extends Controller
             }
             $variacoes[] = [
                 'codprodutovariacao' => $pv->codprodutovariacao,
-                'referencia' => $pv->referencia??$pv->Produto->referencia,
-                'marca' => (!empty($pv->codmarca)?$pv->Marca->marca:null),
+                'referencia' => $pv->referencia ?? $pv->Produto->referencia,
+                'marca' => (!empty($pv->codmarca) ? $pv->Marca->marca : null),
                 'variacao' => $pv->variacao,
                 'barras' => $produtobarras,
                 'saldo' => $saldo,
@@ -783,13 +769,10 @@ class ProdutoController extends Controller
                 'codprodutoembalagem' => $embalagem->codprodutoembalagem,
                 'quantidade' => (float)$embalagem->quantidade,
                 'unidademedida' => $embalagem->UnidadeMedida->unidademedida,
-                'preco' => (float)(!empty($embalagem->preco)?$embalagem->preco:$embalagem->quantidade * $barras->Produto->preco),
+                'preco' => (float)(!empty($embalagem->preco) ? $embalagem->preco : $embalagem->quantidade * $barras->Produto->preco),
                 'precocalculado' => empty($embalagem->preco),
             ];
         }
-
-        //dd($barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codimagem);
-        //dd($barras->Produto->SubGrupoProduto->codimagem);
 
         $produto = [
             'codproduto' => $barras->codproduto,
@@ -800,35 +783,35 @@ class ProdutoController extends Controller
             'inativo' => $barras->Produto->inativo,
             'unidademedida' => $barras->UnidadeMedida->unidademedida,
             'slglaunidademedida' => $barras->UnidadeMedida->sigla,
-            'referencia' => ($barras->referencia??$barras->ProdutoVariacao->referencia)??$barras->ProdutoVariacao->Produto->referencia,
+            'referencia' => ($barras->referencia ?? $barras->ProdutoVariacao->referencia) ?? $barras->ProdutoVariacao->Produto->referencia,
             'marca' => [
                 'codmarca' => $barras->Marca->codmarca,
                 'marca' => $barras->Marca->marca,
                 'url' => url("marca/{$barras->Marca->codmarca}"),
-                'urlimagem' => (!empty($barras->Marca->codimagem)?URL::asset('public/imagens/'.$barras->Marca->Imagem->observacoes):null),
+                'urlimagem' => (!empty($barras->Marca->codimagem) ? URL::asset('public/imagens/' . $barras->Marca->Imagem->observacoes) : null),
             ],
             'subgrupoproduto' => [
                 'codsubgrupoproduto' => $barras->Produto->codsubgrupoproduto,
                 'subgrupoproduto' => $barras->Produto->SubGrupoProduto->subgrupoproduto,
-                'urlimagem' => (!empty($barras->Produto->SubGrupoProduto->codimagem)?URL::asset('public/imagens/'.$barras->Produto->SubGrupoProduto->Imagem->observacoes):null),
+                'urlimagem' => (!empty($barras->Produto->SubGrupoProduto->codimagem) ? URL::asset('public/imagens/' . $barras->Produto->SubGrupoProduto->Imagem->observacoes) : null),
                 'url' => url("sub-grupo-produto/{$barras->Produto->codsubgrupoproduto}"),
             ],
             'grupoproduto' => [
                 'codgrupoproduto' => $barras->Produto->SubGrupoProduto->codgrupoproduto,
                 'grupoproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->grupoproduto,
-                'urlimagem' => (!empty($barras->Produto->SubGrupoProduto->GrupoProduto->codimagem)?URL::asset('public/imagens/'.$barras->Produto->SubGrupoProduto->GrupoProduto->Imagem->observacoes):null),
+                'urlimagem' => (!empty($barras->Produto->SubGrupoProduto->GrupoProduto->codimagem) ? URL::asset('public/imagens/' . $barras->Produto->SubGrupoProduto->GrupoProduto->Imagem->observacoes) : null),
                 'url' => url("grupo-produto/{$barras->Produto->SubGrupoProduto->codgrupoproduto}"),
             ],
             'familiaproduto' => [
                 'codfamiliaproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->codfamiliaproduto,
                 'familiaproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->familiaproduto,
-                'urlimagem' => (!empty($barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->codimagem)?URL::asset('public/imagens/'.$barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->Imagem->observacoes):null),
+                'urlimagem' => (!empty($barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->codimagem) ? URL::asset('public/imagens/' . $barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->Imagem->observacoes) : null),
                 'url' => url("familia-produto/{$barras->Produto->SubGrupoProduto->GrupoProduto->codfamiliaproduto}"),
             ],
             'secaoproduto' => [
                 'codsecaoproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto,
                 'secaoproduto' => $barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->secaoproduto,
-                'urlimagem' => (!empty($barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codimagem)?URL::asset('public/imagens/'.$barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->Imagem->observacoes):null),
+                'urlimagem' => (!empty($barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->codimagem) ? URL::asset('public/imagens/' . $barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->SecaoProduto->Imagem->observacoes) : null),
                 'url' => url("secao-produto/{$barras->Produto->SubGrupoProduto->GrupoProduto->FamiliaProduto->codsecaoproduto}"),
             ],
             'preco' => $barras->preco(),
@@ -843,10 +826,9 @@ class ProdutoController extends Controller
             'resultado' => true,
             'produto' => $produto,
         ];
-        //dd($prod);
     }
 
-    public function quiosque (Request $request)
+    public function quiosque(Request $request)
     {
         return view('produto.quiosque');
     }
@@ -865,5 +847,4 @@ class ProdutoController extends Controller
         }
         return $model->fresh();
     }
-
-  }
+}

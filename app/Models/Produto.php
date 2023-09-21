@@ -72,6 +72,7 @@ class Produto extends MGModel
         'largura',
         'profundidade',
         'revisao',
+        'conferenciaperiodica',
         'estoque'
     ];
     protected $dates = [
@@ -104,6 +105,10 @@ class Produto extends MGModel
             //'codcest'           => 'numeric|required_if:codtributacao,'.Tributacao::SUBSTITUICAO,
         ];
 
+        if ($this->conferenciaperiodica) {
+            $this->_regrasValidacao['estoque'] = 'required|accepted';
+        }
+
         $this->_mensagensErro = [
             'produto.required'              => 'O campo descrição não pode ser vazio',
             'produto.unique_multiple'       => 'Já existe um produto com essa descrição!',
@@ -120,6 +125,7 @@ class Produto extends MGModel
             'codtipoproduto.required'       => 'O campo Tipo não pode ser vazio',
             'codncm.required'               => 'O campo NCM não pode ser vazio',
             'codncm.valida_ncm'             => 'Ncm Inválido',
+            'estoque.accepted'              => 'Produto que precisa de conferência periódica deve estar marcado para controlar o Estoque!',
         ];
 
         return parent::validate();
