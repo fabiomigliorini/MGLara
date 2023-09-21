@@ -96,8 +96,13 @@ function decideIconeUltimaConferencia($data)
                         <div class='col-sm-1 text-center text-muted'>
                             {{ $esc->UsuarioCriacao->usuario }}
                         </div>
+                        
                         @if($esc->inativo == null)
                         <div class='col-sm-2 text-right'>
+                        <div id="div-carregando-inativar" class="col-md-8 text-right" style="display:none">
+                            <b>Aguarde...</b>
+                            <img width="20px" src="{{ URL::asset('public/img/carregando.gif') }}">
+                        </div>
                             <a href="#" onclick="inativar(<?php echo $esc->codestoquesaldoconferencia;?>)">
                                 <i class="glyphicon glyphicon-trash"></i>
                             </a>
@@ -276,6 +281,7 @@ function labelClass($saldo)
                 var Token = "<?php echo Session()->get('access_token'); ?>"
                 
                 if (inativar) {
+                    document.getElementById('div-carregando-inativar').style.display = 'block';
                     const url = "<?php echo env('SSO_HOST') . '/api/v1/estoque-saldo-conferencia/' ?>" + id + '/inativo';
 
                     $.ajax({
@@ -288,8 +294,14 @@ function labelClass($saldo)
                     }).done(function(resp) {
                        
                         if (resp.produto) {
-                            bootbox.alert('Inativado com sucesso');
-                            location.reload();
+                           
+                            bootbox.alert({
+                            message: "Inativado!",
+                            callback: function(ok) {
+                                document.getElementById('div-carregando-inativar').style.display = 'none';
+                                location.reload();
+                             }});
+                          
                         } else {
                             bootbox.alert('Erro ao inativar!');
                         }
