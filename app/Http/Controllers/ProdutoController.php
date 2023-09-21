@@ -544,8 +544,15 @@ class ProdutoController extends Controller
     public function EditarMinMax($id)
     {
         $model = Produto::findOrFail($id);
-
-        $sql = 'select * from tblestoquelocal where controlaestoque = true and inativo is null order by codestoquelocal';
+       
+        $sql = '
+            select * 
+            from tblestoquelocal 
+            where controlaestoque = true 
+            and inativo is null 
+            and codestoquelocal in (101001, 102001, 103001, 104001, 105001)
+            order by codestoquelocal
+        ';
         $colunas = collect(DB::select($sql));
 
         $sql = 'select * from tblprodutovariacao where codproduto = :codproduto order by variacao';

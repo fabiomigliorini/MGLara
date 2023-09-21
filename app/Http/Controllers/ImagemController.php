@@ -97,7 +97,14 @@ class ImagemController extends Controller
                 and i.codproduto = tblprodutovariacao.codproduto  
             ) 
             where codprodutoimagem is null
-            and codproduto = :codproduto 
+            and codproduto in (
+	            select pv.codproduto
+	            from tblprodutovariacao pv
+	            where pv.codproduto = :codproduto
+	            group by pv.codproduto
+	            having count(pv.codproduto) = 1
+            )
+            --and codproduto = :codproduto 
         ';
         DB::update($sql, [
             'codimagem' => $imagem->codimagem,
