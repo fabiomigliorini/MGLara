@@ -61,7 +61,6 @@
     </div>
 </div>
 @section('inscript')
-<script src="{{ URL::asset('public/js/formatacmc7.js') }}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 
