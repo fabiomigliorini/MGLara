@@ -67,8 +67,8 @@
               <a href="<?php echo url("usuario/$row->codusuario");?>">{!! listagemTitulo($row->usuario, $row->inativo) !!}</a>
             </div>
             <div class="col-md-4">
-                @if (isset($row->Pessoa['pessoa']))
-			<a href="<?php echo url("pessoa/$row->codpessoa");?>">{{ $row->Pessoa['pessoa'] }}</a>
+                @if (isset($row->Pessoa['fantasia']))
+			<a href="<?php echo url("pessoa/$row->codpessoa");?>">{{ $row->Pessoa['fantasia'] }}</a>
 		@endif
             </div>
             <div class="col-md-3">
