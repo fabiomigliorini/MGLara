@@ -87,31 +87,34 @@ class MercosPedido {
         } else {
             $n = $mp->Negocio;
         }
-        $n->codestoquelocal = env('MERCOS_CODESTOQUELOCAL');
-        $n->codfilial = $n->EstoqueLocal->codfilial;
-        // $n->lancamento = $ped->data_criacao;
-        $n->lancamento = $ped->data_emissao;
-        if (empty($n->lancamento)) {
-            $n->lancamento = $ped->ultima_alteracao;
-        }
-        $n->codnaturezaoperacao = env('MERCOS_CODNATUREZAOPERACAO');
-        $n->codoperacao = $n->NaturezaOperacao->codoperacao;
-        $n->codnegociostatus = 1;
-        $n->codusuario = env('MERCOS_CODUSUARIO');
-        $n->codusuariocriacao = env('MERCOS_CODUSUARIO');
-        $n->codusuarioalteracao = env('MERCOS_CODUSUARIO');
 
-        $mc = MercosCliente::buscaOuCriaPeloId($ped->cliente_id);
-        $n->codpessoa = $mc->codpessoa;
-        // $n->valortotal = $ped->total;
-        $n->valorfrete = $ped->valor_frete;
-        $n->save();
+        if (!in_array($n->codnegociostatus, [2, 3])) {
+            $n->codestoquelocal = env('MERCOS_CODESTOQUELOCAL');
+            $n->codfilial = $n->EstoqueLocal->codfilial;
+            // $n->lancamento = $ped->data_criacao;
+            $n->lancamento = $ped->data_emissao;
+            if (empty($n->lancamento)) {
+                $n->lancamento = $ped->ultima_alteracao;
+            }
+            $n->codnaturezaoperacao = env('MERCOS_CODNATUREZAOPERACAO');
+            $n->codoperacao = $n->NaturezaOperacao->codoperacao;
+            $n->codnegociostatus = 1;
+            $n->codusuario = env('MERCOS_CODUSUARIO');
+            $n->codusuariocriacao = env('MERCOS_CODUSUARIO');
+            $n->codusuarioalteracao = env('MERCOS_CODUSUARIO');
 
-        $mp->codnegocio = $n->codnegocio;
-        $mp->save();
+            $mc = MercosCliente::buscaOuCriaPeloId($ped->cliente_id);
+            $n->codpessoa = $mc->codpessoa;
+            // $n->valortotal = $ped->total;
+            $n->valorfrete = $ped->valor_frete;
+            $n->save();
 
-        foreach ($ped->itens as $item) {
-            static::parsePedidoItem($item, $n, $mp);
+            $mp->codnegocio = $n->codnegocio;
+            $mp->save();
+
+            foreach ($ped->itens as $item) {
+                static::parsePedidoItem($item, $n, $mp);
+            }
         }
 
         DB::commit();
