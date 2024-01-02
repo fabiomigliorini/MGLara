@@ -59,11 +59,13 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
 
         $corte = Carbon::createFromFormat('Y-m-d H:i:s', EstoqueMes::CORTE_FISICO);
 
-        if ($this->NegocioProdutoBarra->Negocio->codnegociostatus == NegocioStatus::FECHADO
+        if (
+            $this->NegocioProdutoBarra->Negocio->codnegociostatus == NegocioStatus::FECHADO
             && $this->NegocioProdutoBarra->Negocio->lancamento->gte($corte)
             && $this->NegocioProdutoBarra->Negocio->NaturezaOperacao->estoque == TRUE
             && $this->NegocioProdutoBarra->ProdutoBarra->Produto->TipoProduto->estoque == TRUE
             && $this->NegocioProdutoBarra->ProdutoBarra->Produto->estoque == TRUE
+            && empty($this->NegocioProdutoBarra->inativo)
         ) {
             $quantidade = $this->NegocioProdutoBarra->quantidade;
             if (!empty($this->NegocioProdutoBarra->ProdutoBarra->codprodutoembalagem)) {
@@ -83,7 +85,7 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                     $this->NegocioProdutoBarra->Negocio->codestoquelocal,
                     false,
                     $this->NegocioProdutoBarra->Negocio->lancamento
-                    );
+                );
 
                 if (!empty($mov->codestoquemes) && $mov->codestoquemes != $mes->codestoquemes) {
                     $codestoquemes_recalcular[$mov->codestoquemes] = $mov->codestoquemes;
@@ -100,9 +102,7 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                         $mov->entradaquantidade = $quantidade;
                     }
                     $mov->saidaquantidade = null;
-                }
-                else
-                {
+                } else {
                     $mov->entradaquantidade = null;
                     if ($mov->saidaquantidade != $quantidade) {
                         $mov->saidaquantidade = $quantidade;
@@ -128,7 +128,6 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                             $mov->saidavalor = $valor;
                         }
                     }
-
                 }
 
                 $mov->codnotafiscalprodutobarra = null;
@@ -150,17 +149,17 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                 }
 
                 $codestoquemovimento_gerado[] = $mov->codestoquemovimento;
-	    }
+            }
 
             //caso intercompany, gera movimento destino
-            $localDest = EstoqueLocal::whereHas('Filial', function($iq){
-                    $iq->where('codpessoa', $this->NegocioProdutoBarra->Negocio->codpessoa);
-                })->first();
+            $localDest = EstoqueLocal::whereHas('Filial', function ($iq) {
+                $iq->where('codpessoa', $this->NegocioProdutoBarra->Negocio->codpessoa);
+            })->first();
 
             $tipoDest = NULL;
             if ($localDest != NULL) {
                 if ($localDest->controlaestoque == TRUE) {
-                    $tipoDest = $this->NegocioProdutoBarra->Negocio->NaturezaOperacao->EstoqueMovimentoTipo->EstoqueMovimentoTipoS->first();
+                    $tipoDest = $this->NegocioProdutoBarra->Negocio->NaturezaOperacao->EstoqueMovimentoTipo->EstoqueMovimentoTipoS()->first();
                 }
             }
 
@@ -178,18 +177,18 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                 }
 
                 $mesDest = EstoqueMes::buscaOuCria(
-                        $this->NegocioProdutoBarra->ProdutoBarra->codprodutovariacao,
-                        $localDest->codestoquelocal,
-                        false,
-                        $this->NegocioProdutoBarra->Negocio->lancamento
-                        );
+                    $this->NegocioProdutoBarra->ProdutoBarra->codprodutovariacao,
+                    $localDest->codestoquelocal,
+                    false,
+                    $this->NegocioProdutoBarra->Negocio->lancamento
+                );
 
                 if (!empty($movDest->codestoquemes) && $movDest->codestoquemes != $mesDest->codestoquemes) {
                     $codestoquemes_recalcular[$movDest->codestoquemes] = $movDest->codestoquemes;
                 }
 
                 $movDest->codestoquemes = $mesDest->codestoquemes;
-                $movDest->codestoquemovimentoorigem = $mov->codestoquemovimento??null;
+                $movDest->codestoquemovimentoorigem = $mov->codestoquemovimento ?? null;
                 $movDest->codestoquemovimentotipo = $tipoDest->codestoquemovimentotipo;
                 $movDest->manual = false;
                 $movDest->data = $this->NegocioProdutoBarra->Negocio->lancamento;
@@ -204,9 +203,7 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                             $movDest->entradaquantidade = $quantidade;
                         }
                         $movDest->saidaquantidade = null;
-                    }
-                    else
-                    {
+                    } else {
                         $movDest->entradaquantidade = null;
                         if ($movDest->saidaquantidade != $quantidade) {
                             $movDest->saidaquantidade = $quantidade;
@@ -229,7 +226,6 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                             }
                         }
                     }
-
                 }
                 $movDest->codnotafiscalprodutobarra = null;
                 $movDest->codnegocioprodutobarra = $this->NegocioProdutoBarra->codnegocioprodutobarra;
@@ -250,17 +246,15 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                 }
 
                 $codestoquemovimento_gerado[] = $movDest->codestoquemovimento;
-
             }
-
         }
 
         // Apaga estoquemovimento excedente que existir anexado ao negocioprodutobarra
         $movExcedente =
-                EstoqueMovimento
-                ::whereNotIn('codestoquemovimento', $codestoquemovimento_gerado)
-                ->where('codnegocioprodutobarra', $this->NegocioProdutoBarra->codnegocioprodutobarra)
-                ->get();
+            EstoqueMovimento
+            ::whereNotIn('codestoquemovimento', $codestoquemovimento_gerado)
+            ->where('codnegocioprodutobarra', $this->NegocioProdutoBarra->codnegocioprodutobarra)
+            ->get();
 
         foreach ($movExcedente as $mov) {
 
@@ -282,7 +276,7 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
         }
 
         //Coloca Recalculo Custo Medio na Fila
-        foreach($codestoquemes_recalcular as $codestoquemes => $mes) {
+        foreach ($codestoquemes_recalcular as $codestoquemes => $mes) {
             $this->dispatch((new EstoqueCalculaCustoMedio($codestoquemes))->onQueue('urgent'));
         }
     }
