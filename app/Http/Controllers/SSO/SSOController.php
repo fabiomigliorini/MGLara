@@ -67,7 +67,7 @@ class SSOController extends Controller
     // return json_decode((string) $response->getBody(), true);
      $userArray = json_decode((string) $response->getBody(), true);
         try {
-            $usuario = $userArray['usuario'];
+            $usuario = $userArray['data']['usuario'];
         } catch (\GuzzleHttp\Exception\BadResponseException $e) {
             return redirect("login")->withError("Falha ao obter informações de login! Tente novamente.");
         }
