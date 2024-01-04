@@ -99,6 +99,7 @@ class MercosPedido {
             $n->codnaturezaoperacao = env('MERCOS_CODNATUREZAOPERACAO');
             $n->codoperacao = $n->NaturezaOperacao->codoperacao;
             $n->codnegociostatus = 1;
+	    $n->codpessoavendedor = env('MERCOS_CODPESSOAVENDEDOR');
             $n->codusuario = env('MERCOS_CODUSUARIO');
             $n->codusuariocriacao = env('MERCOS_CODUSUARIO');
             $n->codusuarioalteracao = env('MERCOS_CODUSUARIO');
