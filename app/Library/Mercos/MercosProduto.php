@@ -45,21 +45,23 @@ class MercosProduto {
         $altura = (double) $p->altura;
         $comprimento = (double) $p->profundidade;
 
-        $locais = env('MERCOS_CODESTOQUELOCAL_DISPONIVEL');
-        $sql = '
-            select sum(es.saldoquantidade) as saldoquantidade
-            from tblestoquelocalprodutovariacao elpv
-            inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao)
-            where elpv.codprodutovariacao = :codprodutovariacao
-            and elpv.codestoquelocal in (' . $locais . ')
-            and es.fiscal = false
-        ';
-        $data = DB::select($sql, [
-            'codprodutovariacao' => $codprodutovariacao,
-        ]);
-        $saldo_estoque = 0;
-        if (isset($data[0])) {
-            $saldo_estoque = floor($data[0]->saldoquantidade)??0;
+        $saldo_estoque = 10000;
+        if ($mp->Produto->estoque) {
+            $locais = env('MERCOS_CODESTOQUELOCAL_DISPONIVEL');
+            $sql = '
+                select sum(es.saldoquantidade) as saldoquantidade
+                from tblestoquelocalprodutovariacao elpv
+                inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao)
+                where elpv.codprodutovariacao = :codprodutovariacao
+                and elpv.codestoquelocal in (' . $locais . ')
+                and es.fiscal = false
+            ';
+            $data = DB::select($sql, [
+                'codprodutovariacao' => $codprodutovariacao,
+            ]);
+            if (isset($data[0])) {
+                $saldo_estoque = floor($data[0]->saldoquantidade)??0;
+            }
         }
 
         $pv = ProdutoVariacao::findOrFail($codprodutovariacao);
