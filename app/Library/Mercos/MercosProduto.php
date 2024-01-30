@@ -46,7 +46,7 @@ class MercosProduto {
         $comprimento = (double) $p->profundidade;
 
         $saldo_estoque = 10000;
-        if ($mp->Produto->estoque) {
+        if ($p->estoque) {
             $locais = env('MERCOS_CODESTOQUELOCAL_DISPONIVEL');
             $sql = '
                 select sum(es.saldoquantidade) as saldoquantidade
