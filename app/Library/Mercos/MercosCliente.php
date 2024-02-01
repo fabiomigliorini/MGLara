@@ -73,19 +73,21 @@ class MercosCliente {
         $sql = "
             select codpessoa
             from tblpessoa p
-            where p.inativo is null
-            and p.cnpj = :cnpj
+            where p.cnpj = :cnpj
         ";
         $params = [
             'cnpj' => intval($cnpj)
         ];
-        $ie = numeroLimpo($ie);
-        if (!empty($ie)) {
-            $sql .= " and regexp_replace(p.ie, '[^0-9]+', '', 'g')::numeric = :ie ";
-            $params['ie'] = $ie;
-        } else {
-            $sql .= " and p.ie is null ";
-        }
+	if ($cnpj < 99999999999) {
+            $ie = numeroLimpo($ie);
+            if (!empty($ie)) {
+                $sql .= " and regexp_replace(p.ie, '[^0-9]+', '', 'g')::numeric = :ie ";
+                $params['ie'] = $ie;
+            } else {
+                $sql .= " and p.ie is null ";
+            }
+	}
+	$sql .= " order by p.inativo nulls last ";
         $ps = DB::select($sql, $params);
         if (isset($ps[0])) {
             return Pessoa::findOrFail($ps[0]->codpessoa);
@@ -114,7 +116,7 @@ class MercosCliente {
         $p->ie = $cli->inscricao_estadual;
 
         $p->pessoa =  $cli->razao_social;
-        $p->fantasia = $cli->nome_fantasia;
+        $p->fantasia = mb_substr($cli->nome_fantasia, 0, 50);
         $p->fisica = ($cli->tipo == 'F')?true:false;
         $p->cnpj = $cli->cnpj;
         $p->ie = $cli->inscricao_estadual;
