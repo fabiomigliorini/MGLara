@@ -591,6 +591,15 @@ Form::macro('select2Filial', function($name, $selected = null, $options = [])
     return Form::select2($name, $regs, $selected, $options);
 });
 
+/* DEPOSITO */
+Form::macro('select2Deposito', function($name, $selected = null, $options = [])
+{
+    if (empty($options['placeholder'])) $options['placeholder'] = 'Filial';
+    $regs = [''=>''] + MGLara\Models\EstoqueLocal::orderBy('codestoquelocal')->lists('estoquelocal', 'codestoquelocal')->all();
+    return Form::select2($name, $regs, $selected, $options);
+});
+
+
 /* BANCO */
 Form::macro('select2Banco', function($name, $selected = null, $options = [])
 {

@@ -73,7 +73,8 @@ class Produto extends MGModel
         'profundidade',
         'revisao',
         'conferenciaperiodica',
-        'estoque'
+        'estoque',
+        'codestoquelocal'
     ];
     protected $dates = [
         'inativo',

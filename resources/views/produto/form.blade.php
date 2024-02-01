@@ -10,6 +10,11 @@
         <div class="col-sm-9" id="wrapper-estoque">{!! Form::checkbox('estoque', true, null, ['id'=>'estoque', 'data-off-text' => 'Não Controla', 'data-on-text' => 'Controla']) !!}</div>
     </div>
     
+      <div class="form-group">
+        {!! Form::label('codestoquelocal', 'Depósito', ['class'=>'col-sm-3 control-label']) !!}
+        <div class="col-sm-5">{!! Form::select2Deposito('codestoquelocal', null, ['class' => 'form-control','id'=>'codestoquelocal', 'style'=>'width:100%', 'required'=>true]) !!}</div>
+    </div>
+    
     <div class="form-group">
         {!! Form::label('conferenciaperiodica', 'Conferência', ['class'=>'col-sm-3 control-label']) !!}
         <div class="col-sm-9">{!! Form::checkbox('conferenciaperiodica', true, null, ['id'=>'conferenciaperiodica', 'data-off-text' => 'Normal', 'data-on-text' => 'Periódica']) !!}</div>
