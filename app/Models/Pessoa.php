@@ -356,6 +356,21 @@ class Pessoa extends MGModel
         return $this->hasMany(MercosCliente::class, 'codpessoa', 'codpessoa');
     }
 
+    public function PessoaEmailS()
+    {
+        return $this->hasMany(PessoaEmail::class, 'codpessoa', 'codpessoa');
+    }
+
+    public function PessoaEnderecoS()
+    {
+        return $this->hasMany(PessoaEndereco::class, 'codpessoa', 'codpessoa');
+    }
+
+    public function PessoaTelefoneS()
+    {
+        return $this->hasMany(PessoaTelefone::class, 'codpessoa', 'codpessoa');
+    }
+
     public static function getNotaFiscalOpcoes()
     {
         return array(

@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\DB;
 
 use MGLara\Models\MercosCliente as MercosClienteModel;
 use MGLara\Models\Pessoa;
-use MGLara\Models\Negocio;
-use MGLara\Models\NegocioProdutoBarra;
+use MGLara\Models\PessoaEndereco;
+use MGLara\Models\PessoaEmail;
+use MGLara\Models\PessoaTelefone;
 
 class MercosCliente {
 
@@ -102,19 +103,30 @@ class MercosCliente {
         $mc = MercosClienteModel::firstOrNew([
             'clienteid' => $cli->id
         ]);
+        if (!empty($mc->codpessoa)) {
+            return $mc;
+        }
         if ((empty($mc->codpessoa) || ($mc->cliente == 1))) {
             $p = static::buscaPessoa($cli->cnpj, $cli->inscricao_estadual);
             if ($p == null) {
                 $p = new Pessoa();
+            } else {
+                $mc->codpessoa = $p->codpessoa;
+                $mc->save();
+                return $mc;
             }
         } else {
             $p = $mc->Pessoa;
         }
         $p->cnpj = $cli->cnpj;
         $p->ie = $cli->inscricao_estadual;
+        $p->notafiscal = 0;
 
         $p->pessoa =  $cli->razao_social;
         $p->fantasia = $cli->nome_fantasia;
+        if (empty($p->fantasia)) {
+            $p->fantasia = $p->pessoa;
+        }
         $p->fisica = ($cli->tipo == 'F')?true:false;
         $p->cnpj = $cli->cnpj;
         $p->ie = $cli->inscricao_estadual;
@@ -151,6 +163,23 @@ class MercosCliente {
             $p->codcidadecobranca = $p->codcidade;
         }
 
+        $p->save();
+
+        $pend = new PessoaEndereco([
+            'codpessoa' => $p->codpessoa,
+            'endereco' => $p->endereco,
+            'numero' => $p->numero,
+            'complemento' => $p->complemento,
+            'cep' => $p->cep,
+            'bairro' => $p->bairro,
+            'codcidade' => $p->codcidade,
+            'nfe' => true,
+            'entrega' => true,
+            'cobranca' => true,
+            'ordem' => 1,
+        ]);
+        $pend->save();
+
         if (!empty($cli->observacao)) {
             if (!strstr($p->observacoes, $cli->observacao )) {
                 if (!empty($p->observacoes)) {
@@ -161,6 +190,14 @@ class MercosCliente {
         }
 
         foreach ($cli->emails as $email) {
+            $pem = new PessoaEmail([
+                'codpessoa' => $p->codpessoa,
+                'email' => $email->email,
+                'nfe' => true,
+                'cobranca' => true,
+                'ordem' => 1,
+            ]);
+            $pem->save();
             if (in_array($email->email, [$p->email, $p->emailnfe, $p->emailcobranca])) {
                 continue;
             }
@@ -182,6 +219,34 @@ class MercosCliente {
         }
 
         foreach ($cli->telefones as $telefone) {
+            $str = numeroLimpo($telefone->numero);
+            if (substr($str, 0, 1) == 0) {
+                $str = ltrim($str, '0');
+            }
+            switch (strlen($str)) {
+                case 11:
+                    $ddd = substr($str, 0, 2);
+                    $tel = substr($str, 2, 9);
+                    break;
+
+                case 10:
+                    $ddd = substr($str, 0, 2);
+                    $tel = substr($str, 2, 8);
+                    break;
+
+                default:
+                    $ddd = 66;
+                    $tel = $str;
+                    break;
+            }
+            $ptel = new PessoaTelefone([
+                'codpessoa' => $p->codpessoa,
+                'pais' => 55,
+                'ddd' => $ddd,
+                'telefone' => $tel,
+                'ordem' => 1,
+            ]);
+            $ptel->save();
             if (in_array(
                 intval(NumeroLimpo($telefone->numero)), [
                     intval(NumeroLimpo($p->telefone1)),
@@ -212,7 +277,6 @@ class MercosCliente {
         }
 
         // $p->contato = $cli->contato_nome;
-        $p->notafiscal = 0;
         if (empty($p->fantasia)) {
             $p->fantasia = $p->pessoa;
         }
