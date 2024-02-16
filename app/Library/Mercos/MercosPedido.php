@@ -13,13 +13,14 @@ use MGLara\Models\Pessoa;
 use MGLara\Models\Negocio;
 use MGLara\Models\NegocioProdutoBarra;
 
-class MercosPedido {
+class MercosPedido
+{
 
-    public static function importaPedidoApos ($alterado_apos)
+    public static function importaPedidoApos($alterado_apos)
     {
 
         // busca ultima alteracao importada do mercos
-        if (! ($alterado_apos instanceof Carbon)) {
+        if (!($alterado_apos instanceof Carbon)) {
             $alterado_apos = MercosPedidoModel::max('ultimaalteracaomercos');
             if ($alterado_apos != null) {
                 $alterado_apos = Carbon::parse($alterado_apos)->addSeconds(1);
@@ -34,8 +35,9 @@ class MercosPedido {
 
         $api = new MercosApi();
         $peds = $api->getPedidos($alterado_apos);
+        $mps = [];
         foreach ($peds as $ped) {
-            $mp = static::parsePedido ($ped);
+            $mp = static::parsePedido($ped);
             if ($mp) {
                 $importados++;
                 if ($mp->ultimaalteracaomercos > $ate) {
@@ -44,16 +46,18 @@ class MercosPedido {
             } else {
                 $erros++;
             }
+            $mps[] = $mp;
         }
         $ret = [
-            'importados'=> $importados,
-            'erros'=> $erros,
-            'ate'=> $ate->format('Y-m-d H:i:s')
+            'importados' => $importados,
+            'erros' => $erros,
+            'ate' => $ate->format('Y-m-d H:i:s'),
+            'mps' => $mps
         ];
         return $ret;
     }
 
-    public static function parsePedido ($ped)
+    public static function parsePedido($ped)
     {
         DB::BeginTransaction();
         $mp = MercosPedidoModel::firstOrNew([
@@ -74,7 +78,7 @@ class MercosPedido {
                 $ee->estado,
                 $ee->cep
             ];
-            $end = array_filter($end, function($a) {
+            $end = array_filter($end, function ($a) {
                 return trim($a) !== "";
             });
             $end = implode(', ', $end);
@@ -99,7 +103,7 @@ class MercosPedido {
             $n->codnaturezaoperacao = env('MERCOS_CODNATUREZAOPERACAO');
             $n->codoperacao = $n->NaturezaOperacao->codoperacao;
             $n->codnegociostatus = 1;
-	    $n->codpessoavendedor = env('MERCOS_CODPESSOAVENDEDOR');
+            $n->codpessoavendedor = env('MERCOS_CODPESSOAVENDEDOR');
             $n->codusuario = env('MERCOS_CODUSUARIO');
             $n->codusuariocriacao = env('MERCOS_CODUSUARIO');
             $n->codusuarioalteracao = env('MERCOS_CODUSUARIO');
@@ -123,7 +127,7 @@ class MercosPedido {
         return $mp;
     }
 
-    public static function parsePedidoItem ($item, Negocio $n, MercosPedidoModel $mp)
+    public static function parsePedidoItem($item, Negocio $n, MercosPedidoModel $mp)
     {
         $mpi = MercosPedidoItemModel::firstOrNew([
             'itemid' => $item->id,
@@ -152,7 +156,7 @@ class MercosPedido {
         return $mpi;
     }
 
-    public static function exportaFaturamento (Negocio $n)
+    public static function exportaFaturamento(Negocio $n)
     {
         $ret = [];
         if ($n->codnegociostatus != 2) {
@@ -185,5 +189,4 @@ class MercosPedido {
         }
         return $ret;
     }
-
 }

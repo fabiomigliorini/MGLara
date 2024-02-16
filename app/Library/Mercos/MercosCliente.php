@@ -101,7 +101,6 @@ class MercosCliente {
         if ($cli->excluido) {
             return null;
         }
-        DB::BeginTransaction();
         $mc = MercosClienteModel::firstOrNew([
             'clienteid' => $cli->id
         ]);
@@ -290,8 +289,6 @@ class MercosCliente {
         $mc->codpessoa = $p->codpessoa;
         $mc->ultimaalteracaomercos = Carbon::createFromFormat('Y-m-d H:i:s', $cli->ultima_alteracao, 'America/Sao_Paulo')->setTimezone('America/Cuiaba');
         $mc->save();
-
-        DB::commit();
 
         return $mc;
     }
