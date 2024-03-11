@@ -37,6 +37,9 @@ function decideIconeUltimaConferencia($data)
     <li class='active'>
         <small>
             <a title="Novo Movimento Manual" href="{{ url("estoque-movimento/create/$model->codestoquemes") }}"><i class="glyphicon glyphicon-plus"></i></a>
+            <a href="#" onclick="recalcularCustoMedio()">
+                <i class="glyphicon glyphicon-repeat"></i>
+            </a>
             <!--
             <a title="Recalcular Movimento de Estoque" href="#" id="btnRecalculaMovimentoEstoque"><i class="glyphicon glyphicon-refresh"></i></a>
             <a title="Recalcular Custo Medio" href="#" id="btnRecalculaCustoMedio"><i class="glyphicon glyphicon-usd"></i></a>
@@ -126,10 +129,10 @@ function decideIconeUltimaConferencia($data)
 
 <?php
 
-$proximos = $model->buscaProximos(12);
-$anteriores = $model->buscaAnteriores(24 - sizeof($proximos));
+$proximos = $model->buscaProximos(48);
+$anteriores = $model->buscaAnteriores(96 - sizeof($proximos));
 if (sizeof($anteriores) < 7) {
-    $proximos = $model->buscaProximos(24 - sizeof($anteriores));
+    $proximos = $model->buscaProximos(96 - sizeof($anteriores));
 }
 
 function labelClass($saldo)
@@ -305,6 +308,34 @@ function labelClass($saldo)
                         } else {
                             bootbox.alert('Erro ao inativar!');
                         }
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        alert(jqXHR.statusText);
+                    }).always(function() {
+                        //alert( "complete" );
+                    });
+                }
+            }
+        });
+
+    }
+
+    function recalcularCustoMedio() {
+        bootbox.confirm({
+            message: "Tem certeza que deseja recalcular o custo médio?",
+            callback: function(inativar) {
+                if (inativar) {
+                    const url = "{{ url("estoque/calcula-custo-medio") }}/{{$model->codestoquemes}}";
+                    $.ajax({
+                        type: 'GET',
+                        url: url,
+                        dataType: 'json',
+                    }).done(function(resp) {
+                        bootbox.alert({
+                            message: "Agendado!",
+                            callback: function(ok) {
+                                location.reload();
+                            }
+                        });
                     }).fail(function(jqXHR, textStatus, errorThrown) {
                         alert(jqXHR.statusText);
                     }).always(function() {
