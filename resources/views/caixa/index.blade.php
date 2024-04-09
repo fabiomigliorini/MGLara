@@ -211,6 +211,24 @@
         </td>
       </tr>
     @endforeach
+
+    @foreach ($dados['valerecebido'] as $vale)
+    <tr>
+      <td colspan='2'>
+        Vales Recebidos
+        <span class="badge">{{ formataNumero($vale->quantidade, 0) }}</span>
+      </td>
+      <td class='text-right'>
+        {{ formataNumero($vale->valorentrada) }}
+      </td>
+      <td class='text-right'>
+        {{ formataNumero($vale->valorsaida) }}
+      </td>
+      <td class='text-right'>
+      </td>
+    </tr>
+  @endforeach
+
   </tbody>
 </table>
 

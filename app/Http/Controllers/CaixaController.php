@@ -36,11 +36,12 @@ class CaixaController extends Controller
             [
                 'datainicial',
                 'datafinal',
-        ]);
+            ]
+        );
 
         if (empty($parametros['codusuario'])) {
             $parametros['codusuario'] = Auth::user()->codusuario;
-	}
+        }
 
         if (empty($parametros['codusuario'])) {
             abort(500, 'Usuário não informado!');
@@ -240,10 +241,25 @@ class CaixaController extends Controller
 
         $dados['pix'] = DB::select($sql);
 
+
+        $sql = "
+            select
+                count(nfp.codnegocioformapagamento) as quantidade,
+                sum(case when n.codoperacao = 2 then 0 else nfp.valorpagamento end) as valorentrada,
+                sum(case when n.codoperacao != 2 then 0 else nfp.valorpagamento end) as valorsaida
+            from tblnegocio n
+            inner join tblnegocioformapagamento nfp on (nfp.codnegocio = n.codnegocio)
+            where n.codusuario = {$parametros['codusuario']}
+            and n.lancamento between '{$parametros['datainicial']->toDateTimeString()}' and '{$parametros['datafinal']->toDateTimeString()}'
+            and n.codnegociostatus = 2 -- fechado
+            and nfp.tipo = 12 -- vale presente
+        ";
+
+        $dados['valerecebido'] = DB::select($sql);
+
         $parametros['datainicial'] = $parametros['datainicial']->format('Y-m-d\TH:i:s');
         $parametros['datafinal'] = $parametros['datafinal']->format('Y-m-d\TH:i:s');
 
         return view('caixa.index', compact('dados', 'parametros'));
     }
-
 }
