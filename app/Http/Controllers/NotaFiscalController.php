@@ -108,7 +108,8 @@ class NotaFiscalController extends Controller
                       tblnegocio.codfilial
                     , tblnegocio.codestoquelocal
                     , destino.codpessoa
-                    , tblnegocio.codnaturezaoperacao
+                    --, tblnegocio.codnaturezaoperacao
+                    , 15 as codnaturezaoperacao
                     , tblnegocioprodutobarra.codnegocioprodutobarra
             from tblnotafiscal
             inner join tblnotafiscalprodutobarra on (tblnotafiscalprodutobarra.codnotafiscal = tblnotafiscal.codnotafiscal)
@@ -145,6 +146,7 @@ class NotaFiscalController extends Controller
             and tblnotafiscal.nfecancelamento is null
             and tblnotafiscal.emissao >= (now() - interval '3 months')
             and tblnegocio.codfilial <> destino.codfilial
+            and tblnegocioprodutobarra.inativo is null
             and origem.codempresa = destino.codempresa
             and emitida.codnotafiscal is null
             and origem.codfilial = {$codfilial}
@@ -159,7 +161,8 @@ class NotaFiscalController extends Controller
                       tblnegocio.codfilial
                     , tblnegocio.codestoquelocal
                     , tblnegocio.codpessoa
-                    , tblnegocio.codnaturezaoperacao
+                    --, tblnegocio.codnaturezaoperacao
+                    , 15 as codnaturezaoperacao
                     , tblnegocioprodutobarra.codnegocioprodutobarra
             from tblnegocio
             inner join tblnegocioprodutobarra on (tblnegocioprodutobarra.codnegocio = tblnegocio.codnegocio)
@@ -190,6 +193,7 @@ class NotaFiscalController extends Controller
                     )
             where tblnegocio.codnegociostatus = 2
             and tblnegocio.lancamento >= (now() - interval '3 months')
+            and tblnegocioprodutobarra.inativo is null
             and emitida.codnotafiscal is null
             and tblnegocio.codfilial <> destino.codfilial
             and tblnegocio.codnaturezaoperacao not in (19) --Uso e Consumo
