@@ -1,7 +1,9 @@
 <?php
 
 namespace MGLara\Models;
+
 use DB;
+
 /**
  * Campos
  * @property  bigint                         $codmeta                            NOT NULL DEFAULT nextval('tblmeta_codmeta_seq'::regclass)
@@ -46,8 +48,8 @@ class Meta extends MGModel
         'alteracao',
     ];
 
-    public function validate() {
-
+    public function validate()
+    {
         $this->_regrasValidacao = [
             'premioprimeirovendedorfilial' => 'required',
         ];
@@ -57,7 +59,6 @@ class Meta extends MGModel
         ];
 
         return parent::validate();
-
     }
 
     // Chaves Estrangeiras
@@ -186,37 +187,37 @@ class Meta extends MGModel
         $xeroxs     = DB::select($sql_xerox);
 
         $array_melhoresvendedores = [];
-        foreach ($filiais as $filial){
-            $array_melhoresvendedores[$filial->codfilial]=[];
+        foreach ($filiais as $filial) {
+            $array_melhoresvendedores[$filial->codfilial] = [];
             foreach ($vendedores as $vendedor) {
 
-                if(is_null($vendedor->valorvendaspordata)){
+                if (is_null($vendedor->valorvendaspordata)) {
                     $vendedor->valorvendas = 0;
                 } else {
                     $vendedor->valorvendas = array_sum(array_column(json_decode($vendedor->valorvendaspordata), 'valorvendas'));
                 }
 
-                if($vendedor->codfilial == $filial->codfilial) {
+                if ($vendedor->codfilial == $filial->codfilial) {
                     array_push($array_melhoresvendedores[$filial->codfilial], $vendedor->valorvendas);
                 }
             }
         }
 
         $retorno_vendedores = [];
-        foreach ($vendedores as $vendedor){
-            if(is_null($vendedor->valorvendaspordata)){
+        foreach ($vendedores as $vendedor) {
+            if (is_null($vendedor->valorvendaspordata)) {
                 $vendedor->valorvendas = 0;
             } else {
                 $vendedor->valorvendas = array_sum(array_column(json_decode($vendedor->valorvendaspordata), 'valorvendas'));
             }
 
             //$vendedor->valorvendas = array_sum(array_column(json_decode($vendedor->valorvendaspordata), 'valorvendas'));
-            $valorcomissaovendedor = ($vendedor->percentualcomissaovendedor / 100 ) * $vendedor->valorvendas;
-            $valorcomissaometavendedor = ($vendedor->valorvendas >= $vendedor->valormetavendedor ? ($this->percentualcomissaovendedormeta / 100 ) * $vendedor->valorvendas : null);
+            $valorcomissaovendedor = ($vendedor->percentualcomissaovendedor / 100) * $vendedor->valorvendas;
+            $valorcomissaometavendedor = ($vendedor->valorvendas >= $vendedor->valormetavendedor ? ($this->percentualcomissaovendedormeta / 100) * $vendedor->valorvendas : null);
             $falta = ($vendedor->valorvendas < $vendedor->valormetavendedor ? $vendedor->valormetavendedor - $vendedor->valorvendas : null);
             $melhorvendedor = null;
 
-            if($vendedor->valorvendas == max($array_melhoresvendedores[$vendedor->codfilial]) && $vendedor->valorvendas >= $vendedor->valormetavendedor){
+            if ($vendedor->valorvendas == max($array_melhoresvendedores[$vendedor->codfilial]) && $vendedor->valorvendas >= $vendedor->valormetavendedor) {
                 $melhorvendedor = 200;
             }
 
@@ -239,13 +240,13 @@ class Meta extends MGModel
         }
 
         $retorno_filiais = [];
-        foreach ($filiais as $filial){
+        foreach ($filiais as $filial) {
             $filial->valorvendas = null;
             if (!empty($filial->valorvendaspordata)) {
                 $filial->valorvendas = array_sum(array_column(json_decode($filial->valorvendaspordata), 'valorvendas'));
             }
             $falta = ($filial->valorvendas < $filial->valormetafilial ? $filial->valormetafilial - $filial->valorvendas : null);
-            $premio = ($filial->valorvendas >= $filial->valormetafilial ? ($filial->valorvendas / 100 ) * $this->percentualcomissaosubgerentemeta : null);
+            $premio = ($filial->valorvendas >= $filial->valormetafilial ? ($filial->valorvendas / 100) * $this->percentualcomissaosubgerentemeta : null);
             $retorno_filiais[] = [
                 'codfilial'                 => $filial->codfilial,
                 'filial'                    => $filial->filial,
@@ -263,13 +264,13 @@ class Meta extends MGModel
 
 
         $retorno_xerox = [];
-        foreach ($xeroxs as $xerox){
-            if(is_null($xerox->valorvendaspordata)){
+        foreach ($xeroxs as $xerox) {
+            if (is_null($xerox->valorvendaspordata)) {
                 $xerox->valorvendas = 0;
             } else {
                 if (!empty($vendedor->valorvendaspordata)) {
-	                $xerox->valorvendas = array_sum(array_column(json_decode($vendedor->valorvendaspordata), 'valorvendas'));
-		}
+                    $xerox->valorvendas = array_sum(array_column(json_decode($vendedor->valorvendaspordata), 'valorvendas'));
+                }
             }
 
             $xerox->valorvendas = array_sum(array_column(json_decode($xerox->valorvendaspordata) ?? [], 'valorvendas'));
@@ -277,10 +278,10 @@ class Meta extends MGModel
                 "codfilial"             => $xerox->codfilial,
                 "filial"                => $xerox->filial,
                 "valorvendas"           => $xerox->valorvendas,
-                "percentualcomissaoxerox"=> $xerox->percentualcomissaoxerox,
+                "percentualcomissaoxerox" => $xerox->percentualcomissaoxerox,
                 "codpessoa"             => $xerox->codpessoa,
                 "pessoa"                => $xerox->pessoa,
-                'comissao'              => ($xerox->valorvendas / 100 ) * $xerox->percentualcomissaoxerox,
+                'comissao'              => ($xerox->valorvendas / 100) * $xerox->percentualcomissaoxerox,
                 'valorvendaspordata'        => json_decode($xerox->valorvendaspordata, true),
             ];
         }
@@ -297,19 +298,18 @@ class Meta extends MGModel
     public function buscaProximos($qtd = 7)
     {
         $metas = self::where('periodoinicial', '>', $this->periodofinal)
-               ->orderBy('periodoinicial', 'asc')
-               ->take($qtd)
-               ->get();
+            ->orderBy('periodoinicial', 'asc')
+            ->take($qtd)
+            ->get();
         return $metas;
     }
 
     public function buscaAnteriores($qtd = 7)
     {
         $metas = self::where('periodofinal', '<', $this->periodoinicial)
-               ->orderBy('periodoinicial', 'desc')
-               ->take($qtd)
-               ->get();
+            ->orderBy('periodoinicial', 'desc')
+            ->take($qtd)
+            ->get();
         return $metas->reverse();
     }
-
 }
