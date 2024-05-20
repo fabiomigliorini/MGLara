@@ -24,12 +24,12 @@ use Illuminate\Support\Facades\DB;
 
 class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueue
 {
-    
+
     use InteractsWithQueue, SerializesModels, DispatchesJobs;
-    
+
     protected $codprodutovariacao;
     protected $codestoquelocal;
-    
+
     /**
      * Create a new job instance.
      *
@@ -48,30 +48,30 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
      */
     public function handle()
     {
-        $log_completo = (empty($this->codestoquelocal) && empty($this->codprodutovariacao))?true:false;
-        
+        $log_completo = (empty($this->codestoquelocal) && empty($this->codprodutovariacao)) ? true : false;
+
         Log::info('EstoqueCalculaEstatisticas', ['attempts' => $this->attempts(), 'codprodutovariacao' => $this->codprodutovariacao, 'codestoquelocal' => $this->codestoquelocal]);
-        
+
         if ($log_completo) {
             Log::info('EstoqueCalculaEstatisticas Início Calculo data Ultima Compra');
         }
-        
+
         // Busca todos produtos variacao
         $pvs = ProdutoVariacao::orderBy('codprodutovariacao');
         if (!empty($this->codprodutovariacao)) {
             $pvs->where('codprodutovariacao', $this->codprodutovariacao);
         }
-        
+
         // Percorre ajustando a data da ultima compra
         foreach ($pvs->get() as $pv) {
             $data = null;
             $quantidade = null;
             $custo = null;
             $sql = "
-                select 
+                select
                     nf.emissao
                     , sum(nfpb.quantidade * coalesce(pe.quantidade, 1)) as quantidade
-                    , sum(nfpb.valortotal) as valortotal 
+                    , sum(nfpb.valortotal) as valortotal
                 from tblprodutobarra pb
                 left join tblprodutoembalagem pe on (pe.codprodutoembalagem = pb.codprodutoembalagem)
                 inner join tblnotafiscalprodutobarra nfpb on (nfpb.codprodutobarra = pb.codprodutobarra)
@@ -79,7 +79,7 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
                 inner join tblnaturezaoperacao no on (no.codnaturezaoperacao = nf.codnaturezaoperacao)
                 where pb.codprodutovariacao = {$pv->codprodutovariacao}
                 and no.compra = true
-                group by pb.codprodutovariacao, nf.emissao 
+                group by pb.codprodutovariacao, nf.emissao
                 order by nf.emissao desc
                 limit 1
                 ";
@@ -98,7 +98,7 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
                 'custoultimacompra' => $custo,
             ]);
         }
-    
+
         if ($log_completo) {
             Log::info('EstoqueCalculaEstatisticas Fim Calculo Ultima Compra');
         }
@@ -107,13 +107,13 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
         $semestre = new Carbon('today - 6 months');
         $ano = new Carbon('today - 1 year');
         $agora = new Carbon('now');
-        
+
         if ($log_completo) {
             Log::info('EstoqueCalculaEstatisticas Calculando Volume de vendas');
         }
 
         $sql = "
-            select 
+            select
                 tblnegocio.codestoquelocal
                 , tblprodutobarra.codprodutovariacao
                 --, tblprodutobarra.codproduto
@@ -123,7 +123,7 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
                 , sum(case when (tblnegocio.lancamento >= '{$semestre->toIso8601String()}') then tblnegocioprodutobarra.valortotal * (tblnegocio.valortotal / tblnegocio.valorprodutos) else 0 end) as vendasemestrevalor
                 , sum(case when (tblnegocio.lancamento >= '{$bimestre->toIso8601String()}') then tblnegocioprodutobarra.quantidade * coalesce(tblprodutoembalagem.quantidade, 1) else 0 end) as vendabimestrequantidade
                 , sum(case when (tblnegocio.lancamento >= '{$bimestre->toIso8601String()}') then tblnegocioprodutobarra.valortotal * (tblnegocio.valortotal / tblnegocio.valorprodutos) else 0 end) as vendabimestrevalor
-            from tblnegocio 
+            from tblnegocio
             inner join tblnaturezaoperacao on (tblnaturezaoperacao.codnaturezaoperacao = tblnegocio.codnaturezaoperacao)
             inner join tblnegocioprodutobarra on (tblnegocioprodutobarra.codnegocio = tblnegocio.codnegocio)
             inner join tblprodutobarra on (tblprodutobarra.codprodutobarra = tblnegocioprodutobarra.codprodutobarra)
@@ -131,34 +131,35 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
             where tblnegocio.codnegociostatus = 2 --Fechado
             and tblnegocio.lancamento >= '{$ano->toIso8601String()}'
             and tblnaturezaoperacao.venda = true
+            and tblnegocioprodutobarra.inativo is null
             --and tblprodutobarra.codproduto in (select tblproduto.codproduto from tblproduto where tblproduto.codmarca = 29) -- ACRILEX
             ";
-            
+
         if (!empty($this->codprodutovariacao)) {
             $sql .= "
                 and tblprodutobarra.codprodutovariacao = {$this->codprodutovariacao}
             ";
         }
-        
+
         if (!empty($this->codestoquelocal)) {
             $sql .= "
                 and tblnegocio.codestoquelocal = {$this->codestoquelocal}
             ";
         }
-        
+
         $sql .= "
-            group by 
+            group by
                     tblnegocio.codestoquelocal
                     , tblprodutobarra.codprodutovariacao
                     , tblprodutobarra.codproduto
         ";
-        
+
         $regs = DB::select($sql);
-        
+
         if ($log_completo) {
             Log::info('EstoqueCalculaEstatisticas Atualizando volume de vendas');
         }
-        
+
         $atualizados = [];
         foreach ($regs as $reg) {
             $elpv = EstoqueLocalProdutoVariacao::buscaOuCria($reg->codprodutovariacao, $reg->codestoquelocal);
@@ -177,12 +178,12 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
         if ($log_completo) {
             Log::info('EstoqueCalculaEstatisticas Fim Atualizacao volume de vendas', ['atualizados' => sizeof($atualizados), 'calculados' => sizeof($regs)]);
         }
-        
+
         $elpvs = EstoqueLocalProdutoVariacao::whereNotIn('codestoquelocalprodutovariacao', $atualizados);
         if (!empty($this->codprodutovariacao)) {
             $elpvs = $elpvs->where('codprodutovariacao', $this->codprodutovariacao);
         }
-        
+
         if (!empty($this->codestoquelocal)) {
             $elpvs = $elpvs->where('codestoquelocal', $this->codestoquelocal);
         }
@@ -200,5 +201,4 @@ class EstoqueCalculaEstatisticas extends Job implements SelfHandling, ShouldQueu
             Log::info('EstoqueCalculaEstatisticas Limpada estatisticas produtos Não vendidos', ['ret' => $ret]);
         }
     }
-    
 }
