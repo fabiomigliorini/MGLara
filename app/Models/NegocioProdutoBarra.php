@@ -41,6 +41,7 @@ class NegocioProdutoBarra extends MGModel
         'quantidade',
         'valorunitario',
         'valortotal',
+        'valorprodutos',
         'codprodutobarra',
         'codnegocioprodutobarradevolucao',
     ];
