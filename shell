@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-docker-compose exec mglara /bin/bash
+docker compose exec mglara /bin/bash
