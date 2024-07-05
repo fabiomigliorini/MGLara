@@ -148,6 +148,7 @@ class MercosPedido
             'codprodutobarra' => $pb->codprodutobarra,
             'quantidade' => $item->quantidade,
             'valorunitario' => $item->preco_liquido,
+            'valorprodutos' => $item->subtotal,
             'valortotal' => $item->subtotal,
         ]);
         $npb->save();

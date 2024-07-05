@@ -122,7 +122,7 @@ class Meta extends MGModel
             , (SELECT to_json(array_agg(t)) FROM (
             select
                 date_trunc('day', n.lancamento) as data,
-                sum(coalesce(npb.valortotal, 0) * (case when n.codoperacao = 1 then -1 else 1 end) * (coalesce(n.valortotal, 0) / coalesce(n.valorprodutos, 0))) as valorvendas
+                sum((coalesce(npb.valorprodutos, 0) - coalesce(npb.valordesconto, 0)) * (case when n.codoperacao = 1 then -1 else 1 end)) as valorvendas
             from tblnegocio n
             inner join tblnegocioprodutobarra npb on (npb.codnegocio = n.codnegocio)
             inner join tblprodutobarra pb on (pb.codprodutobarra = npb.codprodutobarra)
@@ -155,7 +155,7 @@ class Meta extends MGModel
                 select
                     date_trunc('day', n.lancamento) as data,
                     --sum((case when n.codoperacao = 1 then -1 else 1 end) * coalesce(n.valortotal, 0)) as valorvendas
-                    sum(coalesce(npb.valortotal, 0) * (case when n.codoperacao = 1 then -1 else 1 end) * (coalesce(n.valortotal, 0) / coalesce(n.valorprodutos, 0))) as valorvendas
+                    sum((coalesce(npb.valorprodutos, 0) - coalesce(npb.valordesconto, 0))* (case when n.codoperacao = 1 then -1 else 1 end)) as valorvendas
                 from tblnegocio n
                 inner join tblnegocioprodutobarra npb on (npb.codnegocio = n.codnegocio)
                 inner join tblprodutobarra pb on (pb.codprodutobarra = npb.codprodutobarra)
