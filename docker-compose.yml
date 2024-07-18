@@ -5,6 +5,7 @@ services:
         restart: unless-stopped
         volumes:
             - /opt/www:/opt/www
+            - /mnt:/mnt
             - /tmp:/tmp/host
             - ./php.ini:/usr/local/etc/php/php.ini
             - /media/publico:/media/publico                
