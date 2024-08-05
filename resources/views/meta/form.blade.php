@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 $cargos = [''=>''] + Cargo::orderBy('cargo')->lists('cargo', 'codcargo')->all();        
 $filiais = Filial::orderBy('codfilial')->get();
-$pessoas = [''=>''] + Pessoa::where('codgrupocliente', 8)
-        ->where('vendedor', true)
+$pessoas = [''=>''] + Pessoa::where('vendedor', true)
         ->whereNull('inativo')
         ->orderBy('fantasia')
         ->lists('fantasia', 'codpessoa')
