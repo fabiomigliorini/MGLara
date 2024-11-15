@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use GuzzleHttp\Client;
 
 class AuthController extends Controller
 {
@@ -77,11 +78,49 @@ class AuthController extends Controller
         ]);
     }
 
+    public function getLogin()
+    {
+        if (view()->exists('auth.authenticate')) {
+            return view('auth.authenticate');
+        }
+
+        return redirect()->to(env('AUTH_API_URL') . '/login?redirect_uri=' . url());
+
+    }
+
 
     public function getLogout()
     {
+
+        $access_token = Request::capture()->cookies->get('access_token');
+
+        $client = new Client();
+
+        try {
+            $responseAuth = $client->post(env('AUTH_API_URL') . '/api/logout', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $access_token,
+                ],
+                'verify' => false
+            ]); 
+
+            if ($responseAuth->getStatusCode() === 200) {
+                Auth::logout();
+                $response = redirect($this->loginPath());
+                return $response;
+            }
+        } catch (\Exception $e) {
+            if($e->getCode() == 401) {
+                Auth::logout();
+                $response = redirect($this->loginPath());
+                return $response;
+            }
+        }
+
         Auth::logout();
-        return redirect(env('MGSIS_URL').'index.php?r=site/logout');
+        $response = redirect($this->loginPath());
+        return $response;
+
     }
 
 }

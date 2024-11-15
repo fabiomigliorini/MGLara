@@ -3,7 +3,10 @@
 namespace MGLara\Http\Middleware;
 
 use Closure;
+use GuzzleHttp\Client;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class Authenticate
 {
@@ -32,16 +35,48 @@ class Authenticate
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        if ($this->auth->guest()) {
-            if ($request->ajax()) {
-                return response('Unauthorized.', 401);
-            } else {
-                return redirect()->guest('/sso/login');
-            }
-        }
+        // if ($this->auth->guest()) {
+        //     if ($request->ajax()) {
+        //         return response('Unauthorized.', 401);
+        //     } else {
+        //         return redirect()->guest('/auth/login');
+        //     }
+        // }
+        
+        try {
+            $access_token = Request::capture()->cookies->get('access_token');
 
-        return $next($request);
+
+            if (!$access_token) {
+                return redirect()->guest('/auth/login');
+            }
+
+            $client = new Client();
+            $responseAuth = $client->get(env('AUTH_API_URL') . '/api/check-token', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $access_token,
+                ],
+                'verify' => false
+            ]); 
+
+            $reponseData = json_decode((string) $responseAuth->getBody(), true);
+
+            if ($responseAuth->getStatusCode() === 200) {
+                if ($this->auth->guest()) {
+                    Auth::loginUsingId($reponseData['user_id']);
+                }
+                $reponse = $next($request);
+                return $reponse;
+            }
+        } catch (\Exception $e) {
+            
+            if($e->getCode() == 401) {
+                Auth::logout();
+                return redirect()->guest('/auth/login');
+            }
+
+        }
     }
 }
