@@ -15,5 +15,6 @@ services:
         extra_hosts:
             - "host.docker.internal:host-gateway"
             - "api-mgspa-dev.mgpapelaria.com.br:host-gateway"            
+            - "auth-dev.mgpapelaria.com.br:host-gateway"
         ports:
             - "9001:9000"              
