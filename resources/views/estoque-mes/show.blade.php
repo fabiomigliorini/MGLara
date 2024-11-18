@@ -45,9 +45,9 @@
                     <i class="glyphicon glyphicon-repeat"></i>
                 </a>
                 <!--
-                                                            <a title="Recalcular Movimento de Estoque" href="#" id="btnRecalculaMovimentoEstoque"><i class="glyphicon glyphicon-refresh"></i></a>
-                                                            <a title="Recalcular Custo Medio" href="#" id="btnRecalculaCustoMedio"><i class="glyphicon glyphicon-usd"></i></a>
-                                                            -->
+                    <a title="Recalcular Movimento de Estoque" href="#" id="btnRecalculaMovimentoEstoque"><i class="glyphicon glyphicon-refresh"></i></a>
+                    <a title="Recalcular Custo Medio" href="#" id="btnRecalculaCustoMedio"><i class="glyphicon glyphicon-usd"></i></a>
+                    -->
             </small>
         </li>
         <button class="btn pull-right" type="button" data-toggle="collapse" data-target="#div-conferencia-collapse"
