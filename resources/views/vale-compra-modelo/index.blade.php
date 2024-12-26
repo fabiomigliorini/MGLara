@@ -66,11 +66,6 @@
                             <div class="col-md-1">
                                 {{ $row->ano }}
                             </div>
-                            <div class="col-md-2">
-                                <a href="{{ url('pessoa', $row->codpessoafavorecido) }}">
-                                    {{ $row->PessoaFavorecido->fantasia }}
-                                </a>
-                            </div>
                             <div class="col-md-4">
                                 {{ $row->modelo }}
                                 <div class="pull-right">
@@ -79,6 +74,11 @@
                                 <div class="clearfix">
                                     {!! inativo($row->inativo) !!}
                                 </div>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="{{ url('pessoa', $row->codpessoafavorecido) }}">
+                                    {{ $row->PessoaFavorecido->fantasia }}
+                                </a>
                             </div>
                             <div class="col-md-2 small text-muted">
                                 {!! nl2br($row->observacoes) !!}
