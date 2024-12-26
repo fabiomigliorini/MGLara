@@ -44,7 +44,7 @@ class Authenticate
         //         return redirect()->guest('/auth/login');
         //     }
         // }
-        
+
         try {
             $access_token = Request::capture()->cookies->get('access_token');
 
@@ -59,13 +59,13 @@ class Authenticate
                     'Authorization' => 'Bearer ' . $access_token,
                 ],
                 'verify' => false
-            ]); 
+            ]);
 
             $reponseData = json_decode((string) $responseAuth->getBody(), true);
 
             if ($responseAuth->getStatusCode() === 200) {
-                if(Auth::user()) {
-                    if(Auth::user()->codusuario != $reponseData['user_id']) {
+                if (Auth::user()) {
+                    if (Auth::user()->codusuario != $reponseData['user_id']) {
                         Auth::logout();
                         Auth::loginUsingId($reponseData['user_id']);
                     }
@@ -78,11 +78,12 @@ class Authenticate
                 return $reponse;
             }
         } catch (\Exception $e) {
-            if($e->getCode() == 401) {
+            if ($e->getCode() == 401) {
                 Auth::logout();
                 return redirect()->to(env('AUTH_API_URL') . '/login?redirect_uri=' . url());
+            } else {
+                throw new \Exception("Recebido resposta {$e->getCode()} ao autenticar!", 1);
             }
-
         }
     }
 }

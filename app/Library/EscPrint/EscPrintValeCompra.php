@@ -36,7 +36,9 @@ class EscPrintValeCompra extends EscPrint
         // Fantasia e NUMERO do Negocio
         $this->adicionaTexto("<DblStrikeOn>", "cabecalho");
         $this->adicionaTexto($filial->Pessoa->fantasia . " " . $filial->Pessoa->telefone1, "cabecalho", 68);
-        $this->adicionaTexto("Vale Compras:      " . formataCodigo($vale->codvalecompra), "cabecalho", 69, STR_PAD_LEFT);
+
+        $this->adicionaTexto("Vale Compras: " . formataCodigo($vale->codvalecompra) . "/" . formataCodigo($vale->Titulo->codtitulo), "cabecalho", 69, STR_PAD_LEFT);
+        // $this->adicionaTexto("Vale Compras:      " . formataCodigo($vale->codvalecompra), "cabecalho", 69, STR_PAD_LEFT);
         $this->adicionaTexto("<DblStrikeOff>", "cabecalho");
         $this->adicionaLinha("", "cabecalho");
 
@@ -44,7 +46,7 @@ class EscPrintValeCompra extends EscPrint
 
         // Usuario e Data
         $this->adicionaTexto("Usuario.: " . $vale->UsuarioCriacao->usuario, "cabecalho", 68);
-        $this->adicionaTexto("Data...: " . $vale->criacao, "cabecalho", 69, STR_PAD_LEFT);
+        $this->adicionaTexto("Data........: " . $vale->criacao, "cabecalho", 69, STR_PAD_LEFT);
         $this->adicionaLinha("", "cabecalho");
 
         //linha divisoria
@@ -140,7 +142,7 @@ class EscPrintValeCompra extends EscPrint
 
         $linha = "Aluno...: "
                 . $vale->aluno
-                . " / "
+                . " / Turma: "
                 . $vale->turma;
         $this->adicionaLinha(
                 $linha,

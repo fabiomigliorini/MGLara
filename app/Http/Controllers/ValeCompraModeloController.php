@@ -22,10 +22,10 @@ class ValeCompraModeloController extends Controller
         $this->middleware('permissao:vale-compra-modelo.inclusao', ['only' => ['create', 'store']]);
         $this->middleware('permissao:vale-compra-modelo.alteracao', ['only' => ['edit', 'update']]);
         $this->middleware('permissao:vale-compra-modelo.exclusao', ['only' => ['delete', 'destroy']]);
-         * 
+         *
          */
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -36,12 +36,13 @@ class ValeCompraModeloController extends Controller
         $parametros = self::filtroEstatico($request, 'vale-compra-modelo.index', ['ativo' => 1]);
         $model = ValeCompraModelo::search($parametros)
             ->orderBy('ano', 'DESC')
+            ->orderBy('codpessoafavorecido', 'ASC')
             ->orderBy('turma', 'ASC')
             ->orderBy('modelo', 'ASC')
             ->paginate(20);
         return view('vale-compra-modelo.index', compact('model'));
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -54,8 +55,8 @@ class ValeCompraModeloController extends Controller
         return view('vale-compra-modelo.show', compact('model'));
     }
 
-    
-    
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -76,23 +77,23 @@ class ValeCompraModeloController extends Controller
     public function store(Request $request)
     {
         DB::beginTransaction();
-        
+
         $dados = $request->all();
-        
+
         $model = new ValeCompraModelo($dados);
         $model->totalprodutos = array_sum($dados['item_total']);
         $model->total = ((float)$model->totalprodutos) - ((float)$model->desconto);
-        
+
         if (!$model->validate()) {
             $this->throwValidationException($request, $model->_validator);
         }
-        
+
         if ($model->save()) {
             foreach ($dados['item_codprodutobarra'] as $key => $codprodutobarra) {
                 if (empty($codprodutobarra)) {
                     continue;
                 }
-                
+
                 $prod = new ValeCompraModeloProdutoBarra([
                     'codvalecompramodelo' => $model->codvalecompramodelo,
                     'codprodutobarra' => $codprodutobarra,
@@ -100,13 +101,13 @@ class ValeCompraModeloController extends Controller
                     'preco' => $dados['item_preco'][$key],
                     'total' => $dados['item_total'][$key],
                 ]);
-                
+
                 $prod->save();
             }
         }
-        
+
         Session::flash('flash_success', "Modelo de Vale Compras '{$model->modelo}' criado!");
-        
+
         DB::commit();
         return redirect("vale-compra-modelo/$model->codvalecompramodelo");
     }
@@ -138,13 +139,13 @@ class ValeCompraModeloController extends Controller
         $model->fill($dados);
         $model->totalprodutos = array_sum($dados['item_total']);
         $model->total = floatval($model->totalprodutos) - floatval($model->desconto);
-        
+
         if (!$model->validate()) {
             $this->throwValidationException($request, $model->_validator);
         }
-        
+
         DB::beginTransaction();
-        
+
         if ($model->save()) {
             $codvalecompramodeloprodutobarra = [];
             foreach ($dados['item_codprodutobarra'] as $key => $codprodutobarra) {
@@ -158,20 +159,19 @@ class ValeCompraModeloController extends Controller
                     'preco' => $dados['item_preco'][$key],
                     'total' => $dados['item_total'][$key],
                 ];
-    
+
                 if (!empty($dados['item_codvalecompramodeloprodutobarra'][$key])) {
                     $prod = ValeCompraModeloProdutoBarra::findOrFail($dados['item_codvalecompramodeloprodutobarra'][$key]);
                     $prod->fill($dados_prod);
                 } else {
                     $prod = new ValeCompraModeloProdutoBarra($dados_prod);
                 }
-                
+
                 $prod->save();
                 $codvalecompramodeloprodutobarra[] = $prod->codvalecompramodeloprodutobarra;
             }
-            
+
             $model->ValeCompraModeloProdutoBarraS()->whereNotIn('codvalecompramodeloprodutobarra', $codvalecompramodeloprodutobarra)->delete();
-            
         }
         DB::commit();
         Session::flash('flash_success', "Modelo de Vale Compras '{$model->modelo}' atualizado!");
@@ -186,7 +186,7 @@ class ValeCompraModeloController extends Controller
      */
     public function destroy($id)
     {
-        try{
+        try {
             DB::beginTransaction();
             $model = ValeCompraModelo::find($id);
             foreach ($model->ValeCompraModeloProdutoBarraS as $vcmpb) {
@@ -196,22 +196,21 @@ class ValeCompraModeloController extends Controller
                 DB::commit();
                 $ret = ['resultado' => true, 'mensagem' => 'Modelo de Vale Compras excluído com sucesso!'];
             } else {
-                $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir Modelo de Vale Compras!'];                
+                $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir Modelo de Vale Compras!'];
             }
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             $ret = ['resultado' => false, 'mensagem' => 'Erro ao excluir Modelo de Vale Compras!', 'exception' => $e];
         }
         return json_encode($ret);
     }
 
     /*
-    public function listagemJson(Request $request) 
+    public function listagemJson(Request $request)
     {
         if($request->get('q')) {
 
             $query = DB::table('vwprodutobarra');
-            
+
             $tokens = $request->get('q');
 
             // Decide Ordem
@@ -283,11 +282,11 @@ class ValeCompraModeloController extends Controller
                     'unidademedida'    => $value->sigla,
                 ];
             }
-            
+
             return $resultado;
-            
+
         } elseif($request->get('id')) {
-            
+
             $query = DB::table('tblproduto')
                     ->where('codprodutobarra', '=', $request->get('id'))
                     ->select('codprodutobarra as id', 'produto', 'barras', 'referencia', 'preco')
@@ -297,10 +296,10 @@ class ValeCompraModeloController extends Controller
         }
     }
     */
-    
+
     public function inativar(Request $request)
     {
-        try{
+        try {
             $model = ValeCompraModelo::findOrFail($request->get('id'));
             if ($request->get('acao') == 'ativar') {
                 $model->inativo = null;
@@ -310,11 +309,9 @@ class ValeCompraModeloController extends Controller
             $model->save();
             $acao = ($request->get('acao') == 'ativar') ? 'ativado' : 'inativado';
             $ret = ['resultado' => true, 'mensagem' => "Vale $model->vale $acao com sucesso!"];
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             $ret = ['resultado' => false, 'mensagem' => "Erro ao $acao vale!", 'exception' => $e];
         }
         return json_encode($ret);
-    } 
-    
+    }
 }

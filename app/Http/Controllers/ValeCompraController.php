@@ -30,10 +30,10 @@ class ValeCompraController extends Controller
         $this->middleware('permissao:vale-compra.inclusao', ['only' => ['create', 'store']]);
         $this->middleware('permissao:vale-compra.alteracao', ['only' => ['edit', 'update']]);
         $this->middleware('permissao:vale-compra.exclusao', ['only' => ['delete', 'destroy']]);
-         * 
+         *
          */
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -42,14 +42,14 @@ class ValeCompraController extends Controller
     public function index(Request $request)
     {
         $parametros = self::filtroEstatico(
-            $request, 
-            'vale-compra.index', 
+            $request,
+            'vale-compra.index',
             [
                 'ativo' => 1,
                 'codusuariocriacao' => Auth::user()->codusuario
-            ], 
+            ],
             [
-                'criacao_de', 
+                'criacao_de',
                 'criacao_ate'
             ]);
         $model = ValeCompra::search($parametros)
@@ -58,7 +58,7 @@ class ValeCompraController extends Controller
             ->paginate(20);
         return view('vale-compra.index', compact('model', 'parametros'));
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -69,12 +69,12 @@ class ValeCompraController extends Controller
     {
         $model = ValeCompra::findOrFail($id);
 		$imprimir = ($request->get('imprimir') == 'true')?true:false;
-        
+
         return view('vale-compra.show', compact('model', 'imprimir'));
     }
 
-    
-    
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -94,6 +94,10 @@ class ValeCompraController extends Controller
         }
         $modelos = ValeCompraModelo::
             whereNull('tblvalecompramodelo.inativo')
+            ->select([
+                'tblvalecompramodelo.*',
+                'tblpessoa.fantasia'
+            ])
             ->join('tblpessoa', 'tblpessoa.codpessoa', '=', 'tblvalecompramodelo.codpessoafavorecido')
             ->orderBy('tblpessoa.fantasia', 'ASC')
             ->orderBy('modelo', 'ASC')
@@ -110,23 +114,23 @@ class ValeCompraController extends Controller
     public function store(Request $request)
     {
         DB::beginTransaction();
-        
+
         $dados = $request->all();
-        
+
         $model = new ValeCompra($dados);
         $model->totalprodutos = array_sum($dados['item_total']);
         $model->total = ((float)$model->totalprodutos) - ((float)$model->desconto);
-        
+
         if (!$model->validate()) {
             $this->throwValidationException($request, $model->_validator);
         }
-        
+
         if ($model->save()) {
             foreach ($dados['item_codprodutobarra'] as $key => $codprodutobarra) {
                 if (empty($codprodutobarra)) {
                     continue;
                 }
-                
+
                 $prod = new ValeCompraProdutoBarra([
                     'codvalecompra' => $model->codvalecompra,
                     'codprodutobarra' => $codprodutobarra,
@@ -134,18 +138,18 @@ class ValeCompraController extends Controller
                     'preco' => $dados['item_preco'][$key],
                     'total' => $dados['item_total'][$key],
                 ]);
-                
+
                 $prod->save();
             }
-            
+
             $pag = new ValeCompraFormaPagamento([
                 'codvalecompra' => $model->codvalecompra,
                 'codformapagamento' => $dados['codformapagamento'],
                 'valorpagamento' => $model->total,
             ]);
-            
+
             $pag->save();
-            
+
             // Gera Contas a Receber
             if (!$pag->FormaPagamento->avista) {
                 $acumulado = 0;
@@ -162,7 +166,7 @@ class ValeCompraController extends Controller
                     $acumulado += $valor;
                     $numero = str_pad($model->codvalecompra, 8, '0', STR_PAD_LEFT);
                     $numero = "V{$numero}-{$i}/{$pag->FormaPagamento->parcelas}";
-                    
+
                     $titulo = new Titulo();
                     $titulo->numero = $numero;
                     $titulo->codpessoa = $model->codpessoa;
@@ -179,7 +183,7 @@ class ValeCompraController extends Controller
                     $titulo->save();
                 }
             }
-            
+
             // Gera Titulo de Credito
             $numero = str_pad($model->codvalecompra, 8, '0', STR_PAD_LEFT);
             $numero = "V{$numero}-CR";
@@ -197,18 +201,18 @@ class ValeCompraController extends Controller
             $titulo->vencimento = $model->criacao->addYear(1);
             $titulo->vencimentooriginal = $titulo->vencimento;
             $titulo->save();
-            
+
             $model->codtitulo = $titulo->codtitulo;
             $model->save();
-            
+
         }
-        
+
         Session::flash('flash_success', "Vale Compras '" . formataCodigo($model->codvalecompra) . "' criado!");
-        
+
         DB::commit();
         return redirect("vale-compra/$model->codvalecompra?imprimir=true");
     }
-   
+
     public function inativar(Request $request)
     {
         if ($request->get('acao') != 'inativar') {
@@ -220,7 +224,7 @@ class ValeCompraController extends Controller
             if (!$model->Titulo->estornar()) {
                 return json_encode(['resultado' => false, 'mensagem' => "Erro ao estornar titulo de Crédito '{$model->Titulo->numero}'!"]);
             }
-            
+
             foreach ($model->ValeCompraFormaPagamentoS as $pag) {
                 foreach ($pag->TituloS as $titulo) {
                     if (!$titulo->estornar()) {
@@ -228,13 +232,13 @@ class ValeCompraController extends Controller
                     }
                 }
             }
-            
+
             $model->inativo = Carbon::now();
-            
+
             if (!$model->save()) {
                 return json_encode(['resultado' => false, 'mensagem' => "Erro ao salvar data de inativacao!"]);
             }
-            
+
             DB::Commit();
             $ret = ['resultado' => true, 'mensagem' => "Vale " . formataCodigo($model->codvalecompra) . " inativado com sucesso!"];
         }
@@ -243,28 +247,28 @@ class ValeCompraController extends Controller
         }
         return json_encode($ret);
     }
-    
-    public function imprimir($id, Request $request) 
+
+    public function imprimir($id, Request $request)
     {
         // Pega modelo
         $model = ValeCompra::findOrFail($id);
-        
+
         // Se inativo retorna 403
         if (!empty($model->inativo)) {
             abort(403, 'Não é permitido imprimir vale inativado!');
         }
-        
+
         // Monta Relatorio
         $rel = new EscPrintValeCompra($model);
         $rel->prepara();
-        
+
         // Imprime
 		if ($request->get('imprimir') == 'true') {
 			$rel->imprimir();
         }
-        
+
         // Retorna relatorio em formato HTML
         return $rel->converteHtml();
     }
-    
+
 }
