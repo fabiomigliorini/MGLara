@@ -37,8 +37,8 @@ class ValeCompraModeloController extends Controller
         $model = ValeCompraModelo::search($parametros)
             ->orderBy('ano', 'DESC')
             ->orderBy('codpessoafavorecido', 'ASC')
-            ->orderBy('turma', 'ASC')
             ->orderBy('modelo', 'ASC')
+            // ->orderBy('turma', 'ASC')
             ->paginate(20);
         return view('vale-compra-modelo.index', compact('model'));
     }
