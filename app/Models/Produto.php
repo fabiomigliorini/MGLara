@@ -1,6 +1,7 @@
 <?php
 
 namespace MGLara\Models;
+
 use Illuminate\Support\Facades\DB;
 use MGLara\Models\ProdutoBarra;
 use Carbon\Carbon;
@@ -88,7 +89,8 @@ class Produto extends MGModel
         return $this->preco;
     }
 
-    public function validate() {
+    public function validate()
+    {
 
         $unique  = "uniqueMultiple:tblproduto,codproduto,$this->codproduto,produto";
 
@@ -223,11 +225,11 @@ class Produto extends MGModel
     {
         $query = Produto::query();
 
-        if(!empty($parametros['codproduto'])) {
+        if (!empty($parametros['codproduto'])) {
             $query->id($parametros['codproduto']);
         }
 
-        if(!empty($parametros['barras'])) {
+        if (!empty($parametros['barras'])) {
 
             $barras = $parametros['barras'];
 
@@ -236,61 +238,56 @@ class Produto extends MGModel
                     ->from('tblprodutobarra')
                     ->where('barras', 'ilike', "%$barras%");
             });
-
         }
 
-        if(!empty($parametros['produto'])) {
+        if (!empty($parametros['produto'])) {
             $query->produto($parametros['produto']);
         }
 
-        if(!empty($parametros['codmarca'])) {
+        if (!empty($parametros['codmarca'])) {
             $query->where('codmarca', $parametros['codmarca']);
         }
 
-        if(!empty($parametros['codsubgrupoproduto'])) {
+        if (!empty($parametros['codsubgrupoproduto'])) {
 
             $query->where('codsubgrupoproduto', $parametros['codsubgrupoproduto']);
-
         } elseif (!empty($parametros['codgrupoproduto'])) {
 
             $query->join('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
             $query->where('tblsubgrupoproduto.codgrupoproduto', $parametros['codgrupoproduto']);
-
         } elseif (!empty($parametros['codfamiliaproduto'])) {
 
             $query->join('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
             $query->join('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto');
             $query->where('tblgrupoproduto.codfamiliaproduto', $parametros['codfamiliaproduto']);
-
         } elseif (!empty($parametros['codsecaoproduto'])) {
 
             $query->join('tblsubgrupoproduto', 'tblsubgrupoproduto.codsubgrupoproduto', '=', 'tblproduto.codsubgrupoproduto');
             $query->join('tblgrupoproduto', 'tblgrupoproduto.codgrupoproduto', '=', 'tblsubgrupoproduto.codgrupoproduto');
             $query->join('tblfamiliaproduto', 'tblfamiliaproduto.codfamiliaproduto', '=', 'tblgrupoproduto.codfamiliaproduto');
             $query->where('tblfamiliaproduto.codsecaoproduto', $parametros['codsecaoproduto']);
-
         }
 
-        if(!empty($parametros['referencia'])) {
+        if (!empty($parametros['referencia'])) {
             $referencia = explode(' ', $parametros['referencia']);
             foreach ($referencia as $str) {
                 $query->where('referencia', 'ILIKE', "%$str%");
             }
         }
 
-        if(!empty($parametros['codtributacao'])) {
+        if (!empty($parametros['codtributacao'])) {
             $query->where('codtributacao', $parametros['codtributacao']);
         }
 
-        if(!empty($parametros['site'])) {
+        if (!empty($parametros['site'])) {
             $query->where('site', $parametros['site']);
         }
 
-        if(!empty($parametros['codncm'])) {
+        if (!empty($parametros['codncm'])) {
             $query->where('codncm', $parametros['codncm']);
         }
 
-        if(!empty($parametros['preco_de']) && empty($parametros['preco_ate'])) {
+        if (!empty($parametros['preco_de']) && empty($parametros['preco_ate'])) {
 
             $sql = "codproduto in (
                         select pe.codproduto
@@ -302,10 +299,9 @@ class Produto extends MGModel
                     ";
 
             $query->whereRaw($sql);
-
         }
 
-        if(empty($parametros['preco_de']) && !empty($parametros['preco_ate'])) {
+        if (empty($parametros['preco_de']) && !empty($parametros['preco_ate'])) {
 
             $sql = "codproduto in (
                         select pe.codproduto
@@ -317,10 +313,9 @@ class Produto extends MGModel
                     ";
 
             $query->whereRaw($sql);
-
         }
 
-        if(!empty($parametros['preco_de']) && !empty($parametros['preco_ate'])) {
+        if (!empty($parametros['preco_de']) && !empty($parametros['preco_ate'])) {
 
             $sql = "codproduto in (
                         select pe.codproduto
@@ -332,26 +327,25 @@ class Produto extends MGModel
                     ";
 
             $query->whereRaw($sql);
-
         }
 
-        if(!empty($parametros['criacao_de'])) {
+        if (!empty($parametros['criacao_de'])) {
             $query->where('criacao', '>=', $parametros['criacao_de']);
         }
 
-        if(!empty($parametros['criacao_ate'])) {
+        if (!empty($parametros['criacao_ate'])) {
             $query->where('criacao', '<=', $parametros['criacao_ate']);
         }
 
-        if(!empty($parametros['alteracao_de'])) {
+        if (!empty($parametros['alteracao_de'])) {
             $query->where('alteracao', '>=', $parametros['alteracao_de']);
         }
 
-        if(!empty($parametros['alteracao_ate'])) {
+        if (!empty($parametros['alteracao_ate'])) {
             $query->where('alteracao', '<=', $parametros['alteracao_ate']);
         }
 
-        switch (isset($parametros['ativo'])?$parametros['ativo']:'9') {
+        switch (isset($parametros['ativo']) ? $parametros['ativo'] : '9') {
             case 1: //Ativos
                 $query->ativo();
                 break;
@@ -392,6 +386,57 @@ class Produto extends MGModel
     public function scopeAtivo($query)
     {
         $query->whereNull('tblproduto.inativo');
+    }
+
+    public function getArrayCompras()
+    {
+        $sql = '
+            select
+                nti.codnfeterceiroitem,
+                nt.codnfeterceiro,
+                nt.emissao,
+                nt.entrada,
+                nti.cprod,
+                nti.xprod,
+                nti.qcom,
+                nti.ucom,
+                coalesce(pe.quantidade, 1) as embalagem,
+                nti.qcom  * coalesce(pe.quantidade, 1) as quantidadetotal,
+                nti.vuncom,
+                nti.voutro / nti.qcom as voutro,
+                nti.vfrete / nti.qcom as vfrete,
+                nti.vseg / nti.qcom as vseg,
+                nti.vdesc / nti.qcom as vdesc,
+                nti.complemento / nti.qcom as complemento,
+                nti.ipipipi,
+                (((
+                    coalesce(nti.voutro, 0) +
+                    coalesce(nti.vfrete , 0) +
+                    coalesce(nti.vseg , 0) +
+                    coalesce(nti.ipivipi, 0) -
+                    coalesce(nti.vdesc, 0) +
+                    coalesce(nti.complemento, 0)
+                    ) / nti.qcom)
+                    + nti.vuncom) as valortotal,
+                nti.margem,
+                (coalesce(nti.vicmsst, 0) > 0) as icmsstdestacado
+            from tblprodutobarra pb
+            left join tblprodutoembalagem pe on (pe.codprodutoembalagem = pb.codprodutoembalagem)
+            inner join tblnfeterceiroitem nti on (nti.codprodutobarra = pb.codprodutobarra)
+            inner join tblnfeterceiro nt on (nt.codnfeterceiro = nti.codnfeterceiro)
+            inner join tblnaturezaoperacao nat on (nat.codnaturezaoperacao = nt.codnaturezaoperacao)
+            where pb.codproduto = :codproduto
+            and nat.compra = true
+            and nt.indsituacao = 1 -- Autorizada
+            and nt.ignorada = false
+            order by nt.emissao desc
+            limit 50
+        ';
+        $compras = DB::select($sql, [
+            'codproduto' => $this->codproduto
+        ]);
+
+        return $compras;
     }
 
     public function getArraySaldoEstoque()
@@ -545,9 +590,9 @@ class Produto extends MGModel
                     }
 
                     //Percorre os Saldos Físico e Fiscal
-                    foreach($elpv->EstoqueSaldoS as $es) {
+                    foreach ($elpv->EstoqueSaldoS as $es) {
 
-                        $tipo = ($es->fiscal == true)?'fiscal':'fisico';
+                        $tipo = ($es->fiscal == true) ? 'fiscal' : 'fisico';
 
                         $arrVar[$tipo]["codestoquesaldo"] = $es->codestoquesaldo;
 
@@ -587,14 +632,11 @@ class Produto extends MGModel
                         } elseif (!empty($es->ultimaconferencia) && $es->ultimaconferencia < $arrTotal[$tipo]["ultimaconferencia"]) {
                             $arrTotal[$tipo]["ultimaconferencia"] = $es->ultimaconferencia;
                         }
-
                     }
-
                 }
 
                 // Adiciona variacao ao array de locais
                 $arrLocal['variacao'][$pv->codprodutovariacao] = $arrVar;
-
             }
 
             // Calcula o custo médio do Local
@@ -605,11 +647,10 @@ class Produto extends MGModel
 
             // Adiciona local no array de retorno
             $arrRet['local'][$el->codestoquelocal] = $arrLocal;
-
         }
 
         // Calcula o custo médio dos totais de cada variacao
-        foreach($arrTotalVar as $codvariacao => $arr) {
+        foreach ($arrTotalVar as $codvariacao => $arr) {
             if ($arrTotalVar[$codvariacao]['fisico']['saldoquantidade'] > 0)
                 $arrTotalVar[$codvariacao]['fisico']['customedio'] = $arrTotalVar[$codvariacao]['fisico']['saldovalor'] / $arrTotalVar[$codvariacao]['fisico']['saldoquantidade'];
             if ($arrTotalVar[$codvariacao]['fiscal']['saldoquantidade'] > 0)
@@ -636,6 +677,5 @@ class Produto extends MGModel
 
         //retorna
         return $arrRet;
-
     }
 }

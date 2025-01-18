@@ -140,6 +140,7 @@ class ProdutoController extends Controller
         $npbs = null;
         $parametros = null;
         $estoque = null;
+        $compras = null;
         $ultimaCompra = null;
         $ultimaVenda = null;
         switch ($request->get('_div')) {
@@ -165,6 +166,10 @@ class ProdutoController extends Controller
             case 'div-estoque':
                 $estoque = $model->getArraySaldoEstoque();
                 $view = 'produto.show-estoque';
+                break;
+            case 'div-compras':
+                $compras = $model->getArrayCompras();
+                $view = 'produto.show-compras';
                 break;
             default:
                 $view = 'produto.show';
@@ -194,7 +199,7 @@ class ProdutoController extends Controller
         $pes = $model->ProdutoEmbalagemS()->orderBy('quantidade')->get();
         $pvs = $model->ProdutoVariacaoS()->orderBy(DB::raw("coalesce(variacao, '')"), 'ASC')->get();
 
-        $ret = view($view, compact('model', 'nfpbs', 'npbs', 'parametros', 'estoque', 'pes', 'pvs', 'ultimaCompra', 'ultimaVenda'));
+        $ret = view($view, compact('model', 'nfpbs', 'npbs', 'parametros', 'estoque', 'pes', 'pvs', 'ultimaCompra', 'ultimaVenda', 'compras'));
 
         return $ret;
     }
@@ -243,7 +248,7 @@ class ProdutoController extends Controller
 
         $model = Produto::findOrFail($id);
         $model->fill($request->all());
-        
+
         if (is_null($request->input('importado'))) {
             $model->importado = FALSE;
         }
@@ -544,12 +549,12 @@ class ProdutoController extends Controller
     public function EditarMinMax($id)
     {
         $model = Produto::findOrFail($id);
-       
+
         $sql = '
-            select * 
-            from tblestoquelocal 
-            where controlaestoque = true 
-            and inativo is null 
+            select *
+            from tblestoquelocal
+            where controlaestoque = true
+            and inativo is null
             and codestoquelocal in (101001, 102001, 103001, 104001, 105001)
             order by codestoquelocal
         ';
@@ -561,11 +566,11 @@ class ProdutoController extends Controller
         ]));
 
         $sql = '
-            select 
-                elpv.codestoquelocal, 
-                elpv.codprodutovariacao, 
+            select
+                elpv.codestoquelocal,
+                elpv.codprodutovariacao,
                 elpv.codestoquelocalprodutovariacao,
-                elpv.estoqueminimo, 
+                elpv.estoqueminimo,
                 elpv.estoquemaximo,
                 es.saldoquantidade,
                 (
@@ -575,11 +580,11 @@ class ProdutoController extends Controller
                     inner join tblnegocio n on (n.codnegocio = npb.codnegocio)
                     inner join tblnaturezaoperacao nat on (nat.codnaturezaoperacao = n.codnaturezaoperacao)
                     left join tblprodutoembalagem pe on (pe.codprodutoembalagem = pb.codprodutoembalagem)
-                    where pb.codprodutovariacao = pv.codprodutovariacao 
-                    and n.codestoquelocal = elpv.codestoquelocal 
+                    where pb.codprodutovariacao = pv.codprodutovariacao
+                    and n.codestoquelocal = elpv.codestoquelocal
                     and n.codnegociostatus = 2
                     and nat.venda = true
-                    and n.lancamento >= now() - \'1 year\'::interval     	
+                    and n.lancamento >= now() - \'1 year\'::interval
                 ) as vendaano
             from tblprodutovariacao pv
             left join tblestoquelocalprodutovariacao elpv on (elpv.codprodutovariacao = pv.codprodutovariacao and elpv.codestoquelocal in (101001, 102001, 103001, 104001, 105001))
