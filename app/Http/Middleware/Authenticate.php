@@ -64,6 +64,10 @@ class Authenticate
             $reponseData = json_decode((string) $responseAuth->getBody(), true);
 
             if ($responseAuth->getStatusCode() === 200) {
+                if (!$reponseData['user_id']) {
+                    Auth::logout();
+                    return redirect()->to(env('AUTH_API_URL') . '/login?redirect_uri=' . url());
+                }
                 if (Auth::user()) {
                     if (Auth::user()->codusuario != $reponseData['user_id']) {
                         Auth::logout();
