@@ -200,7 +200,7 @@ class CaixaController extends Controller
             	p.valorpago,
             	ps.liopedidostatus,
             	n.codnegocio,
-              n.codnegociostatus,
+                n.codnegociostatus,
             	ns.negociostatus,
             	n.lancamento,
             	n.valortotal,
@@ -233,7 +233,7 @@ class CaixaController extends Controller
             left join tblportador po on (po.codportador = p.codportador)
             inner join tblnegocioformapagamento nfp on (nfp.codpixcob = p.codpixcob)
             inner join tblnegocio n on (n.codnegocio = nfp.codnegocio)
-            where p.horario between '{$parametros['datainicial']->toDateTimeString()}' and '{$parametros['datafinal']->toDateTimeString()}'
+            where n.lancamento between '{$parametros['datainicial']->toDateTimeString()}' and '{$parametros['datafinal']->toDateTimeString()}'
             and n.codusuario = {$parametros['codusuario']}
             group by p.codportador, po.portador
             order by po.portador asc
