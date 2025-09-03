@@ -86,7 +86,7 @@ class Authenticate
                 Auth::logout();
                 return redirect()->to(env('AUTH_API_URL') . '/login?redirect_uri=' . url());
             } else {
-                throw new \Exception("Recebido resposta {$e->getCode()} ao autenticar!", 1);
+                throw new \Exception($e->getMessage(), 1);
             }
         }
     }
