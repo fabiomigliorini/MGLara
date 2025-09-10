@@ -64,6 +64,7 @@ class Produto extends MGModel
         'codtipoproduto',
         'site',
         'descricaosite',
+        'titulosite',
         'codncm',
         'codcest',
         'observacoes',

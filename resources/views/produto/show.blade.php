@@ -170,6 +170,13 @@
                     @if (!empty($model->descricaosite))
                         <div class="panel panel-default">
                             <div class="panel-body">
+                                @if (!empty($model->titulosite))
+                                    <ol class="breadcrumb header">
+                                        <li>
+                                            {{ $model->titulosite }}
+                                        </li>
+                                    </ol>
+                                @endif
                                 {!! nl2br($model->descricaosite) !!}
                             </div>
                         </div>
