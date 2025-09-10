@@ -35,7 +35,7 @@ class MercosProduto {
         $api = new MercosApi();
 
         $p = Produto::findOrFail($codproduto);
-        $nome = $p->produto;
+        $nome = $p->titulosite??$p->produto;
         $preco_tabela = (double)$p->preco;
         $codigo = formataCodigo($codproduto, 6);
         $codigo .= '-' . formataCodigo($codprodutovariacao, 8);
@@ -481,9 +481,9 @@ class MercosProduto {
             inner join tblestoquelocalprodutovariacao elpv on (elpv.codestoquelocal in (' . $locais . ') and elpv.codprodutovariacao = mp.codprodutovariacao)
             inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = false)
             where mp.inativo is null
-            group by mp.codproduto, mp.codprodutovariacao, mp.codprodutoembalagem, pe.quantidade, mp.saldoquantidade 
+            group by mp.codproduto, mp.codprodutovariacao, mp.codprodutoembalagem, pe.quantidade, mp.saldoquantidade
             having mp.saldoquantidade != floor(sum(es.saldoquantidade) / coalesce(pe.quantidade, 1))
-            order by codproduto, codprodutovariacao, codprodutoembalagem 
+            order by codproduto, codprodutovariacao, codprodutoembalagem
         ';
         static::sincronizaPeloSql($sql);
     }
