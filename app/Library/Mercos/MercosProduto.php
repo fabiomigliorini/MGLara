@@ -94,6 +94,9 @@ class MercosProduto {
         $st = null;
         $moeda = 0;
         $observacoes = $p->descricaosite;
+        if (!empty($p->titulosite)) {
+            $observacoes = "{$p->produto}\n\n{$observacoes}";
+        }
 
         $barras = collect([]);
         // $barras[] = (object) [
