@@ -94,9 +94,7 @@ class MercosProduto {
         $st = null;
         $moeda = 0;
         $observacoes = $p->descricaosite;
-        if (!empty($p->titulosite)) {
-            $observacoes = "{$p->produto}\n\n{$observacoes}";
-        }
+
 
         $barras = collect([]);
         // $barras[] = (object) [
@@ -127,6 +125,10 @@ class MercosProduto {
             $observacoes .= "<li>{$barra->barras} {$lbl}</li>";
         }
         $observacoes .= "</ul>";
+
+        if (!empty($p->titulosite)) {
+            $observacoes .= "\n\n<b>{$p->produto}</b>";
+        }
 
         $outrasVariacoes = collect();
         $outrasEmbalagens = collect();
