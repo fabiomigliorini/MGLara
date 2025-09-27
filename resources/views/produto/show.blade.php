@@ -75,12 +75,14 @@
     <div class="col-md-7">
         <div>
             <ul class="nav nav-tabs" role="tablist" id='tab-produto'>
-                <li role="presentation" class='active'><a href="#tab-variacoes" aria-controls="home" role="tab"
+                <li role="presentation"><a href="#tab-variacoes" aria-controls="home" role="tab"
                         data-toggle="tab">Detalhes</a></li>
                 <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab"
                         data-toggle="tab">Estoque</a></li>
                 <li role="presentation"><a href="#tab-mercos" aria-controls="profile" role="tab"
                         data-toggle="tab">Mercos</a></li>
+                <li role="presentation" class='active'><a href="#tab-woo" aria-controls="profile" role="tab"
+                        data-toggle="tab">WooCommerce</a></li>
                 <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab"
                         data-toggle="tab">NCM</a></li>
                 <li role="presentation"><a href="#tab-negocio" aria-controls="messages" role="tab"
@@ -92,7 +94,7 @@
             </ul>
             <br>
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="tab-variacoes">
+                <div role="tabpanel" class="tab-pane fade " id="tab-variacoes">
                     <div class='clearfix'>
                         <div class='col-md-7'>
                             <ol class="breadcrumb">
@@ -192,7 +194,8 @@
 
                     <a href="<?php echo url("produto-variacao/create?codproduto={$model->codproduto}"); ?>">Nova Variação <span class="glyphicon glyphicon-plus"></span></a>
                     |
-                    <a href="<?php echo url("produto/$model->codproduto/transferir-variacao"); ?>">Transferir Variação <span class="glyphicon glyphicon-transfer"></span></a>
+                    <a href="<?php echo url("produto/$model->codproduto/transferir-variacao"); ?>">Transferir Variação <span
+                            class="glyphicon glyphicon-transfer"></span></a>
                     |
                     <a href="<?php echo url("produto/{$model->codproduto}/unifica-variacao"); ?>">Unifica Variações <span
                             class="glyphicon glyphicon-resize-small"></span></a>
@@ -222,6 +225,9 @@
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-mercos">
                     @include('produto.show-mercos')
+                </div>
+                <div role="tabpanel" class="tab-pane fade in active" id="tab-woo">
+                    @include('produto.show-woo')
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-fiscal">
                     @include('produto.show-ncm')
@@ -479,6 +485,40 @@
                             $('.btnMercos').prop('disabled', false);
                             $('#lblSincronizandoMercos').hide();
                             console.log('erro no POST');
+                        });
+                }
+            });
+        }
+
+        function exportarWoo(codproduto) {
+            urlApi = "{{ env('MGSPA_API_URL') }}";
+            // $('.btnMercosExistente').trigger('click');
+            bootbox.confirm("Tem certeza que deseja exportar para o Woo?", function(result) {
+                if (result) {
+                    $.ajax({
+                            type: 'POST',
+                            //url: baseUrl + '/produto/' + codproduto + '/mercos/exporta',
+                            url: urlApi + 'woo/produto/' + codproduto + '/exportar',
+                            headers: {
+                                'Accept': 'application/json'
+                            },
+                            beforeSend: function(xhr) {
+                                $('.btnWoo').prop('disabled', true);
+                                $('#lblSincronizandoWoo').show();
+                            }
+                        })
+                        .done(function(data) {
+                            $('.btnWoo').prop('disabled', false);
+                            $('#lblSincronizandoWoo').hide();
+                            recarregaDiv('div-woo')
+                            bootbox.alert('Exportação Realizada!');
+                        })
+                        .fail(function(data) {
+                            console.log(data);
+                            $('.btnWoo').prop('disabled', false);
+                            $('#lblSincronizandoWoo').hide();
+                            recarregaDiv('div-woo')
+                            bootbox.alert('Falha na exportação! Consulte o Log do Console para mais detalhes!');
                         });
                 }
             });
