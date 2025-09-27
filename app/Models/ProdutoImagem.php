@@ -45,6 +45,9 @@ class ProdutoImagem extends MGModel
         return $this->hasMany(ProdutoImagemProdutoVariacao::class, 'codprodutoimagem', 'codprodutoimagem');
     }
 
-
+    public function WooProdutoImagemS()
+    {
+        return $this->hasMany(WooProdutoImagem::class, 'codprodutoimagem', 'codprodutoimagem');
+    }
 
 }

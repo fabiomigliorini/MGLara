@@ -222,6 +222,11 @@ class Produto extends MGModel
         return $this->hasMany(MercosProduto::class, 'codproduto', 'codproduto');
     }
 
+    public function WooProdutoS()
+    {
+        return $this->hasMany(WooProduto::class, 'codproduto', 'codproduto');
+    }
+
     public static function search($parametros)
     {
         $query = Produto::query();
