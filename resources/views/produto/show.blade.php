@@ -490,39 +490,7 @@
             });
         }
 
-        function exportarWoo(codproduto) {
-            urlApi = "{{ env('MGSPA_API_URL') }}";
-            // $('.btnMercosExistente').trigger('click');
-            bootbox.confirm("Tem certeza que deseja exportar para o Woo?", function(result) {
-                if (result) {
-                    $.ajax({
-                            type: 'POST',
-                            //url: baseUrl + '/produto/' + codproduto + '/mercos/exporta',
-                            url: urlApi + 'woo/produto/' + codproduto + '/exportar',
-                            headers: {
-                                'Accept': 'application/json'
-                            },
-                            beforeSend: function(xhr) {
-                                $('.btnWoo').prop('disabled', true);
-                                $('#lblSincronizandoWoo').show();
-                            }
-                        })
-                        .done(function(data) {
-                            $('.btnWoo').prop('disabled', false);
-                            $('#lblSincronizandoWoo').hide();
-                            recarregaDiv('div-woo')
-                            bootbox.alert('Exportação Realizada!');
-                        })
-                        .fail(function(data) {
-                            console.log(data);
-                            $('.btnWoo').prop('disabled', false);
-                            $('#lblSincronizandoWoo').hide();
-                            recarregaDiv('div-woo')
-                            bootbox.alert('Falha na exportação! Consulte o Log do Console para mais detalhes!');
-                        });
-                }
-            });
-        }
+
 
         function criarMercosProduto(codproduto, codprodutovariacao, codprodutoembalagem) {
             bootbox.confirm("Tem certeza que deseja exportar essa combinação para o Mercos?", function(result) {

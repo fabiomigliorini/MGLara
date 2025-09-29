@@ -2,6 +2,13 @@
 $url_edit = env('WOO_URL_PRODUTO_EDIT');
 $url_listagem = env('WOO_URL_PRODUTO_LISTAGEM');
 $wps = $model->WooProdutoS()->whereNull('inativo')->orderBy('criacao')->get();
+$vars = $model
+    ->ProdutoVariacaoS()
+    ->orderBy('variacao')
+    ->select(['codprodutovariacao', 'variacao'])
+    ->get()
+    ->pluck('variacao', 'codprodutovariacao');
+$vars[''] = 'Produto Principal';
 function integracaoLabel($int)
 {
     switch ($int) {
@@ -16,29 +23,16 @@ function integracaoLabel($int)
             break;
     }
 }
-
-// dd($wps);
-
 ?>
 
+@include('produto.show-woo-cabecalho')
 
-<a href="{{ $url_listagem }}{{ urlencode($model->produto) }}" target="_blank">
-    Listagem dos Produtos no Woo
-</a>
-&nbsp
-<button type="button" class="btn btn-sm btn-default btnWoo" aria-label="Left Align"
-    onclick="exportarWoo({{ $model->codproduto }})">
-    <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span> Exportar
-</button>
-&nbsp
-<img width="20px" id="lblSincronizandoWoo" src="{{ URL::asset('public/img/carregando.gif') }}" style="display:none">
-<br>
-<br>
-<div class="panel panel-default" id="div-woo">
+
+<div class="panel panel-default" id="div-woo-listagem" style="margin-top: 20px">
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>Tipo</th>
+                <th>Variação</th>
                 <th class="text-right">
                     ID
                 </th>
@@ -70,7 +64,7 @@ function integracaoLabel($int)
                 <tr>
                     <th scope="row">
                         @if (empty($wp->codprodutovariacao))
-                            Principal
+                            Produto Principal
                         @else
                             {{ $wp->ProdutoVariacao->variacao }}
                         @endif
@@ -109,6 +103,11 @@ function integracaoLabel($int)
                         @if (!empty($wp->codprodutobarraunidade))
                             {{ $wp->ProdutoBarra->barras }}
                         @endif
+                    </td>
+                    <td class="text-right">
+                        <button class="btn btn-sm btn-default" onclick="wooEditar({{ $wp->codwooproduto }})">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        </button>
                     </td>
                 </tr>
             @endforeach
