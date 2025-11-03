@@ -75,13 +75,13 @@
     <div class="col-md-7">
         <div>
             <ul class="nav nav-tabs" role="tablist" id='tab-produto'>
-                <li role="presentation"><a href="#tab-variacoes" aria-controls="home" role="tab"
+                <li role="presentation" class='active'><a href="#tab-variacoes" aria-controls="home" role="tab"
                         data-toggle="tab">Detalhes</a></li>
                 <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab"
                         data-toggle="tab">Estoque</a></li>
                 <li role="presentation"><a href="#tab-mercos" aria-controls="profile" role="tab"
                         data-toggle="tab">Mercos</a></li>
-                <li role="presentation" class='active'><a href="#tab-woo" aria-controls="profile" role="tab"
+                <li role="presentation"><a href="#tab-woo" aria-controls="profile" role="tab"
                         data-toggle="tab">WooCommerce</a></li>
                 <li role="presentation"><a href="#tab-fiscal" aria-controls="profile" role="tab"
                         data-toggle="tab">NCM</a></li>
@@ -94,7 +94,7 @@
             </ul>
             <br>
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade " id="tab-variacoes">
+                <div role="tabpanel" class="tab-pane fade in active" id="tab-variacoes">
                     <div class='clearfix'>
                         <div class='col-md-7'>
                             <ol class="breadcrumb">
@@ -226,7 +226,7 @@
                 <div role="tabpanel" class="tab-pane fade" id="tab-mercos">
                     @include('produto.show-mercos')
                 </div>
-                <div role="tabpanel" class="tab-pane fade in active" id="tab-woo">
+                <div role="tabpanel" class="tab-pane fade" id="tab-woo">
                     @include('produto.show-woo')
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab-fiscal">
