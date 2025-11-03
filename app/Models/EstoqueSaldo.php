@@ -7,6 +7,7 @@
  */
 
 namespace MGLara\Models;
+
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\DB;
@@ -90,8 +91,7 @@ class EstoqueSaldo extends MGModel
         $elpv = EstoqueLocalProdutoVariacao::buscaOuCria($codprodutovariacao, $codestoquelocal);
 
         $es = self::where('codestoquelocalprodutovariacao', $elpv->codestoquelocalprodutovariacao)->where('fiscal', $fiscal)->first();
-        if ($es == false)
-        {
+        if ($es == false) {
             $es = new EstoqueSaldo;
             $es->codestoquelocalprodutovariacao = $elpv->codestoquelocalprodutovariacao;
             $es->fiscal = $fiscal;
@@ -125,7 +125,7 @@ class EstoqueSaldo extends MGModel
                 $query->select(
                     DB::raw(
                         ' saldoquantidade
-                        , ' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ' as saldovalor
+                        , ' . (($valor == 'venda') ? 'saldoquantidade * tblproduto.preco' : 'saldovalor') . ' as saldovalor
                         , tblestoquelocalprodutovariacao.estoqueminimo
                         , tblestoquelocalprodutovariacao.estoquemaximo
                         , fiscal
@@ -145,7 +145,7 @@ class EstoqueSaldo extends MGModel
                 $query->select(
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
-                        , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
+                        , sum(' . (($valor == 'venda') ? 'saldoquantidade * tblproduto.preco' : 'saldovalor') . ') as saldovalor
                         , sum(tblestoquelocalprodutovariacao.estoqueminimo) as estoqueminimo
                         , sum(tblestoquelocalprodutovariacao.estoquemaximo) as estoquemaximo
                         , fiscal
@@ -165,7 +165,7 @@ class EstoqueSaldo extends MGModel
                 $query->select(
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
-                        , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
+                        , sum(' . (($valor == 'venda') ? 'saldoquantidade * tblproduto.preco' : 'saldovalor') . ') as saldovalor
                         , sum(tblestoquelocalprodutovariacao.estoqueminimo) as estoqueminimo
                         , sum(tblestoquelocalprodutovariacao.estoquemaximo) as estoquemaximo
                         , fiscal
@@ -186,7 +186,7 @@ class EstoqueSaldo extends MGModel
                 $query->select(
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
-                        , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
+                        , sum(' . (($valor == 'venda') ? 'saldoquantidade * tblproduto.preco' : 'saldovalor') . ') as saldovalor
                         , sum(tblestoquelocalprodutovariacao.estoqueminimo) as estoqueminimo
                         , sum(tblestoquelocalprodutovariacao.estoquemaximo) as estoquemaximo
                         , fiscal
@@ -206,7 +206,7 @@ class EstoqueSaldo extends MGModel
                 $query->select(
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
-                        , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
+                        , sum(' . (($valor == 'venda') ? 'saldoquantidade * tblproduto.preco' : 'saldovalor') . ') as saldovalor
                         , sum(tblestoquelocalprodutovariacao.estoqueminimo) as estoqueminimo
                         , sum(tblestoquelocalprodutovariacao.estoquemaximo) as estoquemaximo
                         , fiscal
@@ -226,7 +226,7 @@ class EstoqueSaldo extends MGModel
                 $query->select(
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
-                        , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
+                        , sum(' . (($valor == 'venda') ? 'saldoquantidade * tblproduto.preco' : 'saldovalor') . ') as saldovalor
                         , sum(tblestoquelocalprodutovariacao.estoqueminimo) as estoqueminimo
                         , sum(tblestoquelocalprodutovariacao.estoquemaximo) as estoquemaximo
                         , fiscal
@@ -247,7 +247,7 @@ class EstoqueSaldo extends MGModel
                 $query->select(
                     DB::raw(
                         ' sum(saldoquantidade) as saldoquantidade
-                        , sum(' . (($valor=='venda')?'saldoquantidade * tblproduto.preco':'saldovalor') . ') as saldovalor
+                        , sum(' . (($valor == 'venda') ? 'saldoquantidade * tblproduto.preco' : 'saldovalor') . ') as saldovalor
                         , sum(tblestoquelocalprodutovariacao.estoqueminimo) as estoqueminimo
                         , sum(tblestoquelocalprodutovariacao.estoquemaximo) as estoquemaximo
                         , fiscal
@@ -312,7 +312,7 @@ class EstoqueSaldo extends MGModel
         }
 
         if (!empty($filtro['codmarca'])) {
-            $query->where(function ($q2) use($filtro) {
+            $query->where(function ($q2) use ($filtro) {
                 $q2->orWhere('tblproduto.codmarca', '=', $filtro['codmarca']);
                 $q2->orWhere('tblprodutovariacao.codmarca', '=', $filtro['codmarca']);
             });
@@ -320,7 +320,7 @@ class EstoqueSaldo extends MGModel
 
         if (!empty($filtro['saldo']) || !empty($filtro['minimo']) || !empty($filtro['maximo'])) {
 
-            $query->whereIn('tblestoquesaldo.codestoquelocalprodutovariacao', function($q2) use ($filtro){
+            $query->whereIn('tblestoquesaldo.codestoquelocalprodutovariacao', function ($q2) use ($filtro) {
 
                 $q2->select('tblestoquesaldo.codestoquelocalprodutovariacao')
                     ->from('tblestoquesaldo')
@@ -332,7 +332,6 @@ class EstoqueSaldo extends MGModel
                         $q2->whereRaw('saldoquantidade < tblestoquelocalprodutovariacao.estoqueminimo');
                     } else if ($filtro['minimo'] == 1) {
                         $q2->whereRaw('saldoquantidade >= tblestoquelocalprodutovariacao.estoqueminimo');
-
                     }
                 }
 
@@ -349,10 +348,8 @@ class EstoqueSaldo extends MGModel
                         $q2->whereRaw('saldoquantidade < 0');
                     } else if ($filtro['saldo'] == 1) {
                         $q2->whereRaw('saldoquantidade > 0');
-
                     }
                 }
-
             });
         }
 
@@ -381,7 +378,7 @@ class EstoqueSaldo extends MGModel
             ]
         ];
 
-        foreach($rows as $row) {
+        foreach ($rows as $row) {
 
             if (!isset($ret[$row->coditem])) {
                 $ret[$row->coditem] = [
@@ -438,21 +435,21 @@ class EstoqueSaldo extends MGModel
                 ];
             }
 
-            if  (empty($ret[$row->coditem]['estoquelocal'][$row->codestoquelocal]['estoqueminimo'])) {
+            if (empty($ret[$row->coditem]['estoquelocal'][$row->codestoquelocal]['estoqueminimo'])) {
                 $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal]['estoqueminimo'] = $row->estoqueminimo;
                 $ret[$row->coditem]['estoquelocal']['total']['estoqueminimo'] += $row->estoqueminimo;
                 $total['estoquelocal'][$row->codestoquelocal]['estoqueminimo'] += $row->estoqueminimo;
                 $total['estoquelocal']['total']['estoqueminimo'] += $row->estoqueminimo;
             }
 
-            if  (empty($ret[$row->coditem]['estoquelocal'][$row->codestoquelocal]['estoquemaximo'])) {
+            if (empty($ret[$row->coditem]['estoquelocal'][$row->codestoquelocal]['estoquemaximo'])) {
                 $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal]['estoquemaximo'] = $row->estoquemaximo;
                 $ret[$row->coditem]['estoquelocal']['total']['estoquemaximo'] += $row->estoquemaximo;
                 $total['estoquelocal'][$row->codestoquelocal]['estoquemaximo'] += $row->estoquemaximo;
                 $total['estoquelocal']['total']['estoquemaximo'] += $row->estoquemaximo;
             }
 
-            $fiscal = ($row->fiscal)?'fiscal':'fisico';
+            $fiscal = ($row->fiscal) ? 'fiscal' : 'fisico';
 
             $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal][$fiscal]['saldoquantidade'] = $row->saldoquantidade;
             $ret[$row->coditem]['estoquelocal'][$row->codestoquelocal][$fiscal]['saldovalor'] = $row->saldovalor;
@@ -469,7 +466,6 @@ class EstoqueSaldo extends MGModel
 
             $total['estoquelocal']['total'][$fiscal]['saldoquantidade'] += $row->saldoquantidade;
             $total['estoquelocal']['total'][$fiscal]['saldovalor'] += $row->saldovalor;
-
         }
 
         $ret['total'] = $total;
@@ -483,9 +479,8 @@ class EstoqueSaldo extends MGModel
         // Monta tabelas da Query
         $qry = DB::table('tblproduto as p');
         $qry->join('tblprodutovariacao as pv', 'pv.codproduto', '=', 'p.codproduto');
-        $qry->leftJoin('tblmarca as m', function($join) {
+        $qry->leftJoin('tblmarca as m', function ($join) {
             $join->on('m.codmarca', '=', DB::raw('coalesce(pv.codmarca, p.codmarca)'));
-
         });
         $qry->leftJoin('tblunidademedida as um', 'um.codunidademedida', '=', 'p.codunidademedida');
         $qry->leftJoin('tblsubgrupoproduto as sgp', 'sgp.codsubgrupoproduto', '=', 'p.codsubgrupoproduto');
@@ -494,10 +489,9 @@ class EstoqueSaldo extends MGModel
         $qry->leftJoin('tblsecaoproduto as sp', 'sp.codsecaoproduto', '=', 'fp.codsecaoproduto');
         $qry->leftJoin('tblestoquelocalprodutovariacao as elpv', 'elpv.codprodutovariacao', '=', 'pv.codprodutovariacao');
         $qry->leftJoin('tblestoquelocal as el', 'el.codestoquelocal', '=', 'elpv.codestoquelocal');
-        $qry->leftJoin('tblestoquesaldo as es', function($join) {
+        $qry->leftJoin('tblestoquesaldo as es', function ($join) {
             $join->on('es.codestoquelocalprodutovariacao', '=', 'elpv.codestoquelocalprodutovariacao');
             $join->on('es.fiscal', '=', DB::RAW('false'));
-
         });
 
         // Monta campos Selecionados
@@ -564,9 +558,8 @@ class EstoqueSaldo extends MGModel
         if (!empty($filtro['codmarca'])) {
             $qry->where('m.codmarca', $filtro['codmarca']);
         }
-        
-        switch (isset($filtro['marcacontrolada']) ? $filtro['marcacontrolada'] : '9')
-        {
+
+        switch (isset($filtro['marcacontrolada']) ? $filtro['marcacontrolada'] : '9') {
             case 1:
                 $qry->where('m.controlada', true);
                 break;
@@ -576,7 +569,7 @@ class EstoqueSaldo extends MGModel
             case 9;
             default:
         }
-        
+
         if (!empty($filtro['codsubgrupoproduto'])) {
             $qry->where('p.codsubgrupoproduto', $filtro['codsubgrupoproduto']);
         }
@@ -593,7 +586,7 @@ class EstoqueSaldo extends MGModel
             $qry->where('fp.codsecaoproduto', $filtro['codsecaoproduto']);
         }
 
-        switch (isset($filtro['ativo'])?$filtro['ativo']:'9') {
+        switch (isset($filtro['ativo']) ? $filtro['ativo'] : '9') {
             case 1: //Ativos
                 $qry->whereNull('p.inativo');
                 break;
@@ -629,7 +622,6 @@ class EstoqueSaldo extends MGModel
                 $qry->whereRaw('es.saldoquantidade < elpv.estoqueminimo');
             } else if ($filtro['minimo'] == 1) {
                 $qry->whereRaw('es.saldoquantidade >= elpv.estoqueminimo');
-
             }
         }
 
@@ -759,7 +751,7 @@ class EstoqueSaldo extends MGModel
                     'siglaunidademedida' => $registro->siglaunidademedida,
                     'codmarca' => $registro->codmarca,
                     'marca' => $registro->marca,
-                    'inativo' => !empty($registro->inativo)?new Carbon($registro->inativo):null,
+                    'inativo' => !empty($registro->inativo) ? new Carbon($registro->inativo) : null,
                     'urldetalhes' => urlArrGet($filtro_detalhes, 'estoque-saldo/relatorio-analise'),
                 ];
             }
@@ -770,7 +762,7 @@ class EstoqueSaldo extends MGModel
                     'codprodutovariacao' => $registro->codprodutovariacao,
                     'variacao' => $registro->variacao,
                     'referencia' => $registro->referencia,
-                    'dataultimacompra' => !empty($registro->dataultimacompra)?new Carbon($registro->dataultimacompra):null,
+                    'dataultimacompra' => !empty($registro->dataultimacompra) ? new Carbon($registro->dataultimacompra) : null,
                     'custoultimacompra' => $registro->custoultimacompra,
                     'quantidadeultimacompra' => $registro->quantidadeultimacompra,
                     'locais' => [],
@@ -798,7 +790,7 @@ class EstoqueSaldo extends MGModel
                     'saldovalor' => $registro->saldovalor,
                     'saldodias' => $saldodias,
                     'customedio' => $registro->customedio,
-                    'dataentrada' => !empty($registro->dataentrada)?new Carbon($registro->dataentrada):null,
+                    'dataentrada' => !empty($registro->dataentrada) ? new Carbon($registro->dataentrada) : null,
                     'estoqueminimo' => $registro->estoqueminimo,
                     'estoquemaximo' => $registro->estoquemaximo,
                     'vendabimestrequantidade' => $registro->vendabimestrequantidade,
@@ -806,10 +798,9 @@ class EstoqueSaldo extends MGModel
                     'vendaanoquantidade' => $registro->vendaanoquantidade,
                     'vendaprevisaoquinzena' => $vendaprevisaoquinzena,
                     'vendadiaquantidadeprevisao' => $registro->vendadiaquantidadeprevisao,
-                    'vencimento' => !empty($registro->vencimento)?new Carbon($registro->vencimento):null,
+                    'vencimento' => !empty($registro->vencimento) ? new Carbon($registro->vencimento) : null,
                 ];
             }
-
         }
 
         foreach ($ret['agrupamentos'] as $codigo => $agrupamento) {
@@ -858,7 +849,6 @@ class EstoqueSaldo extends MGModel
 
                     $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['vendaanoquantidade'] =
                         array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'][$codprodutovariacao]['locais'], 'vendaanoquantidade'));
-
                 }
 
                 // Totaliza Produto
@@ -901,7 +891,6 @@ class EstoqueSaldo extends MGModel
 
                 $ret['agrupamentos'][$codigo]['produtos'][$codproduto]['vendaanoquantidade'] =
                     array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'][$codproduto]['variacoes'], 'vendaanoquantidade'));
-
             }
 
             // Totaliza Agrupamento
@@ -944,7 +933,6 @@ class EstoqueSaldo extends MGModel
 
             $ret['agrupamentos'][$codigo]['vendaanoquantidade'] =
                 array_sum(array_column($ret['agrupamentos'][$codigo]['produtos'], 'vendaanoquantidade'));
-
         }
 
         // Totaliza Relatorio
@@ -991,7 +979,7 @@ class EstoqueSaldo extends MGModel
         return $ret;
     }
 
-    public static function relatorioComparativoVendas ($filtro)
+    public static function relatorioComparativoVendas($filtro)
     {
         $sql = "
             select
@@ -1059,8 +1047,7 @@ class EstoqueSaldo extends MGModel
             $s_and = 'AND';
         }
 
-        switch (isset($filtro['marcacontrolada']) ? $filtro['marcacontrolada'] : '9')
-        {
+        switch (isset($filtro['marcacontrolada']) ? $filtro['marcacontrolada'] : '9') {
             case 1:
                 $sql .= " AND m.controlada = true";
                 // $qry->where('m.controlada', true);
@@ -1138,7 +1125,7 @@ class EstoqueSaldo extends MGModel
         return $ret;
     }
 
-    public static function relatorioFisicoFiscal ($filtro)
+    public static function relatorioFisicoFiscal($filtro)
     {
         $ultimodiadomes = Carbon::createFromDate($filtro['ano'], $filtro['mes'], 01)->daysInMonth;
 
@@ -1178,11 +1165,11 @@ class EstoqueSaldo extends MGModel
                 inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = false)
                 inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '{$filtro['ano']}-{$filtro['mes']}-{$ultimodiadomes}' order by mes desc limit 1))
                 where f.codempresa = {$filtro['codempresa']}";
-                
+
         if (!empty($filtro['codestoquelocal'])) {
             $sql .= " AND el.codestoquelocal = {$filtro['codestoquelocal']}";
         }
-        
+
         $sql .= "
                 group by pv.codproduto
                 ) fisico on (fisico.codproduto = p.codproduto)
@@ -1195,11 +1182,11 @@ class EstoqueSaldo extends MGModel
                 inner join tblestoquesaldo es on (es.codestoquelocalprodutovariacao = elpv.codestoquelocalprodutovariacao and es.fiscal = true)
                 inner join tblestoquemes em on (em.codestoquemes = (select em2.codestoquemes from tblestoquemes em2 where em2.codestoquesaldo = es.codestoquesaldo and em2.mes <= '{$filtro['ano']}-{$filtro['mes']}-{$ultimodiadomes}' order by mes desc limit 1))
                 where f.codempresa = {$filtro['codempresa']}";
-                
+
         if (!empty($filtro['codestoquelocal'])) {
             $sql .= " AND el.codestoquelocal = {$filtro['codestoquelocal']}";
         }
-        
+
         $sql .= "
                 group by pv.codproduto
                 ) fiscal on (fiscal.codproduto = p.codproduto)
@@ -1211,8 +1198,7 @@ class EstoqueSaldo extends MGModel
             $sql .= " AND m.codmarca = {$filtro['codmarca']}";
         }
 
-        switch (isset($filtro['marcacontrolada']) ? $filtro['marcacontrolada'] : '9')
-        {
+        switch (isset($filtro['marcacontrolada']) ? $filtro['marcacontrolada'] : '9') {
             case 1:
                 $sql .= " AND m.controlada = true";
                 // $qry->where('m.controlada', true);
@@ -1236,7 +1222,7 @@ class EstoqueSaldo extends MGModel
         if (!empty($filtro['preco_ate'])) {
             $sql .= " AND p.preco <= {$filtro['preco_ate']}";
         }
-        
+
         if (!empty($filtro['produto'])) {
             $palavras = explode(' ', $filtro['produto']);
             foreach ($palavras as $palavra) {
@@ -1257,9 +1243,9 @@ class EstoqueSaldo extends MGModel
             $sql .= " AND fp.codsecaoproduto = {$filtro['codsecaoproduto']}";
         }
 
-	if (!empty($filtro['codtributacao'])) {
-	    $sql .= " AND p.codtributacao = {$filtro['codtributacao']}";
-	}
+        if (!empty($filtro['codtributacao'])) {
+            $sql .= " AND p.codtributacao = {$filtro['codtributacao']}";
+        }
 
         switch ($filtro['saldo_fisico']) {
             case -1:
@@ -1271,7 +1257,6 @@ class EstoqueSaldo extends MGModel
             case 9:
                 $sql .= " AND coalesce(fisico.saldoquantidade, 0) = 0";
                 break;
-
         }
 
         switch ($filtro['saldo_fiscal']) {
@@ -1281,9 +1266,9 @@ class EstoqueSaldo extends MGModel
             case 1:
                 $sql .= " AND fiscal.saldoquantidade > 0";
                 break;
-	    case 9:
-		$sql .= " AND coalesce(fiscal.saldoquantidade, 0) = 0";
-		break;
+            case 9:
+                $sql .= " AND coalesce(fiscal.saldoquantidade, 0) = 0";
+                break;
         }
 
         switch ($filtro['saldo_fisico_fiscal']) {
@@ -1298,9 +1283,9 @@ class EstoqueSaldo extends MGModel
         $sql .= "
             order by p.produto, p.codproduto
             ";
-        
+
         $regs = DB::select($sql);
-        
+
         $totais['fisico_saldoquantidade'] = array_sum(array_column($regs, 'fisico_saldoquantidade'));
         $totais['fisico_saldovalor'] = array_sum(array_column($regs, 'fisico_saldovalor'));
         $totais['fiscal_saldoquantidade'] = array_sum(array_column($regs, 'fiscal_saldoquantidade'));
@@ -1321,18 +1306,18 @@ class EstoqueSaldo extends MGModel
 
         $sql = '
             with itens as (
-                select 
-                    m.marca, 
-                    p.codproduto, 
-                    p.produto, 
+                select
+                    m.marca,
+                    p.codproduto,
+                    p.produto,
                     pv.codprodutovariacao,
-                    pv.variacao, 
+                    pv.variacao,
                     coalesce(pv.referencia, p.referencia) as referencia,
-                    elpv_dest.estoqueminimo, 
-                    elpv_dest.estoquemaximo, 
-                    sld_dest.saldoquantidade as saldodestino, 
-                    sld_orig.saldoquantidade as saldoorigem, 
-                    coalesce(pe.quantidade, 1) as quantidadeembalagem 
+                    elpv_dest.estoqueminimo,
+                    elpv_dest.estoquemaximo,
+                    sld_dest.saldoquantidade as saldodestino,
+                    sld_orig.saldoquantidade as saldoorigem,
+                    coalesce(pe.quantidade, 1) as quantidadeembalagem
                 from tblproduto p
                 inner join tblmarca m on (m.codmarca = p.codmarca)
                 inner join tblprodutovariacao pv on (pv.codproduto = p.codproduto)
@@ -1350,19 +1335,37 @@ class EstoqueSaldo extends MGModel
             'codestoquelocalorigem' => $filtro['codestoquelocalorigem'],
             'codestoquelocaldestino' => $filtro['codestoquelocaldestino'],
         ];
-        
+
         if (!empty($filtro['codmarca'])) {
             $sql .= '
-                and p.codmarca = :codmarca 
+                and p.codmarca = :codmarca
             ';
             $params['codmarca']  = $filtro['codmarca'];
         }
+
+        if (!empty($filtro['abc'])) {
+            switch ($filtro['abc']) {
+                case 'AB':
+                    $sql .= '
+                        and p.abc in (\'A\', \'B\')
+                    ';
+                    break;
+
+                default:
+                    $sql .= '
+                        and p.abc = :abc
+                    ';
+                    $params['abc']  = $filtro['abc'];
+                    break;
+            }
+        }
+
 
         $sql .= '
             ),
             barras as (
                 with barrasvar as (
-                    select 
+                    select
                         pb.codprodutovariacao,
                         pb.barras || \' \' || un.sigla || coalesce(\' C/\' || emb.quantidade::bigint, \'\') as barras,
                         coalesce(emb.quantidade, 1) as quantidade
@@ -1372,42 +1375,43 @@ class EstoqueSaldo extends MGModel
                     left join tblunidademedida un on (un.codunidademedida = coalesce(emb.codunidademedida, prod.codunidademedida))
                     order by emb.quantidade asc nulls first, pb.barras desc
                 )
-                select 
+                select
                     b.codprodutovariacao,
                     array_agg(barras order by quantidade desc) as barras
                 from barrasvar b
                 group by b.codprodutovariacao
             )
-            select 
-                itens.marca, 
+            select
+                itens.marca,
                 itens.referencia,
-                itens.codproduto, 
-                itens.produto, 
+                itens.codproduto,
+                itens.produto,
                 itens.codprodutovariacao,
-                itens.variacao, 
+                itens.variacao,
                 array_to_string(barras.barras, \';\') as barras,
-                itens.estoqueminimo, 
-                itens.estoquemaximo, 
-                itens.saldodestino, 
-                itens.saldoorigem, 
+                itens.estoqueminimo,
+                itens.estoquemaximo,
+                itens.saldodestino,
+                itens.saldoorigem,
                 itens.quantidadeembalagem,
                 ceil ( (coalesce(estoquemaximo, 0) - coalesce(saldodestino, 0)) / quantidadeembalagem) * quantidadeembalagem as transferir
                 --ceil((estoquemaximo - saldodestino)/quantidadeembalagem) * quantidadeembalagem as transferir
-            from itens 
+            from itens
             left join barras on (itens.codprodutovariacao = barras.codprodutovariacao)
             order by itens.marca, itens.produto, itens.variacao, itens.codprodutovariacao
 
         ';
 
-	//dd($sql);
+        //dd($sql);
         $result =  DB::select($sql, $params);
-        
-        $retorno =  ['filtro' => $filtro,
+
+        $retorno =  [
+            'filtro' => $filtro,
             'urlfiltro' => urlArrGet($filtro, 'estoque-saldo/relatorio-transferencias-filtro'),
             'itens' => $result
         ];
 
-       return $retorno;
+        return $retorno;
     }
 
     public function scopeFiscal($query, $fiscal)
@@ -1416,5 +1420,5 @@ class EstoqueSaldo extends MGModel
             $query->where('fiscal', true);
         else
             $query->where('fiscal', false);
-    } 
+    }
 }

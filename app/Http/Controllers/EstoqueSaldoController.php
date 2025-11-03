@@ -16,30 +16,30 @@ class EstoqueSaldoController extends Controller
     public function index(Request $request)
     {
         //$filtro = $request->all();
-        $agrupamento_atual = empty($request->agrupamento)?'secaoproduto':$request->agrupamento;
-        $valor = empty($request->valor)?'custo':$request->valor;
+        $agrupamento_atual = empty($request->agrupamento) ? 'secaoproduto' : $request->agrupamento;
+        $valor = empty($request->valor) ? 'custo' : $request->valor;
 
         $arr_valor = [
-            'custo'=>'Custo do Produto',
-            'venda'=>'Preço de Venda',
+            'custo' => 'Custo do Produto',
+            'venda' => 'Preço de Venda',
         ];
 
         $arr_saldos = [
             '' => '',
-            -1=>'Negativo',
-            1=>'Positivo',
+            -1 => 'Negativo',
+            1 => 'Positivo',
         ];
 
         $arr_minimo = [
             '' => '',
-            -1=>'Abaixo Mínimo',
-            1=>'Acima Mínimo'
+            -1 => 'Abaixo Mínimo',
+            1 => 'Acima Mínimo'
         ];
 
         $arr_maximo = [
             '' => '',
-            -1=>'Abaixo Máximo',
-            1=>'Acima Máximo'
+            -1 => 'Abaixo Máximo',
+            1 => 'Acima Máximo'
         ];
 
         $arr_agrupamentos = [
@@ -110,21 +110,21 @@ class EstoqueSaldoController extends Controller
 
         return view(
             'estoque-saldo.index',
-                compact(
-                    'itens',
-                    'arr_agrupamentos',
-                    'arr_saldos',
-                    'arr_minimo',
-                    'arr_maximo',
-                    'arr_valor',
-                    'agrupamento_atual',
-                    'agrupamento_proximo',
-                    'valor',
-                    'url_detalhes',
-                    'filtro',
-                    'codigo'
-                )
-            );
+            compact(
+                'itens',
+                'arr_agrupamentos',
+                'arr_saldos',
+                'arr_minimo',
+                'arr_maximo',
+                'arr_valor',
+                'agrupamento_atual',
+                'agrupamento_proximo',
+                'valor',
+                'url_detalhes',
+                'filtro',
+                'codigo'
+            )
+        );
     }
 
     /**
@@ -136,9 +136,9 @@ class EstoqueSaldoController extends Controller
     public function show($id)
     {
         $ems = EstoqueMes::where('codestoquesaldo', $id)
-               ->orderBy('mes', 'DESC')
-               ->take(1)
-               ->get();
+            ->orderBy('mes', 'DESC')
+            ->take(1)
+            ->get();
         return redirect("estoque-mes/{$ems[0]->codestoquemes}");
     }
 
@@ -153,24 +153,24 @@ class EstoqueSaldoController extends Controller
 
         $filtro = self::filtroEstatico($request, 'estoque-saldo.relatorio-analise', ['ativo' => 1]);
 
-	$arr_valor = [];
+        $arr_valor = [];
 
         $arr_saldos = [
             '' => '',
-            -1=>'Negativo',
-            1=>'Positivo',
+            -1 => 'Negativo',
+            1 => 'Positivo',
         ];
 
         $arr_minimo = [
             '' => '',
-            -1=>'Abaixo Mínimo',
-            1=>'Acima Mínimo'
+            -1 => 'Abaixo Mínimo',
+            1 => 'Acima Mínimo'
         ];
 
         $arr_maximo = [
             '' => '',
-            -1=>'Abaixo Máximo',
-            1=>'Acima Máximo'
+            -1 => 'Abaixo Máximo',
+            1 => 'Acima Máximo'
         ];
 
         $arr_ativo = [
@@ -215,8 +215,7 @@ class EstoqueSaldoController extends Controller
                 break;
 
             default:
-                $inicial= Carbon::parse('last wednesday');
-
+                $inicial = Carbon::parse('last wednesday');
         }
 
         $final = Carbon::yesterday();
@@ -243,26 +242,26 @@ class EstoqueSaldoController extends Controller
 
         $arr_saldo_filial = [
             '' => '',
-            1=>'Saldo da Filial maior que previsão vendas',
-            -1=>'Saldo da Filial menor que previsão vendas',
+            1 => 'Saldo da Filial maior que previsão vendas',
+            -1 => 'Saldo da Filial menor que previsão vendas',
         ];
 
         $arr_saldo_deposito = [
             '' => '',
-            1=>'Somente com saldo no Depósito',
-            -1=>'Sem saldo no Depósito',
+            1 => 'Somente com saldo no Depósito',
+            -1 => 'Sem saldo no Depósito',
         ];
 
         $arr_minimo = [
             '' => '',
-            -1=>'Abaixo Mínimo',
-            1=>'Acima Mínimo'
+            -1 => 'Abaixo Mínimo',
+            1 => 'Acima Mínimo'
         ];
 
         $arr_maximo = [
             '' => '',
-            -1=>'Abaixo Máximo',
-            1=>'Acima Máximo'
+            -1 => 'Abaixo Máximo',
+            1 => 'Acima Máximo'
         ];
 
         return view('estoque-saldo.relatorio-comparativo-vendas-filtro', compact('arr_saldo_deposito', 'arr_saldo_filial', 'arr_minimo', 'arr_maximo', 'filtro'));
@@ -283,7 +282,7 @@ class EstoqueSaldoController extends Controller
 
     public function relatorioFisicoFiscalFiltro(Request $request)
     {
-        
+
         $filtro = self::filtroEstatico(
             $request,
             'estoque-saldo.relatorio-fisico-fiscal',
@@ -291,15 +290,14 @@ class EstoqueSaldoController extends Controller
                 'mes' => date('m'),
                 'ano' => date('Y'),
             ],
-            [
-            ]
+            []
         );
 
-	$arr_saldo_deposito = [];
-	$arr_saldo_filial = [];
-	$arr_minimo = [];
-	$arr_maximo = [];
-        
+        $arr_saldo_deposito = [];
+        $arr_saldo_filial = [];
+        $arr_minimo = [];
+        $arr_maximo = [];
+
         return view('estoque-saldo.relatorio-fisico-fiscal-filtro', compact('arr_saldo_deposito', 'arr_saldo_filial', 'arr_minimo', 'arr_maximo', 'filtro'));
     }
 
@@ -321,30 +319,27 @@ class EstoqueSaldoController extends Controller
 
         $filtro = self::filtroEstatico($request);
 
-        
-        return view('estoque-saldo.relatorio-transferencias-filtro', compact('filtro'));
 
+        return view('estoque-saldo.relatorio-transferencias-filtro', compact('filtro'));
     }
 
 
-        
+
     public function relatorioTransferencia(Request $request)
     {
-        
+
         $this->validate($request, [
             'codestoquelocalorigem' => 'required',
             'codestoquelocaldestino' => 'required'
         ]);
-       
+
         $filtro = self::filtroEstatico($request);
-        
+
         $dados = EstoqueSaldo::RelatorioTransferencias($filtro);
-    
+
         $localorigem = EstoqueLocal::findOrFail($filtro['codestoquelocalorigem']);
         $localdestino = EstoqueLocal::findOrFail($filtro['codestoquelocaldestino']);
 
         return view('estoque-saldo.relatorio-transferencias', compact('dados', 'localorigem', 'localdestino'));
-
     }
-
 }
