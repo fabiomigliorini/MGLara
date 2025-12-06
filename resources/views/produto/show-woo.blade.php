@@ -1,7 +1,7 @@
 <?php
 $url_edit = env('WOO_URL_PRODUTO_EDIT');
 $url_listagem = env('WOO_URL_PRODUTO_LISTAGEM');
-$wps = $model->WooProdutoS()->whereNull('inativo')->orderBy('criacao')->get();
+$wps = $model->WooProdutoS()->orderBy('criacao')->get();
 $vars = $model
     ->ProdutoVariacaoS()
     ->orderBy('variacao')
@@ -29,7 +29,7 @@ function integracaoLabel($int)
 
 
 <div class="panel panel-default" id="div-woo-listagem" style="margin-top: 20px">
-    <table class="table table-striped table-hover">
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th>Variação</th>
@@ -61,7 +61,11 @@ function integracaoLabel($int)
         </thead>
         <tbody>
             @foreach ($wps as $wp)
-                <tr>
+                <?php
+                // dd($wp);
+                $inativo = !empty($wp->inativo);
+                ?>
+                <tr class="{{ $inativo ? 'bg-danger' : '' }}">
                     <th scope="row">
                         @if (empty($wp->codprodutovariacao))
                             Produto Principal
@@ -105,9 +109,20 @@ function integracaoLabel($int)
                         @endif
                     </td>
                     <td class="text-right">
-                        <button class="btn btn-sm btn-default" onclick="wooEditar({{ $wp->codwooproduto }})">
-                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                        </button>
+                        <div class="btn-group" role="group" aria-label="...">
+                            <button class="btn btn-sm btn-default" onclick="wooEditar({{ $wp->codwooproduto }})">
+                                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                            </button>
+                            @if ($inativo)
+                                <button class="btn btn-sm btn-default" onclick="wooAtivar({{ $wp->codwooproduto }})">
+                                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                </button>
+                            @else
+                                <button class="btn btn-sm btn-default" onclick="wooInativar({{ $wp->codwooproduto }})">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </button>
+                            @endif
+                        </div>
                     </td>
                 </tr>
             @endforeach
