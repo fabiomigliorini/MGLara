@@ -5,7 +5,7 @@
     <p>
         <a href="{{ url("/imagem/produto/$model->codproduto") }}">
             Nova Imagem
-            <i class="glyphicon glyphicon-plus"></i> 
+            <i class="glyphicon glyphicon-plus"></i>
         </a>
     </p>
     <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
@@ -46,5 +46,5 @@
             <span class="sr-only">Next</span>
         </a>
     </div>
-    <br>    
+    <br>
 </div>

@@ -3,7 +3,7 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
-/* 
+/*
     Created on : 23/07/2016, 10:02:11
     Author     : escmig98
 */
@@ -37,7 +37,7 @@ and open the template in the editor.
         /* to centre page on screen*/
         margin-left: auto;
         margin-right: auto;
-    }  
+    }
 }
 
 @media all {
@@ -83,26 +83,26 @@ and open the template in the editor.
         border-top: 2px solid black;
     }
     */
-    
+
     td, th {
         text-align: left;
         padding: 0.02cm;
         font-size: 7pt;
         vertical-align: top;
     }
-    
+
     th {
         border-bottom: 1px solid black;
         text-align: center;
     }
-    
+
     td.subtotal {
         border-top: 1px solid black;
         font-weight: bold;
         padding-top: 2px;
         padding-bottom: 2px;
     }
-    
+
     td.total {
         border-top: 1px solid black;
         border-bottom: 1px solid black;
@@ -110,7 +110,7 @@ and open the template in the editor.
         padding-bottom: 2px;
         font-weight: bold;
     }
-    
+
     td.total-geral {
         border-top: 2px solid black;
         border-bottom: 2px solid black;
@@ -118,7 +118,7 @@ and open the template in the editor.
         padding-bottom: 2px;
         font-weight: bold;
     }
-    
+
     table {
         width: 100%;
         border-spacing: 0.15cm;
@@ -127,7 +127,7 @@ and open the template in the editor.
     .text-right {
         text-align: right;
     }
-    
+
     .text-center {
         text-align: center;
     }
@@ -148,14 +148,14 @@ and open the template in the editor.
     }
     .text-muted {
       color: #777;
-    }    
+    }
     a {
         text-decoration: none;
     }
-    
+
     a:link{ color:rgb(0, 0, 238) }
     a:active{ color:rgb(0, 0, 238) }
     a:visited{color:rgb(0, 0, 238) }
     a:hover{color:rgb(0, 0, 238) }
-    
+
 }
