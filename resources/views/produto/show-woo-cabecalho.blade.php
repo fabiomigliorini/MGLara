@@ -15,13 +15,17 @@
 <div class="collapse" id="collapse-form-woo" style="margin-top: 20px">
     <div class='well well-sm' style="padding: 20px">
 
-        <form action="#" class="form-horizontal" role="form" id="form-woo">
+        <form action="#" class="form-horizontal" role="form" id="form-woo" style="background-color: #ddddddb4; padding: 15px; border-radius: 5px;">
 
             {{-- <h1>{{ $model->codproduto }}</h1> --}}
-            <input type="text" class="form-control" id="woo_codwooproduto" name="woo_codwooproduto">
-            <input type="text" class="form-control" id="woo_codproduto" name="woo_codproduto"
-                value="{{ $model->codproduto }}">
-
+            {{-- <input type="text" class="form-control" id="woo_codwooproduto" name="woo_codwooproduto">--}}
+            <div class="form-group">
+                <label for="woo_codproduto" class="col-sm-5 control-label">Código do Produto interno</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" id="woo_codproduto" name="woo_codproduto"
+                            class="form-control text-right" value="{{ $model->codproduto }}">
+                    </div>
+            </div>
             <div class="form-group">
                 <label for="woo_integracao" class="col-sm-5 control-label">Tipo de Integração</label>
                 <div class="col-sm-4">

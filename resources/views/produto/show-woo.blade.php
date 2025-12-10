@@ -33,30 +33,30 @@ function integracaoLabel($int)
         <thead>
             <tr>
                 <th>Variação</th>
-                <th class="text-right">
+                <th class="text-left">
                     ID
                 </th>
-                <th class="text-right">
+                <th class="text-left">
                     Integração
                 </th>
-                <th class="text-right">
+                <th class="text-left">
                     Exportado
                 </th>
-                <th class="text-right">
+                {{--<th class="text-left">
                     Qtd Emb
                 </th>
-                <th class="text-right">
+                <th class="text-left">
                     % UN
                 </th>
-                <th class="text-right">
+                <th class="text-left">
                     Qtd PT
                 </th>
-                <th class="text-right">
+                <th class="text-left">
                     % PT
                 </th>
-                <th class="text-right">
+                <th class="text-left">
                     Barras UN
-                </th>
+                </th>--}}
             </tr>
         </thead>
         <tbody>
@@ -64,8 +64,9 @@ function integracaoLabel($int)
                 <?php
                 // dd($wp);
                 $inativo = !empty($wp->inativo);
+                $exportado = !empty($wp->exportacao);
                 ?>
-                <tr class="{{ $inativo ? 'bg-danger' : '' }}">
+                <tr class="{{ $inativo ? 'bg-danger' : ($exportado ? 'bg-success' : '') }}">
                     <th scope="row">
                         @if (empty($wp->codprodutovariacao))
                             Produto Principal
@@ -73,7 +74,7 @@ function integracaoLabel($int)
                             {{ $wp->ProdutoVariacao->variacao }}
                         @endif
                     </th>
-                    <td class="text-right">
+                    <td class="text-left">
                         @if (empty($wp->codprodutovariacao))
                             <a href="{{ $url_edit }}{{ $wp->id }}" target="_blank">
                                 {{ $wp->id }}
@@ -85,29 +86,29 @@ function integracaoLabel($int)
                             / {{ $wp->idvariation }}
                         @endif
                     </td>
-                    <td class="text-right">
+                    <td class="text-left">
                         {{ integracaoLabel($wp->integracao) }}
                     </td>
-                    <td class="text-right">
+                    <td class="text-left">
                         {{ $wp->exportacao }}
                     </td>
-                    <td class="text-right">
+                    {{--<td class="text-left">
                         {{ $wp->quantidadeembalagem }}
                     </td>
-                    <td class="text-right">
+                    <td class="text-left">
                         {{ $wp->margemunidade }}%
                     </td>
-                    <td class="text-right">
+                    <td class="text-left">
                         {{ $wp->quantidadepacote }}
                     </td>
-                    <td class="text-right">
+                    <td class="text-left">
                         {{ $wp->margempacote }}%
                     </td>
-                    <td class="text-right">
+                    <td class="text-left">
                         @if (!empty($wp->codprodutobarraunidade))
                             {{ $wp->ProdutoBarra->barras }}
                         @endif
-                    </td>
+                    </td>--}}
                     <td class="text-right">
                         <div class="btn-group" role="group" aria-label="...">
                             <button class="btn btn-sm btn-default" onclick="wooEditar({{ $wp->codwooproduto }})">

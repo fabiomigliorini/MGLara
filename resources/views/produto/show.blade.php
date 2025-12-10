@@ -25,7 +25,7 @@
             break;
     }
     ?>
-    <ol class="breadcrumb header" style="background-color: #ddd">
+    <ol class="breadcrumb header" style="background-color: #ddddddb4">
         {!! titulo(
             $model->codproduto,
             [
