@@ -3,29 +3,29 @@
     <?php
     use MGLara\Models\Filial;
     use MGLara\Models\NaturezaOperacao;
-
+    
     $filiais = ['' => ''] + Filial::lists('filial', 'codfilial')->all();
     $naturezaop = ['' => ''] + NaturezaOperacao::lists('naturezaoperacao', 'codnaturezaoperacao')->all();
-
+    
     switch ($model->abc) {
         case 'A':
             $label = 'label-success';
             break;
-
+    
         case 'B':
             $label = 'label-warning';
             break;
-
+    
         case 'C':
             $label = 'label-info';
             break;
-
+    
         default:
             $label = 'label-danger';
             break;
     }
     ?>
-    <ol class="breadcrumb header" style="background-color: #ddddddb4">
+    <ol class="breadcrumb header">
         {!! titulo(
             $model->codproduto,
             [
@@ -36,7 +36,7 @@
             6,
         ) !!}
         <span class="label {{ $label }}">{{ $model->abc }}</span>
-        <li class='active' >
+        <li class='active'>
             <small>
                 <a href="<?php echo url("produto/$model->codproduto/edit"); ?>" alt="Editar"><span class="glyphicon glyphicon-pencil"></span></a>
                 &nbsp;
@@ -74,7 +74,7 @@
 
     <div class="col-md-7">
         <div>
-            <ul class="nav nav-tabs" role="tablist" id='tab-produto' style="justify-content: center; display: flex;">
+            <ul class="nav nav-tabs" role="tablist" id='tab-produto'>
                 <li role="presentation" class='active'><a href="#tab-variacoes" aria-controls="home" role="tab"
                         data-toggle="tab">Detalhes</a></li>
                 <li role="presentation"><a href="#tab-estoque" aria-controls="home" role="tab"
@@ -88,7 +88,7 @@
                 <li role="presentation"><a href="#tab-negocio" aria-controls="messages" role="tab"
                         data-toggle="tab">Negócios</a></li>
                 <li role="presentation"><a href="#tab-notasfiscais" aria-controls="messages" role="tab"
-                        data-toggle="tab" style="display: inline-block; white-space: nowrap;">Notas Fiscais</a></li>
+                        data-toggle="tab">Notas Fiscais</a></li>
                 <li role="presentation"><a href="#tab-compras" aria-controls="messages" role="tab"
                         data-toggle="tab">Compras</a></li>
             </ul>
@@ -118,15 +118,15 @@
                                     url("ncm/{$model->codncm}") => formataNcm($model->Ncm->ncm),
                                     url("tributacao/{$model->codtributacao}") => $model->Tributacao->tributacao,
                                 ];
-
+                                
                                 if (!empty($model->codcest)) {
                                     $arr[url("cest/{$model->codcest}")] = formataCest($model->Cest->cest);
                                 }
-
+                                
                                 $arr[] = $model->Ncm->bit ? 'BIT' : 'Não BIT';
-
+                                
                                 $arr[] = $model->importado ? 'Importado' : 'Nacional';
-
+                                
                                 ?>
                                 {!! titulo(null, $arr, null) !!}
                             </ol>
