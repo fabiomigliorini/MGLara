@@ -15,17 +15,21 @@
 <div class="collapse" id="collapse-form-woo" style="margin-top: 20px">
     <div class='well well-sm' style="padding: 20px">
 
-        <form action="#" class="form-horizontal" role="form" id="form-woo" style="background-color: #ddddddb4; padding: 15px; border-radius: 5px;">
-
+        <form action="#" class="form-horizontal" role="form" id="form-woo"
+            style="background-color: #ddddddb4; padding: 15px; border-radius: 5px;">
+            <input type="hidden" class="form-control" id="woo_codproduto" name="woo_codproduto"
+                class="form-control text-right" value="{{ $model->codproduto }}">
+            <input type="hidden" class="form-control" id="woo_codwooproduto" name="woo_codwooproduto"
+                class="form-control text-right" value="{{ $model->codwooproduto }}">
             {{-- <h1>{{ $model->codproduto }}</h1> --}}
-            {{-- <input type="text" class="form-control" id="woo_codwooproduto" name="woo_codwooproduto">--}}
-            <div class="form-group">
+            {{-- <input type="text" class="form-control" id="woo_codwooproduto" name="woo_codwooproduto" value="{{ $model->codproduto }}"> --}}
+            {{-- <div class="form-group">
                 <label for="woo_codproduto" class="col-sm-5 control-label">Código do Produto interno</label>
                     <div class="col-sm-3">
                         <input type="text" class="form-control" id="woo_codproduto" name="woo_codproduto"
                             class="form-control text-right" value="{{ $model->codproduto }}">
                     </div>
-            </div>
+            </div> --}}
             <div class="form-group">
                 <label for="woo_integracao" class="col-sm-5 control-label">Tipo de Integração</label>
                 <div class="col-sm-4">
@@ -193,31 +197,40 @@
      */
     function exportarWoo(codproduto) {
         bootbox.confirm("Tem certeza que deseja exportar para o Woo?", function(result) {
-            if (result) {
-                $.ajax({
-                        type: 'POST',
-                        url: urlMGspaApi + 'woo/produto/' + codproduto + '/exportar',
-                        headers: {
-                            'Accept': 'application/json'
-                        },
-                        beforeSend: function(xhr) {
-                            $('.btnWoo').prop('disabled', true);
-                            $('#lblSincronizandoWoo').show();
-                        }
-                    })
-                    .done(function(data) {
-                        $('.btnWoo').prop('disabled', false);
-                        $('#lblSincronizandoWoo').hide();
-                        recarregaDiv('div-woo-listagem')
-                        bootbox.alert('Exportação Realizada!');
-                    })
-                    .fail(function(data) {
-                        console.log(data);
-                        $('.btnWoo').prop('disabled', false);
-                        $('#lblSincronizandoWoo').hide();
-                        recarregaDiv('div-woo-listagem')
-                        bootbox.alert('Falha na exportação! Consulte o Log do Console para mais detalhes!');
-                    });
+                if (result) {
+                    $.ajax({
+                            type: 'POST',
+                            url: urlMGspaApi + 'woo/produto/' + codproduto + '/exportar',
+                            headers: {
+                                'Accept': 'application/json'
+                            },
+                            beforeSend: function(xhr) {
+                                $('.btnWoo').prop('disabled', true);
+                                $('#lblSincronizandoWoo').show();
+                            }
+                        })
+                        .done(function(data) {
+                            $('.btnWoo').prop('disabled', false);
+                            $('#lblSincronizandoWoo').hide();
+                            recarregaDiv('div-woo-listagem')
+                            bootbox.alert('Exportação Realizada!');
+                        })
+                        .fail(function(data) {
+                                console.log(data);
+                                $('.btnWoo').prop('disabled', false);
+                                $('#lblSincronizandoWoo').hide();
+                                recarregaDiv('div-woo-listagem')
+                                try {
+                                    // var Error = JSON.parse(data.responseJSON.message);
+                                    // bootbox.alert(Error.message)
+                                    bootbox.alert(data.responseJSON.message)
+                                } catch (erro) {
+                                    bootbox.alert(
+                                        'Falha na exportação! Consulte o Log do Console para mais detalhes!');
+                                }
+
+
+                        });
             }
         });
     }
@@ -248,7 +261,8 @@
         $('#woo_idvariation').val(produto.idvariation);
         $('#woo_quantidadeembalagem').val(produto.quantidadeembalagem);
         $('#woo_margemunidade').val(produto.margemunidade);
-        $('#woo_barrasunidade').val(produto.codprodutobarraunidade);
+        // $('#woo_barrasunidade').val(produto.codprodutobarraunidade);
+        $('#woo_barrasunidade').val(produto.barrasunidade);
         $('#woo_quantidadepacote').val(produto.quantidadepacote);
         $('#woo_margempacote').val(produto.margempacote);
         // $('#woo_codproduto').val(produto.codproduto);

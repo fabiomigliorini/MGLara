@@ -2,6 +2,14 @@
 $url_edit = env('WOO_URL_PRODUTO_EDIT');
 $url_listagem = env('WOO_URL_PRODUTO_LISTAGEM');
 $wps = $model->WooProdutoS()->orderBy('criacao')->get();
+foreach ($wps as $wp) {
+    // Carrega barrasunidade para exibição
+    if (!empty($wp->codprodutobarraunidade)) {
+        $wp->barrasunidade = $wp->ProdutoBarraUnidade->barras;
+    } else {
+        $wp->barrasunidade = null;
+    }
+}
 $vars = $model
     ->ProdutoVariacaoS()
     ->orderBy('variacao')
@@ -42,21 +50,6 @@ function integracaoLabel($int)
                 <th class="text-left">
                     Exportado
                 </th>
-                {{--<th class="text-left">
-                    Qtd Emb
-                </th>
-                <th class="text-left">
-                    % UN
-                </th>
-                <th class="text-left">
-                    Qtd PT
-                </th>
-                <th class="text-left">
-                    % PT
-                </th>
-                <th class="text-left">
-                    Barras UN
-                </th>--}}
             </tr>
         </thead>
         <tbody>
@@ -67,7 +60,7 @@ function integracaoLabel($int)
                 $exportado = !empty($wp->exportacao);
                 ?>
                 <tr class="{{ $inativo ? 'bg-danger' : ($exportado ? 'bg-success' : '') }}">
-                    <th scope="row">
+                    <th scope="row" rowspan="{{ ($wp->integracao == 'P') ? 2 : 1 }}">
                         @if (empty($wp->codprodutovariacao))
                             Produto Principal
                         @else
@@ -90,26 +83,10 @@ function integracaoLabel($int)
                         {{ integracaoLabel($wp->integracao) }}
                     </td>
                     <td class="text-left">
-                        {{ $wp->exportacao }}
+                        {{ formataData($wp->exportacao, 'L') }}
                     </td>
-                    {{--<td class="text-left">
-                        {{ $wp->quantidadeembalagem }}
-                    </td>
-                    <td class="text-left">
-                        {{ $wp->margemunidade }}%
-                    </td>
-                    <td class="text-left">
-                        {{ $wp->quantidadepacote }}
-                    </td>
-                    <td class="text-left">
-                        {{ $wp->margempacote }}%
-                    </td>
-                    <td class="text-left">
-                        @if (!empty($wp->codprodutobarraunidade))
-                            {{ $wp->ProdutoBarra->barras }}
-                        @endif
-                    </td>--}}
-                    <td class="text-right">
+
+                    <td class="text-right" rowspan="{{ ($wp->integracao == 'P') ? 2 : 1 }}">
                         <div class="btn-group" role="group" aria-label="...">
                             <button class="btn btn-sm btn-default" onclick="wooEditar({{ $wp->codwooproduto }})">
                                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
@@ -126,6 +103,19 @@ function integracaoLabel($int)
                         </div>
                     </td>
                 </tr>
+                @if ($wp->integracao == 'P')
+                    <tr class="{{ $inativo ? 'bg-danger' : ($exportado ? 'bg-success' : '') }}">
+                        <td class="text-left" colspan="3">
+                            @if (!empty($wp->codprodutobarraunidade))
+                                Barras da Unidade {{ $wp->ProdutoBarraUnidade->barras }} |
+                            @endif
+                            Pacote C/{{ $wp->quantidadepacote }}
+                            ({{ $wp->margempacote }}% no pacote)
+                            | Emgalagem C/{{ $wp->quantidadeembalagem }}
+                            ({{ $wp->margemunidade }}% na unidade)
+                        </td>
+                    </tr>
+                @endif
             @endforeach
         </tbody>
     </table>
