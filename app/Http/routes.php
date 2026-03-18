@@ -230,9 +230,10 @@ Route::group(['middleware' => 'auth'], function() {
     /* Negocio */
     Route::resource('negocio', 'NegocioController');
 
-    /* Metas */
-    Route::get('meta/{id}/relatorio', 'MetaController@relatorio');
-    Route::resource('meta', 'MetaController');
+    /* Metas - Redirecionado para novo painel */
+    Route::any('meta/{any?}', function () {
+        return redirect()->away(env('PESSOAS_APP_URL') . 'rh/meu-painel');
+    })->where('any', '.*');
 
     /* Estoque Movimento */
     Route::get('estoque-movimento/create/{codestoquemes}', 'EstoqueMovimentoController@create');
