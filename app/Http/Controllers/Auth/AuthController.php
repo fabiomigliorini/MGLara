@@ -97,12 +97,15 @@ class AuthController extends Controller
         $client = new Client();
 
         try {
-            $responseAuth = $client->post(env('AUTH_API_URL') . '/api/logout', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $access_token,
+            // RFC 7009 Token Revocation — POST com body `token` + client_credentials (Basic Auth)
+            $responseAuth = $client->post(env('AUTH_API_URL') . '/oauth/revoke', [
+                'auth' => [env('SSO_CLIENT_ID'), env('SSO_CLIENT_SECRET')],
+                'form_params' => [
+                    'token' => $access_token,
+                    'token_type_hint' => 'access_token',
                 ],
-                'verify' => false
-            ]); 
+                'verify' => false,
+            ]);
 
             if ($responseAuth->getStatusCode() === 200) {
                 Auth::logout();

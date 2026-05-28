@@ -56,21 +56,28 @@ class SSOController extends Controller
    
     public function connectUser(Request $request)
     {
-    $access_token = $request->session()->get("access_token");
-    $http = new \GuzzleHttp\Client;
-     $response = $http->request('GET', env('SSO_HOST') .  "/api/v1/auth/user", [
-        'headers' => [
-            "Accept" => "application/json",
-            "Authorization" => "Bearer " . $access_token
-            ]
+        $access_token = $request->session()->get("access_token");
+        $http = new \GuzzleHttp\Client;
+
+        // OIDC Core 1.0 §5.3 — /userinfo (raiz) retorna claims OIDC + custom MGspa
+        // num único objeto plano (sem wrapper `data`).
+        $response = $http->request('GET', env('SSO_HOST') . "/userinfo", [
+            'headers' => [
+                "Accept" => "application/json",
+                "Authorization" => "Bearer " . $access_token,
+            ],
         ]);
-    // return json_decode((string) $response->getBody(), true);
-     $userArray = json_decode((string) $response->getBody(), true);
-        try {
-            $usuario = $userArray['data']['usuario'];
-        } catch (\GuzzleHttp\Exception\BadResponseException $e) {
+
+        $userArray = json_decode((string) $response->getBody(), true);
+
+        // `preferred_username` é o claim OIDC standard; `usuario` fica como
+        // fallback (custom claim MGspa) caso o backend mude no futuro.
+        $usuario = $userArray['preferred_username'] ?? $userArray['usuario'] ?? null;
+
+        if (!$usuario) {
             return redirect("login")->withError("Falha ao obter informações de login! Tente novamente.");
         }
+
         $user = Usuario::where("usuario", $usuario)->first();
         Auth::login($user);
         return redirect()->intended();

@@ -48,38 +48,48 @@ class Authenticate
         try {
             $access_token = Request::capture()->cookies->get('access_token');
 
-
             if (!$access_token) {
                 return redirect()->guest('/auth/login');
             }
 
+            // RFC 7662 Token Introspection — POST com body `token` + client_credentials (Basic Auth)
             $client = new Client();
-            $responseAuth = $client->get(env('AUTH_API_URL') . '/api/check-token', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $access_token,
+            $responseAuth = $client->post(env('AUTH_API_URL') . '/oauth/introspect', [
+                'auth' => [env('SSO_CLIENT_ID'), env('SSO_CLIENT_SECRET')],
+                'form_params' => [
+                    'token' => $access_token,
+                    'token_type_hint' => 'access_token',
                 ],
-                'verify' => false
+                'verify' => false,
             ]);
 
-            $reponseData = json_decode((string) $responseAuth->getBody(), true);
+            $responseData = json_decode((string) $responseAuth->getBody(), true);
 
             if ($responseAuth->getStatusCode() === 200) {
-                if (!$reponseData['user_id']) {
+                // RFC 7662 §2.2: `active` (REQUIRED bool) é o indicador primário
+                if (empty($responseData['active'])) {
                     Auth::logout();
                     return redirect()->to(env('AUTH_API_URL') . '/login?redirect_uri=' . url());
                 }
+
+                // OIDC sub é string per spec; codusuario é int — cast explícito
+                $codusuario = (int) ($responseData['sub'] ?? 0);
+                if (!$codusuario) {
+                    Auth::logout();
+                    return redirect()->to(env('AUTH_API_URL') . '/login?redirect_uri=' . url());
+                }
+
                 if (Auth::user()) {
-                    if (Auth::user()->codusuario != $reponseData['user_id']) {
+                    if (Auth::user()->codusuario != $codusuario) {
                         Auth::logout();
-                        Auth::loginUsingId($reponseData['user_id']);
+                        Auth::loginUsingId($codusuario);
                     }
                 }
 
                 if ($this->auth->guest()) {
-                    Auth::loginUsingId($reponseData['user_id']);
+                    Auth::loginUsingId($codusuario);
                 }
-                $reponse = $next($request);
-                return $reponse;
+                return $next($request);
             }
         } catch (\Exception $e) {
             if ($e->getCode() == 401) {
