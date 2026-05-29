@@ -36,6 +36,25 @@
     <script src="{{ URL::asset('public/js/mgsis.js') }}"></script>
     <script src="{{ URL::asset('public/js/set-case.js') }}"></script>
     <script src="{{ URL::asset('public/vendor/pace/pace.min.js') }}"></script>
+    <script>
+        // API L13 exige Bearer em todas as rotas auth:api. Cookie access_token
+        // (domínio .mgpapelaria.com.br) é populado pelo MGAuth no SSO.
+        window.MGSPA_API_URL = '{{ env('MGSPA_API_URL') }}';
+        (function () {
+            function getCookie(name) {
+                var m = document.cookie.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]+)'));
+                return m ? decodeURIComponent(m[1]) : null;
+            }
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    if (window.MGSPA_API_URL && settings.url && settings.url.indexOf(window.MGSPA_API_URL) === 0) {
+                        var token = getCookie('access_token');
+                        if (token) xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                    }
+                }
+            });
+        })();
+    </script>
     <style>
         /* Distancia Menu superior */
         body {
