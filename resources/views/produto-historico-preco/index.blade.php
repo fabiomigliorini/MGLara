@@ -219,7 +219,21 @@ $(document).ready(function() {
     
     $('#relatorio').on('click', function(e){
         e.preventDefault();
-        location.replace('produto-historico-preco/relatorio/?' + $('#produto-historico-preco-search').serialize());
+        var parametros = $('#produto-historico-preco-search').serialize();
+        var urlRelatorio = 'produto-historico-preco/relatorio/?' + parametros;
+
+        $.get(baseUrl + '/produto-historico-preco/relatorio/validar', parametros)
+            .done(function(retorno) {
+                if (!retorno.valido) {
+                    bootbox.alert('<span class="text-danger">' + retorno.mensagem + '</span>');
+                    return;
+                }
+
+                location.replace(urlRelatorio);
+            })
+            .fail(function() {
+                bootbox.alert('<span class="text-danger">Não foi possível validar os filtros para impressão.</span>');
+            });
     });
 });
 </script>

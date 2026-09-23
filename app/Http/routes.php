@@ -193,6 +193,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('forma-pagamento', 'FormaPagamentoController');
 
     /* Histórico de preços */
+    Route::get('produto-historico-preco/relatorio/validar', 'ProdutoHistoricoPrecoController@validarRelatorio');
     Route::get('produto-historico-preco/relatorio', 'ProdutoHistoricoPrecoController@relatorio');
     Route::resource('produto-historico-preco', 'ProdutoHistoricoPrecoController');
 
