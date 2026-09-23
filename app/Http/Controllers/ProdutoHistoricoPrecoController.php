@@ -4,6 +4,7 @@ namespace MGLara\Http\Controllers;
 
 use Illuminate\Http\Request;
 use MGLara\Http\Controllers\Controller;
+use Carbon\Carbon;
 
 use MGLara\Models\ProdutoHistoricoPreco;
 
@@ -20,7 +21,7 @@ class ProdutoHistoricoPrecoController extends Controller
         $parametros = self::filtroEstatico(
             $request, 
             'produto-historico-preco.index', 
-            [], 
+            ['alteracao_de' => Carbon::now()->subDays(5)], 
             ['alteracao_de', 'alteracao_ate']
         );
         
