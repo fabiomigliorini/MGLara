@@ -18,14 +18,12 @@ namespace MGLara\Models;
  * @property  bigint                         $codusuarioalteracao                
  * @property  timestamp                      $criacao                            
  * @property  bigint                         $codusuariocriacao                  
- * @property  boolean                        $valecompra                         NOT NULL DEFAULT false
  *
  * Chaves Estrangeiras
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
  *
  * Tabelas Filhas
- * @property  ValeCompraFormaPagamento[]     $ValeCompraFormaPagamentoS
  * @property  NegocioFormaPagamento[]        $NegocioFormaPagamentoS
  * @property  Pessoa[]                       $PessoaS
  */
@@ -44,7 +42,6 @@ class FormaPagamento extends MGModel
         'avista',
         'formapagamentoecf',
         'entrega',
-        'valecompra',
     ];
     protected $dates = [
         'alteracao',
@@ -75,10 +72,6 @@ class FormaPagamento extends MGModel
 
 
     // Tabelas Filhas
-    public function ValeCompraFormaPagamentoS()
-    {
-        return $this->hasMany(ValeCompraFormaPagamento::class, 'codformapagamento', 'codformapagamento');
-    }
     
     public function NegocioFormaPagamentoS()
     {

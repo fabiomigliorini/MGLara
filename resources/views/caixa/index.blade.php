@@ -116,34 +116,6 @@
       </tr>
     @endforeach
 
-    @foreach ($dados['vales'] as $vale)
-      <?php
-          switch ($vale->status) {
-              case 'Inativo':
-                  $class='danger';
-                  break;
-
-              default:
-                  $class='';
-                  break;
-          }
-      ?>
-      <tr class='{{ $class }}'>
-        <td colspan='2'>
-          Vale Compras {{ $vale->status }}
-          <span class="badge">{{ formataNumero($vale->quantidade, 0) }}</span>
-
-        </td>
-        <td class='text-right'>
-          {{ formataNumero($vale->avista) }}
-        </td>
-        <td class='text-right'>
-        </td>
-        <td class='text-right'>
-          {{ formataNumero($vale->aprazo) }}
-        </td>
-      </tr>
-    @endforeach
 
     @foreach ($dados['liquidacoes'] as $liq)
       <?php

@@ -105,43 +105,6 @@ class CaixaController extends Controller
 
         switch ($parametros['ativo']) {
             case 1:
-                $ativo = 'and vc.inativo is null';
-                break;
-
-            case 2:
-                $ativo = 'and vc.inativo is not null';
-                break;
-
-            default:
-                $ativo = '';
-                break;
-        }
-
-        $sql = "
-            select
-                case when inativo is null then 'Ativo' else 'Inativo' end as status
-                , sum(vc.total) as total
-                , sum(prazo.aprazo) as aprazo
-                , sum(vc.total) - sum(coalesce(prazo.aprazo, 0)) as avista
-                , count(vc.codvalecompra) as quantidade
-            from tblvalecompra vc
-            left join (
-                select vcfp.codvalecompra, sum(vcfp.valorpagamento) as aprazo
-                from tblvalecompraformapagamento vcfp
-                inner join tblformapagamento fp on (fp.codformapagamento = vcfp.codformapagamento and fp.avista = false)
-                group by vcfp.codvalecompra
-            ) prazo on (prazo.codvalecompra = vc.codvalecompra)
-            where vc.codusuariocriacao = {$parametros['codusuario']}
-            and vc.criacao between '{$parametros['datainicial']->toDateTimeString()}' and '{$parametros['datafinal']->toDateTimeString()}'
-            $ativo
-            group by case when inativo is null then 'Ativo' else 'Inativo' end
-            order by case when inativo is null then 'Ativo' else 'Inativo' end ASC
-            ";
-
-        $dados['vales'] = DB::select($sql);
-
-        switch ($parametros['ativo']) {
-            case 1:
                 $ativo = 'and lt.estornado is null';
                 break;
 

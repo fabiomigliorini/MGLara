@@ -38,7 +38,6 @@ use Carbon\Carbon;
  * @property  bigint                         $codusuarioalteracao                
  * @property  timestamp                      $criacao                            
  * @property  bigint                         $codusuariocriacao                  
- * @property  bigint                         $codvalecompraformapagamento        
  *
  * Chaves Estrangeiras
  * @property  ContaContabil                  $ContaContabil                 
@@ -50,10 +49,8 @@ use Carbon\Carbon;
  * @property  TituloAgrupamento              $TituloAgrupamento             
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
- * @property  ValeCompraFormaPagamento       $ValeCompraFormaPagamento      
  *
  * Tabelas Filhas
- * @property  ValeCompra[]                   $ValeCompraS
  * @property  BoletoRetorno[]                $BoletoRetornoS
  * @property  Cobranca[]                     $CobrancaS
  * @property  CobrancaHistoricoTitulo[]      $CobrancaHistoricoTituloS
@@ -96,7 +93,6 @@ class Titulo extends MGModel
         'codtituloagrupamento',
         'remessa',
         'estornado',
-        'codvalecompraformapagamento',
     ];
     protected $dates = [
         'transacao',
@@ -157,17 +153,9 @@ class Titulo extends MGModel
         return $this->belongsTo(Usuario::class, 'codusuariocriacao', 'codusuario');
     }
 
-    public function ValeCompraFormaPagamento()
-    {
-        return $this->belongsTo(ValeCompraFormaPagamento::class, 'codvalecompraformapagamento', 'codvalecompraformapagamento');
-    }
 
 
     // Tabelas Filhas
-    public function ValeCompraS()
-    {
-        return $this->hasMany(ValeCompra::class, 'codtitulo', 'codtitulo');
-    }
 
     public function BoletoRetornoS()
     {

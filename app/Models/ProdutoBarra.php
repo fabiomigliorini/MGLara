@@ -25,8 +25,6 @@ namespace MGLara\Models;
  * @property  Usuario                        $UsuarioCriacao
  *
  * Tabelas Filhas
- * @property  ValeCompraModeloProdutoBarra[] $ValeCompraModeloProdutoBarraS
- * @property  ValeCompraProdutoBarra[]       $ValeCompraProdutoBarraS
  * @property  CupomFiscalProdutoBarra[]      $CupomFiscalProdutoBarraS
  * @property  NegocioProdutoBarra[]          $NegocioProdutoBarraS
  * @property  NfeTerceiroItem[]              $NfeTerceiroItemS
@@ -93,15 +91,7 @@ class ProdutoBarra extends MGModel
 
 
     // Tabelas Filhas
-    public function ValeCompraModeloProdutoBarraS()
-    {
-        return $this->hasMany(ValeCompraModeloProdutoBarra::class, 'codprodutobarra', 'codprodutobarra');
-    }
 
-    public function ValeCompraProdutoBarraS()
-    {
-        return $this->hasMany(ValeCompraProdutoBarra::class, 'codprodutobarra', 'codprodutobarra');
-    }
     
     public function CupomFiscalProdutoBarraS()
     {

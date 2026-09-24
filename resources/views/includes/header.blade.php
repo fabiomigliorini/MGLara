@@ -19,9 +19,6 @@
                     <ul class="dropdown-menu">
                         <li><a href="{{ url('caixa') }}">Totais de Caixa</a><li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="{{ url('vale-compra') }}">Vale Compras</a><li>
-                        <li><a href="{{ url('vale-compra-modelo') }}">Modelos de Vale Compras</a><li>
-                        <li role="separator" class="divider"></li>
                         <li><a href="{{ env('PESSOAS_APP_URL') }}rh/meu-painel" target="_blank">Metas</a><li>
                     </ul>
                 </li>

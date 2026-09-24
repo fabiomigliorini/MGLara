@@ -247,13 +247,6 @@ Route::group(['middleware' => 'auth'], function() {
     /* Auxiliares */
     Route::resource('printers', 'UsuarioController@printers');
 
-    /* Vale Compras */
-    Route::post('vale-compra-modelo/inativar', 'ValeCompraModeloController@inativar');
-    Route::resource('vale-compra-modelo', 'ValeCompraModeloController');
-    Route::post('vale-compra/inativar', 'ValeCompraController@inativar');
-    Route::resource('vale-compra', 'ValeCompraController');
-    Route::get('vale-compra/{id}/imprimir', 'ValeCompraController@imprimir');
-
     Route::resource('/caixa', 'CaixaController@index');
 
     /* Cheques */
