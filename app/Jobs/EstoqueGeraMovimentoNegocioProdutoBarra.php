@@ -111,11 +111,21 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
 
                 if ($mov->EstoqueMovimentoTipo->preco == EstoqueMovimentoTipo::PRECO_INFORMADO) {
 
-                    $valor = $this->NegocioProdutoBarra->valortotal;
-
-                    if ($this->NegocioProdutoBarra->Negocio->valordesconto > 0 && $this->NegocioProdutoBarra->Negocio->valorprodutos > 0) {
-                        $valor *= 1 - ($this->NegocioProdutoBarra->Negocio->valordesconto / $this->NegocioProdutoBarra->Negocio->valorprodutos);
-                    }
+                    // Valor do item JA' RATEADO, direto do proprio item.
+                    //
+                    // Antes daqui saia o valortotal do item ajustado por
+                    // "1 - (desconto do cabecalho / valorprodutos do
+                    // cabecalho)". Aquilo era resquicio de quando o item nao
+                    // tinha valordesconto proprio: hoje tem, e o rateio ja'
+                    // aconteceu na venda, entao o ajuste aplicava o desconto
+                    // DUAS vezes sempre que o item tinha a sua fatia gravada.
+                    //
+                    // Ler so' o item deixa o job imune a valor de cabecalho --
+                    // o que importa agora que o negocio tem uma segunda
+                    // colecao (os vales compras) somando no cabecalho sem
+                    // nunca movimentar estoque.
+                    $valor = $this->NegocioProdutoBarra->valorprodutos
+                        - ($this->NegocioProdutoBarra->valordesconto ?? 0);
 
                     if ($this->NegocioProdutoBarra->Negocio->NaturezaOperacao->codoperacao == Operacao::ENTRADA) {
                         if ($mov->entradavalor != $valor) {
