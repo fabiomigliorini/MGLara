@@ -53,21 +53,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('dominio/estoque', 'DominioController@estoque');
     Route::resource('dominio', 'DominioController');
 
-    /* Usuários */
-    Route::resource('usuario', 'UsuarioController');
-    Route::post('usuario/inativar', 'UsuarioController@inativar');
-    Route::resource('usuario/{codusuario}/permissao', 'UsuarioController@permissao');
-    Route::post('usuario/attach-permissao', 'UsuarioController@attachPermissao');
-    Route::post('usuario/detach-permissao', 'UsuarioController@detachPermissao');
-
-    /* Grupos de usuários */
-    Route::resource('grupo-usuario', 'GrupoUsuarioController');
-    Route::post('grupo-usuario/attach-permissao', 'GrupoUsuarioController@attachPermissao');
-    Route::post('grupo-usuario/detach-permissao', 'GrupoUsuarioController@detachPermissao');
-
-    /* Permissões */
-    Route::resource('permissao', 'PermissaoController');
-
     /* Pessoas */
     Route::get('pessoa/listagem-json', 'PessoaController@listagemJson');
     Route::resource('pessoa', 'PessoaController');
@@ -241,9 +226,6 @@ Route::group(['middleware' => 'auth'], function() {
     /* Gerador de Codigo */
     Route::get('gerador-codigo/model/{tabela}', 'GeradorCodigoController@model');
     //Route::resource('gerador-codigo','GeradorCodigoController');
-
-    /* Auxiliares */
-    Route::resource('printers', 'UsuarioController@printers');
 
     Route::resource('/caixa', 'CaixaController@index');
 

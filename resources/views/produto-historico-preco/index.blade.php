@@ -108,7 +108,7 @@
             
             <div class="col-md-3">
                 <small class="col-md-4 muted">
-                    <a href="{{ url("usuario/$row->codusuariocriacao") }}">{{ $row->UsuarioCriacao->usuario }}</a>
+                    {{ $row->UsuarioCriacao->usuario }}
                 </small>
                 <small class="col-md-8 muted">
                     {{ formataData($row->alteracao, 'L') }}

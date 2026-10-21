@@ -94,10 +94,6 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="{{ url('usuario') }}">Usuários</a></li>
-                        <li><a href="{{ url('grupo-usuario') }}">Grupos</a></li>
-                        <li><a href="{{ url('permissao') }}">Permissões</a></li>
-                        <li role="separator" class="divider"></li>
                         <li><a href="{{ url('imagem') }}">Imagens</a></li>
                     </ul>
                 </li>
@@ -109,7 +105,6 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ Auth::user()->usuario }} <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="<?php echo url('usuario/' . Auth::user()->codusuario); ?>">Perfil</a></li>
                         <li><a href="<?php echo '/MGLara/auth/logout'; ?>">Sair</a></li>
                     </ul>
                 </li>

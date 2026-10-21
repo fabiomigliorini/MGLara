@@ -144,7 +144,7 @@ Negócio # {{ $model->codnegocio }}
             </tbody>
         </table>
         <small class="muted">
-            Criado em {{ formataData($model->lancamento, 'L') }} por <a href="{{ url('usuario', [$model->Usuario->codusuario]) }}">{{ $model->Usuario->usuario }}</a> Alterado
+            Criado em {{ formataData($model->lancamento, 'L') }} por {{ $model->Usuario->usuario }} Alterado
         </small>
     </div>
 </div>
