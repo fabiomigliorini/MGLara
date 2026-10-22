@@ -11,16 +11,13 @@ namespace MGLara\Models;
  * @property  bigint                         $codfilial
  * @property  bigint                         $codoperacao                        NOT NULL
  * @property  bigint                         $codpessoa
- * @property  varchar(100)                   $impressoratelanegocio
  * @property  bigint                         $codportador
- * @property  varchar(50)                    $impressoratermica
  * @property  timestamp                      $alteracao
  * @property  bigint                         $codusuarioalteracao
  * @property  timestamp                      $criacao
  * @property  bigint                         $codusuariocriacao
  * @property  timestamp                      $ultimoacesso
  * @property  date                           $inativo
- * @property  varchar(50)                    $impressoramatricial
  * @property  varchar(100)                   $remember_token
  *
  * Chaves Estrangeiras
@@ -123,7 +120,6 @@ namespace MGLara\Models;
  * @property  NaturezaOperacao[]             $NaturezaOperacaoCriacaoS
  * @property  Ncm[]                          $NcmAlteracaoS
  * @property  Ncm[]                          $NcmCriacaoS
- * @property  Negocio[]                      $NegocioAcertoEntregaS
  * @property  Negocio[]                      $NegocioAlteracaoS
  * @property  Negocio[]                      $NegocioCriacaoS
  * @property  Negocio[]                      $NegocioS
@@ -222,12 +218,9 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
         'codfilial',
         'codoperacao',
         'codpessoa',
-        'impressoratelanegocio',
         'codportador',
-        'impressoratermica',
         'ultimoacesso',
         'inativo',
-        'impressoramatricial',
         'remember_token',
     ];
 
@@ -252,8 +245,6 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
             'usuario' => $unique_usuario,
             'senha' => 'required_if:codusuario,null|min:6',
             'codoperacao' => 'required',
-            // 'impressoramatricial' => 'required',
-            // 'impressoratermica' => 'required',
         ];
 
         $this->_mensagensErro = [
@@ -760,11 +751,6 @@ class Usuario extends MGModel implements AuthenticatableContract, CanResetPasswo
     public function NcmCriacaoS()
     {
         return $this->hasMany(Ncm::class, 'codusuario', 'codusuariocriacao');
-    }
-
-    public function NegocioAcertoEntregaS()
-    {
-        return $this->hasMany(Negocio::class, 'codusuario', 'codusuarioacertoentrega');
     }
 
     public function NegocioAlteracaoS()

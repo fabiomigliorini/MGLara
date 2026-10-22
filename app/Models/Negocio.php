@@ -15,8 +15,6 @@ namespace MGLara\Models;
  * @property  bigint                         $codusuario                         NOT NULL
  * @property  numeric(14,2)                  $valordesconto
  * @property  boolean                        $entrega                            NOT NULL DEFAULT false
- * @property  timestamp                      $acertoentrega
- * @property  bigint                         $codusuarioacertoentrega
  * @property  timestamp                      $alteracao
  * @property  bigint                         $codusuarioalteracao
  * @property  timestamp                      $criacao
@@ -36,7 +34,6 @@ namespace MGLara\Models;
  * @property  Pessoa                         $Pessoa
  * @property  Pessoa                         $PessoaVendedor
  * @property  Usuario                        $Usuario
- * @property  Usuario                        $UsuarioAcertoEntrega
  * @property  Usuario                        $UsuarioAlteracao
  * @property  Usuario                        $UsuarioCriacao
  * @property  Estoquelocal                   $Estoquelocal
@@ -61,8 +58,6 @@ class Negocio extends MGModel
         'codusuario',
         'valordesconto',
         'entrega',
-        'acertoentrega',
-        'codusuarioacertoentrega',
         'codnaturezaoperacao',
         'valorprodutos',
         'valortotal',
@@ -78,7 +73,6 @@ class Negocio extends MGModel
     ];
     protected $dates = [
         'lancamento',
-        'acertoentrega',
         'alteracao',
         'criacao',
         'recebimento',
@@ -123,11 +117,6 @@ class Negocio extends MGModel
     public function Usuario()
     {
         return $this->belongsTo(Usuario::class, 'codusuario', 'codusuario');
-    }
-
-    public function UsuarioAcertoEntrega()
-    {
-        return $this->belongsTo(Usuario::class, 'codusuario', 'codusuarioacertoentrega');
     }
 
     public function UsuarioAlteracao()
