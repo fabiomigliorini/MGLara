@@ -161,10 +161,10 @@ class EstoqueGeraMovimentoNegocioProdutoBarra extends Job implements SelfHandlin
                 $codestoquemovimento_gerado[] = $mov->codestoquemovimento;
             }
 
-            //caso intercompany, gera movimento destino
-            $localDest = EstoqueLocal::whereHas('Filial', function ($iq) {
-                $iq->where('codpessoa', $this->NegocioProdutoBarra->Negocio->codpessoa);
-            })->first();
+            // movimento no destino (transferencia, venda entre empresas do grupo): so' com a
+            // loja destino informada no negocio (TASK-55). O caminho antigo, pela filial da
+            // pessoa, ficou no backfill do codestoquelocaldestino
+            $localDest = $this->NegocioProdutoBarra->Negocio->EstoqueLocalDestino;
 
             $tipoDest = NULL;
             if ($localDest != NULL) {

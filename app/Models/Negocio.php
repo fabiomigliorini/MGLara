@@ -141,7 +141,7 @@ class Negocio extends MGModel
 
     public function EstoqueLocalDestino()
     {
-        return $this->belongsTo(EstoqueLocal::class, 'codestoquelocal', 'codestoquelocal');
+        return $this->belongsTo(EstoqueLocal::class, 'codestoquelocaldestino', 'codestoquelocal');
     }
 
     // Tabelas Filhas
