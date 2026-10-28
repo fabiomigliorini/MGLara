@@ -2,15 +2,14 @@ services:
     mglara:
         build: ./
         restart: unless-stopped
+        environment:
+            TZ: America/Cuiaba
         volumes:
             - /opt/www:/opt/www
             - /mnt:/mnt
             - /tmp:/tmp/host
             - ./php.ini:/usr/local/etc/php/php.ini
             - /media/publico:/media/publico                
-            - /etc/timezone:/etc/timezone:ro
-            - /etc/localtime:/etc/localtime:ro
-            - /usr/share/zoneinfo:/usr/share/zoneinfo              
         extra_hosts:
             - "host.docker.internal:host-gateway"
             - "api-mgspa-dev.mgpapelaria.com.br:host-gateway"            
