@@ -120,6 +120,12 @@ class MercosPedido
             foreach ($ped->itens as $item) {
                 static::parsePedidoItem($item, $n, $mp);
             }
+
+            // sem PDV, os totais eram calculados pelas triggers de
+            // tblnegocio/tblnegocioprodutobarra, removidas em 25/09/2026
+            if (empty($n->codpdv)) {
+                static::totalizaNegocio($n);
+            }
         }
 
         DB::commit();
@@ -155,6 +161,26 @@ class MercosPedido
         $mpi->codnegocioprodutobarra = $npb->codnegocioprodutobarra;
         $mpi->save();
         return $mpi;
+    }
+
+    // mesma conta das funcoes fnTblNegocio_Atualiza_ValorProdutos e
+    // fnTblNegocio_Atualiza_ValorTotal, que as triggers chamavam
+    public static function totalizaNegocio(Negocio $n)
+    {
+        $n->valorprodutos = NegocioProdutoBarra::where('codnegocio', $n->codnegocio)
+            ->whereNull('inativo')
+            ->sum(DB::raw('coalesce(valorprodutos, valortotal, 0)'));
+        $n->valortotal = round(
+            $n->valorprodutos
+            - $n->valordesconto
+            + $n->valorfrete
+            + $n->valorseguro
+            + $n->valoroutras
+            + $n->valorjuros,
+            2
+        );
+        $n->valoravista = round($n->valortotal - $n->valoraprazo, 2);
+        $n->save();
     }
 
     public static function exportaFaturamento(Negocio $n)
