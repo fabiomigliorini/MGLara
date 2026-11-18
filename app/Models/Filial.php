@@ -24,7 +24,6 @@ namespace MGLara\Models;
  * @property  bigint                         $codusuariocriacao                  
  * @property  varchar(32)                    $nfcetoken                          
  * @property  varchar(6)                     $nfcetokenid                        
- * @property  smallint                       $nfeambiente                        NOT NULL DEFAULT 2
  * @property  varchar(50)                    $senhacertificado                   
  * @property  bigint                         $ultimonsu                          
  * @property  varchar(200)                   $tokenibpt                          
@@ -53,8 +52,6 @@ class Filial extends MGModel
     const CRT_SIMPLES_EXCESSO = 2;
     const CRT_REGIME_NORMAL = 3;
 
-    const NFEAMBIENTE_PRODUCAO = 1;
-    const NFEAMBIENTE_HOMOLOGACAO = 2;
     
     protected $table = 'tblfilial';
     protected $primaryKey = 'codfilial';
@@ -74,7 +71,6 @@ class Filial extends MGModel
         'crt',
         'nfcetoken',
         'nfcetokenid',
-        'nfeambiente',
         'senhacertificado',
         'ultimonsu',
         'tokenibpt',
